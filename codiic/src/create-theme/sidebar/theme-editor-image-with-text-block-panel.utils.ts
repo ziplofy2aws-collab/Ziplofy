@@ -114,6 +114,9 @@ export function imageWithTextBlockFieldDefs(
           { value: 'heading-2', label: 'Heading 2' },
           { value: 'heading-3', label: 'Heading 3' },
           { value: 'heading-4', label: 'Heading 4' },
+          { value: 'heading-5', label: 'Heading 5' },
+          { value: 'heading-6', label: 'Heading 6' },
+          { value: 'custom', label: 'Custom' },
         ],
         sidebar: true,
       },
@@ -130,6 +133,14 @@ export function imageWithTextBlockFieldDefs(
         type: 'boolean',
         label: 'Background',
         group: 'Appearance',
+        sidebar: true,
+      },
+      {
+        path: s('headingBackgroundColor'),
+        type: 'text',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
         sidebar: true,
       },
       {
@@ -228,10 +239,13 @@ export function imageWithTextBlockFieldDefs(
           { value: 'default', label: 'Default' },
           { value: 'paragraph', label: 'Paragraph' },
           { value: 'body', label: 'Body' },
-          { value: 'heading-1', label: 'Heading 1' },
-          { value: 'heading-2', label: 'Heading 2' },
-          { value: 'heading-3', label: 'Heading 3' },
+          { value: 'heading-6', label: 'Heading 6' },
+          { value: 'heading-5', label: 'Heading 5' },
           { value: 'heading-4', label: 'Heading 4' },
+          { value: 'heading-3', label: 'Heading 3' },
+          { value: 'heading-2', label: 'Heading 2' },
+          { value: 'heading-1', label: 'Heading 1' },
+          { value: 'custom', label: 'Custom' },
         ],
         sidebar: true,
       },
@@ -248,6 +262,14 @@ export function imageWithTextBlockFieldDefs(
         type: 'boolean',
         label: 'Background',
         group: 'Appearance',
+        sidebar: true,
+      },
+      {
+        path: s('descriptionBackgroundColor'),
+        type: 'text',
+        label: 'Background color',
+        group: 'Appearance',
+        widget: 'color',
         sidebar: true,
       },
       {
@@ -434,6 +456,7 @@ const IMAGE_WITH_TEXT_HEADING_FIELD_KEYS = new Set([
   'headingTypographyPreset',
   'headingColor',
   'headingBackgroundEnabled',
+  'headingBackgroundColor',
   'headingPaddingTop',
   'headingPaddingBottom',
   'headingPaddingLeft',
@@ -447,6 +470,7 @@ const IMAGE_WITH_TEXT_TEXT_FIELD_KEYS = new Set([
   'descriptionTypographyPreset',
   'descriptionColor',
   'descriptionBackgroundEnabled',
+  'descriptionBackgroundColor',
   'descriptionPaddingTop',
   'descriptionPaddingBottom',
   'descriptionPaddingLeft',
@@ -519,6 +543,72 @@ export function prepareImageWithTextBlockSettingsNode(node: SidebarNode): Sideba
   const fromNode = imageWithTextBlockFieldDefsFromNodeId(node.id);
   const fields = fromNode.length > 0 ? fromNode : (node.fields ?? []).filter(isImageWithTextBlockField);
   return { ...node, label, kind: 'block', fields };
+}
+
+const IMAGE_WITH_TEXT_BLOCK_DEFAULTS: Record<string, string | boolean> = {
+  heading: 'Our signature product',
+  headingWidth: 'fit',
+  headingMaxWidth: 'normal',
+  headingTypographyPreset: 'heading-3',
+  headingColor: '',
+  headingBackgroundEnabled: false,
+  headingBackgroundColor: '#f3f4f6',
+  headingPaddingTop: '0',
+  headingPaddingBottom: '0',
+  headingPaddingLeft: '0',
+  headingPaddingRight: '0',
+  description:
+    'Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.',
+  descriptionWidth: 'fit',
+  descriptionMaxWidth: 'narrow',
+  descriptionTypographyPreset: 'default',
+  descriptionColor: '',
+  descriptionBackgroundEnabled: false,
+  descriptionBackgroundColor: '#f3f4f6',
+  descriptionPaddingTop: '0',
+  descriptionPaddingBottom: '0',
+  descriptionPaddingLeft: '0',
+  descriptionPaddingRight: '0',
+  buttonLabel: 'Shop now',
+  buttonUrl: '/collections/all',
+  buttonOpenInNewTab: false,
+  buttonStyle: 'primary',
+  buttonLinkTextColor: '',
+  buttonCustomBackground: '#111827',
+  buttonCustomText: '#ffffff',
+  buttonDesktopWidth: 'fit',
+  buttonDesktopCustomWidth: '100',
+  buttonMobileWidth: 'fit',
+  buttonMobileCustomWidth: '100',
+};
+
+function getNested(obj: Record<string, unknown> | null | undefined, path: string[]): unknown {
+  let cur: unknown = obj;
+  for (const p of path) {
+    if (cur == null || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[p];
+  }
+  return cur;
+}
+
+export function extendImageWithTextContentBlockValues(
+  values: Record<string, string | boolean>,
+  fields: EditorFieldDef[],
+  config: Record<string, unknown> | null
+): Record<string, string | boolean> {
+  const next = { ...values };
+  for (const field of fields) {
+    if (next[field.path] !== undefined) continue;
+    const raw = getNested(config, field.path.split('.'));
+    if (raw !== undefined && raw !== null) {
+      next[field.path] = field.type === 'boolean' ? Boolean(raw) : String(raw);
+      continue;
+    }
+    const key = field.path.split('.').pop() ?? '';
+    const fallback = IMAGE_WITH_TEXT_BLOCK_DEFAULTS[key];
+    if (fallback !== undefined) next[field.path] = fallback;
+  }
+  return next;
 }
 
 export { prepareImageWithTextGroupSettingsNode } from './theme-editor-image-with-text-group-panel.utils';

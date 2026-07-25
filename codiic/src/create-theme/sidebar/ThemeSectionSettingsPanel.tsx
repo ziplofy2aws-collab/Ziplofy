@@ -424,6 +424,7 @@ import {
   isImageCompareSettingsPanelFields,
 } from './theme-editor-image-compare-panel.utils';
 import {
+  ensureImageWithTextBorderFieldDefs,
   groupImageWithTextPanelFields,
   IMAGE_WITH_TEXT_PANEL_GROUP_ORDER,
   isImageWithTextSettingsPanelFields,
@@ -6240,6 +6241,9 @@ function BlockGroupLayoutSettingsPanel({
           const borderOpacity = groupFields.find((f) => f.path.endsWith('borderOpacity'));
           const borderColor = groupFields.find((f) => f.path.endsWith('borderColor'));
           const cornerRadius = groupFields.find((f) => f.path.endsWith('cornerRadius'));
+          const groupSettingsBase = borderStyleField
+            ? borderStyleField.path.replace(/\.borderStyle$/, '')
+            : null;
 
           return (
             <div key={label} className="px-1 py-3">
@@ -6249,7 +6253,22 @@ function BlockGroupLayoutSettingsPanel({
                   <SegmentedFieldRow
                     field={borderStyleField}
                     values={values}
-                    onFieldChange={onFieldChange}
+                    onFieldChange={(path, type, value) => {
+                      onFieldChange(path, type, value);
+                      if (String(value).trim().toLowerCase() !== 'solid' || !groupSettingsBase) return;
+                      if (values[`${groupSettingsBase}.borderThickness`] === undefined) {
+                        onFieldChange(`${groupSettingsBase}.borderThickness`, 'number', '1');
+                      }
+                      if (values[`${groupSettingsBase}.borderOpacity`] === undefined) {
+                        onFieldChange(`${groupSettingsBase}.borderOpacity`, 'number', '100');
+                      }
+                      if (
+                        values[`${groupSettingsBase}.borderColor`] === undefined ||
+                        values[`${groupSettingsBase}.borderColor`] === ''
+                      ) {
+                        onFieldChange(`${groupSettingsBase}.borderColor`, 'text', 'default');
+                      }
+                    }}
                   />
                 ) : null}
                 {solidBorders && borderThickness ? (
@@ -15066,7 +15085,7 @@ function RichTextAppearanceSettingsGroup({
             onFieldChange={onFieldChange}
           />
         ) : null}
-        {bgColorField ? (
+        {bgMedia !== 'image' && bgColorField ? (
           <ThemeDefaultColorField
             label={bgColorField.label}
             path={bgColorField.path}
@@ -16878,10 +16897,12 @@ function TextBlockSettingsPanel({
 function ImageWithTextImageBlockSettingsPanel({
   fields,
   values,
+  colorPalette,
   onFieldChange,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
+  colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const imageField = pickImageWithTextImageField(fields, 'imageUrl');
@@ -16892,6 +16913,9 @@ function ImageWithTextImageBlockSettingsPanel({
   const mobileWidth = pickImageWithTextImageField(fields, 'imageMobileWidth');
   const mobileCustom = pickImageWithTextImageField(fields, 'imageMobileCustomWidth');
   const borderStyle = pickImageWithTextImageField(fields, 'imageBorderStyle');
+  const borderThickness = pickImageWithTextImageField(fields, 'imageBorderThickness');
+  const borderOpacity = pickImageWithTextImageField(fields, 'imageBorderOpacity');
+  const borderColor = pickImageWithTextImageField(fields, 'imageBorderColor');
   const cornerRadius = pickImageWithTextImageField(fields, 'imageCornerRadius');
   const paddingTop = pickImageWithTextImageField(fields, 'imagePaddingTop');
   const paddingBottom = pickImageWithTextImageField(fields, 'imagePaddingBottom');
@@ -16900,6 +16924,11 @@ function ImageWithTextImageBlockSettingsPanel({
 
   const desktopMode = desktopWidth ? fieldValueAsString(values, desktopWidth) || 'fit' : 'fit';
   const mobileMode = mobileWidth ? fieldValueAsString(values, mobileWidth) || 'fit' : 'fit';
+  const borderStyleValue = borderStyle
+    ? (fieldValueAsString(values, borderStyle) || 'none').trim().toLowerCase()
+    : 'none';
+  const solidBorders = borderStyleValue === 'solid';
+  const settingsBase = borderStyle?.path.replace(/\.imageBorderStyle$/, '') ?? null;
 
   const renderCustomWidth = (field: EditorFieldDef) => {
     const min = field.min ?? 20;
@@ -16981,7 +17010,42 @@ function ImageWithTextImageBlockSettingsPanel({
         <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Borders</h3>
         <div className="space-y-1">
           {borderStyle ? (
-            <SegmentedFieldRow field={borderStyle} values={values} onFieldChange={onFieldChange} />
+            <SegmentedFieldRow
+              field={borderStyle}
+              values={values}
+              onFieldChange={(path, type, value) => {
+                onFieldChange(path, type, value);
+                if (String(value).trim().toLowerCase() !== 'solid' || !settingsBase) return;
+                if (values[`${settingsBase}.imageBorderThickness`] === undefined) {
+                  onFieldChange(`${settingsBase}.imageBorderThickness`, 'number', '1');
+                }
+                if (values[`${settingsBase}.imageBorderOpacity`] === undefined) {
+                  onFieldChange(`${settingsBase}.imageBorderOpacity`, 'number', '100');
+                }
+                if (
+                  values[`${settingsBase}.imageBorderColor`] === undefined ||
+                  values[`${settingsBase}.imageBorderColor`] === ''
+                ) {
+                  onFieldChange(`${settingsBase}.imageBorderColor`, 'text', 'default');
+                }
+              }}
+            />
+          ) : null}
+          {solidBorders && borderThickness ? (
+            <SliderFieldRow field={borderThickness} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {solidBorders && borderOpacity ? (
+            <SliderFieldRow field={borderOpacity} values={values} onFieldChange={onFieldChange} />
+          ) : null}
+          {solidBorders && borderColor ? (
+            <ThemeDefaultColorField
+              label={borderColor.label || 'Color'}
+              path={borderColor.path}
+              values={values}
+              colorPalette={colorPalette}
+              defaultPaletteIndex={1}
+              onFieldChange={onFieldChange}
+            />
           ) : null}
           {cornerRadius ? (
             <SliderFieldRow field={cornerRadius} values={values} onFieldChange={onFieldChange} />
@@ -17139,7 +17203,7 @@ function StorytellingCarouselImageBlockSettingsPanel({
   );
 }
 
-/** Image with text: Layout → Size → Appearance → Borders → Padding → Custom CSS. */
+/** Image with text: Layout → Size → Appearance → Borders → Padding → Theme Settings → Custom CSS. */
 function ImageWithTextGroupedSettingsPanel({
   fields,
   values,
@@ -17151,19 +17215,20 @@ function ImageWithTextGroupedSettingsPanel({
   colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
-  const grouped = useMemo(() => groupImageWithTextPanelFields(fields), [fields]);
+  const panelFields = useMemo(() => ensureImageWithTextBorderFieldDefs(fields), [fields]);
+  const grouped = useMemo(() => groupImageWithTextPanelFields(panelFields), [panelFields]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
       {IMAGE_WITH_TEXT_PANEL_GROUP_ORDER.map((label) => {
         const groupFields = grouped.get(label);
-        if (!groupFields?.length) return null;
+        if (!groupFields?.length && label !== 'Theme Settings' && label !== 'Borders') return null;
 
         if (label === 'Layout') {
           return (
             <SplitShowcaseLayoutSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -17174,7 +17239,7 @@ function ImageWithTextGroupedSettingsPanel({
           return (
             <LargeLogoSizeSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
               values={values}
               onFieldChange={onFieldChange}
             />
@@ -17185,7 +17250,7 @@ function ImageWithTextGroupedSettingsPanel({
           return (
             <RichTextAppearanceSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
               values={values}
               colorPalette={colorPalette}
               onFieldChange={onFieldChange}
@@ -17195,10 +17260,12 @@ function ImageWithTextGroupedSettingsPanel({
 
         if (label === 'Borders') {
           return (
-            <RichTextBordersSettingsGroup
+            <IconsWithTextBordersSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
+              allFields={panelFields}
               values={values}
+              colorPalette={colorPalette}
               onFieldChange={onFieldChange}
             />
           );
@@ -17208,17 +17275,33 @@ function ImageWithTextGroupedSettingsPanel({
           return (
             <HeroPaddingSettingsGroup
               key={label}
-              fields={groupFields}
+              fields={groupFields ?? []}
               values={values}
               onFieldChange={onFieldChange}
             />
           );
         }
 
+        if (label === 'Theme Settings') {
+          const colorScheme = groupFields?.find(
+            (f) => f.path.endsWith('colorScheme') || f.widget === 'color-scheme'
+          );
+          if (!colorScheme) return null;
+          return (
+            <ShopifySettingsSection key={label} title="Theme Settings" collapsible>
+              <ColorSchemeFieldRow
+                field={colorScheme}
+                values={values}
+                onFieldChange={onFieldChange}
+              />
+            </ShopifySettingsSection>
+          );
+        }
+
         if (label === 'Custom CSS') {
           return (
             <div key={label} className="px-1 py-1">
-              {groupFields.map((field) => (
+              {(groupFields ?? []).map((field) => (
                 <AccordionFieldRow
                   key={field.path}
                   field={field}
@@ -18685,12 +18768,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     node.kind === 'block' && /:hero_main(?:_\d+)?:group:spacer:spacer$/.test(node.id);
   const isHeroMarqueeTextPanel =
     node.kind === 'block' && /:hero_main(?:_\d+)?:group:marquee:text$/.test(node.id);
+  /** Split showcase only (`:group:group1:text` / `:group:group2:text`). Do not match Image with text `:block:group:nested:text`. */
   const isSplitShowcaseTextBlockPanel =
-    node.kind === 'block' &&
-    /:group:[^:]+:text$/.test(node.id) &&
-    !isHeroMarqueeTextPanel;
+    node.kind === 'block' && /:group:group[12]:text$/.test(node.id);
   const isSplitShowcaseGroupPanel =
-    node.kind === 'block' && /:group:[^:]+$/.test(node.id);
+    node.kind === 'block' && /:group:group[12]$/.test(node.id);
   const isHeroBottomGroupPanel =
     node.kind === 'block' &&
     /:block:content_group(?::nested:heading_group)?$/.test(node.id);
@@ -20610,6 +20692,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           <ImageWithTextImageBlockSettingsPanel
             fields={fields}
             values={values}
+            colorPalette={colorPalette}
             onFieldChange={onFieldChange}
           />
         ) : isStorytellingCarouselHeaderGroupPanel ? (

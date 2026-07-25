@@ -37,6 +37,9 @@ const CONTENT_GROUP_KEYS = new Set([
   'backgroundImagePosition',
   'backgroundColor',
   'borderStyle',
+  'borderThickness',
+  'borderOpacity',
+  'borderColor',
   'cornerRadius',
   'backgroundOverlay',
   'linkUrl',
@@ -68,6 +71,9 @@ export function imageWithTextContentGroupDefaultSettings(): Record<string, strin
     backgroundImagePosition: 'cover',
     backgroundColor: 'default',
     borderStyle: 'none',
+    borderThickness: 1,
+    borderOpacity: 100,
+    borderColor: 'default',
     cornerRadius: 0,
     backgroundOverlay: false,
     linkUrl: '',
@@ -81,6 +87,8 @@ export function imageWithTextContentGroupDefaultSettings(): Record<string, strin
 
 export function imageWithTextContentGroupFieldDefs(settingsBase: string): EditorFieldDef[] {
   const s = (key: string) => `${contentGroupBase(settingsBase)}.${key}`;
+  /** Section + Group share Alignment so Layout → Alignment always updates the preview. */
+  const sectionAlignPath = `${settingsBase}.layoutAlignment`;
   return [
     {
       path: s('direction'),
@@ -95,7 +103,7 @@ export function imageWithTextContentGroupFieldDefs(settingsBase: string): Editor
       ],
     },
     {
-      path: s('layoutAlignment'),
+      path: sectionAlignPath,
       type: 'select',
       label: 'Alignment',
       group: 'Layout',
@@ -218,6 +226,38 @@ export function imageWithTextContentGroupFieldDefs(settingsBase: string): Editor
         { value: 'none', label: 'None' },
         { value: 'solid', label: 'Solid' },
       ],
+    },
+    {
+      path: s('borderThickness'),
+      type: 'number',
+      label: 'Thickness',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 10,
+      step: 1,
+      unit: 'px',
+      sidebar: false,
+    },
+    {
+      path: s('borderOpacity'),
+      type: 'number',
+      label: 'Opacity',
+      group: 'Borders',
+      widget: 'slider',
+      min: 0,
+      max: 100,
+      step: 1,
+      unit: '%',
+      sidebar: false,
+    },
+    {
+      path: s('borderColor'),
+      type: 'text',
+      label: 'Color',
+      group: 'Borders',
+      widget: 'color',
+      sidebar: false,
     },
     {
       path: s('cornerRadius'),
@@ -393,7 +433,10 @@ function fieldSortKey(path: string): number {
     backgroundColor: 23,
     backgroundOverlay: 24,
     borderStyle: 30,
-    cornerRadius: 31,
+    borderThickness: 31,
+    borderOpacity: 32,
+    borderColor: 33,
+    cornerRadius: 34,
     linkUrl: 40,
     openLinkInNewTab: 41,
     paddingTop: 50,
@@ -406,8 +449,14 @@ function fieldSortKey(path: string): number {
 
 export function isImageWithTextContentGroupPanelField(field: EditorFieldDef): boolean {
   const key = field.path.split('.').pop() ?? '';
-  if (!CONTENT_GROUP_KEYS.has(key)) return false;
-  if (!/\.settings\.contentGroup\./.test(field.path)) return false;
+  if (!CONTENT_GROUP_KEYS.has(key) && key !== 'layoutAlignment') return false;
+  const isContentGroupPath = /\.settings\.contentGroup\./.test(field.path);
+  /** Group Alignment is wired to section.layoutAlignment so section + group stay in sync. */
+  const isSharedSectionAlign =
+    key === 'layoutAlignment' &&
+    /\.settings\.layoutAlignment$/.test(field.path) &&
+    /image_with_text/.test(field.path);
+  if (!isContentGroupPath && !isSharedSectionAlign) return false;
   if (!field.group || !PANEL_GROUPS.has(field.group)) return false;
   return true;
 }

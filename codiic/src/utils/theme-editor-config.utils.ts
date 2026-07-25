@@ -1512,11 +1512,54 @@ const IMAGE_WITH_TEXT_IMAGE_SETTING_TYPES: Record<string, string> = {
   imageMobileWidth: 'select',
   imageMobileCustomWidth: 'number',
   imageBorderStyle: 'select',
+  imageBorderThickness: 'number',
+  imageBorderOpacity: 'number',
+  imageBorderColor: 'text',
   imageCornerRadius: 'number',
   imagePaddingTop: 'number',
   imagePaddingBottom: 'number',
   imagePaddingLeft: 'number',
   imagePaddingRight: 'number',
+};
+
+const IMAGE_WITH_TEXT_HEADING_SETTING_TYPES: Record<string, string> = {
+  heading: 'textarea',
+  headingWidth: 'select',
+  headingMaxWidth: 'select',
+  headingTypographyPreset: 'select',
+  headingColor: 'text',
+  headingBackgroundEnabled: 'boolean',
+  headingBackgroundColor: 'text',
+  headingPaddingTop: 'number',
+  headingPaddingBottom: 'number',
+  headingPaddingLeft: 'number',
+  headingPaddingRight: 'number',
+  headingFont: 'text',
+  headingFontSize: 'text',
+  headingLineHeight: 'text',
+  headingLetterSpacing: 'text',
+  headingTextCase: 'text',
+  headingWrap: 'text',
+};
+
+const IMAGE_WITH_TEXT_DESCRIPTION_SETTING_TYPES: Record<string, string> = {
+  description: 'textarea',
+  descriptionWidth: 'select',
+  descriptionMaxWidth: 'select',
+  descriptionTypographyPreset: 'select',
+  descriptionColor: 'text',
+  descriptionBackgroundEnabled: 'boolean',
+  descriptionBackgroundColor: 'text',
+  descriptionPaddingTop: 'number',
+  descriptionPaddingBottom: 'number',
+  descriptionPaddingLeft: 'number',
+  descriptionPaddingRight: 'number',
+  descriptionFont: 'text',
+  descriptionFontSize: 'text',
+  descriptionLineHeight: 'text',
+  descriptionLetterSpacing: 'text',
+  descriptionTextCase: 'text',
+  descriptionWrap: 'text',
 };
 
 function resolveImageWithTextImageBlockSettingType(path: string): string | undefined {
@@ -1525,6 +1568,24 @@ function resolveImageWithTextImageBlockSettingType(path: string): string | undef
   if (tpl) return IMAGE_WITH_TEXT_IMAGE_SETTING_TYPES[tpl[3]!];
   const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
   if (layout) return IMAGE_WITH_TEXT_IMAGE_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveImageWithTextHeadingBlockSettingType(path: string): string | undefined {
+  if (!/image_with_text/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return IMAGE_WITH_TEXT_HEADING_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return IMAGE_WITH_TEXT_HEADING_SETTING_TYPES[layout[2]!];
+  return undefined;
+}
+
+function resolveImageWithTextDescriptionBlockSettingType(path: string): string | undefined {
+  if (!/image_with_text/.test(path)) return undefined;
+  const tpl = path.match(/^templates\.([^.]+)\.sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (tpl) return IMAGE_WITH_TEXT_DESCRIPTION_SETTING_TYPES[tpl[3]!];
+  const layout = path.match(/^sections\.([^.]+)\.settings\.([^.]+)$/);
+  if (layout) return IMAGE_WITH_TEXT_DESCRIPTION_SETTING_TYPES[layout[2]!];
   return undefined;
 }
 
@@ -1706,6 +1767,12 @@ function resolveFieldTypeForPath(
 
   const imageWithTextImageBlock = resolveImageWithTextImageBlockSettingType(path);
   if (imageWithTextImageBlock) return imageWithTextImageBlock;
+
+  const imageWithTextHeadingBlock = resolveImageWithTextHeadingBlockSettingType(path);
+  if (imageWithTextHeadingBlock) return imageWithTextHeadingBlock;
+
+  const imageWithTextDescriptionBlock = resolveImageWithTextDescriptionBlockSettingType(path);
+  if (imageWithTextDescriptionBlock) return imageWithTextDescriptionBlock;
 
   const slideshowSlideSetting = resolveSlideshowSlideFieldType(path);
   if (slideshowSlideSetting) return slideshowSlideSetting;
@@ -2220,6 +2287,16 @@ export function applyValuesToThemeConfig(
         key === 'headingWidth' ||
         key === 'headingMaxWidth' ||
         key === 'headingAlignment' ||
+        key === 'descriptionTypographyPreset' ||
+        key === 'descriptionWidth' ||
+        key === 'descriptionMaxWidth' ||
+        key === 'descriptionAlignment' ||
+        key === 'descriptionFont' ||
+        key === 'descriptionFontSize' ||
+        key === 'descriptionLineHeight' ||
+        key === 'descriptionLetterSpacing' ||
+        key === 'descriptionTextCase' ||
+        key === 'descriptionWrap' ||
         key === 'bodyFont' ||
         key === 'bodyFontSize' ||
         key === 'bodyLineHeight' ||
@@ -2263,6 +2340,7 @@ export function applyValuesToThemeConfig(
         type = 'text';
       } else if (
         key === 'headingBackgroundEnabled' ||
+        key === 'descriptionBackgroundEnabled' ||
         key === 'bodyBackgroundEnabled' ||
         key === 'descBackgroundEnabled' ||
         key === 'backgroundEnabled' ||
@@ -2284,6 +2362,10 @@ export function applyValuesToThemeConfig(
         key === 'headingPaddingBottom' ||
         key === 'headingPaddingLeft' ||
         key === 'headingPaddingRight' ||
+        key === 'descriptionPaddingTop' ||
+        key === 'descriptionPaddingBottom' ||
+        key === 'descriptionPaddingLeft' ||
+        key === 'descriptionPaddingRight' ||
         key === 'bodyCornerRadius' ||
         key === 'bodyPaddingTop' ||
         key === 'bodyPaddingBottom' ||

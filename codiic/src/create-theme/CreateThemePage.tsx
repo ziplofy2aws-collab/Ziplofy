@@ -358,6 +358,13 @@ import {
   isImageWithTextImageBlockNodeIdForSeed,
 } from './sidebar/theme-editor-image-with-text-image-panel.utils';
 import {
+  extendImageWithTextContentBlockValues,
+  imageWithTextBlockFieldDefsFromNodeId,
+  isImageWithTextButtonBlockNodeId,
+  isImageWithTextHeadingBlockNodeId,
+  isImageWithTextTextBlockNodeId,
+} from './sidebar/theme-editor-image-with-text-block-panel.utils';
+import {
   comparisonSliderBlockFieldDefsFromNodeId,
   extendComparisonSliderBlockValues,
   isImageCompareSliderBlockNodeId,
@@ -1860,6 +1867,28 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
         ? applyValuesToThemeConfig(draft, prev, editorSchema)
         : draft;
       return extendImageWithTextContentGroupValues(prev, defs, config);
+    });
+  }, [selectedNodeId, editorSchema, defaultConfig]);
+
+  /** Seed Image with text Heading / Text / Button block field paths. */
+  useEffect(() => {
+    if (!defaultConfig) return;
+    const isContentBlock =
+      isImageWithTextHeadingBlockNodeId(selectedNodeId) ||
+      isImageWithTextTextBlockNodeId(selectedNodeId) ||
+      isImageWithTextButtonBlockNodeId(selectedNodeId);
+    if (!isContentBlock) return;
+    const defs = imageWithTextBlockFieldDefsFromNodeId(selectedNodeId);
+    if (!defs.length) return;
+
+    setValues((prev) => {
+      const needsSeed = defs.some((f) => prev[f.path] === undefined);
+      if (!needsSeed) return prev;
+      const draft = JSON.parse(JSON.stringify(defaultConfig)) as Record<string, unknown>;
+      const config = editorSchema
+        ? applyValuesToThemeConfig(draft, prev, editorSchema)
+        : draft;
+      return extendImageWithTextContentBlockValues(prev, defs, config);
     });
   }, [selectedNodeId, editorSchema, defaultConfig]);
 

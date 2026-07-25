@@ -73,3 +73,19 @@
   margin: 0.25em 0;
   color: #6b7280;
 }
+
+/*
+ * Block Typography settings own size/weight/color on the rich-text root.
+ * Only descendants inherit — never the root itself (inherit !important on the
+ * root would override the inline styles that apply the preset).
+ */
+.theme-editor-rich-text-content--inherit-typography :where(p, h1, h2, h3, h4, h5, h6, span, li, a, strong, b, em, i) {
+  font-size: inherit !important;
+  font-family: inherit !important;
+  font-weight: inherit !important;
+  font-style: inherit !important;
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  text-transform: inherit !important;
+  color: inherit !important;
+}
