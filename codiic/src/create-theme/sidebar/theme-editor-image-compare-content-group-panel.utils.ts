@@ -49,8 +49,9 @@ export const IMAGE_COMPARE_CONTENT_GROUP_FIELD_KEYS = new Set([
   'paddingRight',
 ]);
 
-function contentGroupBase(settingsBase: string): string {
-  return `${settingsBase}.contentGroup`;
+function contentGroupBase(sectionBase: string): string {
+  if (sectionBase.endsWith('.settings')) return `${sectionBase}.contentGroup`;
+  return `${sectionBase}.settings.contentGroup`;
 }
 
 export function imageCompareContentGroupDefaultSettings(): Record<string, string | number | boolean> {
@@ -92,7 +93,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Direction',
       group: 'Layout',
       widget: 'segmented',
-      sidebar: false,
+      sidebar: true,
       options: [
         { value: 'vertical', label: 'Vertical' },
         { value: 'horizontal', label: 'Horizontal' },
@@ -104,7 +105,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Alignment',
       group: 'Layout',
       widget: 'segmented',
-      sidebar: false,
+      sidebar: true,
       options: [
         { value: 'left', label: 'Left' },
         { value: 'center', label: 'Center' },
@@ -117,7 +118,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Position',
       group: 'Layout',
       widget: 'select',
-      sidebar: false,
+      sidebar: true,
       options: [
         { value: 'top', label: 'Top' },
         { value: 'center', label: 'Center' },
@@ -134,7 +135,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 48,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('width'),
@@ -142,7 +143,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Width',
       group: 'Size',
       widget: 'segmented',
-      sidebar: false,
+      sidebar: true,
       options: [...FIT_FILL_CUSTOM],
     },
     {
@@ -151,7 +152,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Mobile width',
       group: 'Size',
       widget: 'segmented',
-      sidebar: false,
+      sidebar: true,
       options: [...FIT_FILL_CUSTOM],
     },
     {
@@ -160,7 +161,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Height',
       group: 'Size',
       widget: 'segmented',
-      sidebar: false,
+      sidebar: true,
       options: [...FIT_FILL_CUSTOM],
     },
     {
@@ -169,7 +170,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Background media',
       group: 'Appearance',
       widget: 'select',
-      sidebar: false,
+      sidebar: true,
       options: [
         { value: 'none', label: 'None' },
         { value: 'image', label: 'Image' },
@@ -181,7 +182,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Image',
       group: 'Appearance',
       widget: 'image',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('backgroundColor'),
@@ -189,14 +190,14 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Background color',
       group: 'Appearance',
       widget: 'color',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('backgroundOverlay'),
       type: 'boolean',
       label: 'Background overlay',
       group: 'Appearance',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('borderStyle'),
@@ -204,7 +205,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Style',
       group: 'Borders',
       widget: 'segmented',
-      sidebar: false,
+      sidebar: true,
       options: [
         { value: 'none', label: 'None' },
         { value: 'solid', label: 'Solid' },
@@ -220,7 +221,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 10,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('borderOpacity'),
@@ -232,7 +233,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 100,
       step: 1,
       unit: '%',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('borderColor'),
@@ -240,7 +241,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Color',
       group: 'Borders',
       widget: 'color',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('cornerRadius'),
@@ -252,7 +253,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 40,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('linkUrl'),
@@ -260,7 +261,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       label: 'Link',
       group: 'Block link',
       widget: 'link',
-      sidebar: false,
+      sidebar: true,
       placeholder: 'Paste a link or search',
     },
     {
@@ -268,7 +269,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       type: 'boolean',
       label: 'Open link in new tab',
       group: 'Block link',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('paddingTop'),
@@ -280,7 +281,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('paddingBottom'),
@@ -292,7 +293,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('paddingLeft'),
@@ -304,7 +305,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
     {
       path: s('paddingRight'),
@@ -316,7 +317,7 @@ export function imageCompareContentGroupFieldDefs(settingsBase: string): EditorF
       max: 80,
       step: 1,
       unit: 'px',
-      sidebar: false,
+      sidebar: true,
     },
   ];
 }

@@ -56,8 +56,9 @@ export const IMAGE_COMPARE_BUTTONS_GROUP_FIELD_KEYS = new Set([
   'paddingRight',
 ]);
 
-function buttonsGroupBase(settingsBase: string): string {
-  return `${settingsBase}.buttonsGroup`;
+function buttonsGroupBase(sectionBase: string): string {
+  if (sectionBase.endsWith('.settings')) return `${sectionBase}.buttonsGroup`;
+  return `${sectionBase}.settings.buttonsGroup`;
 }
 
 export function imageCompareButtonsGroupDefaultSettings(): Record<string, string | number | boolean> {

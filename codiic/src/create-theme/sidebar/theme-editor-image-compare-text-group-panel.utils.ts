@@ -49,8 +49,9 @@ export const IMAGE_COMPARE_TEXT_GROUP_FIELD_KEYS = new Set([
   'paddingRight',
 ]);
 
-function textGroupBase(settingsBase: string): string {
-  return `${settingsBase}.textGroup`;
+function textGroupBase(sectionBase: string): string {
+  if (sectionBase.endsWith('.settings')) return `${sectionBase}.textGroup`;
+  return `${sectionBase}.settings.textGroup`;
 }
 
 export function imageCompareTextGroupDefaultSettings(): Record<string, string | number | boolean> {

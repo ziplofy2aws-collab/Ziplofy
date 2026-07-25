@@ -74,6 +74,18 @@ function readGroupBool(
   return cfgBool(config, `${settingsBase}.${legacyKey}`, fallback);
 }
 
+function mapAlignment(raw: string): 'left' | 'center' | 'right' {
+  if (raw === 'center' || raw === 'flex-center') return 'center';
+  if (raw === 'right' || raw === 'flex-end') return 'right';
+  return 'left';
+}
+
+function mapPositionJustify(position: string): 'flex-start' | 'center' | 'flex-end' {
+  if (position === 'bottom') return 'flex-end';
+  if (position === 'center') return 'center';
+  return 'flex-start';
+}
+
 export type ImageCompareContentStyle = {
   shell: CSSProperties;
   mobileWidthCss: string;
@@ -84,10 +96,20 @@ export type ImageCompareContentStyle = {
   showOverlay: boolean;
   textAlign: 'left' | 'center' | 'right';
   alignItems: 'flex-start' | 'center' | 'flex-end';
-  /** Main-axis placement for text + buttons stack (Position / Space between). */
+  /** Main-axis placement for text + buttons (Content Position). */
   stackJustify: 'flex-start' | 'center' | 'flex-end' | 'space-between';
+  direction: 'horizontal' | 'vertical';
+  gap: number;
+  /** Section Layout places this content block inside the column. */
+  sectionAlignItems: 'flex-start' | 'center' | 'flex-end';
+  sectionJustify: 'flex-start' | 'center' | 'flex-end' | 'space-between';
 };
 
+/**
+ * Content block styles.
+ * Layout (direction / alignment / position / gap) comes from contentGroup.
+ * Section Layout only places the Content block inside its column.
+ */
 export function readImageCompareContentStyle(
   config: Record<string, unknown> | null,
   settingsBase: string,
@@ -98,34 +120,18 @@ export function readImageCompareContentStyle(
   sectionPosition: string,
   sectionAlignment: string
 ): ImageCompareContentStyle {
-  const direction = readGroupString(config, settingsBase, 'direction', 'contentDirection', 'vertical');
-  const groupAlignment = readGroupString(
+  const directionRaw = readGroupString(config, settingsBase, 'direction', 'contentDirection', 'vertical');
+  const direction: 'horizontal' | 'vertical' =
+    directionRaw === 'horizontal' ? 'horizontal' : 'vertical';
+
+  const groupAlignmentRaw = readGroupString(
     config,
     settingsBase,
     'layoutAlignment',
     'contentAlignment',
     'center'
   );
-  /**
-   * Section Layout → Alignment drives the content column.
-   * Nested contentGroup.layoutAlignment is only a fallback (defaults often shadow the section otherwise).
-   */
-  const sectionIsAlignment =
-    sectionAlignment === 'center' ||
-    sectionAlignment === 'right' ||
-    sectionAlignment === 'left' ||
-    sectionAlignment === 'space-between';
-  const isSpaceBetween = sectionIsAlignment
-    ? sectionAlignment === 'space-between'
-    : groupAlignment === 'space-between';
-  const alignment =
-    sectionAlignment === 'center' || sectionAlignment === 'right' || sectionAlignment === 'left'
-      ? sectionAlignment
-      : isSpaceBetween
-        ? 'left'
-        : groupAlignment === 'center' || groupAlignment === 'right' || groupAlignment === 'left'
-          ? groupAlignment
-          : 'left';
+  const alignment = mapAlignment(groupAlignmentRaw);
   const groupPosition = readGroupString(config, settingsBase, 'position', 'contentPosition', 'center');
   const gap = readGroupNumber(config, settingsBase, 'layoutGap', 'contentGap', 30);
 
@@ -206,30 +212,23 @@ export function readImageCompareContentStyle(
     false
   );
 
-  const alignItems =
+  const alignItems: ImageCompareContentStyle['alignItems'] =
     alignment === 'center' ? 'center' : alignment === 'right' ? 'flex-end' : 'flex-start';
-  /** Section Position drives vertical placement; fall back to group position. */
-  const effectivePosition =
-    sectionPosition && sectionPosition !== 'center'
-      ? sectionPosition
-      : panelMinHeight
-        ? sectionPosition || groupPosition
-        : groupPosition !== 'center'
-          ? groupPosition
-          : sectionPosition || 'center';
-  const positionJustify =
-    effectivePosition === 'bottom'
-      ? 'flex-end'
-      : effectivePosition === 'center'
-        ? 'center'
+  const positionJustify = mapPositionJustify(groupPosition);
+  const stackJustify: ImageCompareContentStyle['stackJustify'] = positionJustify;
+  const textAlign = alignment;
+
+  // Section Layout places the Content block inside the grid column.
+  const sectionAlignItems: ImageCompareContentStyle['sectionAlignItems'] =
+    sectionAlignment === 'center'
+      ? 'center'
+      : sectionAlignment === 'right'
+        ? 'flex-end'
         : 'flex-start';
-  const stackJustify: ImageCompareContentStyle['stackJustify'] = isSpaceBetween
-    ? 'space-between'
-    : positionJustify;
-  const textAlign = (alignment === 'center' ? 'center' : alignment === 'right' ? 'right' : 'left') as
-    | 'left'
-    | 'center'
-    | 'right';
+  const sectionJustify: ImageCompareContentStyle['sectionJustify'] =
+    sectionAlignment === 'space-between'
+      ? 'space-between'
+      : mapPositionJustify(sectionPosition || 'center');
 
   const desktopWidth = sizeCss(widthMode, customWidth);
   const mobileWidthCss = sizeCss(mobileWidthMode, mobileCustomWidth);
@@ -237,9 +236,9 @@ export function readImageCompareContentStyle(
   const needsFillHeight =
     fixedSection ||
     isSectionHorizontal ||
-    isSpaceBetween ||
-    effectivePosition === 'top' ||
-    effectivePosition === 'bottom';
+    heightMode === 'fill' ||
+    groupPosition === 'top' ||
+    groupPosition === 'bottom';
   const height =
     heightMode === 'fill' || (needsFillHeight && (heightMode === 'fit' || !heightMode))
       ? '100%'
@@ -265,10 +264,12 @@ export function readImageCompareContentStyle(
     position: 'relative',
     display: 'flex',
     flexDirection: direction === 'horizontal' ? 'row' : 'column',
+    flexWrap: direction === 'horizontal' ? 'wrap' : undefined,
     alignItems: direction === 'horizontal' ? positionJustify : alignItems,
     justifyContent: direction === 'horizontal' ? alignItems : stackJustify,
     gap,
-    width: (fixedSection || isSpaceBetween) && isSectionHorizontal ? '100%' : desktopWidth,
+    width: widthMode === 'fill' || (fixedSection && isSectionHorizontal) ? '100%' : desktopWidth,
+    maxWidth: '100%',
     height,
     boxSizing: 'border-box',
     paddingTop,
@@ -299,6 +300,10 @@ export function readImageCompareContentStyle(
     textAlign,
     alignItems,
     stackJustify,
+    direction,
+    gap,
+    sectionAlignItems,
+    sectionJustify,
   };
 }
 

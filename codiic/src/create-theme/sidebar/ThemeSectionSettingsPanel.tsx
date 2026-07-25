@@ -3683,15 +3683,23 @@ function ImageCompareContentGroupSettingsPanel({
   values,
   colorPalette,
   onFieldChange,
+  nodeId = '',
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  nodeId?: string;
 }) {
   const prepared = useMemo(
-    () => prepareImageCompareContentGroupSettingsNode({ id: '', label: 'Content', kind: 'block', fields }),
-    [fields]
+    () =>
+      prepareImageCompareContentGroupSettingsNode({
+        id: nodeId,
+        label: 'Content',
+        kind: 'block',
+        fields,
+      }),
+    [fields, nodeId]
   );
   const panelFields = prepared.fields ?? [];
 
@@ -19921,7 +19929,14 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             openTabKey="linkOpenInNewTab"
             onFieldChange={onFieldChange}
           />
-        ) : fields.length === 0 ? (
+        ) : fields.length === 0 &&
+          !isImageCompareContentGroupPanel &&
+          !isImageCompareTextGroupPanel &&
+          !isImageCompareButtonsGroupPanel &&
+          !isImageCompareSliderBlockPanel &&
+          !isImageCompareButtonBlockPanel &&
+          !isImageCompareHeadingBlockPanel &&
+          !isImageCompareSubheadingBlockPanel ? (
           <p className="text-[13px] text-gray-500">No settings for this item.</p>
         ) : isAnnouncementBlockPanel ? (
           <AnnouncementBlockSettingsPanel
@@ -20050,6 +20065,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             values={values}
             colorPalette={colorPalette}
             onFieldChange={onFieldChange}
+            nodeId={node.id}
           />
         ) : isImageCompareTextGroupPanel ? (
           <ImageCompareTextGroupGroupedSettingsPanel

@@ -2139,37 +2139,6 @@ function syncHeroBottomAlignedSectionLayoutToContentGroup(
   setConfigAtPath(config, `${sectionPrefix}.blocks.content_group.settings.${key}`, value);
 }
 
-/** Keep Image compare nested content/text/buttons groups aligned with section Layout settings. */
-const IMAGE_COMPARE_LAYOUT_SYNC_KEYS = new Set(['layoutAlignment', 'position']);
-
-function syncImageCompareSectionLayoutToNestedGroups(
-  config: Record<string, unknown>,
-  path: string,
-  value: string | boolean | number
-): void {
-  const m = path.match(
-    /^(templates\.[^.]+\.sections\.[^.]+|sections\.[^.]+)\.settings\.(layoutAlignment|position)$/
-  );
-  if (!m) return;
-  const sectionPrefix = m[1]!;
-  const key = m[2]!;
-  if (!IMAGE_COMPARE_LAYOUT_SYNC_KEYS.has(key)) return;
-
-  const catalog = getConfigAtPath(config, `${sectionPrefix}.settings.catalogVariant`);
-  const sectionType = getConfigAtPath(config, `${sectionPrefix}.type`);
-  const isImageCompare =
-    catalog === 'image-compare' ||
-    sectionType === 'image-compare' ||
-    /image_compare/.test(sectionPrefix);
-  if (!isImageCompare) return;
-
-  for (const groupKey of ['contentGroup', 'textGroup', 'buttonsGroup'] as const) {
-    const group = getConfigAtPath(config, `${sectionPrefix}.settings.${groupKey}`);
-    if (!group || typeof group !== 'object') continue;
-    setConfigAtPath(config, `${sectionPrefix}.settings.${groupKey}.${key}`, value);
-  }
-}
-
 /** Write a value at a dot path; numeric segments use real arrays when the parent is a list.
  * Template keys may contain dots (`pages.about`) — resolve against existing `config.templates` keys.
  */
@@ -2554,7 +2523,6 @@ export function applyValuesToThemeConfig(
       syncHeroLargeLogoTextPaths(config, path, coerced);
     }
     syncHeroBottomAlignedSectionLayoutToContentGroup(config, path, coerced);
-    syncImageCompareSectionLayoutToNestedGroups(config, path, coerced);
   }
 
   return config;

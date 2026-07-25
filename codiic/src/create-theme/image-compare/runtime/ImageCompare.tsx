@@ -290,10 +290,9 @@ export function ImageCompare({
       className={textGroupStyle.mobileClass || undefined}
       style={{
         ...textGroupStyle.shell,
-        // Shrink-wrap with the buttons so section Alignment shifts the whole stack.
         width: 'fit-content',
         maxWidth: '100%',
-        alignItems: 'stretch',
+        alignItems: contentStyle.alignItems,
         textAlign: contentStyle.textAlign,
       }}
     >
@@ -371,10 +370,10 @@ export function ImageCompare({
       className={buttonsGroupStyle.mobileClass || undefined}
       style={{
         ...buttonsGroupStyle.shell,
-        // Keep buttons grouped; section Alignment moves the whole content cluster.
         width: 'fit-content',
         maxWidth: '100%',
-        justifyContent: 'flex-start',
+        // Content Alignment drives button row placement inside the Content block.
+        justifyContent: contentStyle.alignItems,
         alignItems: 'center',
       }}
     >
@@ -395,24 +394,7 @@ export function ImageCompare({
     buttonsGroupShell
   );
 
-  const contentCluster: ReactNode = (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        width: 'fit-content',
-        maxWidth: '100%',
-        // Keep heading / subheading / buttons sharing one edge; parent Alignment moves this block.
-        alignItems: 'flex-start',
-      }}
-    >
-      {textGroupColumn}
-      {buttonsGroupColumn}
-    </div>
-  );
-
-  const contentInner: ReactNode = (
+  const contentChildren: ReactNode = (
     <>
       {contentStyle.bgImage ? (
         <div
@@ -442,39 +424,31 @@ export function ImageCompare({
         style={{
           position: 'relative',
           zIndex: 1,
+          display: 'flex',
+          flexDirection: contentStyle.direction === 'horizontal' ? 'row' : 'column',
+          flexWrap: contentStyle.direction === 'horizontal' ? 'wrap' : undefined,
+          alignItems:
+            contentStyle.direction === 'horizontal'
+              ? contentStyle.stackJustify === 'flex-end'
+                ? 'flex-end'
+                : contentStyle.stackJustify === 'center'
+                  ? 'center'
+                  : 'flex-start'
+              : contentStyle.alignItems,
+          justifyContent:
+            contentStyle.direction === 'horizontal'
+              ? contentStyle.alignItems
+              : contentStyle.stackJustify,
+          gap: contentStyle.gap,
           width: '100%',
           height: '100%',
           flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: contentStyle.alignItems,
-          justifyContent: contentStyle.stackJustify,
+          minHeight: 0,
+          boxSizing: 'border-box',
         }}
       >
-        {contentStyle.stackJustify === 'space-between' ? (
-          <>
-            <div
-              style={{
-                width: 'fit-content',
-                maxWidth: '100%',
-                alignSelf: contentStyle.alignItems,
-              }}
-            >
-              {textGroupColumn}
-            </div>
-            <div
-              style={{
-                width: 'fit-content',
-                maxWidth: '100%',
-                alignSelf: contentStyle.alignItems,
-              }}
-            >
-              {buttonsGroupColumn}
-            </div>
-          </>
-        ) : (
-          contentCluster
-        )}
+        {textGroupColumn}
+        {buttonsGroupColumn}
       </div>
     </>
   );
@@ -489,27 +463,29 @@ export function ImageCompare({
         ...(isHorizontal ? { height: '100%', minHeight: 0 } : null),
       }}
     >
-      {contentInner}
+      {contentChildren}
     </EditorBlock>
   );
 
-  const columnWrapStyle: CSSProperties = isHorizontal
-    ? { height: '100%', minHeight: 0, display: 'block' }
-    : {};
+  const contentColumnWrap: CSSProperties = {
+    ...(isHorizontal ? { height: '100%', minHeight: 0 } : null),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: contentStyle.sectionAlignItems,
+    justifyContent: contentStyle.sectionJustify,
+  };
 
   const contentColumn: ReactNode = contentStyle.linkUrl ? (
     <Link
       to={contentStyle.linkUrl}
       target={contentStyle.openInNewTab ? '_blank' : undefined}
       rel={contentStyle.openInNewTab ? 'noopener noreferrer' : undefined}
-      style={{ textDecoration: 'none', color: 'inherit', display: 'block', ...columnWrapStyle }}
+      style={{ textDecoration: 'none', color: 'inherit', display: 'flex', ...contentColumnWrap }}
     >
       {contentShell}
     </Link>
-  ) : columnWrapStyle.height ? (
-    <div style={columnWrapStyle}>{contentShell}</div>
   ) : (
-    contentShell
+    <div style={contentColumnWrap}>{contentShell}</div>
   );
 
   const comparePanel: CSSProperties = {
@@ -529,8 +505,12 @@ export function ImageCompare({
     boxSizing: 'border-box',
   };
 
+  const compareColumnWrap: CSSProperties | undefined = isHorizontal
+    ? { height: '100%', minHeight: 0, display: 'block' }
+    : undefined;
+
   const compareColumn: ReactNode = (
-    <div style={columnWrapStyle.height ? columnWrapStyle : undefined}>
+    <div style={compareColumnWrap}>
       <EditorBlock
         nodeId={`${editorNodeId}:block:comparison_slider`}
         label="Comparison slider"
