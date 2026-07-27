@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>exbuyer — Starboard Rosegold</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+  <header class="w3-header" role="banner" data-w3-header>
+    <!-- Announcement bar -->
+    <div class="w3-announce" data-w3-announce>
+      <div class="w3-announce__inner">
+        <p class="w3-announce__text">
+          Just Launched: Dominator &amp; Dominator Skeleton Watches —
+          <a href="shop.html" class="w3-announce__link">Shop Now</a>
+        </p>
+        <button type="button" class="w3-announce__close" data-w3-announce-close aria-label="Dismiss announcement">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="w3-header__main">
+      <div class="w3-header__inner">
+        <button type="button" class="w3-header__menu-btn" data-w3-menu-toggle aria-label="Open menu"
+          aria-expanded="false" aria-controls="w3-drawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="w3-header__logo" aria-label="exbuyer home">
+          <img src="assets/img/logo.png" alt="exbuyer" width="160" height="48" decoding="async" />
+        </a>
+
+        <nav class="w3-header__nav" aria-label="Primary navigation">
+          <a href="shop.html" class="w3-header__nav-link">
+            Watches <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Collection <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Accessories <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Exclusive <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Gifts <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Brand <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+        <div class="w3-header__actions">
+          <form class="w3-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="w3-header-search">Search</label>
+            <i class="fa-solid fa-magnifying-glass w3-header__search-icon" aria-hidden="true"></i>
+            <input id="w3-header-search" type="search" name="q" placeholder="Timegrapher Watches" autocomplete="off" />
+          </form>
+
+          <button type="button" class="w3-header__icon-btn w3-header__icon-btn--search-mobile" data-w3-search-toggle
+            aria-label="Search" aria-expanded="false">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+
+          <a href="#" class="w3-header__icon-btn" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__icon-btn" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="w3-header__search-mobile" data-w3-search-panel hidden>
+        <form class="w3-header__search w3-header__search--mobile" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="w3-header-search-mobile">Search</label>
+          <i class="fa-solid fa-magnifying-glass w3-header__search-icon" aria-hidden="true"></i>
+          <input id="w3-header-search-mobile" type="search" name="q" placeholder="Timegrapher Watches"
+            autocomplete="off" />
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="w3-header__backdrop" data-w3-backdrop hidden aria-hidden="true"></div>
+    <aside class="w3-header__drawer" id="w3-drawer" data-w3-drawer aria-hidden="true" tabindex="-1">
+      <div class="w3-header__drawer-head">
+        <a href="index.html" class="w3-header__drawer-logo" aria-label="exbuyer home">
+          <img src="assets/img/logo.png" alt="exbuyer" width="140" height="42" decoding="async" />
+        </a>
+        <button type="button" class="w3-header__drawer-close" data-w3-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="w3-header__drawer-nav" aria-label="Mobile navigation">
+        <a href="shop.html">Watches</a>
+        <a href="#">Collection</a>
+        <a href="#">Accessories</a>
+        <a href="#">Exclusive</a>
+        <a href="#">Gifts</a>
+        <a href="#">Brand</a>
+      </nav>
+    </aside>
+  </header>
+
+  <main>
+    <section class="w3-pdp" data-w3-pdp aria-label="Product details">
+      <div class="w3-page__inner">
+        <nav class="w3-pdp__breadcrumb" aria-label="Breadcrumb">
+          <a href="index.html">Home</a>
+          <span aria-hidden="true">/</span>
+          <a href="shop.html">Watches</a>
+          <span aria-hidden="true">/</span>
+          <span data-w3-pdp-breadcrumb>Starboard Rosegold</span>
+        </nav>
+
+        <div class="w3-pdp__layout">
+          <div class="w3-pdp__gallery">
+            <!-- Thumbnails -->
+            <div class="w3-pdp__thumbs" role="tablist" aria-label="Product images">
+              <button type="button" class="w3-pdp__thumb is-active" data-w3-pdp-thumb data-src="assets/img/NA-1.webp"
+                aria-label="View image 1" aria-selected="true">
+                <img src="assets/img/NA-1.webp" alt="Starboard Rosegold angle 1" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NA-2.webp"
+                aria-label="View image 2" aria-selected="false">
+                <img src="assets/img/NA-2.webp" alt="Starboard Rosegold angle 2" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NA-3.webp"
+                aria-label="View image 3" aria-selected="false">
+                <img src="assets/img/NA-3.webp" alt="Starboard Rosegold angle 3" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NA-4.webp"
+                aria-label="View image 4" aria-selected="false">
+                <img src="assets/img/NA-4.webp" alt="Starboard Rosegold angle 4" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NA-5.webp"
+                aria-label="View image 5" aria-selected="false">
+                <img src="assets/img/NA-5.webp" alt="Starboard Rosegold angle 5" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NA-6.webp"
+                aria-label="View image 6" aria-selected="false">
+                <img src="assets/img/NA-6.webp" alt="Starboard Rosegold angle 6" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NA-7.webp"
+                aria-label="View image 7" aria-selected="false">
+                <img src="assets/img/NA-7.webp" alt="Starboard Rosegold angle 7" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+              <button type="button" class="w3-pdp__thumb" data-w3-pdp-thumb data-src="assets/img/NL-2.png"
+                aria-label="View image 8" aria-selected="false">
+                <img src="assets/img/NL-2.png" alt="Starboard Rosegold angle 8" width="96" height="96" loading="lazy"
+                  decoding="async" />
+              </button>
+            </div>
+
+            <!-- Main image -->
+            <div class="w3-pdp__stage">
+              <img src="assets/img/NA-1.webp" alt="Starboard Rosegold watch" width="900" height="900" data-w3-pdp-main
+                decoding="async" />
+              <button type="button" class="w3-pdp__zoom" aria-label="Zoom image">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Product info -->
+          <div class="w3-pdp__info">
+            <div class="w3-pdp__brand-row">
+              <p class="w3-pdp__brand">EXBUYER</p>
+              <span class="w3-pdp__rating" data-w3-pdp-rating aria-label="Rated 4.84 out of 5 from 19 reviews">
+                <i class="fa-solid fa-star" aria-hidden="true"></i> 4.84 (19)
+              </span>
+            </div>
+
+            <h1 class="w3-pdp__title" data-w3-pdp-title>STARBOARD ROSEGOLD</h1>
+
+            <p class="w3-pdp__ideal" data-w3-pdp-ideal><strong>IDEAL FOR:</strong> MEN</p>
+            <p class="w3-pdp__features-text" data-w3-pdp-features>
+              Premium Design, Day &amp; Date Functionality, Quartz Movement, Durable Build, Everyday Luxury
+            </p>
+
+            <div class="w3-pdp__price-block">
+              <p class="w3-pdp__mrp">MRP <s data-w3-pdp-mrp>Rs. 3049.00</s></p>
+              <p class="w3-pdp__price" data-w3-pdp-price>Rs. 1899.00</p>
+              <p class="w3-pdp__tax">MRP (Inclusive of all taxes) <u>Shipping</u> calculated at checkout.</p>
+            </div>
+
+            <div class="w3-pdp__colors">
+              <p class="w3-pdp__label">AVAILABLE COLORS</p>
+              <div class="w3-pdp__color-list" role="list" data-w3-pdp-colors>
+                <button type="button" class="w3-pdp__color is-active" aria-label="Rosegold" role="listitem">
+                  <img src="assets/img/NA-1.webp" alt="Rosegold" width="72" height="72" loading="lazy"
+                    decoding="async" />
+                  <span>Rosegold</span>
+                </button>
+                <button type="button" class="w3-pdp__color" aria-label="Electric Blue" role="listitem">
+                  <img src="assets/img/NA-2.webp" alt="Electric Blue" width="72" height="72" loading="lazy"
+                    decoding="async" />
+                  <span>Electric Blue</span>
+                </button>
+                <button type="button" class="w3-pdp__color w3-pdp__color--more" aria-label="Show more colors">
+                  <span class="w3-pdp__color-more-label">Show More</span>
+                  <span class="w3-pdp__color-more-count">+2</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="w3-pdp__utils">
+              <button type="button" class="w3-pdp__util">
+                SIZE CHART <i class="fa-solid fa-ruler-horizontal" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="w3-pdp__util">OFFERS</button>
+            </div>
+
+            <div class="w3-pdp__ctas">
+              <button type="button" class="w3-pdp__btn w3-pdp__btn--cart">ADD TO CART</button>
+              <button type="button" class="w3-pdp__btn w3-pdp__btn--buy">BUY NOW</button>
+            </div>
+
+            <div class="w3-pdp__delivery">
+              <p class="w3-pdp__label">DELIVERY</p>
+              <form class="w3-pdp__pin" data-w3-pdp-pin>
+                <label class="visually-hidden" for="w3-pdp-pin">Enter Pincode</label>
+                <input id="w3-pdp-pin" type="text" name="pincode" inputmode="numeric" maxlength="6"
+                  placeholder="Enter Pincode" autocomplete="postal-code" />
+                <button type="submit">CHECK</button>
+              </form>
+              <p class="w3-pdp__pin-msg" data-w3-pdp-pin-msg hidden></p>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn is-open" data-w3-pdp-acc-btn aria-expanded="true">
+                FEATURES <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel is-open" data-w3-pdp-acc-panel>
+                <div class="w3-pdp__feature-grid">
+                  <div class="w3-pdp__feature">
+                    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                    <span>Durable Material</span>
+                  </div>
+                  <div class="w3-pdp__feature">
+                    <i class="fa-solid fa-gears" aria-hidden="true"></i>
+                    <span>Quartz Movement</span>
+                  </div>
+                  <div class="w3-pdp__feature">
+                    <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                    <span>Multi-Functional Dial</span>
+                  </div>
+                  <div class="w3-pdp__feature">
+                    <i class="fa-solid fa-droplet" aria-hidden="true"></i>
+                    <span>30M Water Resistant</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                DESCRIPTION <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                <p>Starboard Rosegold blends everyday elegance with precision quartz timing—crafted for a refined wrist
+                  presence.</p>
+              </div>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                USER MANUAL <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                <p>Set time and date using the crown. Avoid winding forcefully. Keep away from strong magnets.</p>
+              </div>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                WARRANTY INFORMATION <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                <p>1-year manufacturer warranty covering movement defects under normal use.</p>
+              </div>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                SHIPPING INFORMATION <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                <p>Standard delivery in 2–5 business days. Express options available at checkout.</p>
+              </div>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                REPLACEMENT &amp; RETURN <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                <p>Easy 14-day returns on unused products in original packaging.</p>
+              </div>
+            </div>
+
+            <div class="w3-pdp__accordion" data-w3-pdp-acc>
+              <button type="button" class="w3-pdp__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                MORE INFO <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                <p>Case: Stainless steel · Strap: Metal bracelet · Glass: Mineral · Water resistance: 30M</p>
+              </div>
+            </div>
+
+            <div class="w3-pdp__share" aria-label="Share">
+              <a href="#" aria-label="Share on Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+                Share</a>
+              <a href="#" aria-label="Share on X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i> Tweet</a>
+              <a href="#" aria-label="Pin on Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i> Pin
+                it</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust badges -->
+    <section class="w3-trust" aria-label="Shopping benefits">
+      <div class="w3-page__inner">
+        <ul class="w3-trust__list">
+          <li class="w3-trust__item">
+            <i class="fa-solid fa-plane-departure" aria-hidden="true"></i>
+            <span>EXPRESS SHIPPING</span>
+          </li>
+          <li class="w3-trust__item">
+            <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+            <span>10-DAY RETURN POLICY*</span>
+          </li>
+          <li class="w3-trust__item">
+            <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+            <span>1-YEAR* WARRANTY</span>
+          </li>
+          <li class="w3-trust__item">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+            <span>100% SECURE CHECKOUT</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Product specifications -->
+    <section class="w3-specs" aria-labelledby="w3-specs-heading">
+      <div class="w3-page__inner">
+        <div class="w3-specs__grid">
+          <div class="w3-specs__copy">
+            <h2 class="w3-specs__title" id="w3-specs-heading">Product Specifications</h2>
+
+            <div class="w3-specs__list">
+              <div class="w3-pdp__accordion" data-w3-pdp-acc>
+                <button type="button" class="w3-specs__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                  Case Details <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                  <p>Case material: Stainless steel · Case size: 42 mm · Case thickness: 11 mm · Finish: Rosegold PVD
+                  </p>
+                </div>
+              </div>
+
+              <div class="w3-pdp__accordion" data-w3-pdp-acc>
+                <button type="button" class="w3-specs__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                  Strap Details <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                  <p>Strap: Metal link bracelet · Clasp: Fold-over · Adjustable links · Matching rosegold finish</p>
+                </div>
+              </div>
+
+              <div class="w3-pdp__accordion" data-w3-pdp-acc>
+                <button type="button" class="w3-specs__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                  Dial Details <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                  <p>Dial: Textured rosegold · Markers: Applied indices · Hands: Luminous · Day &amp; date windows</p>
+                </div>
+              </div>
+
+              <div class="w3-pdp__accordion" data-w3-pdp-acc>
+                <button type="button" class="w3-specs__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                  Movement <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                  <p>Movement: Quartz · Accuracy: ±15 sec/month · Battery life: ~2 years</p>
+                </div>
+              </div>
+
+              <div class="w3-pdp__accordion" data-w3-pdp-acc>
+                <button type="button" class="w3-specs__acc-btn" data-w3-pdp-acc-btn aria-expanded="false">
+                  Other Details <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+                <div class="w3-pdp__acc-panel" data-w3-pdp-acc-panel hidden>
+                  <p>Glass: Mineral · Water resistance: 30M · Warranty: 1 year · Ideal for: Men</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w3-specs__media">
+            <img src="assets/img/coll-2.png" alt="Starboard Rosegold on wrist" width="900" height="1100" loading="lazy"
+              decoding="async" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Reviews -->
+    <section class="w3-reviews" aria-labelledby="w3-reviews-heading">
+      <div class="w3-page__inner">
+        <h2 class="w3-reviews__title" id="w3-reviews-heading">Customer Reviews</h2>
+
+        <div class="w3-reviews__summary">
+          <div class="w3-reviews__score">
+            <div class="w3-reviews__stars" aria-hidden="true">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <p class="w3-reviews__avg">4.84 out of 5</p>
+            <p class="w3-reviews__based">Based on 19 reviews</p>
+            <button type="button" class="w3-reviews__write">Write a Review</button>
+          </div>
+
+          <div class="w3-reviews__breakdown" aria-label="Rating breakdown">
+            <div class="w3-reviews__row">
+              <span class="w3-reviews__row-stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </span>
+              <span class="w3-reviews__bar"><span style="width:84%"></span></span>
+              <span class="w3-reviews__count">16</span>
+            </div>
+            <div class="w3-reviews__row">
+              <span class="w3-reviews__row-stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+              </span>
+              <span class="w3-reviews__bar"><span style="width:16%"></span></span>
+              <span class="w3-reviews__count">3</span>
+            </div>
+            <div class="w3-reviews__row">
+              <span class="w3-reviews__row-stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+              </span>
+              <span class="w3-reviews__bar"><span style="width:0%"></span></span>
+              <span class="w3-reviews__count">0</span>
+            </div>
+            <div class="w3-reviews__row">
+              <span class="w3-reviews__row-stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i
+                  class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+              </span>
+              <span class="w3-reviews__bar"><span style="width:0%"></span></span>
+              <span class="w3-reviews__count">0</span>
+            </div>
+            <div class="w3-reviews__row">
+              <span class="w3-reviews__row-stars" aria-hidden="true">
+                <i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i
+                  class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>
+              </span>
+              <span class="w3-reviews__bar"><span style="width:0%"></span></span>
+              <span class="w3-reviews__count">0</span>
+            </div>
+            <a href="#w3-reviews-list" class="w3-reviews__see-all">See all reviews</a>
+          </div>
+        </div>
+
+        <div class="w3-reviews__media">
+          <p class="w3-reviews__media-title">Customer photos &amp; videos</p>
+          <div class="w3-reviews__gallery">
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/NA-1.webp" alt="Customer photo 1" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/NA-2.webp" alt="Customer photo 2" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/NA-3.webp" alt="Customer photo 3" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/NA-4.webp" alt="Customer photo 4" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/NA-5.webp" alt="Customer photo 5" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/coll-2.png" alt="Customer photo 6" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__shot"><img src="assets/img/coll-3.png" alt="Customer photo 7" width="120"
+                height="120" loading="lazy" decoding="async" /></a>
+            <a href="#" class="w3-reviews__see-more">See more</a>
+          </div>
+        </div>
+
+        <div class="w3-reviews__toolbar">
+          <label class="w3-reviews__sort">
+            <span class="visually-hidden">Sort reviews</span>
+            <select aria-label="Sort reviews">
+              <option selected>Most Recent</option>
+              <option>Highest Rating</option>
+              <option>Lowest Rating</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="w3-reviews__cards" id="w3-reviews-list">
+          <article class="w3-reviews__card">
+            <div class="w3-reviews__card-top">
+              <span class="w3-reviews__card-stars" aria-label="5 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </span>
+              <time datetime="2026-06-18">18/06/2026</time>
+            </div>
+            <p class="w3-reviews__author">Lokesh yadav <span>verified</span></p>
+            <p class="w3-reviews__text">Starboard Rosegold</p>
+          </article>
+
+          <article class="w3-reviews__card">
+            <div class="w3-reviews__card-top">
+              <span class="w3-reviews__card-stars" aria-label="5 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </span>
+              <time datetime="2026-06-11">11/06/2026</time>
+            </div>
+            <p class="w3-reviews__author">Aarav Mehta <span>verified</span></p>
+            <p class="w3-reviews__text">A superb watch with stunning looks</p>
+          </article>
+
+          <article class="w3-reviews__card">
+            <div class="w3-reviews__card-top">
+              <span class="w3-reviews__card-stars" aria-label="4 out of 5">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+              </span>
+              <time datetime="2026-05-28">28/05/2026</time>
+            </div>
+            <p class="w3-reviews__author">Riya Sharma <span>verified</span></p>
+            <p class="w3-reviews__text">Great finish and comfortable on the wrist</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQs -->
+    <section class="w3-faq" aria-labelledby="w3-faq-heading" data-w3-faq>
+      <div class="w3-page__inner">
+        <div class="w3-faq__wrap">
+          <h2 class="w3-faq__title" id="w3-faq-heading">FAQs</h2>
+
+          <div class="w3-faq__list">
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>How long does Starboard Rosegold battery last?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>Under normal use, the quartz battery typically lasts around 2 years before needing replacement.</p>
+              </div>
+            </div>
+
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>Can I wear my Starboard Rosegold watch while swimming or showering?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>It is water resistant to 30M, suitable for splashes. Avoid swimming, diving, or hot showers.</p>
+              </div>
+            </div>
+
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>How should I clean my Starboard Rosegold watch?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>Wipe gently with a soft dry cloth. Avoid harsh chemicals, solvents, and abrasive cleaners.</p>
+              </div>
+            </div>
+
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>What is your return policy for Starboard Rosegold?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>Unused products can be returned within 10 days in original packaging for a refund or exchange.</p>
+              </div>
+            </div>
+
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>Do you offer expedited delivery services for Starboard Rosegold?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>Yes. Express shipping options are available at checkout depending on your pincode.</p>
+              </div>
+            </div>
+
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>What is the warranty for Starboard Rosegold?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>It includes a 1-year manufacturer warranty covering movement defects under normal use.</p>
+              </div>
+            </div>
+
+            <div class="w3-faq__item" data-w3-faq-item>
+              <button type="button" class="w3-faq__btn" data-w3-faq-btn aria-expanded="false">
+                <span>Where can I find user manual of Starboard Rosegold?</span>
+                <i class="fa-solid fa-chevron-down w3-faq__icon" aria-hidden="true"></i>
+              </button>
+              <div class="w3-faq__panel" data-w3-faq-panel hidden>
+                <p>Open the User Manual accordion on this product page, or download it from your order confirmation
+                  email.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Sticky product bar -->
+  <div class="w3-sticky-cart" data-w3-sticky-cart>
+    <div class="w3-sticky-cart__inner">
+      <div class="w3-sticky-cart__product">
+        <img src="assets/img/NA-1.webp" alt="" width="56" height="56" decoding="async" data-w3-sticky-img />
+        <div>
+          <p class="w3-sticky-cart__name" data-w3-sticky-name>STARBOARD ROSEGOLD</p>
+          <p class="w3-sticky-cart__price"><s data-w3-sticky-mrp>Rs. 3,049.00</s> <strong data-w3-sticky-price>Rs.
+              1,899.00</strong></p>
+        </div>
+      </div>
+      <button type="button" class="w3-sticky-cart__btn">Add to Cart</button>
+    </div>
+  </div>
+
+  <footer class="w3-footer" role="contentinfo" aria-label="Site footer">
+    <div class="w3-footer__inner">
+      <div class="w3-footer__grid">
+        <!-- Brand / Contact -->
+        <div class="w3-footer__brand">
+          <p class="w3-footer__brand-name">exbuyer</p>
+
+          <div class="w3-footer__contact">
+            <a class="w3-footer__contact-item" href="mailto:support@exbuyerwatch.in">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <span>support@exbuyerwatch.in</span>
+            </a>
+            <a class="w3-footer__contact-item" href="tel:+91828272045">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              <span>+91 82827 2045</span>
+            </a>
+          </div>
+
+          <div class="w3-footer__social" aria-label="Social links">
+            <a class="w3-footer__social-link" href="#" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a class="w3-footer__social-link" href="#" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a class="w3-footer__social-link" href="#" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a class="w3-footer__social-link" href="#" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div class="w3-footer__col">
+          <p class="w3-footer__heading">Main Menu</p>
+          <a href="#">Olympus II</a>
+          <a href="#">Olympus I</a>
+          <a href="#">Apollo III</a>
+          <a href="#">Accessories</a>
+          <a href="#">Best Sellers</a>
+          <a href="#">Reviews</a>
+          <a href="#">About Us</a>
+          <a href="#">Blogs</a>
+        </div>
+
+        <!-- Help -->
+        <div class="w3-footer__col">
+          <p class="w3-footer__heading">Help</p>
+          <a href="#">Contact us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Service &amp; Warranty</a>
+          <a href="#">Refund Policy</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Shipping Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+
+        <!-- Collections -->
+        <div class="w3-footer__col">
+          <p class="w3-footer__heading">Our Collections</p>
+          <a href="#">Olympus II</a>
+          <a href="#">Olympus I</a>
+          <a href="#">Apollo III</a>
+          <a href="#">Accessories</a>
+          <a href="#">Apollo II (Archived)</a>
+        </div>
+      </div>
+
+      <div class="w3-footer__bottom">
+        <nav class="w3-footer__bottom-links" aria-label="Footer links">
+          <a href="#">Contact us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Service &amp; Warranty</a>
+          <a href="#">Refund Policy</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Shipping Policy</a>
+          <a href="#">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="assets/js/script.js" defer></script>
+</body>
+
+</html>
