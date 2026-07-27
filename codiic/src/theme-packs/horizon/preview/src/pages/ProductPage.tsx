@@ -27,12 +27,13 @@ import { layout, useThemeColors } from '../tokens';
 const SEC = 'templates.product.sections.product_main';
 
 export function ProductPage() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id?: string; urlHandle?: string }>();
+  const routeParam = params.urlHandle ?? params.id;
   const config = useThemeConfig();
   const { text, background, primary, fontHeading, fontBody } = useThemeColors();
   const { storeFrontMeta } = useStorefront();
   const { user } = useStorefrontAuth();
-  const { productDetail, fetchProductById } = useStorefrontProducts();
+  const { products, productDetail, fetchProductForRoute, fetchProductById } = useStorefrontProducts();
   const { variants, fetchVariantsByProductId } = useStorefrontProductVariants();
   const { createCartEntry } = useStorefrontCart();
   const {
@@ -56,21 +57,34 @@ export function ProductPage() {
   const addLabel = cfgString(config, `${SEC}.blocks.buy_box.blocks.add_to_cart_button.settings.label`);
   const addingLabel = cfgString(config, `${SEC}.blocks.buy_box.blocks.add_to_cart_button.settings.addingLabel`);
 
-  useEffect(() => {
-    if (!id) return;
-    void fetchProductById(id);
-    void fetchVariantsByProductId(id);
-  }, [fetchProductById, fetchVariantsByProductId, id]);
+  const storeId = storeFrontMeta?.storeId;
+  const fallbackProductId = products[0]?._id;
 
   useEffect(() => {
-    if (!id) return;
+    if (!storeId) return;
+    if (!routeParam || routeParam === 'preview') {
+      if (fallbackProductId) void fetchProductById(fallbackProductId);
+      return;
+    }
+    void fetchProductForRoute(storeId, routeParam);
+  }, [storeId, routeParam, fallbackProductId, fetchProductById, fetchProductForRoute]);
+
+  const resolvedProductId = productDetail?._id ?? null;
+
+  useEffect(() => {
+    if (!resolvedProductId) return;
+    void fetchVariantsByProductId(resolvedProductId);
+  }, [resolvedProductId, fetchVariantsByProductId]);
+
+  useEffect(() => {
+    if (!resolvedProductId) return;
     const customerId = user?._id ?? null;
-    void fetchFreeShippingOffersForProduct(id, customerId);
-    void fetchAmountOffOrderOffersForProduct(id, customerId);
-    void fetchAmountOffProductsOffersForProduct(id, customerId);
-    void fetchBuyXGetYOffersForProduct(id, customerId);
+    void fetchFreeShippingOffersForProduct(resolvedProductId, customerId);
+    void fetchAmountOffOrderOffersForProduct(resolvedProductId, customerId);
+    void fetchAmountOffProductsOffersForProduct(resolvedProductId, customerId);
+    void fetchBuyXGetYOffersForProduct(resolvedProductId, customerId);
   }, [
-    id,
+    resolvedProductId,
     user?._id,
     fetchFreeShippingOffersForProduct,
     fetchAmountOffOrderOffersForProduct,
@@ -127,8 +141,6 @@ export function ProductPage() {
       setAdding(false);
     }
   };
-
-  if (!id) return null;
 
   const image = productDetail?.imageUrls?.[0];
   const price = selectedVariant?.price ?? productDetail?.price;
