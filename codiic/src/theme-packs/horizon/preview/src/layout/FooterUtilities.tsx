@@ -1,14 +1,11 @@
 import { useMemo, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  StorefrontPolicyLinks,
+  usePreviewDevice,
+  useStorefront,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../lib/config';
-
-function readCatalogVariant(
-  config: Record<string, unknown> | null,
-  settingsBase: string
-): string {
-  return cfgString(config, `${settingsBase}.catalogVariant`, '');
-}
 import { formatCopyrightLine, readCopyrightStyle } from '../lib/copyrightStyles';
 import { readFooterBlockTypography } from '../lib/footerBlockTypography';
 import {
@@ -27,14 +24,23 @@ import { layout, useThemeColors } from '../tokens';
 
 type Props = { sectionId?: string };
 
+function readCatalogVariant(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): string {
+  return cfgString(config, `${settingsBase}.catalogVariant`, '');
+}
+
 export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
   const config = useThemeConfig();
   const { text, fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
+  const previewDevice = usePreviewDevice();
 
   const settingsBase = `sections.${sectionId}.settings`;
   const blocksBase = `sections.${sectionId}.blocks`;
   const catalogVariant = readCatalogVariant(config, settingsBase);
-  const isPoliciesLinks = catalogVariant === 'policies-links';
+  const isPoliciesLinks = catalogVariant === 'policies-links' || catalogVariant === '';
 
   const style = useMemo(() => {
     const scheme = footerUtilitiesColorScheme(config, settingsBase, {
@@ -64,16 +70,12 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
     [config, policyLinksBase]
   );
 
-  const privacyLabel = cfgString(config, `${policyLinksBase}.privacyLabel`);
-  const privacyHref = cfgString(config, `${policyLinksBase}.privacyHref`, '#');
-  const termsLabel = cfgString(config, `${policyLinksBase}.termsLabel`);
-  const termsHref = cfgString(config, `${policyLinksBase}.termsHref`, '#');
-
   const policyLinkStyle = {
     color: style.scheme.muted,
     textDecoration: 'underline' as const,
     fontSize: policyTypography.fontSize,
     textTransform: policyTypography.textTransform,
+    fontFamily: fontBody,
   };
   const socialBase = `${blocksBase}.social.settings`;
 
@@ -105,31 +107,13 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
         style={{ display: 'flex', gap: 16 }}
       >
         <EditorField fieldPath={`${policyLinksBase}.fontSize`} label="Size">
-          <Link to={privacyHref} style={policyLinkStyle}>
-            {privacyLabel}
-          </Link>
+          <StorefrontPolicyLinks
+            storeId={storeFrontMeta?.storeId}
+            device={previewDevice === 'mobile' ? 'mobile' : 'desktop'}
+            linkStyle={policyLinkStyle}
+            className="codiic-footer-policy-links"
+          />
         </EditorField>
-        <span
-          data-codiic-node={`field:${policyLinksBase}.privacyHref`}
-          data-codiic-label="Privacy link"
-          data-codiic-kind="field"
-          hidden
-        >
-          {privacyHref}
-        </span>
-        <EditorField fieldPath={`${policyLinksBase}.termsLabel`} label="Terms">
-          <Link to={termsHref} style={policyLinkStyle}>
-            {termsLabel}
-          </Link>
-        </EditorField>
-        <span
-          data-codiic-node={`field:${policyLinksBase}.termsHref`}
-          data-codiic-label="Terms link"
-          data-codiic-kind="field"
-          hidden
-        >
-          {termsHref}
-        </span>
       </EditorBlock>
     ),
     social: (
@@ -139,7 +123,12 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
         style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}
       >
         {SOCIAL_PLATFORMS.map((platform) => {
-          const url = socialUrl(config, socialBase, platform.settingKey, platform.id === 'instagram' || platform.id === 'facebook' ? platform.id : undefined);
+          const url = socialUrl(
+            config,
+            socialBase,
+            platform.settingKey,
+            platform.id === 'instagram' || platform.id === 'facebook' ? platform.id : undefined
+          );
           return (
             <EditorField
               key={platform.id}
@@ -156,7 +145,9 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
                   {platform.label}
                 </a>
               ) : (
-                <span style={{ color: style.scheme.muted, opacity: 0.45, fontSize: 13 }}>{platform.label}</span>
+                <span style={{ color: style.scheme.muted, opacity: 0.45, fontSize: 13 }}>
+                  {platform.label}
+                </span>
               )}
             </EditorField>
           );

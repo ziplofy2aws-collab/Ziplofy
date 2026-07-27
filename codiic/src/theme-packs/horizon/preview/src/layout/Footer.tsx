@@ -1,5 +1,9 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  isThemeEditorPreview,
+  useStorefrontNewsletter,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../lib/config';
 import {
   footerColorScheme,
@@ -82,6 +86,7 @@ function NewsletterSubmit({
 export function Footer({ sectionId = 'footer' }: Props) {
   const config = useThemeConfig();
   const { fontHeading, fontBody, text, background, primary } = useThemeColors();
+  const { submitting, subscribeToNewsletter } = useStorefrontNewsletter();
   const [email, setEmail] = useState('');
 
   const settingsBase = `sections.${sectionId}.settings`;
@@ -127,7 +132,19 @@ export function Footer({ sectionId = 'footer' }: Props) {
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setEmail('');
+    if (isThemeEditorPreview() || submitting) {
+      setEmail('');
+      return;
+    }
+
+    void (async () => {
+      try {
+        await subscribeToNewsletter({ email });
+        setEmail('');
+      } catch {
+        // Toast handled in SDK context
+      }
+    })();
   };
 
   const innerMaxWidth = sectionStyle.widthMode === 'full' ? '100%' : layout.maxWidth;

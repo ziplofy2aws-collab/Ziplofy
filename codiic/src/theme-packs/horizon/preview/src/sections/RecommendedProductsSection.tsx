@@ -1,5 +1,12 @@
-import { useMemo, useRef, type CSSProperties } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import { useEffect, useMemo, useRef, type CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  formatMoney,
+  productPath,
+  useStorefront,
+  useStorefrontProducts,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { RecommendedProductCardArt } from '../lib/RecommendedProductCardArt';
 import {
   readRecommendedProductCards,
@@ -64,6 +71,8 @@ export function RecommendedProductsSection({
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
   const trackRef = useRef<HTMLDivElement>(null);
+  const { storeFrontMeta } = useStorefront();
+  const { products, fetchProductsByStoreId } = useStorefrontProducts();
 
   const settingsBase =
     placement === 'template'
@@ -78,7 +87,13 @@ export function RecommendedProductsSection({
     [config, settingsBase]
   );
 
-  const cards = useMemo(
+  useEffect(() => {
+    const storeId = storeFrontMeta?.storeId;
+    if (!storeId) return;
+    void fetchProductsByStoreId({ storeId, page: 1, limit: Math.max(layoutStyle.productCount, 8) });
+  }, [storeFrontMeta?.storeId, fetchProductsByStoreId, layoutStyle.productCount]);
+
+  const configCards = useMemo(
     () =>
       readRecommendedProductCards(
         config,
@@ -89,6 +104,22 @@ export function RecommendedProductsSection({
       ),
     [config, templateId, sectionId, placement, layoutStyle.productCount]
   );
+
+  const liveCards = useMemo(
+    () =>
+      products.slice(0, layoutStyle.productCount).map((p, index) => ({
+        id: p._id || `live-${index}`,
+        productTitle: p.title,
+        price: formatMoney(p.price),
+        shirtColor: '#0f766e',
+        withSun: index % 2 === 0,
+        href: productPath(p.urlHandle || p._id),
+        imageUrl: p.imageUrls?.[0] ?? '',
+      })),
+    [products, layoutStyle.productCount]
+  );
+
+  const cards = liveCards.length > 0 ? liveCards : configCards.map((c) => ({ ...c, href: '', imageUrl: '' }));
 
   const isCarousel = layoutStyle.cardStyle === 'carousel';
   const scopeClass = `codiic-recommended-products-${sectionId.replace(/[^a-z0-9_-]/gi, '-')}`;
@@ -224,7 +255,15 @@ export function RecommendedProductsSection({
               return (
                 <EditorBlock key={card.id} nodeId={blockNodeId} label="Product card" style={articleStyle}>
                   <article>
-                    <RecommendedProductCardArt shirtColor={card.shirtColor} withSun={card.withSun} />
+                    {'imageUrl' in card && card.imageUrl ? (
+                      <img
+                        src={card.imageUrl}
+                        alt=""
+                        style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: 8 }}
+                      />
+                    ) : (
+                      <RecommendedProductCardArt shirtColor={card.shirtColor} withSun={card.withSun} />
+                    )}
                     <p
                       style={{
                         margin: '10px 0 0',
@@ -234,9 +273,17 @@ export function RecommendedProductsSection({
                         textAlign: 'center',
                       }}
                     >
-                      <EditorField fieldPath={`${blockBase}.productTitle`} label="Product title">
-                        {card.productTitle}
-                      </EditorField>
+                      {card.href ? (
+                        <Link to={card.href} style={{ color: 'inherit', textDecoration: 'none' }}>
+                          <EditorField fieldPath={`${blockBase}.productTitle`} label="Product title">
+                            {card.productTitle}
+                          </EditorField>
+                        </Link>
+                      ) : (
+                        <EditorField fieldPath={`${blockBase}.productTitle`} label="Product title">
+                          {card.productTitle}
+                        </EditorField>
+                      )}
                     </p>
                     <p
                       style={{

@@ -25,7 +25,7 @@ export interface StorefrontUser {
   defaultAddress?: string;
 }
 
-interface SignupPayload {
+export interface SignupPayload {
   storeId: string;
   firstName: string;
   lastName: string;
@@ -39,7 +39,7 @@ interface SignupResponse {
   token: string;
 }
 
-interface LoginPayload {
+export interface LoginPayload {
   storeId: string;
   email: string;
   password: string;
@@ -51,7 +51,7 @@ interface LoginResponse {
   token: string;
 }
 
-interface ForgotPasswordPayload {
+export interface ForgotPasswordPayload {
   email: string;
   storeId: string;
 }
@@ -61,7 +61,7 @@ interface ForgotPasswordResponse {
   message: string;
 }
 
-interface ResetPasswordPayload {
+export interface ResetPasswordPayload {
   token: string;
   newPassword: string;
   storeId: string;
@@ -72,7 +72,7 @@ interface ResetPasswordResponse {
   message: string;
 }
 
-interface UpdateUserPayload {
+export interface UpdateStorefrontUserPayload {
   firstName?: string;
   lastName?: string;
   language?: string;
@@ -100,7 +100,7 @@ interface StorefrontAuthContextType {
   setUser: (u: StorefrontUser | null) => void;
   forgotPassword: (payload: ForgotPasswordPayload) => Promise<void>;
   resetPassword: (payload: ResetPasswordPayload) => Promise<void>;
-  updateUser: (customerId: string, payload: UpdateUserPayload) => Promise<void>;
+  updateUser: (customerId: string, payload: UpdateStorefrontUserPayload) => Promise<void>;
   registerLogoutCallback: (callback: () => void) => () => void;
   registerLoginCallback: (callback: (user: StorefrontUser) => void) => () => void;
 }
@@ -314,7 +314,7 @@ export const StorefrontAuthProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  const updateUser = useCallback(async (customerId: string, payload: UpdateUserPayload): Promise<void> => {
+  const updateUser = useCallback(async (customerId: string, payload: UpdateStorefrontUserPayload): Promise<void> => {
     try {
       setLoading(true);
       setError(null);

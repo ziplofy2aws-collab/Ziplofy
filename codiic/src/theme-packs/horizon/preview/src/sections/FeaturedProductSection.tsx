@@ -1,5 +1,5 @@
 import { useEffect, useMemo, type CSSProperties } from 'react';
-import { formatINR, useStorefront, useStorefrontProducts } from '@render-store/sdk';
+import { formatMoney, useStorefront, useStorefrontProducts } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../lib/config';
 import { HighlightProductShirtIllustration } from '../components/ProductHighlightArt';
@@ -89,7 +89,7 @@ export function FeaturedProductSection({
     (cachedTitle && cachedTitle.trim() ? cachedTitle : null) ??
     resolvedProduct?.title ??
     cachedTitle;
-  const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
+  const price = resolvedProduct ? formatMoney(resolvedProduct.price) : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
   const scheme = style.scheme;

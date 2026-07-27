@@ -18,4 +18,18 @@ export interface ThemeContract {
   OrdersPage: ThemeComponent;
   PreferencesPage: ThemeComponent;
   CartPage: ThemeComponent;
+  /** `/search` */
+  SearchPage?: ThemeComponent;
+  /** `/collections` - all collections listed */
+  CollectionsListPage?: ThemeComponent;
+  /** `/collections/all` - all products listed */
+  AllProductsPage?: ThemeComponent;
+  /** `/collection/:urlHandle` - collection details + products */
+  CollectionPage?: ThemeComponent;
+  /** `/404` and unmatched routes */
+  NotFoundPage?: ThemeComponent;
+  /** `/blogs/:blogHandle` - blog details + posts list */
+  BlogPage?: ThemeComponent;
+  /** `/blogs/:blogHandle/:articleHandle` - blog post details */
+  BlogPostPage?: ThemeComponent;
 }

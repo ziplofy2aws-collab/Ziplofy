@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { formatINR, useThemeConfig } from '@render-store/sdk';
+import { formatMoney, useThemeConfig } from '@render-store/sdk';
 import {
   readThemePricesSettings,
   shouldShowThemePriceCurrencyCode,
@@ -15,7 +15,7 @@ export function formatThemePrice(
   context: ThemePriceCurrencyContext,
   currencyCode: string = THEME_PREVIEW_CURRENCY_CODE
 ): string {
-  const formatted = formatINR(amountInPaisa);
+  const formatted = formatMoney(amountInPaisa, currencyCode);
   if (!shouldShowThemePriceCurrencyCode(config, context)) return formatted;
   return `${formatted} ${currencyCode}`;
 }

@@ -1,9 +1,12 @@
 import { useMemo, type CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import { useThemeConfig } from '@render-store/sdk';
 import { BlogPostIllustration } from '../lib/BlogPostIllustration';
 import { readBlogPostCards } from '../lib/blogPostsCarouselStyles';
 import { readBlogPostsGridLayout, scopedBlogPostsGridCss } from '../lib/blogPostsGridStyles';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
+import { mapBlogPostsToCards } from '../../../../../create-theme/blog-posts-grid/runtime/blogPostCards';
+import { useLiveBlogPosts } from '../../../../../create-theme/runtime/shared/useLiveBlogPosts';
 import { layout, useThemeColors } from '../tokens';
 
 type Props = {
@@ -13,7 +16,16 @@ type Props = {
 };
 
 type CardProps = {
-  card: ReturnType<typeof readBlogPostCards>[number];
+  card: {
+    id: string;
+    illustrationVariant: 'thread' | 'sewing' | 'boxes';
+    title: string;
+    date: string;
+    author: string;
+    excerpt: string;
+    imageUrl: string;
+    href?: string;
+  };
   editorNodeId: string;
   blockBase: string;
   scheme: { color: string; muted: string };
@@ -32,7 +44,7 @@ function BlogPostCardView({ card, editorNodeId, blockBase, scheme, fontBody }: C
     marginBottom: 12,
   };
 
-  return (
+  const body = (
     <article data-blog-card>
       <div style={imageBox}>
         {card.imageUrl ? (
@@ -83,6 +95,13 @@ function BlogPostCardView({ card, editorNodeId, blockBase, scheme, fontBody }: C
       </p>
     </article>
   );
+
+  if (!card.href) return body;
+  return (
+    <Link to={card.href} style={{ display: 'block', color: 'inherit', textDecoration: 'none' }}>
+      {body}
+    </Link>
+  );
 }
 
 export function BlogPostsGridSection({
@@ -103,10 +122,16 @@ export function BlogPostsGridSection({
 
   const style = useMemo(() => readBlogPostsGridLayout(config, settingsBase), [config, settingsBase]);
 
-  const cards = useMemo(
+  const configCards = useMemo(
     () => readBlogPostCards(config, templateId, sectionId, placement, style.postCount),
     [config, templateId, sectionId, placement, style.postCount]
   );
+  const { livePosts, resolvedBlogHandle } = useLiveBlogPosts(style.blogHandle, style.postCount);
+  const liveCards = useMemo(
+    () => mapBlogPostsToCards(livePosts, style.postCount, resolvedBlogHandle),
+    [livePosts, style.postCount, resolvedBlogHandle]
+  );
+  const cards = liveCards.length > 0 ? liveCards : configCards;
 
   const horizontalPad = style.sectionWidth === 'full' ? 24 : layout.padX;
   const innerMaxWidth = style.sectionWidth === 'full' ? '100%' : layout.maxWidth;

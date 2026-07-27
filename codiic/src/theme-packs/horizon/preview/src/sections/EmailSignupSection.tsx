@@ -1,5 +1,9 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  isThemeEditorPreview,
+  useStorefrontNewsletter,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../lib/config';
 import { readEmailSignupLayout, scopedEmailSignupCss } from '../lib/emailSignupStyles';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
@@ -18,6 +22,7 @@ export function EmailSignupSection({
 }: Props) {
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { submitting, subscribeToNewsletter } = useStorefrontNewsletter();
   const [email, setEmail] = useState('');
 
   const settingsBase =
@@ -48,7 +53,19 @@ export function EmailSignupSection({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setEmail('');
+    if (isThemeEditorPreview() || submitting) {
+      setEmail('');
+      return;
+    }
+
+    void (async () => {
+      try {
+        await subscribeToNewsletter({ email });
+        setEmail('');
+      } catch {
+        // Toast handled in SDK context
+      }
+    })();
   };
 
   const sectionShell: CSSProperties = {
@@ -215,6 +232,7 @@ export function EmailSignupSection({
               />
               <button
                 type="submit"
+                disabled={submitting}
                 aria-label={submitLabel || placeholder || 'Submit'}
                 style={{
                   flexShrink: 0,
@@ -224,7 +242,8 @@ export function EmailSignupSection({
                   fontFamily: fontBody,
                   fontSize: 20,
                   fontWeight: 600,
-                  cursor: 'pointer',
+                  cursor: submitting ? 'wait' : 'pointer',
+                  opacity: submitting ? 0.7 : 1,
                   padding: '8px 14px',
                   lineHeight: 1,
                 }}

@@ -1,5 +1,9 @@
 import { useMemo, useState, type CSSProperties, type FormEvent } from 'react';
-import { useThemeConfig } from '@render-store/sdk';
+import {
+  isThemeEditorPreview,
+  useStorefrontContactForm,
+  useThemeConfig,
+} from '@render-store/sdk';
 import { cfgString } from '../lib/config';
 import { readContactFormLayout, scopedContactFormCss } from '../lib/contactFormStyles';
 import { EditorField, EditorSection } from '../lib/editorAttrs';
@@ -18,6 +22,7 @@ export function ContactFormSection({
 }: Props) {
   const config = useThemeConfig();
   const { fontBody, fontHeading } = useThemeColors();
+  const { submitting, submitContactForm } = useStorefrontContactForm();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -67,10 +72,30 @@ export function ContactFormSection({
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setName('');
-    setEmail('');
-    setPhone('');
-    setComment('');
+    if (isThemeEditorPreview() || submitting) {
+      setName('');
+      setEmail('');
+      setPhone('');
+      setComment('');
+      return;
+    }
+
+    void (async () => {
+      try {
+        await submitContactForm({
+          name,
+          email,
+          phone: phone || undefined,
+          message: comment,
+        });
+        setName('');
+        setEmail('');
+        setPhone('');
+        setComment('');
+      } catch {
+        // Toast handled in SDK context
+      }
+    })();
   };
 
   const sectionShell: CSSProperties = {
@@ -228,6 +253,7 @@ export function ContactFormSection({
           <EditorField fieldPath={`${settingsBase}.submitLabel`} label="Submit button">
             <button
               type="submit"
+              disabled={submitting}
               style={{
                 fontFamily: fontBody,
                 fontSize: 15,
@@ -238,7 +264,8 @@ export function ContactFormSection({
                 border: 'none',
                 borderRadius: 9999,
                 padding: '14px 28px',
-                cursor: 'pointer',
+                cursor: submitting ? 'wait' : 'pointer',
+                opacity: submitting ? 0.7 : 1,
               }}
             >
               {submitLabel}

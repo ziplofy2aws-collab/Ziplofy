@@ -1,7 +1,7 @@
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  formatINR,
+  formatMoney,
 } from '@render-store/sdk';
 import { useThemeConfig } from '@render-store/sdk';
 import { cfgBool, cfgNumber, cfgString } from '../lib/config';
@@ -599,7 +599,7 @@ export function FeaturedCollectionSection({
                         product.price,
                         product.compareAtPrice,
                         productCardPriceStyle,
-                        formatINR
+                        formatMoney
                       );
                       return (
                         <>

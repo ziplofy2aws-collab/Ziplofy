@@ -1,4 +1,5 @@
-/** Storefront blog URL paths — `/blogs/{blogHandle}` and `/blogs/{blogHandle}/{articleHandle}`. */
+/** Storefront blog URL paths — prefer SDK `blogPath` / `blogArticlePath` when available. */
+import { blogPath as sdkBlogPath, blogArticlePath as sdkBlogArticlePath } from '@render-store/sdk';
 
 export function normalizeBlogPathHandle(value: string): string {
   const decoded = (() => {
@@ -16,15 +17,11 @@ export function normalizeBlogPathHandle(value: string): string {
 
 /** `/blogs/{blogHandle}` */
 export function blogListingPath(blogHandle: string): string {
-  const handle = normalizeBlogPathHandle(blogHandle);
-  return handle ? `/blogs/${handle}` : '/blogs';
+  return sdkBlogPath(blogHandle);
 }
 
 /** `/blogs/{blogHandle}/{articleHandle}` */
 export function blogArticlePath(blogHandle: string, articleHandle: string): string {
-  const blog = normalizeBlogPathHandle(blogHandle);
-  const article = normalizeBlogPathHandle(articleHandle);
-  if (!blog) return '/blogs';
-  if (!article) return `/blogs/${blog}`;
-  return `/blogs/${blog}/${article}`;
+  return sdkBlogArticlePath(blogHandle, articleHandle);
 }
+

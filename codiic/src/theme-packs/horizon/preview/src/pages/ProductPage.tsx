@@ -1,8 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
-  formatINR,
+  amountOffOrderSecondaryLine,
+  amountOffProductSecondaryLine,
+  buyXGetYSecondaryLine,
+  dedupeAmountOffOrder,
+  dedupeAmountOffProducts,
+  dedupeBuyXGetY,
+  dedupeFreeShipping,
+  formatMoney,
+  freeShippingSecondaryLine,
+  useProductOffers,
   useStorefront,
+  useStorefrontAuth,
   useStorefrontCart,
   useStorefrontProductVariants,
   useStorefrontProducts,
@@ -21,9 +31,20 @@ export function ProductPage() {
   const config = useThemeConfig();
   const { text, background, primary, fontHeading, fontBody } = useThemeColors();
   const { storeFrontMeta } = useStorefront();
+  const { user } = useStorefrontAuth();
   const { productDetail, fetchProductById } = useStorefrontProducts();
   const { variants, fetchVariantsByProductId } = useStorefrontProductVariants();
   const { createCartEntry } = useStorefrontCart();
+  const {
+    freeShippingOffers,
+    amountOffOrderOffers,
+    amountOffProductsOffers,
+    buyXGetYOffers,
+    fetchFreeShippingOffersForProduct,
+    fetchAmountOffOrderOffersForProduct,
+    fetchAmountOffProductsOffersForProduct,
+    fetchBuyXGetYOffersForProduct,
+  } = useProductOffers();
   const [adding, setAdding] = useState(false);
 
   const showImage = cfgBool(config, `${SEC}.blocks.product_media.settings.showImage`, true);
@@ -41,10 +62,58 @@ export function ProductPage() {
     void fetchVariantsByProductId(id);
   }, [fetchProductById, fetchVariantsByProductId, id]);
 
+  useEffect(() => {
+    if (!id) return;
+    const customerId = user?._id ?? null;
+    void fetchFreeShippingOffersForProduct(id, customerId);
+    void fetchAmountOffOrderOffersForProduct(id, customerId);
+    void fetchAmountOffProductsOffersForProduct(id, customerId);
+    void fetchBuyXGetYOffersForProduct(id, customerId);
+  }, [
+    id,
+    user?._id,
+    fetchFreeShippingOffersForProduct,
+    fetchAmountOffOrderOffersForProduct,
+    fetchAmountOffProductsOffersForProduct,
+    fetchBuyXGetYOffersForProduct,
+  ]);
+
   const selectedVariant = useMemo(
     () => variants[0] ?? productDetail?.variantDetails?.[0],
     [productDetail?.variantDetails, variants]
   );
+
+  const offerLines = useMemo(() => {
+    const lineQty = 1;
+    const lineSubtotal = selectedVariant?.price ?? productDetail?.price ?? 0;
+    const lines: string[] = [];
+
+    for (const offer of dedupeFreeShipping(freeShippingOffers)) {
+      const secondary = freeShippingSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.title ?? 'Free shipping'} — ${secondary}` : offer.title ?? 'Free shipping');
+    }
+    for (const offer of dedupeAmountOffOrder(amountOffOrderOffers)) {
+      const secondary = amountOffOrderSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.valueDescription} — ${secondary}` : offer.valueDescription);
+    }
+    for (const offer of dedupeAmountOffProducts(amountOffProductsOffers)) {
+      const secondary = amountOffProductSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.valueDescription} — ${secondary}` : offer.valueDescription);
+    }
+    for (const offer of dedupeBuyXGetY(buyXGetYOffers)) {
+      const secondary = buyXGetYSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.title ?? 'Buy X get Y'} — ${secondary}` : offer.title ?? 'Buy X get Y');
+    }
+
+    return lines.filter(Boolean).slice(0, 6);
+  }, [
+    freeShippingOffers,
+    amountOffOrderOffers,
+    amountOffProductsOffers,
+    buyXGetYOffers,
+    selectedVariant?.price,
+    productDetail?.price,
+  ]);
 
   const handleAdd = async () => {
     if (!storeFrontMeta?.storeId || !selectedVariant) return;
@@ -62,6 +131,7 @@ export function ProductPage() {
   if (!id) return null;
 
   const image = productDetail?.imageUrls?.[0];
+  const price = selectedVariant?.price ?? productDetail?.price;
 
   return (
     <PageShell>
@@ -132,10 +202,17 @@ export function ProductPage() {
                 </EditorBlock>
               ) : null}
               <EditorBlock nodeId="template:product:product_main:block:product_content:block:price_line" label="Price">
-                <p style={{ fontSize: 24, fontWeight: 600, marginBottom: 24 }}>
-                  {productDetail ? formatINR(productDetail.price) : priceFallback}
+                <p style={{ fontSize: 24, fontWeight: 600, marginBottom: 12 }}>
+                  {typeof price === 'number' ? formatMoney(price) : priceFallback}
                 </p>
               </EditorBlock>
+              {offerLines.length > 0 ? (
+                <ul style={{ margin: '0 0 24px', paddingLeft: 18, opacity: 0.85, lineHeight: 1.5 }}>
+                  {offerLines.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              ) : null}
             </EditorBlock>
 
             <EditorBlock nodeId="template:product:product_main:block:buy_box" label="Buy box">

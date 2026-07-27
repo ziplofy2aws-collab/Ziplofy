@@ -147,18 +147,25 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
   const Profile = contract.ProfilePage;
   const Orders = contract.OrdersPage;
   const Preferences = contract.PreferencesPage;
+  const Search = contract.SearchPage ?? Home;
+  const CollectionsList = contract.CollectionsListPage ?? Home;
+  const AllProducts = contract.AllProductsPage ?? Home;
+  const CollectionDetail = contract.CollectionPage ?? Home;
+  const NotFound = contract.NotFoundPage;
+  const Blog = contract.BlogPage;
+  const BlogPost = contract.BlogPostPage;
 
   return (
     <MemoryRouter key={routeKey} initialEntries={[initialEntry]}>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/collections/all" element={<Home />} />
-        <Route path="/collections" element={<Home />} />
-        <Route path="/collection/:urlHandle" element={<Home />} />
-        <Route path="/collections/:urlHandle" element={<Home />} />
+        <Route path="/collections/all" element={<AllProducts />} />
+        <Route path="/collections" element={<CollectionsList />} />
+        <Route path="/collection/:urlHandle" element={<CollectionDetail />} />
+        <Route path="/collections/:urlHandle" element={<CollectionDetail />} />
         <Route path="/product/:urlHandle" element={<Product />} />
         <Route path="/product/preview" element={<Product />} />
-        <Route path="/collection/preview" element={<Home />} />
+        <Route path="/collection/preview" element={<CollectionDetail />} />
         <Route path="/products" element={<Home />} />
         <Route path="/products/:id" element={<Product />} />
         <Route path="/collections/preview" element={<Home />} />
@@ -173,7 +180,24 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
         <Route path="/checkout/payment-confirmation" element={<CheckoutPaymentConfirmationPage />} />
-        <Route path="/search" element={<CustomThemeTemplatePage templateId="search" fallbackSectionIds={['search', 'search_results']} />} />
+                <Route
+          path="/blogs/:blogHandle"
+          element={Blog ? <Blog /> : <Home />}
+        />
+        <Route
+          path="/blogs/:blogHandle/:articleHandle"
+          element={BlogPost ? <BlogPost /> : <Home />}
+        />
+<Route
+          path="/search"
+          element={
+            contract.SearchPage ? (
+              <Search />
+            ) : (
+              <CustomThemeTemplatePage templateId="search" fallbackSectionIds={['search', 'search_results']} />
+            )
+          }
+        />
         <Route
           path="/password"
           element={
@@ -186,19 +210,27 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route
           path="/404"
           element={
-            <CustomThemeTemplatePage
-              templateId="404"
-              fallbackSectionIds={['not_found_main', 'featured_collection']}
-            />
+            NotFound ? (
+              <NotFound />
+            ) : (
+              <CustomThemeTemplatePage
+                templateId="404"
+                fallbackSectionIds={['not_found_main', 'featured_collection']}
+              />
+            )
           }
         />
         <Route
           path="*"
           element={
-            <CustomThemeTemplatePage
-              templateId="404"
-              fallbackSectionIds={['not_found_main', 'featured_collection']}
-            />
+            NotFound ? (
+              <NotFound />
+            ) : (
+              <CustomThemeTemplatePage
+                templateId="404"
+                fallbackSectionIds={['not_found_main', 'featured_collection']}
+              />
+            )
           }
         />
       </Routes>

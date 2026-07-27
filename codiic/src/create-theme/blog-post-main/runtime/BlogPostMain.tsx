@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom';
-import { useStorefrontBlogs, useThemeConfig } from '@render-store/sdk';
+import { useState, type FormEvent } from 'react';
+import {
+  blogPath,
+  useStorefront,
+  useStorefrontBlogComments,
+  useStorefrontBlogs,
+  useThemeConfig,
+  useThemeEditorPreview,
+} from '@render-store/sdk';
 import { cfgBool, cfgString } from '../../runtime/shared/config';
 import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/editorAttrs';
 import { ThemeEditorRichTextContent } from '../../runtime/shared/ThemeEditorRichTextContent';
 import { layout, useThemeColors, useThemeLayout } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { blogListingPath } from '../../runtime/shared/blogPaths';
 
 function secBase(templateId: string, sectionId: string): string {
   return `templates.${templateId}.sections.${sectionId}`;
@@ -32,7 +39,8 @@ const PLACEHOLDER_POST = {
   author: 'Author',
   updatedAt: new Date().toISOString(),
   featuredImageUrl: '',
-  content: '<p>Write your article content here. This preview updates when you select a published blog post.</p>',
+  content:
+    '<p>Write your article content here. This preview updates when you select a published blog post.</p>',
   excerpt: 'An excerpt of your blog post content.',
 };
 
@@ -43,8 +51,18 @@ export function BlogPostMain({
 }: SectionRuntimeProps) {
   const { maxWidth } = useThemeLayout();
   const config = useThemeConfig();
+  const isEditorPreview = useThemeEditorPreview();
   const { text, fontHeading, fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
   const { activeBlog, activePost, loading } = useStorefrontBlogs();
+  const articleId = activePost && '_id' in activePost ? activePost._id : undefined;
+  const { comments, commentsEnabled, submitting, submitComment } = useStorefrontBlogComments(
+    storeFrontMeta?.storeId,
+    articleId
+  );
+  const [commentName, setCommentName] = useState('');
+  const [commentEmail, setCommentEmail] = useState('');
+  const [commentMessage, setCommentMessage] = useState('');
 
   const base = secBase(templateId, sectionId);
   const sectionTitle = cfgString(config, `${base}.blocks.title.settings.text`, 'Blog posts');
@@ -64,6 +82,30 @@ export function BlogPostMain({
 
   const post = activePost ?? (loading ? null : PLACEHOLDER_POST);
   const sectionNodeId = `template:${templateId}:${sectionId}`;
+
+  const onSubmitComment = (e: FormEvent) => {
+    e.preventDefault();
+    if (isEditorPreview || submitting) {
+      setCommentName('');
+      setCommentEmail('');
+      setCommentMessage('');
+      return;
+    }
+    void (async () => {
+      try {
+        await submitComment({
+          name: commentName,
+          email: commentEmail,
+          message: commentMessage,
+        });
+        setCommentName('');
+        setCommentEmail('');
+        setCommentMessage('');
+      } catch {
+        // Toast handled in hook
+      }
+    })();
+  };
 
   return (
     <EditorSection
@@ -107,7 +149,7 @@ export function BlogPostMain({
                     opacity: 0.7,
                   }}
                 >
-                  <Link to={blogListingPath(activeBlog.urlHandle)} style={{ color: 'inherit' }}>
+                  <Link to={blogPath(activeBlog.urlHandle)} style={{ color: 'inherit' }}>
                     {activeBlog.title}
                   </Link>
                   <span>/</span>
@@ -177,9 +219,7 @@ export function BlogPostMain({
                     }}
                   >
                     {showAuthor && post?.author ? <span>By {post.author}</span> : null}
-                    {showDate && post?.updatedAt ? (
-                      <span>{formatPostDate(post.updatedAt)}</span>
-                    ) : null}
+                    {showDate && post?.updatedAt ? <span>{formatPostDate(post.updatedAt)}</span> : null}
                   </div>
                 </EditorBlock>
               ) : null}
@@ -199,6 +239,66 @@ export function BlogPostMain({
                     </p>
                   )}
                 </EditorBlock>
+              ) : null}
+
+              {commentsEnabled || isEditorPreview ? (
+                <div style={{ marginTop: 40, borderTop: `1px solid ${layout.line}`, paddingTop: 28 }}>
+                  <h2 style={{ fontFamily: fontHeading, fontSize: 22, marginTop: 0 }}>Comments</h2>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 20px', display: 'grid', gap: 12 }}>
+                    {(comments ?? []).map((comment) => (
+                      <li
+                        key={comment._id}
+                        style={{ border: `1px solid ${layout.line}`, borderRadius: 8, padding: 14 }}
+                      >
+                        <strong>{comment.name}</strong>
+                        <p style={{ margin: '6px 0 0', opacity: 0.85 }}>{comment.message}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  <form onSubmit={onSubmitComment} style={{ display: 'grid', gap: 10, maxWidth: 480 }}>
+                    <input
+                      placeholder="Name"
+                      value={commentName}
+                      onChange={(e) => setCommentName(e.target.value)}
+                      required
+                      disabled={isEditorPreview}
+                      style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${layout.line}` }}
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={commentEmail}
+                      onChange={(e) => setCommentEmail(e.target.value)}
+                      required
+                      disabled={isEditorPreview}
+                      style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${layout.line}` }}
+                    />
+                    <textarea
+                      placeholder="Comment"
+                      value={commentMessage}
+                      onChange={(e) => setCommentMessage(e.target.value)}
+                      required
+                      rows={4}
+                      disabled={isEditorPreview}
+                      style={{ padding: '12px 14px', borderRadius: 8, border: `1px solid ${layout.line}` }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitting || isEditorPreview}
+                      style={{
+                        padding: '12px 16px',
+                        borderRadius: 8,
+                        border: 'none',
+                        background: '#111827',
+                        color: '#fff',
+                        fontWeight: 600,
+                        cursor: submitting ? 'wait' : 'pointer',
+                      }}
+                    >
+                      {submitting ? 'Posting…' : 'Post comment'}
+                    </button>
+                  </form>
+                </div>
               ) : null}
             </>
           )}

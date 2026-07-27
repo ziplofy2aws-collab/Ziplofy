@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
+  productPath,
+  STOREFRONT_PATHS,
+  useAmountOffOrder,
+  useAmountOffProduct,
+  useBuyXGetY,
+  useFreeShipping,
+  useStorefront,
   useStorefrontAuth,
   useStorefrontCart,
   useThemeConfig,
@@ -14,7 +21,6 @@ import { EditorBlock, EditorField, EditorSection } from '../../runtime/shared/ed
 import { PREVIEW_CART_LINES } from '../../runtime/shared/editorPreviewFixtures';
 import { inputStyle, layout, useThemeColors } from '../../runtime/shared/tokens';
 import type { SectionRuntimeProps } from '../../runtime/types';
-import { productPath } from '../../../utils/storefront-paths';
 
 function variantOf(item: StorefrontCartItem | GuestCartItem) {
   const v = item.productVariantId;
@@ -29,9 +35,20 @@ export function CartMain({
   const config = useThemeConfig();
   const isEditorPreview = useThemeEditorPreview();
   const { text, background, primary, fontHeading, fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
   const { user, checkAuth } = useStorefrontAuth();
   const { getAllItems, getCartByCustomerId, updateCartEntry, deleteCartEntry, loading } =
     useStorefrontCart();
+  const { fetchEligibleDiscounts: fetchOrderDiscounts, eligibleDiscounts: orderDiscounts } =
+    useAmountOffOrder();
+  const { fetchEligibleDiscounts: fetchProductDiscounts, eligibleDiscounts: productDiscounts } =
+    useAmountOffProduct();
+  const { fetchEligibleDiscounts: fetchBuyXGetYDiscounts, eligibleDiscounts: buyXGetYDiscounts } =
+    useBuyXGetY();
+  const {
+    checkEligibleFreeShippingDiscounts,
+    eligibleDiscounts: freeShippingDiscounts,
+  } = useFreeShipping();
   const [qtyDraft, setQtyDraft] = useState<Record<string, string>>({});
 
   const settingsBase =
@@ -53,7 +70,7 @@ export function CartMain({
   const continueHref = cfgString(
     config,
     `${settingsBase}.blocks.empty_state.blocks.continue_link.settings.href`,
-    '/'
+    STOREFRONT_PATHS.home
   );
   const removeLabel = cfgString(
     config,
@@ -108,6 +125,60 @@ export function CartMain({
     }
     return sub;
   }, [lines]);
+
+  const discountCartItems = useMemo(
+    () =>
+      lines
+        .map((item) => {
+          const v = variantOf(item);
+          if (!v) return null;
+          return {
+            productId: String(v.productId),
+            quantity: item.quantity,
+            price: v.price,
+          };
+        })
+        .filter((x): x is NonNullable<typeof x> => Boolean(x)),
+    [lines]
+  );
+  const discountCartKey = useMemo(
+    () => discountCartItems.map((i) => `${i.productId}:${i.quantity}:${i.price}`).join('|'),
+    [discountCartItems]
+  );
+
+  useEffect(() => {
+    if (isEditorPreview || !storeFrontMeta?.storeId || discountCartItems.length === 0) return;
+    const storeId = storeFrontMeta.storeId;
+    const customerId = user?._id ?? null;
+    void fetchOrderDiscounts(storeId, customerId, discountCartItems);
+    void fetchProductDiscounts(storeId, customerId, discountCartItems);
+    void fetchBuyXGetYDiscounts(storeId, customerId, discountCartItems);
+    if (customerId) {
+      void checkEligibleFreeShippingDiscounts({
+        storeId,
+        customerId,
+        cartItems: discountCartItems,
+      });
+    }
+  }, [
+    isEditorPreview,
+    storeFrontMeta?.storeId,
+    user?._id,
+    discountCartKey,
+    fetchOrderDiscounts,
+    fetchProductDiscounts,
+    fetchBuyXGetYDiscounts,
+    checkEligibleFreeShippingDiscounts,
+  ]);
+
+  const eligibleOfferLabels = useMemo(() => {
+    const labels: string[] = [];
+    for (const d of orderDiscounts ?? []) labels.push(d.title || d.discountCode || d.message || 'Order discount');
+    for (const d of productDiscounts ?? []) labels.push(d.title || d.discountCode || d.message || 'Product discount');
+    for (const d of buyXGetYDiscounts ?? []) labels.push(d.title || d.discountCode || d.message || 'Buy X get Y');
+    for (const d of freeShippingDiscounts ?? []) labels.push(d.title || d.discountCode || d.message || 'Free shipping');
+    return labels;
+  }, [orderDiscounts, productDiscounts, buyXGetYDiscounts, freeShippingDiscounts]);
 
   const showLoading = !isEditorPreview && loading && lines.length === 0;
   const showEmpty = !showLoading && lines.length === 0;
@@ -239,6 +310,16 @@ export function CartMain({
                 })}
               </div>
             </EditorBlock>
+            {eligibleOfferLabels.length > 0 ? (
+              <div style={{ marginTop: 20 }}>
+                <p style={{ margin: '0 0 8px', fontWeight: 600 }}>Eligible offers</p>
+                <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.85 }}>
+                  {eligibleOfferLabels.map((label) => (
+                    <li key={label}>{label}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <EditorBlock nodeId={`${editorNodeId}:block:cart_summary`} label="Summary">
               <p style={{ marginTop: 24, fontSize: 20, fontWeight: 600 }}>
                 <EditorField

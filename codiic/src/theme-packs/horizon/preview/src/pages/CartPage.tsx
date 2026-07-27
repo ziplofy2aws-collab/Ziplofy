@@ -1,7 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  formatINR,
+  formatMoney,
+  productPath,
+  STOREFRONT_PATHS,
+  useAmountOffOrder,
+  useAmountOffProduct,
+  useBuyXGetY,
+  useFreeShipping,
+  useStorefront,
   useStorefrontAuth,
   useStorefrontCart,
   useThemeConfig,
@@ -26,14 +33,35 @@ export function CartPage() {
   const config = useThemeConfig();
   const isEditorPreview = useThemeEditorPreview();
   const { text, background, primary, fontHeading, fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
   const { user, checkAuth } = useStorefrontAuth();
   const { getAllItems, getCartByCustomerId, updateCartEntry, deleteCartEntry, loading } = useStorefrontCart();
+  const {
+    fetchEligibleDiscounts: fetchOrderDiscounts,
+    eligibleDiscounts: orderDiscounts,
+  } = useAmountOffOrder();
+  const {
+    fetchEligibleDiscounts: fetchProductDiscounts,
+    eligibleDiscounts: productDiscounts,
+  } = useAmountOffProduct();
+  const {
+    fetchEligibleDiscounts: fetchBuyXGetYDiscounts,
+    eligibleDiscounts: buyXGetYDiscounts,
+  } = useBuyXGetY();
+  const {
+    checkEligibleFreeShippingDiscounts,
+    eligibleDiscounts: freeShippingDiscounts,
+  } = useFreeShipping();
   const [qtyDraft, setQtyDraft] = useState<Record<string, string>>({});
 
   const title = cfgString(config, `${SEC}.settings.title`);
   const emptyTitle = cfgString(config, `${SEC}.blocks.empty_state.blocks.empty_message.settings.emptyTitle`);
   const continueLabel = cfgString(config, `${SEC}.blocks.empty_state.blocks.continue_link.settings.label`);
-  const continueHref = cfgString(config, `${SEC}.blocks.empty_state.blocks.continue_link.settings.href`);
+  const continueHref = cfgString(
+    config,
+    `${SEC}.blocks.empty_state.blocks.continue_link.settings.href`,
+    STOREFRONT_PATHS.home
+  );
   const removeLabel = cfgString(config, `${SEC}.blocks.line_items.blocks.item_actions.settings.removeLabel`);
   const loadingLabel = cfgString(config, `${SEC}.blocks.line_items.blocks.item_actions.settings.loadingLabel`);
   const subtotalPrefix = cfgString(config, `${SEC}.blocks.cart_summary.blocks.subtotal.settings.label`);
@@ -62,6 +90,72 @@ export function CartPage() {
     }
     return sub;
   }, [lines]);
+
+  const discountCartItems = useMemo(
+    () =>
+      lines
+        .map((item) => {
+          const v = variantOf(item);
+          if (!v) return null;
+          return {
+            productId: String(v.productId),
+            quantity: item.quantity,
+            price: v.price,
+          };
+        })
+        .filter((x): x is NonNullable<typeof x> => Boolean(x)),
+    [lines]
+  );
+
+  const discountCartKey = useMemo(
+    () =>
+      discountCartItems
+        .map((i) => `${i.productId}:${i.quantity}:${i.price}`)
+        .join('|'),
+    [discountCartItems]
+  );
+
+  useEffect(() => {
+    if (isEditorPreview || !storeFrontMeta?.storeId || discountCartItems.length === 0) return;
+    const storeId = storeFrontMeta.storeId;
+    const customerId = user?._id ?? null;
+    void fetchOrderDiscounts(storeId, customerId, discountCartItems);
+    void fetchProductDiscounts(storeId, customerId, discountCartItems);
+    void fetchBuyXGetYDiscounts(storeId, customerId, discountCartItems);
+    if (customerId) {
+      void checkEligibleFreeShippingDiscounts({
+        storeId,
+        customerId,
+        cartItems: discountCartItems,
+      });
+    }
+  }, [
+    isEditorPreview,
+    storeFrontMeta?.storeId,
+    user?._id,
+    discountCartKey,
+    fetchOrderDiscounts,
+    fetchProductDiscounts,
+    fetchBuyXGetYDiscounts,
+    checkEligibleFreeShippingDiscounts,
+  ]);
+
+  const appliedDiscountLabels = useMemo(() => {
+    const labels: string[] = [];
+    for (const d of orderDiscounts ?? []) {
+      labels.push(d.title || d.discountCode || d.message || 'Order discount');
+    }
+    for (const d of productDiscounts ?? []) {
+      labels.push(d.title || d.discountCode || d.message || 'Product discount');
+    }
+    for (const d of buyXGetYDiscounts ?? []) {
+      labels.push(d.title || d.discountCode || d.message || 'Buy X get Y');
+    }
+    for (const d of freeShippingDiscounts ?? []) {
+      labels.push(d.title || d.discountCode || d.message || 'Free shipping');
+    }
+    return labels;
+  }, [orderDiscounts, productDiscounts, buyXGetYDiscounts, freeShippingDiscounts]);
 
   const showLoading = !isEditorPreview && loading && lines.length === 0;
   const showEmpty = !showLoading && lines.length === 0;
@@ -98,18 +192,19 @@ export function CartPage() {
                 <div style={{ display: 'grid', gap: 12, marginTop: 24 }}>
                   {lines.map((item) => {
                     const v = variantOf(item);
+                    const href = v ? productPath(String(v.productId)) : STOREFRONT_PATHS.allProducts;
                     return (
                       <article key={item._id} style={{ border: `1px solid ${layout.line}`, borderRadius: 10, padding: 16, background }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
                           <div>
                             {v ? (
-                              <Link to={`/product/${v.productId}`} style={{ color: text, fontWeight: 600 }} onClick={(e) => isEditorPreview && e.preventDefault()}>
+                              <Link to={href} style={{ color: text, fontWeight: 600 }} onClick={(e) => isEditorPreview && e.preventDefault()}>
                                 {v.sku}
                               </Link>
                             ) : (
                               <span>Item</span>
                             )}
-                            <p style={{ margin: '8px 0 0' }}>{v ? formatINR(v.price) : '—'} each</p>
+                            <p style={{ margin: '8px 0 0' }}>{v ? formatMoney(v.price) : '—'} each</p>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
                             <input
@@ -145,13 +240,41 @@ export function CartPage() {
                   })}
                 </div>
               </EditorBlock>
+
+              {appliedDiscountLabels.length > 0 ? (
+                <div style={{ marginTop: 20 }}>
+                  <p style={{ margin: '0 0 8px', fontWeight: 600 }}>Eligible offers</p>
+                  <ul style={{ margin: 0, paddingLeft: 18, opacity: 0.85 }}>
+                    {appliedDiscountLabels.map((label) => (
+                      <li key={label}>{label}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+
               <EditorBlock nodeId="template:cart:cart_main:block:cart_summary" label="Summary">
                 <p style={{ marginTop: 24, fontSize: 20, fontWeight: 600 }}>
                   <EditorField fieldPath={`${SEC}.blocks.cart_summary.blocks.subtotal.settings.label`} label="Subtotal prefix" as="span">
                     {subtotalPrefix}
                   </EditorField>{' '}
-                  {formatINR(total)}
+                  {formatMoney(total)}
                 </p>
+                <Link
+                  to="/checkout"
+                  onClick={(e) => isEditorPreview && e.preventDefault()}
+                  style={{
+                    display: 'inline-block',
+                    marginTop: 16,
+                    padding: '12px 20px',
+                    borderRadius: 8,
+                    background: primary,
+                    color: background,
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                  }}
+                >
+                  Checkout
+                </Link>
               </EditorBlock>
             </>
           ) : null}

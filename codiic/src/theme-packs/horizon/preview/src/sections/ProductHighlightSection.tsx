@@ -1,6 +1,6 @@
 import { useEffect, useMemo, type CSSProperties, type ReactNode } from 'react';
 import {
-  formatINR,
+  formatMoney,
   useStorefront,
   useStorefrontProducts,
 } from '@render-store/sdk';
@@ -78,7 +78,7 @@ export function ProductHighlightSection({
   }, [productId, productDetail, products]);
 
   const productTitle = resolvedProduct?.title ?? cachedTitle;
-  const price = resolvedProduct ? formatINR(resolvedProduct.price) : cachedPrice;
+  const price = resolvedProduct ? formatMoney(resolvedProduct.price) : cachedPrice;
   const productImageUrl = resolvedProduct?.imageUrls?.[0] ?? cachedImageUrl;
 
   const scheme = style.scheme;

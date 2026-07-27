@@ -1,7 +1,17 @@
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useParams } from 'react-router-dom';
 import {
+  amountOffOrderSecondaryLine,
+  amountOffProductSecondaryLine,
+  buyXGetYSecondaryLine,
+  dedupeAmountOffOrder,
+  dedupeAmountOffProducts,
+  dedupeBuyXGetY,
+  dedupeFreeShipping,
+  freeShippingSecondaryLine,
+  useProductOffers,
   useStorefront,
+  useStorefrontAuth,
   useStorefrontCart,
   useStorefrontProductVariants,
   useStorefrontProducts,
@@ -71,9 +81,20 @@ export function ProductMain({
   const config = useThemeConfig();
   const { text, background, primary, muted, border, fontHeading, fontBody } = useThemeColors();
   const { storeFrontMeta } = useStorefront();
+  const { user } = useStorefrontAuth();
   const { products, productDetail, fetchProductForRoute, fetchProductById } = useStorefrontProducts();
   const { variants, fetchVariantsByProductId } = useStorefrontProductVariants();
   const { createCartEntry } = useStorefrontCart();
+  const {
+    freeShippingOffers,
+    amountOffOrderOffers,
+    amountOffProductsOffers,
+    buyXGetYOffers,
+    fetchFreeShippingOffersForProduct,
+    fetchAmountOffOrderOffersForProduct,
+    fetchAmountOffProductsOffersForProduct,
+    fetchBuyXGetYOffersForProduct,
+  } = useProductOffers();
   const [adding, setAdding] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
@@ -149,6 +170,22 @@ export function ProductMain({
     void fetchVariantsByProductId(resolvedProductId);
   }, [resolvedProductId, fetchVariantsByProductId]);
 
+  useEffect(() => {
+    if (!resolvedProductId) return;
+    const customerId = user?._id ?? null;
+    void fetchFreeShippingOffersForProduct(resolvedProductId, customerId);
+    void fetchAmountOffOrderOffersForProduct(resolvedProductId, customerId);
+    void fetchAmountOffProductsOffersForProduct(resolvedProductId, customerId);
+    void fetchBuyXGetYOffersForProduct(resolvedProductId, customerId);
+  }, [
+    resolvedProductId,
+    user?._id,
+    fetchFreeShippingOffersForProduct,
+    fetchAmountOffOrderOffersForProduct,
+    fetchAmountOffProductsOffersForProduct,
+    fetchBuyXGetYOffersForProduct,
+  ]);
+
   const selectedVariant = useMemo(
     () => variants[0] ?? productDetail?.variantDetails?.[0],
     [productDetail?.variantDetails, variants]
@@ -189,6 +226,35 @@ export function ProductMain({
     compareAt != null && compareAt > price
       ? formatThemePrice(config, compareAt, 'productCards')
       : null;
+  const offerLines = useMemo(() => {
+    const lineQty = Math.max(1, quantity);
+    const lineSubtotal = price * lineQty;
+    const lines: string[] = [];
+    for (const offer of dedupeFreeShipping(freeShippingOffers)) {
+      const secondary = freeShippingSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.title ?? 'Free shipping'} — ${secondary}` : offer.title ?? 'Free shipping');
+    }
+    for (const offer of dedupeAmountOffOrder(amountOffOrderOffers)) {
+      const secondary = amountOffOrderSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.valueDescription} — ${secondary}` : offer.valueDescription);
+    }
+    for (const offer of dedupeAmountOffProducts(amountOffProductsOffers)) {
+      const secondary = amountOffProductSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.valueDescription} — ${secondary}` : offer.valueDescription);
+    }
+    for (const offer of dedupeBuyXGetY(buyXGetYOffers)) {
+      const secondary = buyXGetYSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.title ?? 'Buy X get Y'} — ${secondary}` : offer.title ?? 'Buy X get Y');
+    }
+    return lines.filter(Boolean).slice(0, 6);
+  }, [
+    freeShippingOffers,
+    amountOffOrderOffers,
+    amountOffProductsOffers,
+    buyXGetYOffers,
+    price,
+    quantity,
+  ]);
   const descriptionHtml = productDetail?.description?.trim() || '';
   const buttonBg = primary || '#111827';
   const buttonFg = contrastOn(buttonBg);
@@ -377,6 +443,21 @@ export function ProductMain({
                             </span>
                           ) : null}
                         </div>
+                        {offerLines.length > 0 ? (
+                          <ul
+                            style={{
+                              margin: '10px 0 0',
+                              paddingLeft: 18,
+                              opacity: 0.85,
+                              lineHeight: 1.45,
+                              fontSize: 13,
+                            }}
+                          >
+                            {offerLines.map((line) => (
+                              <li key={line}>{line}</li>
+                            ))}
+                          </ul>
+                        ) : null}
                       </EditorBlock>
                     ) : null}
                   </div>

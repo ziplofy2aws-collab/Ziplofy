@@ -85,8 +85,42 @@ const StorefrontCartRoute = () => {
   return <Page />;
 };
 
-/** Prefer theme 404 when composer config is present; otherwise a minimal fallback. */
+const StorefrontSearchRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.SearchPage ?? theme.HomePage;
+  return <Page />;
+};
+
+const StorefrontCollectionsListRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.CollectionsListPage ?? theme.HomePage;
+  return (
+    <>
+      <StorefrontCollectionsListLoader />
+      <Page />
+    </>
+  );
+};
+
+const StorefrontAllProductsRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.AllProductsPage ?? theme.HomePage;
+  return (
+    <>
+      <StorefrontCollectionByUrlHandleLoader urlHandleOverride="all" />
+      <Page />
+    </>
+  );
+};
+
+/** Prefer remote theme 404, then composer template 404, else minimal fallback. */
 const StorefrontCatchAllRoute = () => {
+  const theme = useLoadedThemeContract();
+  if (theme.NotFoundPage) {
+    const Page = theme.NotFoundPage;
+    return <Page />;
+  }
+
   const { isStoreCustomTheme, themeConfig, remoteThemeJsUrl } = useStorefront();
   const useComposer = shouldUseComposerRuntime({
     isStoreCustomTheme,
@@ -109,6 +143,58 @@ const StorefrontCatchAllRoute = () => {
   );
 };
 
+
+const StorefrontBlogListRoute = () => {
+  const theme = useLoadedThemeContract();
+  if (theme.BlogPage) {
+    const Page = theme.BlogPage;
+    return (
+      <>
+        <StorefrontBlogByUrlHandleLoader />
+        <Page />
+      </>
+    );
+  }
+  return (
+    <StorefrontBlogContentShell>
+      <StorefrontBlogByUrlHandleLoader />
+      <StorefrontBlogPage />
+    </StorefrontBlogContentShell>
+  );
+};
+
+
+const StorefrontBlogPostRoute = () => {
+  const theme = useLoadedThemeContract();
+  if (theme.BlogPostPage) {
+    const Page = theme.BlogPostPage;
+    return (
+      <>
+        <StorefrontBlogPostByUrlHandleLoader />
+        <Page />
+      </>
+    );
+  }
+  return (
+    <StorefrontBlogContentShell>
+      <StorefrontBlogPostByUrlHandleLoader />
+      <StorefrontBlogPostPage />
+    </StorefrontBlogContentShell>
+  );
+};
+
+
+const StorefrontCollectionDetailRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.CollectionPage ?? theme.HomePage;
+  return (
+    <>
+      <StorefrontCollectionByUrlHandleLoader />
+      <Page />
+    </>
+  );
+};
+
 export const StorefrontRoutes = () => (
   <Router>
     <StorefrontSeoManager />
@@ -116,37 +202,13 @@ export const StorefrontRoutes = () => (
       <Route path="/" element={<StorefrontHomeRoute />} />
 
       {/* Catalog: all products */}
-      <Route
-        path="/collections/all"
-        element={
-          <>
-            <StorefrontCollectionByUrlHandleLoader urlHandleOverride="all" />
-            <StorefrontHomeRoute />
-          </>
-        }
-      />
+      <Route path="/collections/all" element={<StorefrontAllProductsRoute />} />
 
       {/* Catalog: all collections index */}
-      <Route
-        path="/collections"
-        element={
-          <>
-            <StorefrontCollectionsListLoader />
-            <StorefrontHomeRoute />
-          </>
-        }
-      />
+      <Route path="/collections" element={<StorefrontCollectionsListRoute />} />
 
       {/* Catalog: single collection */}
-      <Route
-        path="/collection/:urlHandle"
-        element={
-          <>
-            <StorefrontCollectionByUrlHandleLoader />
-            <StorefrontHomeRoute />
-          </>
-        }
-      />
+      <Route path="/collection/:urlHandle" element={<StorefrontCollectionDetailRoute />} />
 
       {/* Catalog: single product */}
       <Route
@@ -177,25 +239,9 @@ export const StorefrontRoutes = () => (
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
       <Route path="/checkout/payment-confirmation" element={<CheckoutPaymentConfirmationPage />} />
-      <Route path="/search" element={<StorefrontHomeRoute />} />
-      <Route
-        path="/blogs/:blogHandle/:articleHandle"
-        element={
-          <StorefrontBlogContentShell>
-            <StorefrontBlogPostByUrlHandleLoader />
-            <StorefrontBlogPostPage />
-          </StorefrontBlogContentShell>
-        }
-      />
-      <Route
-        path="/blogs/:blogHandle"
-        element={
-          <StorefrontBlogContentShell>
-            <StorefrontBlogByUrlHandleLoader />
-            <StorefrontBlogPage />
-          </StorefrontBlogContentShell>
-        }
-      />
+      <Route path="/search" element={<StorefrontSearchRoute />} />
+      <Route path="/blogs/:blogHandle/:articleHandle" element={<StorefrontBlogPostRoute />} />
+      <Route path="/blogs/:blogHandle" element={<StorefrontBlogListRoute />} />
       <Route path="/404" element={<StorefrontCatchAllRoute />} />
       <Route path="*" element={<StorefrontCatchAllRoute />} />
     </Routes>
