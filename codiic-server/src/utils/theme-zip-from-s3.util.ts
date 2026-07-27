@@ -69,6 +69,14 @@ function catalogCacheRoot(themeId: string): string {
   return path.join(tmpdir(), 'codiic-catalog-themes', themeId);
 }
 
+/** Drop local S3→disk cache so preview/runtime picks up replaced catalog assets. */
+export function invalidateCatalogThemeCache(themeId: string): void {
+  const cacheRoot = catalogCacheRoot(themeId);
+  if (fs.existsSync(cacheRoot)) {
+    fs.rmSync(cacheRoot, { recursive: true, force: true });
+  }
+}
+
 /** Download catalog theme from S3 to temp (preview / storefront render only — not on install). */
 export async function ensureCatalogThemeCodeDir(theme: {
   _id: unknown;

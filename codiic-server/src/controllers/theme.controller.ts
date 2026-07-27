@@ -8,9 +8,6 @@ import { InstalledThemes } from "../models/installed-themes.model";
 import { Theme } from "../models/theme.model";
 import { CustomTheme } from "../models/custom-theme.model";
 import { Store } from "../models/store/store.model";
-import { EditVerificationOtp } from "../models/edit-verification-otp.model";
-import { Role } from "../models/role.model";
-import { User } from "../models/user.model";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { logActivity } from "../utils/activity-log.utils";
 import { canonicalStoreRef, storeAndUserScopeOr } from "../utils/installed-themes-query.util";
@@ -20,13 +17,19 @@ import {
   collectCatalogAssetKeysAsync,
   deleteS3Keys,
   downloadS3KeyToFile,
+  listAllObjectKeysUnderPrefix,
   promoteStagingAuxiliaryToCatalog,
   promoteStagingThemeAssetsToCatalog,
   promoteStagingThemeFolderToCatalog,
   publicObjectUrlForKey,
   stagingThemeFileKey,
 } from "../utils/theme-s3-ingest";
-import { downloadS3PrefixToLocalDir, downloadS3ZipAndExtractToDir } from "../utils/theme-zip-from-s3.util";
+import {
+  downloadS3PrefixToLocalDir,
+  downloadS3ZipAndExtractToDir,
+  ensureCatalogThemeCodeDir,
+  invalidateCatalogThemeCache,
+} from "../utils/theme-zip-from-s3.util";
 import { listInstalledThemesForStore, resolveInstalledThemesStoreId } from "../utils/installed-themes-list.util";
 import { catalogPublicUrlForRelativePath } from "../utils/storefront-liquid.util";
 import {
@@ -45,7 +48,6 @@ import {
   normalizeStoreOverrides,
   resolveStoreThemeConfig,
 } from "../utils/theme-pack.util";
-import { ensureCatalogThemeCodeDir } from "../utils/theme-zip-from-s3.util";
 import { StoreThemeConfig } from "../models/store-theme-config.model";
 import {
   loadCatalogThemeEditorPack,
@@ -499,17 +501,18 @@ export const updateTheme = asyncErrorHandler(async (req: Request, res: Response)
     isActive,
   } = req.body as UpdateThemeBody;
 
-  const updateData: any = {
-    name,
-    description,
-    category,
-    plan,
-    price,
-    version,
-    tags: tags ? tags.split(",").map((tag) => tag.trim()) : undefined,
-    isActive,
-    updatedAt: new Date(),
-  };
+  const updateData: Record<string, unknown> = { updatedAt: new Date() };
+  if (name !== undefined) updateData.name = name;
+  if (description !== undefined) updateData.description = description;
+  if (category !== undefined) updateData.category = category;
+  if (plan !== undefined) updateData.plan = plan;
+  if (price !== undefined) updateData.price = price;
+  if (version !== undefined) updateData.version = version;
+  if (tags !== undefined) {
+    updateData.tags =
+      typeof tags === "string" ? tags.split(",").map((tag) => tag.trim()).filter(Boolean) : tags;
+  }
+  if (isActive !== undefined) updateData.isActive = isActive;
 
   const theme = await Theme.findByIdAndUpdate(id, updateData, {
     new: true,
@@ -526,44 +529,226 @@ export const updateTheme = asyncErrorHandler(async (req: Request, res: Response)
     entityId: id,
     entityName: theme.name,
     summary: `Updated theme "${theme.name}"`,
-    details: { themeId: id, updates: { name, description, category, plan, price, version, tags, isActive } },
+    details: { themeId: id, updates: updateData },
   }).catch(() => {});
 
   res.status(200).json({
     success: true,
-    data: theme,
+    data: formatThemeForClient(theme),
+    message: "Theme updated successfully",
+  });
+});
+
+interface UpdateThemeFromS3Body {
+  name?: string;
+  description?: string;
+  category?: string;
+  plan?: string;
+  price?: number;
+  version?: string;
+  tags?: string;
+  isActive?: boolean;
+  s3SessionId?: string;
+  s3?: {
+    files?: { key: string; relativePath: string }[];
+    thumbnailKey?: string;
+    reactJsKey?: string;
+    reactCssKey?: string;
+    themeSchemaKey?: string;
+    themeDefaultConfigKey?: string;
+    themeManifestKey?: string;
+  };
+}
+
+/**
+ * Update catalog theme metadata and/or replace S3 assets (folder, remote dist, editor JSON, thumbnail).
+ * Browser stages new files with the same presigned flow as create, then this promotes into themes/catalog/{id}/.
+ */
+export const updateThemeFromS3 = asyncErrorHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.id as string | undefined;
+  if (!userId) throw new CustomError("Unauthorized", 401);
+
+  const { id } = req.params as unknown as UpdateThemeParams;
+  const {
+    name,
+    description,
+    category,
+    plan,
+    price,
+    version,
+    tags,
+    isActive,
+    s3SessionId,
+    s3,
+  } = req.body as UpdateThemeFromS3Body;
+
+  const theme = await Theme.findById(id);
+  if (!theme) throw new CustomError("Theme not found", 404);
+
+  const hasS3Payload = s3 && typeof s3 === "object";
+  const hasFiles = Boolean(hasS3Payload && Array.isArray(s3!.files) && s3!.files!.length > 0);
+  const hasAux = Boolean(
+    hasS3Payload &&
+      (s3!.thumbnailKey ||
+        s3!.reactJsKey ||
+        s3!.reactCssKey ||
+        s3!.themeSchemaKey ||
+        s3!.themeDefaultConfigKey ||
+        s3!.themeManifestKey)
+  );
+
+  if ((hasFiles || hasAux) && (!s3SessionId || typeof s3SessionId !== "string")) {
+    throw new CustomError("s3SessionId is required when replacing theme files", 400);
+  }
+
+  let stagingKeys: string[] = [];
+  const nextS3Assets: Record<string, unknown> = {
+    ...((theme.s3Assets as any)?.toObject?.() ?? theme.s3Assets ?? {}),
+  };
+  let assetsChanged = false;
+
+  try {
+    if (hasFiles) {
+      const files = s3!.files as { key: string; relativePath: string }[];
+      for (const f of files) {
+        if (!f.key || typeof f.key !== "string" || !f.relativePath || typeof f.relativePath !== "string") {
+          throw new CustomError("Each s3.files entry requires key and relativePath", 400);
+        }
+        const expected = stagingThemeFileKey(userId, s3SessionId!, f.relativePath);
+        if (f.key !== expected) {
+          throw new CustomError("s3.files key does not match relativePath for this session", 400);
+        }
+      }
+
+      const folderStaging = assertStagingFolderAndAuxiliaryKeys(
+        files,
+        {},
+        userId,
+        s3SessionId!
+      );
+      stagingKeys.push(...folderStaging);
+
+      const themeFolderPrefix = `themes/catalog/${id}/theme/`;
+      try {
+        const oldKeys = await listAllObjectKeysUnderPrefix(themeFolderPrefix);
+        if (oldKeys.length) await deleteS3Keys(oldKeys);
+      } catch (delOldErr) {
+        console.warn("[updateThemeFromS3] Failed to clear previous theme folder:", delOldErr);
+      }
+
+      if ((nextS3Assets as { zip?: { key?: string } }).zip?.key) {
+        try {
+          await deleteS3Keys([(nextS3Assets as { zip: { key: string } }).zip.key]);
+        } catch {
+          /* ignore */
+        }
+        delete (nextS3Assets as { zip?: unknown }).zip;
+      }
+
+      const folderPart = await promoteStagingThemeFolderToCatalog(
+        id,
+        files.map((f) => ({ key: f.key, relativePath: f.relativePath }))
+      );
+      nextS3Assets.contentRoot = folderPart.contentRoot;
+      assetsChanged = true;
+    }
+
+    if (hasAux) {
+      const auxKeys = {
+        thumbnailKey: s3!.thumbnailKey,
+        reactJsKey: s3!.reactJsKey,
+        reactCssKey: s3!.reactCssKey,
+        themeSchemaKey: s3!.themeSchemaKey,
+        themeDefaultConfigKey: s3!.themeDefaultConfigKey,
+        themeManifestKey: s3!.themeManifestKey,
+      };
+      const auxStaging = assertStagingFolderAndAuxiliaryKeys([], auxKeys, userId, s3SessionId!);
+      stagingKeys.push(...auxStaging);
+
+      const oldThumbKey = (nextS3Assets.thumbnail as { key?: string } | undefined)?.key;
+      const aux = await promoteStagingAuxiliaryToCatalog(id, auxKeys);
+      Object.assign(nextS3Assets, aux);
+
+      // Thumbnail dest key can change extension — remove previous object if different.
+      if (
+        aux.thumbnail?.key &&
+        oldThumbKey &&
+        oldThumbKey !== aux.thumbnail.key
+      ) {
+        try {
+          await deleteS3Keys([oldThumbKey]);
+        } catch {
+          /* ignore */
+        }
+      }
+      assetsChanged = true;
+    }
+  } catch (promoteErr: any) {
+    console.error("[updateThemeFromS3] promote staging → catalog failed:", promoteErr);
+    if (promoteErr instanceof CustomError) throw promoteErr;
+    throw new CustomError(
+      `Could not update theme files in S3: ${promoteErr?.message || "unknown error"}`,
+      500
+    );
+  }
+
+  if (name !== undefined) theme.name = name;
+  if (description !== undefined) theme.description = description;
+  if (category !== undefined) theme.category = category;
+  if (plan !== undefined) theme.plan = plan;
+  if (price !== undefined) theme.price = price;
+  if (version !== undefined) theme.version = version;
+  if (tags !== undefined) {
+    theme.tags =
+      typeof tags === "string" ? tags.split(",").map((t) => t.trim()).filter(Boolean) : (tags as any);
+  }
+  if (isActive !== undefined) theme.isActive = isActive;
+  if (assetsChanged) {
+    theme.s3Assets = nextS3Assets as any;
+    theme.markModified("s3Assets");
+  }
+  theme.updatedAt = new Date();
+  await theme.save();
+
+  if (stagingKeys.length) {
+    try {
+      await deleteS3Keys(stagingKeys);
+    } catch (delErr) {
+      console.warn("[updateThemeFromS3] Failed to delete staging S3 keys:", delErr);
+    }
+  }
+
+  if (assetsChanged) {
+    invalidateCatalogThemeCache(id);
+  }
+
+  const themeResponse = await Theme.findById(theme._id).populate("uploadBy", "name email");
+
+  logActivity(req, {
+    action: "theme_update",
+    entityType: "theme",
+    entityId: id,
+    entityName: theme.name,
+    summary: `Updated theme "${theme.name}"${assetsChanged ? " (assets replaced)" : ""}`,
+    details: {
+      themeId: id,
+      assetsChanged,
+      replacedFolder: hasFiles,
+      replacedAux: hasAux,
+    },
+  }).catch(() => {});
+
+  res.status(200).json({
+    success: true,
+    data: themeResponse ? formatThemeForClient(themeResponse) : null,
+    message: assetsChanged
+      ? "Theme and assets updated successfully"
+      : "Theme updated successfully",
   });
 });
 
 export const deleteTheme = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { editOtp } = (req.body as { editOtp?: string }) || {};
-
-  // OTP required for all users (including super-admin) - sent to super-admin email
-  const otp = editOtp || req.headers["x-edit-otp"];
-  if (!otp || typeof otp !== "string") {
-    throw new CustomError("Edit verification OTP is required. Request OTP to be sent to super-admin email.", 403);
-  }
-
-  const superAdminRole = await Role.findOne({ name: "super-admin" });
-  if (!superAdminRole) throw new CustomError("Super-admin role not found", 500);
-  const superAdminUser = await User.findOne({ role: superAdminRole._id });
-  if (!superAdminUser) throw new CustomError("No super-admin found", 500);
-  const superAdminEmail = superAdminUser.email;
-
-  const otpRecord = await EditVerificationOtp.findOne({ email: superAdminEmail });
-  if (!otpRecord) throw new CustomError("OTP expired or not found. Please request a new code.", 400);
-  if (otpRecord.expiresAt < new Date()) {
-    await EditVerificationOtp.deleteMany({ email: superAdminEmail });
-    throw new CustomError("OTP expired. Please request a new code.", 400);
-  }
-  if (otpRecord.code !== otp.trim()) {
-    otpRecord.attempts += 1;
-    await otpRecord.save();
-    throw new CustomError("Invalid verification code", 400);
-  }
-
-  await EditVerificationOtp.deleteMany({ email: superAdminEmail });
 
   console.log('🗑️ Delete theme request received:', { 
     themeId: id, 

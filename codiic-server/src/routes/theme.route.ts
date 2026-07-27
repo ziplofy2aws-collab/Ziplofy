@@ -17,6 +17,7 @@ import {
   serveThemePreviewFiles,
   uninstallTheme,
   updateTheme,
+  updateThemeFromS3,
   listThemeFiles,
   readThemeFile,
   saveUserFileEdit,
@@ -77,6 +78,13 @@ themeRouter.route("/:themeId/save-edit").post(saveUserFileEdit);
 
 // Legacy multipart catalog upload removed — returns 410 Gone
 themeRouter.route("/").post(authorizePermission("Theme Management", "upload"), createTheme);
+
+// Replace catalog assets via staging S3 (must be before generic PUT /:id)
+themeRouter.post(
+  "/:id/from-s3",
+  authorizePermission("Theme Management", "edit"),
+  updateThemeFromS3
+);
 
 themeRouter
   .route("/:id")

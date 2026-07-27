@@ -38,6 +38,9 @@ export interface ThemeCatalogS3Assets {
   thumbnail?: ThemeS3AssetPart;
   reactThemeJs?: ThemeS3AssetPart;
   reactThemeCss?: ThemeS3AssetPart;
+  reactThemeSchema?: ThemeS3AssetPart;
+  reactThemeDefaultConfig?: ThemeS3AssetPart;
+  reactThemeManifest?: ThemeS3AssetPart;
 }
 
 export interface ThemeUploadByUser {
@@ -144,7 +147,35 @@ export interface CreateThemeFromS3Payload {
   };
 }
 
+/** Body for POST /api/themes/:id/from-s3 — metadata and/or selective S3 asset replace. */
+export interface UpdateThemeFromS3Payload {
+  name?: string;
+  description?: string;
+  category?: string;
+  plan?: string;
+  price?: number;
+  version?: string;
+  tags?: string;
+  isActive?: boolean;
+  s3SessionId?: string;
+  s3?: {
+    files?: { key: string; relativePath: string }[];
+    thumbnailKey?: string;
+    reactJsKey?: string;
+    reactCssKey?: string;
+    themeSchemaKey?: string;
+    themeDefaultConfigKey?: string;
+    themeManifestKey?: string;
+  };
+}
+
 export interface CreateThemeFromS3ApiResponse {
+  success: boolean;
+  message?: string;
+  data?: ThemeApiRecord | null;
+}
+
+export interface UpdateThemeFromS3ApiResponse {
   success: boolean;
   message?: string;
   data?: ThemeApiRecord | null;
@@ -219,6 +250,10 @@ type ThemesContextValue = {
   createThemeFromS3: (
     payload: CreateThemeFromS3Payload
   ) => Promise<AxiosResponse<CreateThemeFromS3ApiResponse>>;
+  updateThemeFromS3: (
+    themeId: string,
+    payload: UpdateThemeFromS3Payload
+  ) => Promise<AxiosResponse<UpdateThemeFromS3ApiResponse>>;
   getThemesList: (params?: GetThemesListParams) => Promise<AxiosResponse<GetThemesListApiResponse>>;
   getThemeById: (themeId: string) => Promise<AxiosResponse<GetThemeApiResponse>>;
   /** GET /themes + map to admin UI rows. */
@@ -231,6 +266,10 @@ const ThemesContext = createContext<ThemesContextValue | undefined>(undefined);
 export const ThemesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const createThemeFromS3 = useCallback(async (payload: CreateThemeFromS3Payload) => {
     return axiosi.post<CreateThemeFromS3ApiResponse>("/themes/from-s3", payload);
+  }, []);
+
+  const updateThemeFromS3 = useCallback(async (themeId: string, payload: UpdateThemeFromS3Payload) => {
+    return axiosi.post<UpdateThemeFromS3ApiResponse>(`/themes/${themeId}/from-s3`, payload);
   }, []);
 
   const getThemesList = useCallback(async (params?: GetThemesListParams) => {
@@ -266,12 +305,13 @@ export const ThemesProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const value = useMemo<ThemesContextValue>(
     () => ({
       createThemeFromS3,
+      updateThemeFromS3,
       getThemesList,
       getThemeById,
       fetchAdminThemesList,
       mapThemeApiToAdminListItem,
     }),
-    [createThemeFromS3, getThemesList, getThemeById, fetchAdminThemesList]
+    [createThemeFromS3, updateThemeFromS3, getThemesList, getThemeById, fetchAdminThemesList]
   );
 
   return <ThemesContext.Provider value={value}>{children}</ThemesContext.Provider>;

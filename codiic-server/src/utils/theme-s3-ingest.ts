@@ -344,6 +344,37 @@ export async function promoteStagingAuxiliaryToCatalog(
 }
 
 /**
+ * Folder uploads via `webkitdirectory` keep the selected folder name in each
+ * relative path (e.g. `Gromming/index.html`). `contentRoot` must point at the
+ * directory that contains `index.html`, not the bare `theme/` staging prefix.
+ */
+export function resolveThemeContentRootSuffix(
+  files: { relativePath: string }[]
+): string {
+  const paths = files
+    .map((f) => sanitizeThemeRelativePath(f.relativePath))
+    .filter(Boolean);
+  if (paths.length === 0) return '';
+
+  const indexPaths = paths.filter(
+    (p) => path.posix.basename(p).toLowerCase() === 'index.html'
+  );
+  if (indexPaths.length > 0) {
+    indexPaths.sort((a, b) => a.split('/').length - b.split('/').length);
+    const dir = path.posix.dirname(indexPaths[0]);
+    return dir === '.' ? '' : dir;
+  }
+
+  const firstSegs = paths.map((p) => p.split('/')[0]);
+  const uniqueFirst = Array.from(new Set(firstSegs));
+  if (uniqueFirst.length === 1 && paths.every((p) => p.includes('/'))) {
+    return uniqueFirst[0];
+  }
+
+  return '';
+}
+
+/**
  * Copy staged static theme files into `themes/catalog/{themeId}/theme/…`.
  */
 export async function promoteStagingThemeFolderToCatalog(
@@ -359,9 +390,11 @@ export async function promoteStagingThemeFolderToCatalog(
     await copyS3ObjectSameBucket(f.key, destKey);
     count += 1;
   }
+  const suffix = resolveThemeContentRootSuffix(files);
+  const contentRootPrefix = suffix ? `${base}${suffix}/` : base;
   return {
     contentRoot: {
-      prefix: base,
+      prefix: contentRootPrefix,
       fileCount: count,
       uploadedAt: stamp,
     },

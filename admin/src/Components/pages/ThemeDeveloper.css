@@ -8,6 +8,10 @@
   overflow: hidden;
 }
 
+.theme-developer-enhanced .theme-card:has(.action-dropdown) {
+  overflow: visible;
+}
+
 .theme-card-header {
   display: flex;
   align-items: flex-start;
@@ -265,7 +269,7 @@
 .theme-card-enhanced {
   background: var(--td-card);
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--td-border);
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -276,8 +280,10 @@
   flex-direction: column;
 }
 
-.theme-card-enhanced:has(.action-dropdown) {
+.theme-card-enhanced:has(.action-dropdown),
+.theme-card-enhanced.is-dropdown-open {
   z-index: 50;
+  overflow: visible;
 }
 
 .theme-card-enhanced:hover {
@@ -985,6 +991,18 @@
   box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15);
   z-index: 1100;
   overflow: hidden;
+}
+
+/* Grid cards: menu sits at the bottom — open upward so Delete isn't clipped */
+.theme-card-action-dropdown .action-dropdown {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.table-container-enhanced:has(.action-dropdown) {
+  overflow: visible;
 }
 
 .action-item {

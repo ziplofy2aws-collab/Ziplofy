@@ -26,7 +26,6 @@ import { DateRange, Range } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { PermissionGate } from "../PermissionGate";
-import { EditVerificationModal } from "../EditVerificationModal";
 import { usePermissions } from "../../hooks/usePermissions";
 import axiosi from "../../config/axios";
 import { useAwsUpload } from "../../contexts/aws-upload.context";
@@ -102,8 +101,6 @@ const ThemeDeveloper: React.FC = () => {
   const [loadingThemes, setLoadingThemes] = useState<boolean>(true);
   const [deletingThemeId, setDeletingThemeId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
-  const [pendingDeleteTheme, setPendingDeleteTheme] = useState<{ themeId: string; themeName: string } | null>(null);
 
   // Permission checking
   const { hasViewPermission, hasEditPermission, hasUploadPermission } = usePermissions();
@@ -273,7 +270,7 @@ const ThemeDeveloper: React.FC = () => {
   };
 
   // Execute theme deletion with OTP (called after OTP verification)
-  const executeDeleteTheme = async (themeId: string, themeName: string, otp: string) => {
+  const executeDeleteTheme = async (themeId: string, themeName: string) => {
     const adminToken = localStorage.getItem('admin_token');
     if (!adminToken) {
       alert('Authentication required. Please log in again.');
@@ -285,9 +282,7 @@ const ThemeDeveloper: React.FC = () => {
 
     try {
       const response = await axiosi.delete(`/themes/${themeId}`, {
-        data: { editOtp: otp },
         headers: {
-          "X-Edit-Otp": otp,
           "Content-Type": "application/json",
           Authorization: `Bearer ${adminToken}`,
         },
@@ -326,7 +321,6 @@ const ThemeDeveloper: React.FC = () => {
     }
   };
 
-  // Handle theme deletion - show OTP modal first
   const handleDeleteTheme = (themeId: string, themeName: string) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete the theme "${themeName}"? This action cannot be undone and will remove the theme from the database and all associated files.`
@@ -339,16 +333,7 @@ const ThemeDeveloper: React.FC = () => {
       return;
     }
 
-    setPendingDeleteTheme({ themeId, themeName });
-    setShowOtpModal(true);
-  };
-
-  const handleOtpVerified = (otp: string) => {
-    setShowOtpModal(false);
-    if (pendingDeleteTheme) {
-      executeDeleteTheme(pendingDeleteTheme.themeId, pendingDeleteTheme.themeName, otp);
-      setPendingDeleteTheme(null);
-    }
+    void executeDeleteTheme(themeId, themeName);
   };
 
   // Handle form submission
@@ -956,7 +941,10 @@ const ThemeDeveloper: React.FC = () => {
             </div>
           ) : (
             filteredThemes.map((theme) => (
-              <div key={theme._id} className="theme-card-enhanced">
+              <div
+                key={theme._id}
+                className={`theme-card-enhanced${activeActionDropdown === theme._id ? " is-dropdown-open" : ""}`}
+              >
                 <div className="theme-card-thumb-wrap">
                   <img
                     src={getThumbnailSrc(theme)}
@@ -1466,15 +1454,6 @@ const ThemeDeveloper: React.FC = () => {
         </div>
       )}
 
-      <EditVerificationModal
-        isOpen={showOtpModal}
-        onClose={() => {
-          setShowOtpModal(false);
-          setPendingDeleteTheme(null);
-        }}
-        onVerified={handleOtpVerified}
-        requireVerification={true}
-      />
       </div>
     </div>
   );
