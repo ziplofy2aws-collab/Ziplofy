@@ -1165,6 +1165,29 @@ export const uninstallTheme = asyncErrorHandler(async (req: Request, res: Respon
 });
 
 // Theme preview functionality
+function injectHtmlBaseHref(html: string, baseHref: string): string {
+  const base = baseHref.endsWith("/") ? baseHref : `${baseHref}/`;
+  const baseTag = `<base href="${base}">`;
+  let out = html;
+  if (/<base\b[^>]*>/i.test(out)) {
+    out = out.replace(/<base\b[^>]*>/i, baseTag);
+  } else if (/<head[^>]*>/i.test(out)) {
+    out = out.replace(/<head[^>]*>/i, (m) => `${m}\n    ${baseTag}`);
+  } else {
+    out = `${baseTag}\n${out}`;
+  }
+  // Root-relative paths ignore <base>; point them at the same asset root.
+  out = out.replace(
+    /\b(src|href|poster)=(["'])\/(?!\/)([^"']*)\2/gi,
+    (_m, attr: string, q: string, p: string) => `${attr}=${q}${base}${p}${q}`
+  );
+  out = out.replace(
+    /url\(\s*(['"]?)\/(?!\/)([^)"']+)\1\s*\)/gi,
+    (_m, q: string, p: string) => `url(${q}${base}${p}${q})`
+  );
+  return out;
+}
+
 export const getThemePreview = asyncErrorHandler(async (req: Request, res: Response) => {
   const { themeId } = req.params;
   
@@ -1190,13 +1213,21 @@ export const getThemePreview = asyncErrorHandler(async (req: Request, res: Respo
     throw new CustomError("Theme preview not available - index.html not found", 404);
   }
 
-  // Read the HTML content
-  let htmlContent = fs.readFileSync(themeIndexPath, 'utf8');
-  
-  // Update relative paths to work with our preview endpoint
-  const baseUrl = `${req.protocol}://${req.get('host')}/api/themes/preview/${themeId}`;
-  htmlContent = htmlContent.replace(/src="(?!http)([^"]+)"/g, `src="${baseUrl}/$1"`);
-  htmlContent = htmlContent.replace(/href="(?!http)([^"]+)"/g, `href="${baseUrl}/$1"`);
+  let htmlContent = fs.readFileSync(themeIndexPath, "utf8");
+
+  // Relative assets must resolve like opening index.html on S3.
+  // Without a trailing-slash base, `/preview/:id` makes `assets/x` resolve to
+  // `/preview/assets/x` (theme id dropped) — so some images 404 while others
+  // that were manually rewritten still work.
+  const contentPrefix = theme.s3Assets?.contentRoot?.prefix;
+  let baseHref: string;
+  if (contentPrefix) {
+    const root = contentPrefix.endsWith("/") ? contentPrefix : `${contentPrefix}/`;
+    baseHref = publicObjectUrlForKey(root);
+  } else {
+    baseHref = `${req.protocol}://${req.get("host")}/api/themes/preview/${themeId}/`;
+  }
+  htmlContent = injectHtmlBaseHref(htmlContent, baseHref);
   
   // Set appropriate headers for HTML content
   res.setHeader('Content-Type', 'text/html');
@@ -1204,6 +1235,7 @@ export const getThemePreview = asyncErrorHandler(async (req: Request, res: Respo
   res.setHeader('Content-Security-Policy', "frame-ancestors *");
   res.send(htmlContent);
 });
+
 
 // Recursively list files in directory (relative to baseDir)
 function listFilesRecursive(baseDir: string, relative: string = ""): string[] {
@@ -1305,8 +1337,21 @@ export const serveThemePreviewFiles = asyncErrorHandler(async (req: Request, res
     throw new CustomError("Theme is not available for preview", 403);
   }
 
+  const rel = String(filePath).replace(/^\/+/, "").replace(/\\/g, "/");
+  if (!rel || rel.includes("..")) {
+    throw new CustomError("Access denied", 403);
+  }
+
+  // Folder themes: serve from public S3 content root (same URLs as opening index.html on S3).
+  const contentPrefix = theme.s3Assets?.contentRoot?.prefix;
+  if (contentPrefix) {
+    const root = contentPrefix.endsWith("/") ? contentPrefix : `${contentPrefix}/`;
+    const publicUrl = publicObjectUrlForKey(`${root}${rel}`);
+    return res.redirect(302, publicUrl);
+  }
+
   const codeDir = await ensureCatalogThemeCodeDir(theme);
-  const fullFilePath = path.join(codeDir, filePath);
+  const fullFilePath = path.join(codeDir, rel);
 
   const themeDir = path.resolve(codeDir);
   const requestedFile = path.resolve(fullFilePath);
@@ -1337,6 +1382,8 @@ export const serveThemePreviewFiles = asyncErrorHandler(async (req: Request, res
     '.jpeg': 'image/jpeg',
     '.gif': 'image/gif',
     '.svg': 'image/svg+xml',
+    '.webp': 'image/webp',
+    '.avif': 'image/avif',
     '.ico': 'image/x-icon',
     '.woff': 'font/woff',
     '.woff2': 'font/woff2',
