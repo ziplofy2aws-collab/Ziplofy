@@ -15,11 +15,21 @@ function storefrontPublicBase(appOrigin: string): string {
  * in the same `const` list before `limit` is bound from `useMemo` → TDZ
  * (`Cannot access 'f' before initialization` in Featured Collection).
  * Inline the `productsToShow` read when that pattern is detected.
+ *
+ * Only rewrites **call sites**. Never touch `function foo({ collectionHandle, limit })`
+ * parameter lists — replacing `limit: t` with `limit: 8` there is a SyntaxError
+ * (`Invalid destructuring assignment target`).
  */
 export function patchRemoteThemeFeaturedCollectionLimitTdZ(source: string): string {
   return source.replace(
     /(\w+)\(\{\s*collectionHandle:\s*(\w+),\s*limit:\s*(\w+)\s*\}\)/g,
     (full, hookFn: string, handleVar: string, limitVar: string, offset: number) => {
+      const before = source.slice(Math.max(0, offset - 48), offset);
+      // Skip function parameter destructuring: `function zd({ collectionHandle: e, limit: t })`
+      if (/\bfunction\s*$/.test(before) || /\bfunction\s+\w+\s*$/.test(before)) {
+        return full;
+      }
+
       const after = source.slice(offset + full.length, offset + full.length + 4000);
       if (!new RegExp(`\\blimit:\\s*${limitVar}\\b`).test(after)) return full;
 

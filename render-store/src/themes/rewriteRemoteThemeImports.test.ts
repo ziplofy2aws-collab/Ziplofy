@@ -38,4 +38,19 @@ describe('rewriteRemoteThemeImports', () => {
     expect(out).toContain('limit: Math.max(1, x(i, `${s}.productsToShow`, 8)) })');
     expect(out).toContain('{ limit: f } = $');
   });
+
+  it('does not rewrite function parameter destructuring (would be Invalid destructuring assignment target)', () => {
+    const source = [
+      'function zd({',
+      '  collectionHandle: e,',
+      '  limit: t',
+      '}) {',
+      '  return ie(() => { a(i, s, { page: 1, limit: t }); });',
+      '}',
+      'const D = zd({ collectionHandle: F, limit: H }).slice(0, H);',
+    ].join('\n');
+    const out = patchRemoteThemeFeaturedCollectionLimitTdZ(source);
+    expect(out).toContain('limit: t\n})');
+    expect(out).not.toMatch(/function zd\(\{[\s\S]*?limit:\s*8/);
+  });
 });
