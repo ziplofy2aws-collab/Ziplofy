@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   ArrowTopRightOnSquareIcon,
-  ComputerDesktopIcon,
   DevicePhoneMobileIcon,
 } from '@heroicons/react/24/outline';
 import { useStore } from '../../contexts/store.context';
@@ -26,7 +25,6 @@ import {
   type ThemeBlockCatalogApi,
 } from '../../components/themes/theme-editor-sidebar/theme-block-catalog.adapter';
 import ThemeEditorPagePicker from '../../components/themes/ThemeEditorPagePicker';
-import ThemeEditorLiveConfigModal from '../../components/themes/ThemeEditorLiveConfigModal';
 import { findPageMenuItemByPreview, buildThemeEditorPageMenu } from '../../utils/theme-editor-page-menu';
 import {
   buildThemeEditorSelectionHints,
@@ -154,7 +152,6 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     beforeNodeId?: string;
   } | null>(null);
   const [insertHoverHighlight, setInsertHoverHighlight] = useState<SectionInsertContext | null>(null);
-  const [showEditJson, setShowEditJson] = useState(false);
 
   const openAddSectionModal = useCallback((ctx: SectionInsertContext) => {
     setAddBlockTarget(null);
@@ -788,40 +785,15 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           ) : null}
           <button
             type="button"
-            onClick={() => setShowEditJson(true)}
-            disabled={!defaultConfig || !editorSchema}
-            className="hidden h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 sm:inline-flex"
-            title={
-              staticDevMode
-                ? 'View live theme JSON (saved to localStorage on Save)'
-                : 'View live theme JSON (saved to store on Save)'
-            }
+            onClick={() => setDevice((d) => (d === 'mobile' ? 'desktop' : 'mobile'))}
+            className={`create-theme-device-toggle flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 ${
+              device === 'mobile' ? 'create-theme-device-toggle--mobile text-gray-900' : 'text-gray-600'
+            }`}
+            title={device === 'mobile' ? 'Return to desktop preview' : 'Switch to mobile preview'}
+            aria-pressed={device === 'mobile'}
           >
-            <span className="font-mono text-[11px] text-gray-500">{'{}'}</span>
-            Show edit JSON
+            <DevicePhoneMobileIcon className="h-5 w-5" />
           </button>
-          <div className="flex rounded-lg border border-gray-200 p-0.5">
-            <button
-              type="button"
-              onClick={() => setDevice('desktop')}
-              className={`flex h-8 w-9 items-center justify-center rounded-md ${
-                device === 'desktop' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:bg-gray-50'
-              }`}
-              title="Desktop preview"
-            >
-              <ComputerDesktopIcon className="h-5 w-5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setDevice('mobile')}
-              className={`flex h-8 w-9 items-center justify-center rounded-md ${
-                device === 'mobile' ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:bg-gray-50'
-              }`}
-              title="Mobile preview"
-            >
-              <DevicePhoneMobileIcon className="h-5 w-5" />
-            </button>
-          </div>
           <button
             type="button"
             disabled={saving || loading || !canPersist}
@@ -1130,15 +1102,6 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
         }}
       />
 
-      <ThemeEditorLiveConfigModal
-        open={showEditJson}
-        onClose={() => setShowEditJson(false)}
-        staticDevMode={staticDevMode}
-        packId={devPackId}
-        mergedConfig={livePreviewConfig as Record<string, unknown>}
-        formValues={values}
-        baseConfig={defaultConfig}
-      />
     </div>
   );
 };

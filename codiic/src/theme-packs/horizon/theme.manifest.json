@@ -17,11 +17,16 @@
     "login",
     "signup",
     "forgot_password",
-    "password",
-    "404",
     "profile",
     "orders",
-    "preferences"
+    "preferences",
+    "search",
+    "collections_list",
+    "all_products",
+    "404",
+    "blogs",
+    "blog_posts",
+    "collection"
   ],
   "capabilities": {
     "sections": true,
@@ -50,14 +55,6 @@
       {
         "id": "logo",
         "label": "Logo"
-      },
-      {
-        "id": "product-hotspot",
-        "label": "Hotspot"
-      },
-      {
-        "id": "slideshow-slide",
-        "label": "Slide"
       }
     ],
     "product": [
@@ -72,12 +69,6 @@
       {
         "id": "title",
         "label": "Title"
-      }
-    ],
-    "layout": [
-      {
-        "id": "accordion-row",
-        "label": "Accordion row"
       }
     ]
   },
@@ -117,9 +108,7 @@
     "storytelling-logo": [],
     "storytelling-video": [],
     "faq": [
-      "heading",
-      "accordion",
-      "accordion-row"
+      "faq-item"
     ],
     "icons-with-text": [
       "icon-with-text-item"
@@ -128,11 +117,7 @@
       "multicolumn-item"
     ],
     "pull-quote": [],
-    "rich-text": [
-      "heading",
-      "text",
-      "button"
-    ],
+    "rich-text": [],
     "text-marquee": [],
     "blog-posts-carousel": [
       "blog-post-card"
@@ -145,18 +130,6 @@
     ],
     "storytelling-carousel": [
       "carousel-slide"
-    ],
-    "product-hotspots": [
-      "product-hotspot"
-    ],
-    "layered-slideshow": [
-      "slideshow-slide"
-    ],
-    "slideshow-inset": [
-      "slideshow-slide"
-    ],
-    "slideshow-full-frame": [
-      "slideshow-slide"
     ]
   },
   "benchmark": true

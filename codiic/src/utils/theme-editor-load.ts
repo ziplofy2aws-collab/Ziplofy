@@ -1,5 +1,6 @@
 import { axiosi } from '../config/axios.config';
 import { getStaticDevPackId, isThemeEditorStaticMode } from '../config/theme-editor-static.config';
+import { applyLocalHorizonRuntime } from './theme-editor-local-horizon';
 import { loadStaticThemeEditorPack } from './theme-editor-static-pack';
 
 export type ThemeBlockCatalogPayload = {
@@ -158,19 +159,21 @@ export async function loadThemeEditorData(
   storeId: string
 ): Promise<ThemeEditorLoadResult> {
   if (isThemeEditorStaticMode()) {
-    return loadStaticThemeEditorPack(getStaticDevPackId());
+    return applyLocalHorizonRuntime(await loadStaticThemeEditorPack(getStaticDevPackId()));
   }
 
   const storeBody = await fetchStoreThemeConfig(themeId, storeId);
   if (storeBody?.success && storeBody.data) {
-    return mapStoreConfig(storeBody.data);
+    return applyLocalHorizonRuntime(mapStoreConfig(storeBody.data));
   }
 
   const packBody = await fetchCatalogEditorPack(themeId);
   if (packBody?.success && packBody.data) {
-    return mapCatalogPack(
-      packBody.data,
-      'Install this theme on your store to save customizations. Preview uses catalog defaults.'
+    return applyLocalHorizonRuntime(
+      mapCatalogPack(
+        packBody.data,
+        'Install this theme on your store to save customizations. Preview uses catalog defaults.'
+      )
     );
   }
 

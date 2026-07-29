@@ -21,3 +21,20 @@
   contain: layout style;
   scroll-behavior: smooth;
 }
+
+.create-theme-device-toggle svg {
+  transition:
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.22s ease;
+}
+
+.create-theme-device-toggle--mobile svg {
+  color: #0f766e;
+  transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .create-theme-device-toggle svg {
+    transition-duration: 0.01ms !important;
+  }
+}
