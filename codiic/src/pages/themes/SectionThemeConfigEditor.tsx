@@ -1,4 +1,4 @@
-import React, { startTransition, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import './theme-editor-chrome.css';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -7,8 +7,13 @@ import {
   DevicePhoneMobileIcon,
 } from '@heroicons/react/24/outline';
 import { useStore } from '../../contexts/store.context';
+import type { StoreMenu, StoreMenuItem } from '../../contexts/store-menu.context';
 import { useStoreSubdomain } from '../../contexts/storeSubdomain.context';
 import { useStoreThemeConfig } from '../../contexts/store-theme-config.context';
+import {
+  applyStoreMenuSelectionToConfig,
+  pruneStaleHeaderMenuItemValues,
+} from '../../create-theme/utils/store-menu-header.util';
 import ThemeLivePreviewFrame, { type ThemePreviewPage } from '../../components/themes/ThemeLivePreviewFrame';
 import { AddBlockModal } from '../../components/themes/theme-editor-sidebar/AddBlockModal';
 import { AddSectionModal } from '../../components/themes/theme-editor-sidebar/AddSectionModal';
@@ -132,6 +137,11 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [themeRuntime, setThemeRuntime] = useState<{ jsUrl?: string | null; cssUrl?: string | null }>({});
   const [defaultConfig, setDefaultConfig] = useState<Record<string, unknown> | null>(null);
+  const pendingStoreMenuValueSyncRef = useRef<{
+    itemValuePaths: Record<string, string>;
+    itemsPath: string;
+    navItemCount: number;
+  } | null>(null);
   const packDefaultRef = useRef<Record<string, unknown> | null>(null);
   const [manifest, setManifest] = useState<Record<string, unknown> | null>(null);
   const [blockCatalog, setBlockCatalog] = useState<ThemeBlockCatalogApi | null>(null);
@@ -139,6 +149,8 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const [canPersist, setCanPersist] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
+  const [previewAnimDir, setPreviewAnimDir] = useState<'to-mobile' | 'to-desktop' | null>(null);
+  const previewAnimTimerRef = useRef<number | null>(null);
   const [hiddenNodes, setHiddenNodes] = useState<Record<string, boolean>>({});
   const [addBlockTarget, setAddBlockTarget] = useState<{
     nodeId: string;
@@ -319,6 +331,15 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     if (activeStoreId) getByStoreId(activeStoreId);
   }, [activeStoreId, getByStoreId]);
 
+  useEffect(
+    () => () => {
+      if (previewAnimTimerRef.current != null) {
+        window.clearTimeout(previewAnimTimerRef.current);
+      }
+    },
+    []
+  );
+
   const selectedNode = useMemo(
     () => findSidebarNode(activeTree, selectedNodeId),
     [activeTree, selectedNodeId]
@@ -393,6 +414,45 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     [bumpValuesSync]
   );
 
+  const handleStoreMenuSelect = useCallback(
+    (menuFieldPath: string, menu: StoreMenu, items: StoreMenuItem[]) => {
+      const menuMeta = {
+        _id: String(menu._id),
+        menuName: String(menu.menuName ?? ''),
+      };
+      setDefaultConfig((prev) => {
+        if (!prev) return prev;
+        const { config, itemValuePaths, itemsPath, navItemCount } = applyStoreMenuSelectionToConfig(
+          prev,
+          menuFieldPath,
+          menuMeta,
+          items
+        );
+        pendingStoreMenuValueSyncRef.current = {
+          itemValuePaths,
+          itemsPath,
+          navItemCount,
+        };
+        return config;
+      });
+      bumpValuesSync();
+    },
+    [bumpValuesSync]
+  );
+
+  useLayoutEffect(() => {
+    const pending = pendingStoreMenuValueSyncRef.current;
+    if (!pending) return;
+    pendingStoreMenuValueSyncRef.current = null;
+    setValues((v) => ({
+      ...pruneStaleHeaderMenuItemValues(v, pending.itemsPath, pending.navItemCount),
+      ...pending.itemValuePaths,
+    }));
+    if (defaultConfig) {
+      setItemOrder(readStructureOrderFromConfig(defaultConfig, previewPage));
+    }
+  }, [defaultConfig, previewPage]);
+
   const handlePreviewSelect = useCallback(
     (nodeId: string) => {
       if (selectedNodeId === nodeId) {
@@ -443,6 +503,21 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     if (action === 'delete') {
       toast('Remove block — save in sidebar when ready', { icon: 'ℹ️' });
     }
+  }, []);
+
+  const handleToggleDevice = useCallback(() => {
+    setDevice((current) => {
+      const next = current === 'mobile' ? 'desktop' : 'mobile';
+      setPreviewAnimDir(next === 'mobile' ? 'to-mobile' : 'to-desktop');
+      if (previewAnimTimerRef.current != null) {
+        window.clearTimeout(previewAnimTimerRef.current);
+      }
+      previewAnimTimerRef.current = window.setTimeout(() => {
+        setPreviewAnimDir(null);
+        previewAnimTimerRef.current = null;
+      }, 240);
+      return next;
+    });
   }, []);
 
   const handleReorder = useCallback(
@@ -785,7 +860,7 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           ) : null}
           <button
             type="button"
-            onClick={() => setDevice((d) => (d === 'mobile' ? 'desktop' : 'mobile'))}
+            onClick={handleToggleDevice}
             className={`create-theme-device-toggle flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 ${
               device === 'mobile' ? 'create-theme-device-toggle--mobile text-gray-900' : 'text-gray-600'
             }`}
@@ -901,13 +976,26 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           onCloseSettings={closeSettings}
           onRemoveSettingsSection={handleRemoveSettingsSection}
           onRemoveSettingsBlock={handleRemoveSettingsBlock}
+          onStoreMenuSelect={handleStoreMenuSelect}
         />
 
         {/* Preview canvas */}
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-white">
+        <div
+          className={`theme-editor-preview-stage flex min-h-0 min-w-0 flex-1 flex-col ${
+            device === 'mobile' ? 'theme-editor-preview-stage--mobile' : ''
+          } ${
+            previewAnimDir === 'to-mobile'
+              ? 'theme-editor-preview-stage--slide-in-right'
+              : previewAnimDir === 'to-desktop'
+                ? 'theme-editor-preview-stage--slide-in-left'
+                : ''
+          }`}
+        >
           <div
-            className={`theme-editor-preview-canvas flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
-              device === 'mobile' ? 'mx-auto w-full max-w-[390px] border-x border-gray-200' : 'h-full w-full'
+            className={`theme-editor-preview-canvas relative mx-auto flex min-h-0 flex-1 flex-col overflow-hidden bg-white ${
+              device === 'mobile'
+                ? 'theme-editor-preview-canvas--mobile'
+                : 'theme-editor-preview-canvas--desktop'
             }`}
           >
             <ThemeLivePreviewFrame

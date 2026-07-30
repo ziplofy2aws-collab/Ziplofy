@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>exbuyer — Shop</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="w3-header" role="banner" data-w3-header>
+    <!-- Announcement bar -->
+    <div class="w3-announce" data-w3-announce>
+      <div class="w3-announce__inner">
+        <p class="w3-announce__text">
+          Just Launched: Dominator &amp; Dominator Skeleton Watches —
+          <a href="shop.html" class="w3-announce__link">Shop Now</a>
+        </p>
+        <button type="button" class="w3-announce__close" data-w3-announce-close aria-label="Dismiss announcement">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="w3-header__main">
+      <div class="w3-header__inner">
+        <button type="button" class="w3-header__menu-btn" data-w3-menu-toggle aria-label="Open menu"
+          aria-expanded="false" aria-controls="w3-drawer">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="w3-header__logo" aria-label="exbuyer home">
+          <img src="assets/img/logo.png" alt="exbuyer" width="160" height="48" decoding="async" />
+        </a>
+
+        <nav class="w3-header__nav" aria-label="Primary navigation">
+          <a href="shop.html" class="w3-header__nav-link">
+            Watches <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Collection <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Accessories <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Exclusive <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Gifts <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__nav-link">
+            Brand <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </a>
+        </nav>
+
+        <div class="w3-header__actions">
+          <form class="w3-header__search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="w3-header-search">Search</label>
+            <i class="fa-solid fa-magnifying-glass w3-header__search-icon" aria-hidden="true"></i>
+            <input id="w3-header-search" type="search" name="q" placeholder="Timegrapher Watches" autocomplete="off" />
+          </form>
+
+          <button type="button" class="w3-header__icon-btn w3-header__icon-btn--search-mobile" data-w3-search-toggle
+            aria-label="Search" aria-expanded="false">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </button>
+
+          <a href="#" class="w3-header__icon-btn" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="w3-header__icon-btn" aria-label="Cart">
+            <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="w3-header__search-mobile" data-w3-search-panel hidden>
+        <form class="w3-header__search w3-header__search--mobile" role="search" action="shop.html" method="get">
+          <label class="visually-hidden" for="w3-header-search-mobile">Search</label>
+          <i class="fa-solid fa-magnifying-glass w3-header__search-icon" aria-hidden="true"></i>
+          <input id="w3-header-search-mobile" type="search" name="q" placeholder="Timegrapher Watches"
+            autocomplete="off" />
+        </form>
+      </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="w3-header__backdrop" data-w3-backdrop hidden aria-hidden="true"></div>
+    <aside class="w3-header__drawer" id="w3-drawer" data-w3-drawer aria-hidden="true" tabindex="-1">
+      <div class="w3-header__drawer-head">
+        <a href="index.html" class="w3-header__drawer-logo" aria-label="exbuyer home">
+          <img src="assets/img/logo.png" alt="exbuyer" width="140" height="42" decoding="async" />
+        </a>
+        <button type="button" class="w3-header__drawer-close" data-w3-menu-close aria-label="Close menu">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="w3-header__drawer-nav" aria-label="Mobile navigation">
+        <a href="shop.html">Watches</a>
+        <a href="#">Collection</a>
+        <a href="#">Accessories</a>
+        <a href="#">Exclusive</a>
+        <a href="#">Gifts</a>
+        <a href="#">Brand</a>
+      </nav>
+    </aside>
+  </header>
+
+  <main>
+    <section class="w3-shop" data-w3-shop>
+      <div class="w3-page__inner">
+        <div class="w3-shopbar">
+          <div class="w3-shopbar__breadcrumbs">Home / Product Catalogue / Watches For Men</div>
+
+          <div class="w3-shopbar__controls">
+            <button type="button" class="w3-shopbar__filter" data-w3-filter-open aria-expanded="false"
+              aria-controls="w3-filter-panel">
+              <span>SHOW FILTER</span>
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+            </button>
+
+            <div class="w3-shopbar__sort" role="group" aria-label="Sort products">
+              <span class="w3-shopbar__sort-label">SORT BY</span>
+              <select class="w3-shopbar__sort-select" aria-label="Sort by">
+                <option selected>Best selling</option>
+                <option>Price: Low to High</option>
+                <option>Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="w3-shop__grid" aria-label="Product grid" data-w3-shop-grid>
+          <p class="w3-shop__empty" data-w3-shop-empty>No products match your filters.</p>
+          <!-- Card 1 -->
+          <article class="w3-collection__card" data-gender="men" data-badge="new" data-brand="exbuyer"
+            data-type="chrono" data-movement="automatic" data-price="899" data-stock="1" data-collection="atelier"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">New</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NA-1.webp" alt="Chrono Elite Automatic" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#1a1a1a"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c9a56a"
+                  aria-label="Gold"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c0c0c0"
+                  aria-label="Silver"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Chrono Elite Automatic</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.9</span>
+                  <span class="w3-collection__reviews">(128)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$899</span>
+                  <span class="w3-collection__price-was">$1,199</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 2 -->
+          <article class="w3-collection__card" data-gender="men" data-badge="bestseller" data-brand="exbuyer"
+            data-type="diver" data-movement="automatic" data-price="799" data-stock="1" data-collection="sport"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">Bestseller</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NA-2.webp" alt="OceanX Diver Pro" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#1f6b4a"
+                  aria-label="Green"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#1a1a1a"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c0c0c0"
+                  aria-label="Silver"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">OceanX Diver Pro</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.8</span>
+                  <span class="w3-collection__reviews">(214)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$799</span>
+                  <span class="w3-collection__price-was">$1,049</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 3 -->
+          <article class="w3-collection__card" data-gender="men" data-badge="limited" data-brand="exbuyer"
+            data-type="skeleton" data-movement="automatic" data-price="1299" data-stock="1" data-collection="heritage"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">Limited</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NA-3.webp" alt="Heritage Skeleton" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#1a1a1a"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c0c0c0"
+                  aria-label="Silver"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c9a56a"
+                  aria-label="Gold"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Heritage Skeleton</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.9</span>
+                  <span class="w3-collection__reviews">(96)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$1,299</span>
+                  <span class="w3-collection__price-was">$1,699</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 4 -->
+          <article class="w3-collection__card" data-gender="women" data-badge="exclusive" data-brand="exbuyer"
+            data-type="classic" data-movement="automatic" data-price="699" data-stock="1" data-collection="prestige"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">Exclusive</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NA-4.webp" alt="Classic Prestige" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#c9a56a"
+                  aria-label="Gold"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#1a1a1a"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c0c0c0"
+                  aria-label="Silver"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Classic Prestige</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.7</span>
+                  <span class="w3-collection__reviews">(64)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$699</span>
+                  <span class="w3-collection__price-was">$999</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 5 -->
+          <article class="w3-collection__card" data-gender="unisex" data-badge="new" data-brand="exbuyer"
+            data-type="chrono" data-movement="automatic" data-price="1099" data-stock="1" data-collection="heritage"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">New</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NA-5.webp" alt="Chrono Heritage" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#1a1a1a"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c0c0c0"
+                  aria-label="Silver"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c9a56a"
+                  aria-label="Gold"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Chrono Heritage</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.6</span>
+                  <span class="w3-collection__reviews">(52)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$1,099</span>
+                  <span class="w3-collection__price-was">$1,399</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 6 -->
+          <article class="w3-collection__card" data-gender="men" data-badge="bestseller" data-brand="exbuyer"
+            data-type="chrono" data-movement="automatic" data-price="999" data-stock="1" data-collection="urban"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">Bestseller</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NL-2.png" alt="Urban Chrono" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#0f0f0f"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#c7c7c7"
+                  aria-label="Silver"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#6b5d53"
+                  aria-label="Brown"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Urban Chrono</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.5</span>
+                  <span class="w3-collection__reviews">(41)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$999</span>
+                  <span class="w3-collection__price-was">$1,249</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 7 -->
+          <article class="w3-collection__card" data-gender="men" data-badge="limited" data-brand="exbuyer"
+            data-type="diver" data-movement="automatic" data-price="1499" data-stock="0" data-collection="sport"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">Limited</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NL-3.png" alt="Diver Elite" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#111"
+                  aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#bdbdbd"
+                  aria-label="Silver"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#3b2f2a"
+                  aria-label="Brown"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Diver Elite</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.4</span>
+                  <span class="w3-collection__reviews">(37)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$1,499</span>
+                  <span class="w3-collection__price-was">$1,799</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Card 8 -->
+          <article class="w3-collection__card" data-gender="women" data-badge="exclusive" data-brand="exbuyer"
+            data-type="classic" data-movement="quartz" data-price="1199" data-stock="1" data-collection="prestige"
+            data-discounted="1">
+            <div class="w3-collection__media">
+              <span class="w3-collection__badge">Exclusive</span>
+              <div class="w3-collection__actions">
+                <button type="button" class="w3-collection__icon-btn" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="w3-collection__icon-btn" aria-label="Compare">
+                  <i class="fa-solid fa-scale-balanced" aria-hidden="true"></i>
+                </button>
+              </div>
+              <a href="product.html" class="w3-collection__img-link">
+                <img src="assets/img/NL-4.png" alt="Classic Revival" width="480" height="480" loading="lazy"
+                  decoding="async" />
+              </a>
+            </div>
+            <div class="w3-collection__body">
+              <div class="w3-collection__swatches" aria-label="Available finishes">
+                <button type="button" class="w3-collection__swatch is-active" style="background:#c7a06a"
+                  aria-label="Gold"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#111" aria-label="Black"></button>
+                <button type="button" class="w3-collection__swatch" style="background:#bdbdbd"
+                  aria-label="Silver"></button>
+              </div>
+              <p class="w3-collection__brand">Exbuyer</p>
+              <h3 class="w3-collection__name"><a href="product.html">Classic Revival</a></h3>
+              <p class="w3-collection__meta">Automatic Movement</p>
+              <div class="w3-collection__meta-row">
+                <p class="w3-collection__rating">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  <span>4.7</span>
+                  <span class="w3-collection__reviews">(28)</span>
+                </p>
+                <p class="w3-collection__price">
+                  <span class="w3-collection__price-now">$1,199</span>
+                  <span class="w3-collection__price-was">$1,499</span>
+                </p>
+              </div>
+              <div class="w3-collection__btns">
+                <button type="button" class="w3-collection__btn w3-collection__btn--cart">
+                  <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+                  Add to Cart
+                </button>
+                <a href="product.html" class="w3-collection__btn w3-collection__btn--view">
+                  <i class="fa-regular fa-eye" aria-hidden="true"></i>
+                  Quick View
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Filter drawer -->
+  <div class="w3-filter" data-w3-filter aria-hidden="true">
+    <div class="w3-filter__backdrop" data-w3-filter-close tabindex="-1"></div>
+    <aside class="w3-filter__panel" id="w3-filter-panel" role="dialog" aria-modal="true" aria-label="Product filters">
+      <header class="w3-filter__head">
+        <p class="w3-filter__count"><span data-w3-filter-count>8</span> PRODUCTS</p>
+        <button type="button" class="w3-filter__close" data-w3-filter-close aria-label="Close filter">
+          CLOSE <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </header>
+
+      <div class="w3-filter__body">
+        <nav class="w3-filter__cats" aria-label="Filter categories">
+          <button type="button" class="w3-filter__cat" data-filter-cat="discounted">Discounted Products</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="new">New Arrivals</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="categories">Categories</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="collection">Collection</button>
+          <button type="button" class="w3-filter__cat is-active" data-filter-cat="gender">Gender</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="price">Price</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="brand">Brand</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="type">Watch Type</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="movement">Movement</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="dial">Dial Colour</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="band-material">Band Material</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="band-colour">Band Colour</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="case-material">Case Material</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="case-shape">Case Shape</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="case-colour">Case Colour</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="case-size">Case Size</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="glass">Glass Material</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="features">Features</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="water">Water Resistance (M)</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="series">Series</button>
+          <button type="button" class="w3-filter__cat" data-filter-cat="stock">In stock</button>
+        </nav>
+
+        <div class="w3-filter__options" data-w3-filter-options>
+          <div class="w3-filter__pane" data-pane="discounted" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="discounted" value="1" /><span>On
+                Sale</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="new" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="badge" value="new" /><span>New</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="badge"
+                value="bestseller" /><span>Bestseller</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="badge"
+                value="limited" /><span>Limited</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="badge"
+                value="exclusive" /><span>Exclusive</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="categories" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="type"
+                value="chrono" /><span>Chronograph</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="type" value="diver" /><span>Diver</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="type"
+                value="skeleton" /><span>Skeleton</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="type"
+                value="classic" /><span>Classic</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="collection" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="collection"
+                value="atelier" /><span>Atelier</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="collection"
+                value="sport" /><span>Sport</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="collection"
+                value="heritage" /><span>Heritage</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="collection"
+                value="prestige" /><span>Prestige</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="collection"
+                value="urban" /><span>Urban</span></label>
+          </div>
+          <div class="w3-filter__pane is-active" data-pane="gender">
+            <label class="w3-filter__opt"><input type="checkbox" name="gender" value="couple" /><span>Couple
+                Watches</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="gender" value="kids" /><span>Kids</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="gender" value="men" /><span>Men</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="gender"
+                value="unisex" /><span>Unisex</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="gender"
+                value="women" /><span>WOMEN</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="gender"
+                value="women" /><span>Women</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="price" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="price" value="0-800" /><span>Under
+                $800</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="price" value="800-1100" /><span>$800 –
+                $1,100</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="price" value="1100-99999" /><span>Above
+                $1,100</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="brand" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="brand"
+                value="exbuyer" /><span>Exbuyer</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="type" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="type"
+                value="chrono" /><span>Chronograph</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="type" value="diver" /><span>Diver</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="type"
+                value="skeleton" /><span>Skeleton</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="type"
+                value="classic" /><span>Classic</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="movement" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="movement"
+                value="automatic" /><span>Automatic</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="movement"
+                value="quartz" /><span>Quartz</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="dial" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="dial" value="black" /><span>Black</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="dial"
+                value="silver" /><span>Silver</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="dial" value="gold" /><span>Gold</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="band-material" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="band-material" value="steel" /><span>Stainless
+                Steel</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="band-material"
+                value="leather" /><span>Leather</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="band-material"
+                value="rubber" /><span>Rubber</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="band-colour" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="band-colour"
+                value="black" /><span>Black</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="band-colour"
+                value="silver" /><span>Silver</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="band-colour"
+                value="brown" /><span>Brown</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="case-material" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-material" value="steel" /><span>Stainless
+                Steel</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-material"
+                value="titanium" /><span>Titanium</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="case-shape" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-shape"
+                value="round" /><span>Round</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-shape"
+                value="square" /><span>Square</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="case-colour" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-colour"
+                value="silver" /><span>Silver</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-colour"
+                value="gold" /><span>Gold</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-colour"
+                value="black" /><span>Black</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="case-size" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-size" value="40" /><span>40
+                mm</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-size" value="42" /><span>42
+                mm</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="case-size" value="44" /><span>44
+                mm</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="glass" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="glass"
+                value="sapphire" /><span>Sapphire</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="glass"
+                value="mineral" /><span>Mineral</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="features" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="features" value="date" /><span>Date
+                Display</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="features" value="lume" /><span>Luminous
+                Hands</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="water" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="water" value="50" /><span>50 M</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="water" value="100" /><span>100 M</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="water" value="200" /><span>200 M</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="series" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="badge"
+                value="bestseller" /><span>Dominator</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="badge" value="exclusive" /><span>Skeleton
+                Edit</span></label>
+          </div>
+          <div class="w3-filter__pane" data-pane="stock" hidden>
+            <label class="w3-filter__opt"><input type="checkbox" name="stock" value="1" /><span>In Stock</span></label>
+            <label class="w3-filter__opt"><input type="checkbox" name="stock" value="0" /><span>Out of
+                Stock</span></label>
+          </div>
+        </div>
+      </div>
+
+      <footer class="w3-filter__foot">
+        <button type="button" class="w3-filter__clear" data-w3-filter-clear>CLEAR FILTER</button>
+        <button type="button" class="w3-filter__apply" data-w3-filter-apply>APPLY FILTER</button>
+      </footer>
+    </aside>
+  </div>
+
+  <!-- Footer -->
+  <footer class="w3-footer" role="contentinfo" aria-label="Site footer">
+    <div class="w3-footer__inner">
+      <div class="w3-footer__grid">
+        <!-- Brand / Contact -->
+        <div class="w3-footer__brand">
+          <p class="w3-footer__brand-name">exbuyer</p>
+
+          <div class="w3-footer__contact">
+            <a class="w3-footer__contact-item" href="mailto:support@exbuyerwatch.in">
+              <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              <span>support@exbuyerwatch.in</span>
+            </a>
+            <a class="w3-footer__contact-item" href="tel:+91828272045">
+              <i class="fa-solid fa-phone" aria-hidden="true"></i>
+              <span>+91 82827 2045</span>
+            </a>
+          </div>
+
+          <div class="w3-footer__social" aria-label="Social links">
+            <a class="w3-footer__social-link" href="#" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a class="w3-footer__social-link" href="#" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a class="w3-footer__social-link" href="#" aria-label="X">
+              <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+            </a>
+            <a class="w3-footer__social-link" href="#" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div class="w3-footer__col">
+          <p class="w3-footer__heading">Main Menu</p>
+          <a href="#">Olympus II</a>
+          <a href="#">Olympus I</a>
+          <a href="#">Apollo III</a>
+          <a href="#">Accessories</a>
+          <a href="#">Best Sellers</a>
+          <a href="#">Reviews</a>
+          <a href="#">About Us</a>
+          <a href="#">Blogs</a>
+        </div>
+
+        <!-- Help -->
+        <div class="w3-footer__col">
+          <p class="w3-footer__heading">Help</p>
+          <a href="#">Contact us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Service &amp; Warranty</a>
+          <a href="#">Refund Policy</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Shipping Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+
+        <!-- Collections -->
+        <div class="w3-footer__col">
+          <p class="w3-footer__heading">Our Collections</p>
+          <a href="#">Olympus II</a>
+          <a href="#">Olympus I</a>
+          <a href="#">Apollo III</a>
+          <a href="#">Accessories</a>
+          <a href="#">Apollo II (Archived)</a>
+        </div>
+      </div>
+
+      <div class="w3-footer__bottom">
+        <nav class="w3-footer__bottom-links" aria-label="Footer links">
+          <a href="#">Contact us</a>
+          <a href="#">FAQ</a>
+          <a href="#">Service &amp; Warranty</a>
+          <a href="#">Refund Policy</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Shipping Policy</a>
+          <a href="#">Terms of Service</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="assets/js/script.js" defer></script>
+</body>
+
+</html>

@@ -7714,6 +7714,14 @@ function SettingsFieldRow({
     case 'color':
       return <ColorPickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     default:
+      if (
+        field.path.endsWith('ImageUrl') ||
+        field.path.endsWith('imageUrl') ||
+        field.path.endsWith('LogoUrl') ||
+        field.path.endsWith('logoUrl')
+      ) {
+        return <ImagePickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
+      }
       if (field.type === 'color') {
         return <ColorPickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
       }
@@ -7938,6 +7946,11 @@ type ThemeSectionSettingsPanelProps = {
   onClose: () => void;
   onRemoveSection?: () => void;
   onRemoveBlock?: () => void;
+  onStoreMenuSelect?: (
+    menuFieldPath: string,
+    menu: import('../../../contexts/store-menu.context').StoreMenu,
+    items: import('../../../contexts/store-menu.context').StoreMenuItem[]
+  ) => void;
 };
 
 const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> = ({
@@ -7947,6 +7960,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   onClose,
   onRemoveSection,
   onRemoveBlock,
+  onStoreMenuSelect,
 }) => {
   const fields = node.fields ?? [];
   const canRemoveSection = node.kind === 'section' && Boolean(onRemoveSection);
@@ -8301,6 +8315,7 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
+            onStoreMenuSelect={onStoreMenuSelect}
           />
         ) : isCopyrightBlockPanel ? (
           <div className="divide-y divide-[#e1e1e1]">

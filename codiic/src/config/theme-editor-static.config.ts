@@ -68,7 +68,10 @@ export function isThemeEditorStaticMode(): boolean {
 export const THEME_EDITOR_DEV_ROUTE = '/themes/dev-editor';
 
 /** Bundled pack for static dev editor (Horizon only). */
-export const DEV_STATIC_THEME_PACKS = [{ id: 'horizon', label: 'Horizon' }] as const;
+export const DEV_STATIC_THEME_PACKS = [
+  { id: 'horizon', label: 'Horizon' },
+  { id: 'watch', label: 'Watch' },
+] as const;
 
 export type DevStaticThemePackId = (typeof DEV_STATIC_THEME_PACKS)[number]['id'];
 
@@ -77,11 +80,11 @@ const DEV_PACK_STORAGE_KEY = 'codiic-theme-editor-static-pack-id';
 export function getStaticDevPackId(): DevStaticThemePackId {
   try {
     const stored = localStorage.getItem(DEV_PACK_STORAGE_KEY);
-    if (stored === 'horizon') return stored;
+    if (stored === 'horizon' || stored === 'watch') return stored;
   } catch {
     /* ignore */
   }
-  return 'horizon';
+  return THEME_EDITOR_STATIC_CONFIG.packId === 'watch' ? 'watch' : 'horizon';
 }
 
 export function setStaticDevPackId(packId: DevStaticThemePackId): void {

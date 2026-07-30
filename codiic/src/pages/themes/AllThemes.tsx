@@ -13,7 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useThemes } from "../../contexts/themes.context";
 import { useInstalledThemes } from "../../contexts/installed-themes.context";
 import { useStore } from "../../contexts/store.context";
@@ -43,7 +43,6 @@ interface Theme {
 type ThemesTab = "public" | "installed" | "custom";
 
 const AllThemes: React.FC = () => {
-  const navigate = useNavigate();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [activeTab, setActiveTab] = useState<ThemesTab>("public");
@@ -236,7 +235,7 @@ const AllThemes: React.FC = () => {
       return;
     }
     // Catalog themes (schema / manifest / default-config editor)
-    navigate(`/themes/${themeId}/editor`);
+    window.open(`/themes/${themeId}/editor`, '_blank', 'noopener,noreferrer');
   };
 
   // Handle thumbnail update

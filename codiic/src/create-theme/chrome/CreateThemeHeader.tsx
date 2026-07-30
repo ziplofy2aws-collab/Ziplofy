@@ -20,6 +20,7 @@ import { InspectorToggleIcon } from './InspectorToggleIcon';
 import type { EditorSchemaDoc } from '../sidebar/create-theme-sidebar.types';
 import type { ThemePreviewPage } from './CreateThemeLivePreview';
 import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
+import { modShortcutLabel, shiftShortcutLabel } from '../../utils/keyboard-shortcut-label';
 
 type Props = {
   themeName: string;
@@ -202,14 +203,15 @@ export function CreateThemeHeader({
             }`}
             title={
               inspectorEnabled
-                ? 'Deactivate inspector Shift + I'
-                : 'Activate inspector Shift + I'
+                ? `Deactivate inspector ${shiftShortcutLabel('I')}`
+                : `Activate inspector ${shiftShortcutLabel('I')}`
             }
             aria-pressed={inspectorEnabled}
+            aria-keyshortcuts="Shift+I"
             aria-label={
               inspectorEnabled
-                ? 'Deactivate inspector (Shift + I)'
-                : 'Activate inspector (Shift + I)'
+                ? `Deactivate inspector (${shiftShortcutLabel('I')})`
+                : `Activate inspector (${shiftShortcutLabel('I')})`
             }
           >
             <InspectorToggleIcon className="h-5 w-5" />
@@ -265,7 +267,7 @@ export function CreateThemeHeader({
           onClick={onSave}
           disabled={saveDisabled || saving}
           className="h-10 rounded-lg bg-gray-900 px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
-          title="Save Ctrl + S"
+          title={`Save ${modShortcutLabel('S')}`}
           aria-keyshortcuts="Control+S Meta+S"
         >
           {saving ? 'Saving…' : 'Save'}

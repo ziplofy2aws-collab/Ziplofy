@@ -11,6 +11,7 @@ import DropdownMenuItem from '../../../components/DropdownMenuItem';
 import { InspectorToggleIcon } from '../../chrome/InspectorToggleIcon';
 import { CheckoutEditorPagePicker } from './CheckoutEditorPagePicker';
 import type { CheckoutEditorPage } from '../checkout-editor-page-menu';
+import { modShortcutLabel, shiftShortcutLabel } from '../../../utils/keyboard-shortcut-label';
 
 type Props = {
   configurationName: string;
@@ -85,14 +86,15 @@ export function CheckoutEditorHeader({
             }`}
             title={
               inspectorEnabled
-                ? 'Deactivate inspector Shift + I'
-                : 'Activate inspector Shift + I'
+                ? `Deactivate inspector ${shiftShortcutLabel('I')}`
+                : `Activate inspector ${shiftShortcutLabel('I')}`
             }
             aria-pressed={inspectorEnabled}
+            aria-keyshortcuts="Shift+I"
             aria-label={
               inspectorEnabled
-                ? 'Deactivate inspector (Shift + I)'
-                : 'Activate inspector (Shift + I)'
+                ? `Deactivate inspector (${shiftShortcutLabel('I')})`
+                : `Activate inspector (${shiftShortcutLabel('I')})`
             }
           >
             <InspectorToggleIcon className="h-5 w-5" />
@@ -158,7 +160,7 @@ export function CheckoutEditorHeader({
           type="button"
           onClick={onSave}
           disabled={saveDisabled || saving}
-          title="Save Ctrl + S"
+          title={`Save ${modShortcutLabel('S')}`}
           aria-keyshortcuts="Control+S Meta+S"
           className={`rounded-lg px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed ${
             saveDisabled || saving

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import type { StoreMenu, StoreMenuItem } from '../../../contexts/store-menu.context';
+import { StoreMenuSelectFieldRow } from '../../../create-theme/sidebar/StoreMenuSelectFieldRow';
 import type { EditorFieldDef } from './theme-editor-sidebar.types';
 import {
   fieldInputId,
@@ -246,10 +248,12 @@ export function HeaderMenuBlockSettingsPanel({
   fields,
   values,
   onFieldChange,
+  onStoreMenuSelect,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  onStoreMenuSelect?: (menuFieldPath: string, menu: StoreMenu, items: StoreMenuItem[]) => void;
 }) {
   const menuField = pickHeaderMenuBlockField(fields, 'menu');
   const colorSchemeField = pickHeaderMenuBlockField(fields, 'colorScheme');
@@ -279,11 +283,11 @@ export function HeaderMenuBlockSettingsPanel({
       {menuField || colorSchemeField ? (
         <div className="space-y-1 px-1 py-3">
           {menuField ? (
-            <MenuInlineSelectFieldRow
+            <StoreMenuSelectFieldRow
               field={menuField}
               values={values}
               onFieldChange={onFieldChange}
-              leadingIcon={<Bars3Icon className="h-4 w-4" />}
+              onStoreMenuSelect={onStoreMenuSelect}
             />
           ) : null}
           {colorSchemeField ? (

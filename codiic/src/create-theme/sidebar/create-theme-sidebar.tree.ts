@@ -4305,7 +4305,8 @@ function sectionToNode(
         isLayeredSlideshow ||
         isSlideshowFullFrame ||
         isSlideshowInset ||
-        isStorytellingCarousel) &&
+        isStorytellingCarousel ||
+        String(sec.type || '').startsWith('watch-')) &&
       canDeleteTemplateSection(tplId, secId),
   };
 }

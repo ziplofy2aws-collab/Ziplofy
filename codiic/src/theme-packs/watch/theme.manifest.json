@@ -1,0 +1,203 @@
+{
+  "id": "watch",
+  "name": "Watch",
+  "version": "1.0.0",
+  "type": "react-remote",
+  "configMode": "sections",
+  "assets": {
+    "themeJs": "theme.js",
+    "themeCss": "theme.css",
+    "defaultConfig": "theme.default-config.json",
+    "schema": "theme.schema.json"
+  },
+  "templates": [
+    "index",
+    "product",
+    "cart",
+    "login",
+    "signup",
+    "forgot_password",
+    "profile",
+    "orders",
+    "preferences",
+    "search",
+    "collections_list",
+    "all_products",
+    "404",
+    "blogs",
+    "blog_posts",
+    "collection"
+  ],
+  "capabilities": {
+    "sections": true,
+    "blocks": true,
+    "globalSettings": true,
+    "livePreview": true
+  },
+  "blockTypes": {
+    "basic": [
+      {
+        "id": "announcement",
+        "label": "Announcement"
+      },
+      {
+        "id": "button",
+        "label": "Button"
+      },
+      {
+        "id": "heading",
+        "label": "Heading"
+      },
+      {
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "id": "watch-slide",
+        "label": "Hero slide"
+      },
+      {
+        "id": "watch-collection-item",
+        "label": "Collection item"
+      },
+      {
+        "id": "watch-promo-panel",
+        "label": "Promo panel"
+      },
+      {
+        "id": "watch-product-card",
+        "label": "Product card"
+      },
+      {
+        "id": "watch-signature-card",
+        "label": "Signature card"
+      },
+      {
+        "id": "watch-banner-panel",
+        "label": "Banner panel"
+      },
+      {
+        "id": "watch-media",
+        "label": "Media"
+      },
+      {
+        "id": "watch-launch-card",
+        "label": "Launch card"
+      },
+      {
+        "id": "watch-insta-item",
+        "label": "Instagram item"
+      }
+    ],
+    "product": [
+      {
+        "id": "product-card",
+        "label": "Product card"
+      },
+      {
+        "id": "price",
+        "label": "Price"
+      },
+      {
+        "id": "title",
+        "label": "Title"
+      }
+    ]
+  },
+  "sectionBlocks": {
+    "announcement-bar": [
+      "announcement"
+    ],
+    "hero": [
+      "button",
+      "heading",
+      "text"
+    ],
+    "featured-collection": [
+      "product-card",
+      "title"
+    ],
+    "header": [
+      "logo",
+      "menu"
+    ],
+    "footer": [
+      "newsletter",
+      "social_links"
+    ],
+    "footer-utilities": [
+      "copyright",
+      "policy_links",
+      "social"
+    ],
+    "contact-form": [],
+    "email-signup": [],
+    "custom-section": [],
+    "product-highlight": [],
+    "editorial": [],
+    "editorial-jumbo": [],
+    "image-compare": [],
+    "image-with-text": [],
+    "storytelling-logo": [],
+    "storytelling-video": [],
+    "faq": [
+      "faq-item"
+    ],
+    "icons-with-text": [
+      "icon-with-text-item"
+    ],
+    "multicolumn": [
+      "multicolumn-item"
+    ],
+    "pull-quote": [],
+    "rich-text": [],
+    "text-marquee": [],
+    "blog-posts-carousel": [
+      "blog-post-card"
+    ],
+    "blog-posts-editorial": [
+      "blog-post-card"
+    ],
+    "blog-posts-grid": [
+      "blog-post-card"
+    ],
+    "storytelling-carousel": [
+      "carousel-slide"
+    ],
+    "watch-hero": [
+      "watch-slide"
+    ],
+    "watch-category": [
+      "watch-collection-item"
+    ],
+    "watch-promo": [
+      "watch-promo-panel"
+    ],
+    "watch-bestsellers": [
+      "watch-product-card"
+    ],
+    "watch-signature": [
+      "watch-signature-card"
+    ],
+    "watch-banner": [
+      "watch-banner-panel"
+    ],
+    "watch-collection": [
+      "watch-product-card"
+    ],
+    "watch-engineering": [
+      "watch-media"
+    ],
+    "watch-launches": [
+      "watch-launch-card"
+    ],
+    "watch-insta": [
+      "watch-insta-item"
+    ]
+  },
+  "benchmark": true
+}

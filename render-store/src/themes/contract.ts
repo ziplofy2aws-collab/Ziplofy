@@ -3,7 +3,7 @@ import type { ComponentType } from "react";
 export type ThemeComponent = ComponentType;
 
 export interface ThemeContract {
-  id: "gaming" | "beauty" | "shoes" | "horizon" | "studio" | "bloom" | "volt";
+  id: "gaming" | "beauty" | "shoes" | "horizon" | "watch" | "studio" | "bloom" | "volt";
   Header: ThemeComponent;
   Footer: ThemeComponent;
   HeroSection: ThemeComponent;

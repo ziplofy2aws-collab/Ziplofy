@@ -11,6 +11,12 @@ export { usePreviewDevice, type PreviewDevice } from '@/contexts/preview-device.
 export { isThemeEditorPreview } from '@/utils/theme-editor-preview';
 export { useThemeEditorPreview } from '@/hooks/useThemeEditorPreview';
 export {
+  shouldShowRemoteThemePackDemoAssets,
+  isRemoteThemePackDemoMediaUrl,
+  remoteThemeMediaPlaceholderUrl,
+  resolveRemoteThemeMediaUrl,
+} from '@/utils/remote-theme-media';
+export {
   usePreviewHighlightNodeId,
   layoutBlockIdFromHighlightNodeId,
 } from '@/hooks/usePreviewHighlightNodeId';

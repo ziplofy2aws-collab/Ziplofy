@@ -159,6 +159,18 @@ const PACK_MODULES: Record<
       manifest: (manifest.default as Record<string, unknown> | null) ?? null,
     };
   },
+  watch: async () => {
+    const [schema, defaultConfig, manifest] = await Promise.all([
+      import('../theme-packs/watch/theme.schema.json'),
+      import('../theme-packs/watch/theme.default-config.json'),
+      import('../theme-packs/watch/theme.manifest.json').catch(() => ({ default: null })),
+    ]);
+    return {
+      schema: schema.default,
+      defaultConfig: defaultConfig.default as Record<string, unknown>,
+      manifest: (manifest.default as Record<string, unknown> | null) ?? null,
+    };
+  },
 };
 
 function editorFieldType(type: string): string {
@@ -395,7 +407,19 @@ export function buildBlockCatalogFromManifest(
   return { categories, blocks, sectionBlockAllowlist };
 }
 
-export function previewUrlsForPack(_packId: string): { jsUrl: string | null; cssUrl: string | null } {
+export function previewUrlsForPack(packId: string): { jsUrl: string | null; cssUrl: string | null } {
+  if (packId === 'watch') {
+    return {
+      jsUrl: '/remote-themes/watch/theme.js',
+      cssUrl: '/remote-themes/watch/theme.css',
+    };
+  }
+  if (packId === 'horizon') {
+    return {
+      jsUrl: '/remote-themes/horizon/theme.js',
+      cssUrl: '/remote-themes/horizon/theme.css',
+    };
+  }
   return { jsUrl: null, cssUrl: null };
 }
 

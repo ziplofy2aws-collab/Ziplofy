@@ -5,7 +5,7 @@ import { Collections } from "../models/collections/collections.model";
 import { CollectionEntry } from "../models/collection-entry/collection-entry.model";
 import { Product } from "../models/product/product.model";
 import { AmountOffProductsDiscount, AmountOffProductsEntry, AmountOffOrderDiscount } from "../models";
-import { absolutizeImageUrlsArray, publicOriginFromRequest } from "../utils/public-origin.util";
+import { absolutizeImageUrlsArray, absolutizeMediaUrl, publicOriginFromRequest } from "../utils/public-origin.util";
 
 function normalizeUrlHandle(raw: string): string {
   return raw.trim().toLowerCase();
@@ -17,13 +17,28 @@ function assertValidStoreId(storeId: string): void {
   }
 }
 
+function withAbsolutizedCollectionImage<T extends { imageUrl?: string | null }>(
+  publicOrigin: string,
+  collection: T
+): T {
+  const imageUrl = collection.imageUrl
+    ? absolutizeMediaUrl(publicOrigin, String(collection.imageUrl))
+    : collection.imageUrl;
+  return { ...collection, imageUrl };
+}
+
 // Get collections by store id
 export const getCollectionsByStoreId = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId } = req.params;
   if (!storeId) throw new CustomError("storeId is required", 400);
 
-  const collections = await Collections.find({ storeId }).sort({ createdAt: -1 });
-  res.status(200).json({ success: true, data: collections, count: collections.length });
+  const publicOrigin = publicOriginFromRequest(req);
+  const collections = await Collections.find({ storeId }).sort({ createdAt: -1 }).lean();
+  res.status(200).json({
+    success: true,
+    data: collections.map((c) => withAbsolutizedCollectionImage(publicOrigin, c)),
+    count: collections.length,
+  });
 });
 
 /** Storefront: resolve a published collection by store + url handle. */
@@ -43,10 +58,14 @@ export const getCollectionDetailsByUrlHandle = asyncErrorHandler(async (req: Req
   }
 
   const productCount = await CollectionEntry.countDocuments({ collectionId: collection._id });
+  const publicOrigin = publicOriginFromRequest(req);
 
   res.status(200).json({
     success: true,
-    data: { ...collection, productCount },
+    data: {
+      ...withAbsolutizedCollectionImage(publicOrigin, collection),
+      productCount,
+    },
   });
 });
 
