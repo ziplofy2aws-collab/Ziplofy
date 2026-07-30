@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Aurevia Jewels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/shop.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-main">
+      <div class="header-inner">
+        <a href="index.html" class="brand-logo" aria-label="Aurevia Jewels Home">
+          <img src="assets/img/logo.png" alt="Aurevia Jewels" class="logo-img">
+        </a>
+
+        <nav class="main-nav" id="main-nav" aria-label="Primary">
+          <ul class="nav-list">
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html">Shop by Category</a></li>
+            <li><a href="index.html#collections">Collections</a></li>
+            <li><a href="shop.html">Best Seller</a></li>
+            <li><a href="shop.html">Men's Collection</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Franchising</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <button type="button" class="currency-btn" aria-label="Select currency">
+            <span class="flag-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 16" width="18" height="12" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="16" fill="#FF9933" />
+                <rect y="5.33" width="24" height="5.34" fill="#FFFFFF" />
+                <rect y="10.67" width="24" height="5.33" fill="#138808" />
+                <circle cx="12" cy="8" r="2.2" fill="none" stroke="#000080" stroke-width="0.6" />
+                <circle cx="12" cy="8" r="0.5" fill="#000080" />
+              </svg>
+            </span>
+            <span class="currency-label">INR ₹</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="action-icon" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="action-icon" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="action-icon" aria-label="Shopping bag">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+          <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false"
+            aria-controls="main-nav">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="announcement-bar">
+      <p>Get 10% Off on Prepaid Order</p>
+    </div>
+  </header>
+
+  <main class="shop-main">
+    <div class="shop-layout">
+      <aside class="shop-sidebar" id="shop-sidebar" aria-label="Product filters">
+        <div class="shop-sidebar-sheet-header">
+          <h2 class="shop-sidebar-sheet-title">Filters</h2>
+          <button type="button" class="shop-filter-close" id="shop-filter-close" aria-label="Close filters">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="shop-sidebar-body">
+        <div class="shop-filter-block">
+          <h2 class="shop-filter-heading">Price</h2>
+          <div class="price-slider" id="price-slider">
+            <div class="price-slider-track">
+              <div class="price-slider-range" id="price-range"></div>
+              <input type="range" id="price-min" min="50" max="293000" value="50" step="50" aria-label="Minimum price">
+              <input type="range" id="price-max" min="50" max="293000" value="293000" step="50" aria-label="Maximum price">
+            </div>
+            <div class="price-slider-labels" aria-hidden="true">
+              <span>50</span>
+              <span>73.3k</span>
+              <span>146.5k</span>
+              <span>219.7k</span>
+              <span>293k</span>
+            </div>
+            <p class="price-slider-values">
+              <span id="price-min-label">RS. 50</span>
+              <span>–</span>
+              <span id="price-max-label">RS. 2,93,000</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="shop-filter-block">
+          <h2 class="shop-filter-heading">Collection</h2>
+          <ul class="collection-filters" id="collection-filters">
+            <li>
+              <button type="button" class="collection-filter is-active" data-collection="all">
+                <span>All</span><span class="collection-count" data-count-for="all">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="necklaces">
+                <span>Necklaces</span><span class="collection-count" data-count-for="necklaces">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="earrings">
+                <span>Earrings</span><span class="collection-count" data-count-for="earrings">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="idols">
+                <span>Idols</span><span class="collection-count" data-count-for="idols">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="rings">
+                <span>Rings</span><span class="collection-count" data-count-for="rings">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="bracelets">
+                <span>Bracelets</span><span class="collection-count" data-count-for="bracelets">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="pendants">
+                <span>Pendants</span><span class="collection-count" data-count-for="pendants">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="anklets">
+                <span>Anklets</span><span class="collection-count" data-count-for="anklets">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="chains">
+                <span>Chains</span><span class="collection-count" data-count-for="chains">(0)</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="collection-filter" data-collection="bangles">
+                <span>Bangles</span><span class="collection-count" data-count-for="bangles">(0)</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+        </div>
+
+        <div class="shop-sidebar-sheet-footer">
+          <button type="button" class="shop-filter-apply" id="shop-filter-apply">Show Results</button>
+        </div>
+      </aside>
+
+      <div class="shop-filter-backdrop" id="shop-filter-backdrop" hidden></div>
+
+      <div class="shop-content">
+        <div class="shop-topbar">
+          <div class="shop-topbar-left">
+            <button type="button" class="shop-filter-toggle" id="shop-filter-toggle" aria-expanded="false" aria-controls="shop-sidebar">
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+              <span>Filter</span>
+            </button>
+            <div class="shop-view-toggle" role="group" aria-label="View mode">
+              <button type="button" class="view-btn is-active" id="view-grid" aria-label="Grid view" aria-pressed="true">
+                <i class="fa-solid fa-border-all" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="view-btn" id="view-list" aria-label="List view" aria-pressed="false">
+                <i class="fa-solid fa-list" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <p class="shop-product-count" id="shop-product-count">0 PRODUCTS</p>
+          <div class="shop-sort-wrap">
+            <label class="visually-hidden" for="shop-sort">Sort</label>
+            <select id="shop-sort">
+              <option value="new-old">Date: New to Old</option>
+              <option value="old-new">Date: Old to New</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name-asc">Name: A to Z</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="shop-grid" id="shop-grid">
+          <a href="product.html?id=na-1" class="shop-card" data-id="na-1" data-collection="rings" data-price="3424" data-name="Stone Ring PSR219W-021" data-date="8">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-1.webp" alt="Stone Ring PSR219W-021">
+              <img class="product-img-hover" src="assets/img/NA-1-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,424.00</p>
+              <p class="shop-card-name">Stone Ring PSR219W-021</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-2" class="shop-card" data-id="na-2" data-collection="rings" data-price="2996" data-name="Stone Ring PSR34W-501" data-date="7">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-2.webp" alt="Stone Ring PSR34W-501">
+              <img class="product-img-hover" src="assets/img/NA-2-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 2,996.00</p>
+              <p class="shop-card-name">Stone Ring PSR34W-501</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-3" class="shop-card" data-id="na-3" data-collection="rings" data-price="3424" data-name="Golden Ring PGR53-021" data-date="6">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-3.webp" alt="Golden Ring PGR53-021">
+              <img class="product-img-hover" src="assets/img/NA-3-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,424.00</p>
+              <p class="shop-card-name">Golden Ring PGR53-021</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-4" class="shop-card" data-id="na-4" data-collection="rings" data-price="3424" data-name="Golden Ring PGR62-021" data-date="5">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-4.webp" alt="Golden Ring PGR62-021">
+              <img class="product-img-hover" src="assets/img/NA-4-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,424.00</p>
+              <p class="shop-card-name">Golden Ring PGR62-021</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-1" class="shop-card" data-id="bs-1" data-collection="pendants" data-price="5135.58" data-name="Ruby Stone Pendant Set PSLT263WR-09" data-date="16">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-1.webp" alt="Ruby Stone Pendant Set">
+              <img class="product-img-hover" src="assets/img/BS-1-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 5,135.58</p>
+              <p class="shop-card-name">Ruby Stone Pendant Set PSLT263WR-09, PSST172WR-09</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-2" class="shop-card" data-id="bs-2" data-collection="pendants" data-price="4286" data-name="Circular Stone Pendant PNDT184G-22" data-date="15">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-2.webp" alt="Circular Stone Pendant">
+              <img class="product-img-hover" src="assets/img/BS-2-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 4,286.00</p>
+              <p class="shop-card-name">Premium Stone Pendent PMSLT35W-053</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-3" class="shop-card" data-id="bs-3" data-collection="necklaces" data-price="6842" data-name="Ruby Choker Necklace Set CHK92R-015" data-date="14">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-3.webp" alt="Ruby Choker Necklace Set">
+              <img class="product-img-hover" src="assets/img/BS-3-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 6,842.00</p>
+              <p class="shop-card-name">Ruby Choker Necklace Set CHK92R-015</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-4" class="shop-card" data-id="bs-4" data-collection="earrings" data-price="3598" data-name="Fan Drop Earrings ERFAN44W-08" data-date="13">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-4.webp" alt="Fan Drop Earrings">
+              <img class="product-img-hover" src="assets/img/BS-4-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,598.00</p>
+              <p class="shop-card-name">Premium Stone Stud PMSST78W-003</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-5" class="shop-card" data-id="na-5" data-collection="rings" data-price="3199" data-name="Stone Ring PSR88W-112" data-date="4">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-5.webp" alt="Stone Ring PSR88W-112">
+              <img class="product-img-hover" src="assets/img/NA-5-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,199.00</p>
+              <p class="shop-card-name">Stone Ring PSR88W-112</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-6" class="shop-card" data-id="na-6" data-collection="rings" data-price="2849" data-name="Golden Ring PGR71-044" data-date="3">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-6.webp" alt="Golden Ring PGR71-044">
+              <img class="product-img-hover" src="assets/img/NA-6-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 2,849.00</p>
+              <p class="shop-card-name">Golden Ring PGR71-044</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-5" class="shop-card" data-id="bs-5" data-collection="pendants" data-price="4920" data-name="Gold Pendant Necklace Set PNDT205G-11" data-date="12">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-5.webp" alt="Gold Pendant Necklace Set">
+              <img class="product-img-hover" src="assets/img/BS-5-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 4,920.00</p>
+              <p class="shop-card-name">Premium Stone Pendent PMSLT29W-004</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-6" class="shop-card" data-id="bs-6" data-collection="earrings" data-price="3275" data-name="Statement Drop Earrings ERST66W-19" data-date="11">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-6.webp" alt="Statement Drop Earrings">
+              <img class="product-img-hover" src="assets/img/BS-6-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,275.00</p>
+              <p class="shop-card-name">Statement Drop Earrings ERST66W-19</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-7" class="shop-card" data-id="na-7" data-collection="rings" data-price="3599" data-name="Stone Ring PSR105W-033" data-date="2">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-7.webp" alt="Stone Ring PSR105W-033">
+              <img class="product-img-hover" src="assets/img/NA-7-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,599.00</p>
+              <p class="shop-card-name">Stone Ring PSR105W-033</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-8" class="shop-card" data-id="na-8" data-collection="rings" data-price="3149" data-name="Golden Ring PGR90-018" data-date="1">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/NA-8.webp" alt="Golden Ring PGR90-018">
+              <img class="product-img-hover" src="assets/img/NA-8-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,149.00</p>
+              <p class="shop-card-name">Golden Ring PGR90-018</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-7" class="shop-card" data-id="bs-7" data-collection="necklaces" data-price="5460" data-name="Layered Gold Necklace NKLY78G-03" data-date="10">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-7.webp" alt="Layered Gold Necklace">
+              <img class="product-img-hover" src="assets/img/BS-7-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 5,460.00</p>
+              <p class="shop-card-name">Layered Gold Necklace NKLY78G-03</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-8" class="shop-card" data-id="bs-8" data-collection="pendants" data-price="7125" data-name="Bridal Pendant Set BRPS310WR-07" data-date="9">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BS-8.webp" alt="Bridal Pendant Set">
+              <img class="product-img-hover" src="assets/img/BS-8-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 7,125.00</p>
+              <p class="shop-card-name">Bridal Pendant Set BRPS310WR-07</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=br-1" class="shop-card" data-id="br-1" data-collection="bracelets" data-price="3899" data-name="Infinity Bracelet BRINF12G-01" data-date="17">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BRACELET.webp" alt="Infinity Bracelet">
+              <img class="product-img-hover" src="assets/img/BS-4-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 3,899.00</p>
+              <p class="shop-card-name">Infinity Bracelet BRINF12G-01</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=ch-1" class="shop-card" data-id="ch-1" data-collection="chains" data-price="4599" data-name="Braided Gold Chain CHBR88G-04" data-date="18">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/CHAIN.webp" alt="Braided Gold Chain">
+              <img class="product-img-hover" src="assets/img/BS-7-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 4,599.00</p>
+              <p class="shop-card-name">Braided Gold Chain CHBR88G-04</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bg-1" class="shop-card" data-id="bg-1" data-collection="bangles" data-price="6299" data-name="Floral Bangle BGFL55R-02" data-date="19">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/BANGLE.webp" alt="Floral Bangle">
+              <img class="product-img-hover" src="assets/img/BS-3-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 6,299.00</p>
+              <p class="shop-card-name">Floral Bangle BGFL55R-02</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=ak-1" class="shop-card" data-id="ak-1" data-collection="anklets" data-price="2499" data-name="Delicate Anklet AKDL21G-06" data-date="20">
+            <div class="shop-card-media">
+              <img class="product-img-main" src="assets/img/ANKLETS.webp" alt="Delicate Anklet">
+              <img class="product-img-hover" src="assets/img/BS-2-hover.webp" alt="">
+            </div>
+            <div class="shop-card-info">
+              <p class="shop-card-price">RS. 2,499.00</p>
+              <p class="shop-card-name">Delicate Anklet AKDL21G-06</p>
+            </div>
+          </a>
+        </div>
+
+        <p class="shop-empty" id="shop-empty" hidden>No products match your filters.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-searched">
+      <h2 class="footer-searched-title">Most Searched</h2>
+      <p class="footer-searched-links">
+        <a href="shop.html">Earrings</a><span>|</span>
+        <a href="shop.html">Stud Earrings</a><span>|</span>
+        <a href="shop.html">Hoop Earrings</a><span>|</span>
+        <a href="shop.html">Dangler Earrings</a><span>|</span>
+        <a href="shop.html">Party Wear Earrings</a><span>|</span>
+        <a href="shop.html">Chandelier Earrings</a><span>|</span>
+        <a href="shop.html">Chandbali Earrings</a><span>|</span>
+        <a href="shop.html">Western Earrings</a><span>|</span>
+        <a href="shop.html">Statement Earrings</a><span>|</span>
+        <a href="shop.html">Necklaces</a><span>|</span>
+        <a href="shop.html">Choker Necklaces</a><span>|</span>
+        <a href="shop.html">Statement Necklace</a><span>|</span>
+        <a href="shop.html">Pendants</a><span>|</span>
+        <a href="shop.html">Rings</a><span>|</span>
+        <a href="shop.html">Statement Rings</a><span>|</span>
+        <a href="shop.html">Cocktail Rings</a><span>|</span>
+        <a href="shop.html">Proposal Rings</a><span>|</span>
+        <a href="shop.html">Engagement Rings</a><span>|</span>
+        <a href="shop.html">Bracelets</a><span>|</span>
+        <a href="shop.html">Maang Tikka</a><span>|</span>
+        <a href="shop.html">Bags</a><span>|</span>
+        <a href="shop.html">Statement Pendants</a><span>|</span>
+        <a href="shop.html">Charms &amp; Pendants</a><span>|</span>
+        <a href="shop.html">Pearl Jewellery</a><span>|</span>
+        <a href="shop.html">Statement Jewellery</a><span>|</span>
+        <a href="shop.html">Chains For Girls</a><span>|</span>
+        <a href="shop.html">Gold Plated Jewellery</a>
+      </p>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-col footer-newsletter">
+        <h3>Join The Aurevia Tribe</h3>
+        <p class="footer-newsletter-text">Join to get special offers, free giveaways, and once-in-a-lifetime deals</p>
+        <form class="footer-email-form" action="#" method="post">
+          <label class="visually-hidden" for="footer-email">Email</label>
+          <input type="email" id="footer-email" name="email" placeholder="Enter your email" required>
+          <button type="submit" aria-label="Subscribe">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          </button>
+        </form>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col footer-about">
+        <h3 class="footer-brand">Aurevia</h3>
+        <p>Aurevia is a modern-day Indian brand that started as a fateful encounter with breathtaking jewelry and turned
+          into an epic, lifelong affair.</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Store Locator</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Term of service</a></li>
+          <li><a href="#">Sitemap</a></li>
+          <li><a href="#">Blogs</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Customer Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQ's</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Returns &amp; Exchanges</a></li>
+          <li><a href="#">Raise a Return</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Aurevia | Modern Indian Jewelry</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

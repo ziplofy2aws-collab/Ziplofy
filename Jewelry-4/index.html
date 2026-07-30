@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurevia Jewels</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-main">
+      <div class="header-inner">
+        <a href="index.html" class="brand-logo" aria-label="Aurevia Jewels Home">
+          <img src="assets/img/logo.png" alt="Aurevia Jewels" class="logo-img">
+        </a>
+
+        <nav class="main-nav" id="main-nav" aria-label="Primary">
+          <ul class="nav-list">
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html">Shop by Category</a></li>
+            <li><a href="#collections">Collections</a></li>
+            <li><a href="shop.html">Best Seller</a></li>
+            <li><a href="shop.html">Men's Collection</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">Franchising</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <button type="button" class="currency-btn" aria-label="Select currency">
+            <span class="flag-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 16" width="18" height="12" xmlns="http://www.w3.org/2000/svg">
+                <rect width="24" height="16" fill="#FF9933" />
+                <rect y="5.33" width="24" height="5.34" fill="#FFFFFF" />
+                <rect y="10.67" width="24" height="5.33" fill="#138808" />
+                <circle cx="12" cy="8" r="2.2" fill="none" stroke="#000080" stroke-width="0.6" />
+                <circle cx="12" cy="8" r="0.5" fill="#000080" />
+              </svg>
+            </span>
+            <span class="currency-label">INR ₹</span>
+            <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <a href="#" class="action-icon" aria-label="Account">
+            <i class="fa-regular fa-user" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="action-icon" aria-label="Search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          </a>
+          <a href="#" class="action-icon" aria-label="Shopping bag">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          </a>
+          <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Open menu" aria-expanded="false"
+            aria-controls="main-nav">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="announcement-bar">
+      <p>Get 10% Off on Prepaid Order</p>
+    </div>
+  </header>
+
+  <section class="hero" aria-label="Featured offers">
+    <div class="hero-slider" id="hero-slider">
+      <div class="hero-slides">
+        <div class="hero-slide is-active" data-index="0">
+          <img src="assets/img/hero-banner-1.png" alt="Buy 1 Get 1 Free — Handpicked Bestsellers">
+        </div>
+        <div class="hero-slide" data-index="1">
+          <img src="assets/img/hero-banner-2.png" alt="Buy 1 Get 1 Free — Handpicked Bestsellers">
+        </div>
+        <div class="hero-slide" data-index="2">
+          <img src="assets/img/hero-banner-3.png" alt="Buy 1 Get 1 Free — Handpicked Bestsellers">
+        </div>
+        <div class="hero-slide" data-index="3">
+          <img src="assets/img/hero-banner-4.png" alt="Buy 1 Get 1 Free — Handpicked Bestsellers">
+        </div>
+      </div>
+
+      <div class="hero-overlay">
+        <div class="hero-copy">
+          <h1 class="hero-offer">Buy 1 Get 1</h1>
+          <p class="hero-free"><span class="hero-line"></span><span class="hero-free-text">Free</span><span
+              class="hero-line"></span></p>
+          <p class="hero-handpicked">Handpicked</p>
+          <p class="hero-bestsellers">Bestsellers</p>
+          <p class="hero-ends">Offer Ends Soon</p>
+        </div>
+      </div>
+
+      <div class="hero-dots" id="hero-dots" role="tablist" aria-label="Hero slides">
+        <button type="button" class="hero-dot is-active" role="tab" aria-selected="true" aria-label="Slide 1"></button>
+        <button type="button" class="hero-dot" role="tab" aria-selected="false" aria-label="Slide 2"></button>
+        <button type="button" class="hero-dot" role="tab" aria-selected="false" aria-label="Slide 3"></button>
+        <button type="button" class="hero-dot" role="tab" aria-selected="false" aria-label="Slide 4"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories" aria-label="Shop by category">
+    <div class="categories-carousel" id="categories-carousel">
+      <div class="categories-inner">
+        <a href="shop.html?collection=bangles" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/BANGLE.webp" alt="Bangles">
+          </div>
+          <span class="category-label">Bangles</span>
+        </a>
+        <a href="shop.html?collection=necklaces" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/NECKLACE.webp" alt="Necklaces">
+          </div>
+          <span class="category-label">Necklaces</span>
+        </a>
+        <a href="shop.html?collection=chains" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/CHAIN.webp" alt="Chain">
+          </div>
+          <span class="category-label">Chain</span>
+        </a>
+        <a href="shop.html?collection=bracelets" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/BRACELET.webp" alt="Bracelets">
+          </div>
+          <span class="category-label">Bracelets</span>
+        </a>
+        <a href="shop.html?collection=pendants" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/PENDENT.webp" alt="Pendants">
+          </div>
+          <span class="category-label">Pendants</span>
+        </a>
+        <a href="shop.html?collection=earrings" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/EARRRING.webp" alt="Earrings">
+          </div>
+          <span class="category-label">Earrings</span>
+        </a>
+        <a href="shop.html?collection=rings" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/RING.webp" alt="Rings">
+          </div>
+          <span class="category-label">Rings</span>
+        </a>
+        <a href="shop.html?collection=anklets" class="category-card">
+          <div class="category-media">
+            <img src="assets/img/ANKLETS.webp" alt="Anklets">
+          </div>
+          <span class="category-label">Anklets</span>
+        </a>
+      </div>
+      <div class="categories-dots" id="categories-dots" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <section class="promo-banner" aria-label="Most premium lines">
+    <div class="promo-banner-media">
+      <img src="assets/img/banner.png" alt="Most premium lines jewelry collection">
+    </div>
+    <div class="promo-banner-content">
+      <h2 class="promo-banner-title">Most Premium Lines</h2>
+      <p class="promo-banner-subtitle">Traditional, ornate, and rooted in <strong>spirituality</strong></p>
+    </div>
+  </section>
+
+  <section class="product-section" aria-label="The Pure Love Rings">
+    <div class="product-section-heading">
+      <h2>The Pure Love Rings <span class="heading-heart" aria-hidden="true">❤️</span></h2>
+    </div>
+
+    <div class="product-carousel" id="rings-carousel">
+      <button type="button" class="carousel-btn carousel-prev" aria-label="Previous products">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+
+      <div class="carousel-viewport">
+        <div class="carousel-track">
+          <a href="product.html?id=na-1" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-1.webp" alt="Stone Ring PSR219W-021">
+              <img class="product-img-hover" src="assets/img/NA-1-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,424.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 6,848.00</span>
+              </p>
+              <p class="product-name">Stone Ring PSR219W-021</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-2" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-2.webp" alt="Stone Ring PSR34W-501">
+              <img class="product-img-hover" src="assets/img/NA-2-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 2,996.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 5,092.00</span>
+              </p>
+              <p class="product-name">Stone Ring PSR34W-501</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-3" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-3.webp" alt="Golden Ring PGR53-021">
+              <img class="product-img-hover" src="assets/img/NA-3-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,424.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 6,848.00</span>
+              </p>
+              <p class="product-name">Golden Ring PGR53-021</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-4" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-4.webp" alt="Golden Ring PGR62-021">
+              <img class="product-img-hover" src="assets/img/NA-4-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,424.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 6,848.00</span>
+              </p>
+              <p class="product-name">Golden Ring PGR62-021</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-5" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-5.webp" alt="Stone Ring PSR88W-112">
+              <img class="product-img-hover" src="assets/img/NA-5-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,199.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 6,398.00</span>
+              </p>
+              <p class="product-name">Stone Ring PSR88W-112</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-6" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-6.webp" alt="Golden Ring PGR71-044">
+              <img class="product-img-hover" src="assets/img/NA-6-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 2,849.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 5,698.00</span>
+              </p>
+              <p class="product-name">Golden Ring PGR71-044</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-7" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-7.webp" alt="Stone Ring PSR105W-033">
+              <img class="product-img-hover" src="assets/img/NA-7-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,599.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 7,198.00</span>
+              </p>
+              <p class="product-name">Stone Ring PSR105W-033</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=na-8" class="product-card">
+            <div class="product-media">
+              <img class="product-img-main" src="assets/img/NA-8.webp" alt="Golden Ring PGR90-018">
+              <img class="product-img-hover" src="assets/img/NA-8-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,149.00</span>
+                <span class="price-divider">|</span>
+                <span class="price-compare">RS. 6,298.00</span>
+              </p>
+              <p class="product-name">Golden Ring PGR90-018</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <button type="button" class="carousel-btn carousel-next" aria-label="Next products">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="product-section-footer">
+      <a href="shop.html" class="btn-view-all">View All</a>
+    </div>
+  </section>
+
+  <section class="collections" id="collections" aria-label="Our Collections">
+    <div class="collections-header">
+      <span class="collections-flourish" aria-hidden="true">
+        <svg viewBox="0 0 80 20" width="72" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M78 10c-8-8-16-8-24 0s-16 8-24 0S14 2 6 10" stroke="#222" stroke-width="1" />
+          <path d="M2 10h6M72 10h6" stroke="#222" stroke-width="1" />
+          <circle cx="40" cy="10" r="1.6" fill="#222" />
+        </svg>
+      </span>
+      <h2 class="collections-title">Our Collections</h2>
+      <span class="collections-flourish collections-flourish-right" aria-hidden="true">
+        <svg viewBox="0 0 80 20" width="72" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 10c8-8 16-8 24 0s16 8 24 0 16-8 24 0" stroke="#222" stroke-width="1" />
+          <path d="M2 10h6M72 10h6" stroke="#222" stroke-width="1" />
+          <circle cx="40" cy="10" r="1.6" fill="#222" />
+        </svg>
+      </span>
+    </div>
+
+    <div class="collections-grid">
+      <a href="#" class="collection-card collection-solis">
+        <img src="assets/img/coll-1.png" alt="Solis collection">
+        <div class="collection-copy collection-copy-solis">
+          <h3 class="collection-name-script">Solis</h3>
+          <p class="collection-desc">Everyday essentials</p>
+          <p class="collection-price-line">starting from ₹10,000</p>
+        </div>
+      </a>
+
+      <a href="#" class="collection-card collection-crown">
+        <img src="assets/img/coll-2.png" alt="Crown Star collection">
+        <div class="collection-copy collection-copy-crown">
+          <span class="crown-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 32" width="34" height="22" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 26 L8 10 L16 20 L24 4 L32 20 L40 10 L44 26 Z" fill="none" stroke="#fff" stroke-width="1.6"
+                stroke-linejoin="round" />
+              <path d="M4 26h40" stroke="#fff" stroke-width="1.6" />
+              <circle cx="8" cy="10" r="1.4" fill="#fff" />
+              <circle cx="24" cy="4" r="1.4" fill="#fff" />
+              <circle cx="40" cy="10" r="1.4" fill="#fff" />
+            </svg>
+          </span>
+          <span class="crown-rule" aria-hidden="true"></span>
+          <h3 class="collection-name-serif">Crown<br>Star</h3>
+          <p class="collection-desc-crown">Brilliance of 73<br>faceted diamonds</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="product-section new-arrivals" aria-label="New Arrivals">
+    <div class="product-section-heading">
+      <h2>New Arrivals</h2>
+    </div>
+
+    <div class="product-carousel" id="arrivals-carousel">
+      <button type="button" class="carousel-btn carousel-prev" aria-label="Previous products">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+
+      <div class="carousel-viewport">
+        <div class="carousel-track">
+          <a href="product.html?id=bs-1" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-1.webp" alt="Ruby Stone Pendant Set">
+              <img class="product-img-hover" src="assets/img/BS-1-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 5,135.58</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Ruby Stone Pendant Set<br>PSLT263WR-09, PSST172WR-09</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-2" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-2.webp" alt="Circular Pendant Necklace">
+              <img class="product-img-hover" src="assets/img/BS-2-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 4,286.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Circular Stone Pendant<br>PNDT184G-22</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-3" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-3.webp" alt="Ruby Choker Set">
+              <img class="product-img-hover" src="assets/img/BS-3-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 6,842.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Ruby Choker Necklace Set<br>CHK92R-015, ER92R-015</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-4" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-4.webp" alt="Fan Drop Earrings">
+              <img class="product-img-hover" src="assets/img/BS-4-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,598.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Fan Drop Earrings<br>ERFAN44W-08</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-5" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-5.webp" alt="Gold Pendant Set">
+              <img class="product-img-hover" src="assets/img/BS-5-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 4,920.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Gold Pendant Necklace Set<br>PNDT205G-11</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-6" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-6.webp" alt="Statement Earrings">
+              <img class="product-img-hover" src="assets/img/BS-6-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 3,275.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Statement Drop Earrings<br>ERST66W-19</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-7" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-7.webp" alt="Layered Necklace">
+              <img class="product-img-hover" src="assets/img/BS-7-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 5,460.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Layered Gold Necklace<br>NKLY78G-03</p>
+            </div>
+          </a>
+
+          <a href="product.html?id=bs-8" class="product-card">
+            <div class="product-media product-media-dark">
+              <img class="product-img-main" src="assets/img/BS-8.webp" alt="Bridal Pendant Set">
+              <img class="product-img-hover" src="assets/img/BS-8-hover.webp" alt="">
+            </div>
+            <div class="product-info">
+              <p class="product-price">
+                <span class="price-sale">RS. 7,125.00</span>
+                <span class="price-divider">|</span>
+              </p>
+              <p class="product-name">Bridal Pendant Set<br>BRPS310WR-07</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <button type="button" class="carousel-btn carousel-next" aria-label="Next products">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="product-section-footer">
+      <a href="shop.html" class="btn-view-all">View All</a>
+    </div>
+  </section>
+
+  <section class="compare-banner" aria-label="Aurevia premium vs standard jewelry">
+    <img src="assets/img/banner-2.png"
+      alt="Aurevia premium fine jewelry compared to standard jewelry — 18K gold craftsmanship, certified diamonds, and more">
+  </section>
+
+  <section class="timeless-promo" aria-label="Timeless Treasures">
+    <h2 class="timeless-promo-title">Timeless Treasures</h2>
+    <div class="timeless-promo-grid">
+      <a href="#" class="timeless-card">
+        <img src="assets/img/promo-1.png" alt="Classic Gold jewelry">
+        <div class="timeless-card-copy">
+          <h3>Classic Gold</h3>
+          <span class="timeless-underline" aria-hidden="true"></span>
+        </div>
+      </a>
+      <a href="#" class="timeless-card">
+        <img src="assets/img/promo-2.png" alt="Emerald jewelry">
+        <div class="timeless-card-copy">
+          <h3>Emerald</h3>
+          <span class="timeless-underline" aria-hidden="true"></span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="latest-collections" aria-label="Latest Collections">
+    <div class="product-section-heading">
+      <h2>Latest Collections</h2>
+    </div>
+
+    <div class="latest-grid">
+      <article class="latest-card">
+        <a href="#" class="latest-card-link">
+          <div class="latest-card-media">
+            <img src="assets/img/LC-1.png" alt="Sreshia exclusive jewelry collection">
+            <div class="latest-brand latest-brand-sreshia">
+              <h3 class="brand-sreshia">Sreshía<span class="brand-star" aria-hidden="true">✦</span></h3>
+              <p>An Exclusive Jewelry Collection</p>
+            </div>
+          </div>
+        </a>
+        <div class="latest-thumbs">
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-1.avif" alt="Sreshia product 1"></a>
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-2.webp" alt="Sreshia product 2"></a>
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-3.avif" alt="Sreshia product 3"></a>
+        </div>
+      </article>
+
+      <article class="latest-card">
+        <a href="#" class="latest-card-link">
+          <div class="latest-card-media">
+            <img src="assets/img/LC-2.png" alt="Aria jewelry collection">
+            <div class="latest-brand latest-brand-aria">
+              <h3 class="brand-aria"><span class="aria-spark" aria-hidden="true">✧</span>aria</h3>
+            </div>
+          </div>
+        </a>
+        <div class="latest-thumbs">
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-4.webp" alt="Aria product 1"></a>
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-5.avif" alt="Aria product 2"></a>
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-6.webp" alt="Aria product 3"></a>
+        </div>
+      </article>
+
+      <article class="latest-card">
+        <a href="#" class="latest-card-link">
+          <div class="latest-card-media">
+            <img src="assets/img/LC-3.png" alt="Premium collections">
+            <div class="latest-brand latest-brand-premium">
+              <h3 class="brand-premium">Premium</h3>
+              <p class="brand-collections">Collections</p>
+            </div>
+          </div>
+        </a>
+        <div class="latest-thumbs">
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-7.avif" alt="Premium product 1"></a>
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-8.avif" alt="Premium product 2"></a>
+          <a href="#" class="latest-thumb"><img src="assets/img/coll-product-9.avif" alt="Premium product 3"></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="stories" aria-label="Customer stories">
+    <h2 class="stories-title">Where Every Piece Tells A Story</h2>
+
+    <div class="stories-carousel" id="stories-carousel">
+      <div class="stories-track">
+        <article class="story-card" data-index="0">
+          <div class="story-media">
+            <img src="assets/img/LC-2.png" alt="Camillia wearing Grand Palais Studs">
+            <div class="story-label">
+              <p class="story-name">Camillia</p>
+              <p class="story-product">Grand Palais Studs</p>
+            </div>
+          </div>
+          <div class="story-stars" aria-label="5 star rating">★★★★★</div>
+          <p class="story-quote">"I Placed The Order Of 9 Items Together And Trust Me When I Say This, Each Article Was
+            One Of Its Kind. Loved It All So Much That I Placed Another Order Of 3 Items Again. Would Had Been Really
+            Amazing If The Prices Were A Bit Low. Rest The Quality And Designs Were Excellent."</p>
+        </article>
+
+        <article class="story-card" data-index="1">
+          <div class="story-media">
+            <img src="assets/img/LC-1.png" alt="Mimi wearing Basra Zamrud Choker">
+            <div class="story-label">
+              <p class="story-name">Mimi</p>
+              <p class="story-product">Basra Zamrud Choker</p>
+            </div>
+          </div>
+          <div class="story-stars" aria-label="5 star rating">★★★★★</div>
+          <p class="story-quote">"Very Pretty And Classy Necklace. The Design Is Elegant, You Can Style It Beautifully
+            With Both Traditional Outfits And Fusion Wear."</p>
+        </article>
+
+        <article class="story-card" data-index="2">
+          <div class="story-media">
+            <img src="assets/img/LC-3.png" alt="Amanda Brizendine wearing Serial Minimal Earrawler">
+            <div class="story-label">
+              <p class="story-name">Amanda Brizendine</p>
+              <p class="story-product">Serial Minimal Earrawler</p>
+            </div>
+          </div>
+          <div class="story-stars" aria-label="5 star rating">★★★★★</div>
+          <p class="story-quote">"Solid Gold Finished Ear Crawler. For Any Outfit. Absolutely Love This Piece Thank You
+            Amama"</p>
+        </article>
+
+        <article class="story-card" data-index="3">
+          <div class="story-media">
+            <img src="assets/img/hero-banner-2.png" alt="Priya wearing Solitaire Glow Necklace">
+            <div class="story-label">
+              <p class="story-name">Priya</p>
+              <p class="story-product">Solitaire Glow Necklace</p>
+            </div>
+          </div>
+          <div class="story-stars" aria-label="5 star rating">★★★★★</div>
+          <p class="story-quote">"The Sparkle Is Unreal In Person. Packaging Felt Premium And Delivery Was Quick.
+            Already Planning My Next Purchase From Aurevia."</p>
+        </article>
+
+        <article class="story-card" data-index="4">
+          <div class="story-media">
+            <img src="assets/img/promo-1.png" alt="Ananya wearing Classic Gold Set">
+            <div class="story-label">
+              <p class="story-name">Ananya</p>
+              <p class="story-product">Classic Gold Set</p>
+            </div>
+          </div>
+          <div class="story-stars" aria-label="5 star rating">★★★★★</div>
+          <p class="story-quote">"Got So Many Compliments At The Wedding. The Finish Looks Rich And The Pieces Feel
+            Comfortable For Long Wear."</p>
+        </article>
+
+        <article class="story-card" data-index="5">
+          <div class="story-media">
+            <img src="assets/img/coll-1.png" alt="Riya wearing Everyday Essentials">
+            <div class="story-label">
+              <p class="story-name">Riya</p>
+              <p class="story-product">Everyday Essentials</p>
+            </div>
+          </div>
+          <div class="story-stars" aria-label="5 star rating">★★★★★</div>
+          <p class="story-quote">"Subtle Yet Stunning. Perfect For Office And Evenings. Quality Exceeded My Expectations
+            Completely."</p>
+        </article>
+      </div>
+    </div>
+
+    <div class="stories-controls">
+      <button type="button" class="stories-arrow" id="stories-prev" aria-label="Previous story">
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+      <div class="stories-dots" id="stories-dots" role="tablist" aria-label="Story slides">
+        <button type="button" class="stories-dot is-active" role="tab" aria-selected="true"
+          aria-label="Story 1"></button>
+        <button type="button" class="stories-dot" role="tab" aria-selected="false" aria-label="Story 2"></button>
+        <button type="button" class="stories-dot" role="tab" aria-selected="false" aria-label="Story 3"></button>
+        <button type="button" class="stories-dot" role="tab" aria-selected="false" aria-label="Story 4"></button>
+        <button type="button" class="stories-dot" role="tab" aria-selected="false" aria-label="Story 5"></button>
+        <button type="button" class="stories-dot" role="tab" aria-selected="false" aria-label="Story 6"></button>
+      </div>
+      <button type="button" class="stories-arrow" id="stories-next" aria-label="Next story">
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-searched">
+      <h2 class="footer-searched-title">Most Searched</h2>
+      <p class="footer-searched-links">
+        <a href="#">Earrings</a><span>|</span>
+        <a href="#">Stud Earrings</a><span>|</span>
+        <a href="#">Hoop Earrings</a><span>|</span>
+        <a href="#">Dangler Earrings</a><span>|</span>
+        <a href="#">Party Wear Earrings</a><span>|</span>
+        <a href="#">Chandelier Earrings</a><span>|</span>
+        <a href="#">Chandbali Earrings</a><span>|</span>
+        <a href="#">Western Earrings</a><span>|</span>
+        <a href="#">Statement Earrings</a><span>|</span>
+        <a href="#">Necklaces</a><span>|</span>
+        <a href="#">Choker Necklaces</a><span>|</span>
+        <a href="#">Statement Necklace</a><span>|</span>
+        <a href="#">Pendants</a><span>|</span>
+        <a href="#">Rings</a><span>|</span>
+        <a href="#">Statement Rings</a><span>|</span>
+        <a href="#">Cocktail Rings</a><span>|</span>
+        <a href="#">Proposal Rings</a><span>|</span>
+        <a href="#">Engagement Rings</a><span>|</span>
+        <a href="#">Bracelets</a><span>|</span>
+        <a href="#">Maang Tikka</a><span>|</span>
+        <a href="#">Bags</a><span>|</span>
+        <a href="#">Statement Pendants</a><span>|</span>
+        <a href="#">Charms &amp; Pendants</a><span>|</span>
+        <a href="#">Pearl Jewellery</a><span>|</span>
+        <a href="#">Statement Jewellery</a><span>|</span>
+        <a href="#">Chains For Girls</a><span>|</span>
+        <a href="#">Gold Plated Jewellery</a>
+      </p>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-col footer-newsletter">
+        <h3>Join The Aurevia Tribe</h3>
+        <p class="footer-newsletter-text">Join to get special offers, free giveaways, and once-in-a-lifetime deals</p>
+        <form class="footer-email-form" action="#" method="post">
+          <label class="visually-hidden" for="footer-email">Email</label>
+          <input type="email" id="footer-email" name="email" placeholder="Enter your email" required>
+          <button type="submit" aria-label="Subscribe">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+          </button>
+        </form>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          <a href="#" aria-label="Pinterest"><i class="fa-brands fa-pinterest-p" aria-hidden="true"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col footer-about">
+        <h3 class="footer-brand">Aurevia</h3>
+        <p>Aurevia is a modern-day Indian brand that started as a fateful encounter with breathtaking jewelry and turned
+          into an epic, lifelong affair.</p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Store Locator</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Term of service</a></li>
+          <li><a href="#">Sitemap</a></li>
+          <li><a href="#">Blogs</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h3>Customer Support</h3>
+        <ul class="footer-links">
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">FAQ's</a></li>
+          <li><a href="#">Track Order</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Returns &amp; Exchanges</a></li>
+          <li><a href="#">Raise a Return</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; 2026 Aurevia | Modern Indian Jewelry</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+    aria-label="Chat on WhatsApp">
+    <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
+</html>
