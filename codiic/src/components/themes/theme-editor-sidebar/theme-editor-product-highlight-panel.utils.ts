@@ -83,3 +83,78 @@ export function prepareProductHighlightSettingsNode(node: SidebarNode): SidebarN
 export function productHighlightSiblingPath(path: string, key: string): string {
   return path.replace(/\.[^.]+$/, `.${key}`);
 }
+
+/** Resolve display-field siblings for productId pickers (highlight + Watch cards). */
+export function resolveProductPickerSiblingPaths(productIdPath: string): {
+  title: string;
+  price: string;
+  image: string;
+  href: string;
+  compareAt: string;
+} {
+  const base = productIdPath.replace(/\.[^.]+$/, '');
+  const href = `${base}.href`;
+
+  if (productIdPath.includes('.watch_bestsellers.') && /\.card(\d+)ProductId$/.test(productIdPath)) {
+    const n = productIdPath.match(/\.card(\d+)ProductId$/)?.[1] ?? '1';
+    return {
+      title: `${base}.card${n}Name`,
+      price: `${base}.card${n}Price`,
+      image: `${base}.card${n}PrimaryImageUrl`,
+      href: `${base}.card${n}Href`,
+      compareAt: `${base}.card${n}CompareAt`,
+    };
+  }
+
+  if (productIdPath.includes('.watch_signature.') && /\.card(\d+)ProductId$/.test(productIdPath)) {
+    const n = productIdPath.match(/\.card(\d+)ProductId$/)?.[1] ?? '1';
+    return {
+      title: `${base}.card${n}Label`,
+      price: `${base}.card${n}Price`,
+      image: `${base}.card${n}ProductImageUrl`,
+      href: `${base}.card${n}Href`,
+      compareAt: `${base}.card${n}CompareAt`,
+    };
+  }
+
+  if (productIdPath.includes('.watch_collection.') && /\.product(\d+)ProductId$/.test(productIdPath)) {
+    const n = productIdPath.match(/\.product(\d+)ProductId$/)?.[1] ?? '1';
+    return {
+      title: `${base}.product${n}Name`,
+      price: `${base}.product${n}Price`,
+      image: `${base}.product${n}ImageUrl`,
+      href: `${base}.product${n}Href`,
+      compareAt: `${base}.product${n}CompareAt`,
+    };
+  }
+
+  if (productIdPath.includes('.watch_launches.')) {
+    if (productIdPath.endsWith('.featuredProductId')) {
+      return {
+        title: `${base}.featuredTitle`,
+        price: `${base}.featuredPrice`,
+        image: `${base}.featuredImageUrl`,
+        href: `${base}.featuredHref`,
+        compareAt: `${base}.featuredCompareAt`,
+      };
+    }
+    const n = productIdPath.match(/\.card(\d+)ProductId$/)?.[1];
+    if (n) {
+      return {
+        title: `${base}.card${n}Title`,
+        price: `${base}.card${n}Price`,
+        image: `${base}.card${n}ImageUrl`,
+        href: `${base}.card${n}Href`,
+        compareAt: `${base}.card${n}CompareAt`,
+      };
+    }
+  }
+
+  return {
+    title: productHighlightSiblingPath(productIdPath, 'productTitle'),
+    price: productHighlightSiblingPath(productIdPath, 'price'),
+    image: productHighlightSiblingPath(productIdPath, 'productImageUrl'),
+    href,
+    compareAt: productHighlightSiblingPath(productIdPath, 'compareAtPrice'),
+  };
+}

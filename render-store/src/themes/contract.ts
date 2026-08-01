@@ -28,6 +28,8 @@ export interface ThemeContract {
   CollectionPage?: ThemeComponent;
   /** `/404` and unmatched routes */
   NotFoundPage?: ThemeComponent;
+  /** `/blogs/all` — all blogs for the store */
+  AllBlogsPage?: ThemeComponent;
   /** `/blogs/:blogHandle` - blog details + posts list */
   BlogPage?: ThemeComponent;
   /** `/blogs/:blogHandle/:articleHandle` - blog post details */

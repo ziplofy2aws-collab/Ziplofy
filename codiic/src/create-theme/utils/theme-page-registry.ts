@@ -91,6 +91,29 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     ],
   },
   {
+    pageId: 'all_products',
+    templateId: 'all_products',
+    label: 'All products',
+    icon: 'product',
+    previewPath: '/collections/all',
+    routes: [
+      {
+        path: '/collections/all',
+        templateId: 'all_products',
+        withCollectionLoader: true,
+        loadCollectionUrlHandle: 'all',
+      },
+    ],
+  },
+  {
+    pageId: 'collections_list',
+    templateId: 'collections_list',
+    label: 'Collections list',
+    icon: 'collection',
+    previewPath: '/collections',
+    routes: [{ path: '/collections', templateId: 'collections_list' }],
+  },
+  {
     pageId: 'product',
     templateId: 'product',
     label: 'Default product',
@@ -189,6 +212,20 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     ],
   },
   {
+    pageId: 'all_blogs',
+    templateId: 'all_blogs',
+    label: 'All blogs',
+    icon: 'blog',
+    /** Remote-theme minimum menu target — every blog in the store */
+    previewPath: '/blogs/all',
+    routes: [
+      {
+        path: '/blogs/all',
+        templateId: 'all_blogs',
+      },
+    ],
+  },
+  {
     pageId: 'blogs',
     templateId: 'blogs',
     label: 'Default blog',
@@ -213,6 +250,21 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
       {
         path: '/blogs/:blogHandle/:articleHandle',
         templateId: 'blog-posts',
+        withBlogPostLoader: true,
+        fallbackSectionIds: ['blog_post_main'],
+      },
+    ],
+  },
+  {
+    pageId: 'blog_posts',
+    templateId: 'blog_posts',
+    label: 'Blog post',
+    icon: 'blog',
+    previewPath: '/blogs/preview/preview',
+    routes: [
+      {
+        path: '/blogs/:blogHandle/:articleHandle',
+        templateId: 'blog_posts',
         withBlogPostLoader: true,
         fallbackSectionIds: ['blog_post_main'],
       },

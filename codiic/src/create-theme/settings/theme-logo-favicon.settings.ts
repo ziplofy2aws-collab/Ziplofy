@@ -60,3 +60,21 @@ export function ensureThemeLogoFaviconDefaults(config: Record<string, unknown>):
   if (logo.mobileHeight == null) logo.mobileHeight = THEME_LOGO_MOBILE_HEIGHT_DEFAULT;
   config.settings = settings;
 }
+
+export function seedThemeLogoFaviconValues(
+  values: Record<string, string | boolean>,
+  config: Record<string, unknown>
+): Record<string, string | boolean> {
+  ensureThemeLogoFaviconDefaults(config);
+  const logo = ((config.settings as Record<string, unknown>).logo ?? {}) as Record<string, unknown>;
+  return {
+    ...values,
+    [THEME_LOGO_DEFAULT_PATH]: String(logo.defaultUrl ?? ''),
+    [THEME_LOGO_INVERSE_PATH]: String(logo.inverseUrl ?? ''),
+    [THEME_LOGO_FAVICON_PATH]: String(logo.faviconUrl ?? ''),
+    [THEME_LOGO_DESKTOP_HEIGHT_PATH]: String(
+      logo.desktopHeight ?? THEME_LOGO_DESKTOP_HEIGHT_DEFAULT
+    ),
+    [THEME_LOGO_MOBILE_HEIGHT_PATH]: String(logo.mobileHeight ?? THEME_LOGO_MOBILE_HEIGHT_DEFAULT),
+  };
+}

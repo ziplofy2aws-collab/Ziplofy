@@ -35,6 +35,8 @@ type Props = {
   values: Record<string, string | boolean>;
   colorPalette: string[];
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  /** Catalog editor: primary + secondary only. */
+  showPills?: boolean;
 };
 
 function SettingRow({ label, children }: { label: string; children: React.ReactNode }) {
@@ -281,7 +283,12 @@ function ButtonVariantFields({
   );
 }
 
-export function ThemeButtonsSettingsPanel({ values, colorPalette, onFieldChange }: Props) {
+export function ThemeButtonsSettingsPanel({
+  values,
+  colorPalette,
+  onFieldChange,
+  showPills = true,
+}: Props) {
   const pillsRadius = normalizeThemeButtonCornerRadius(
     values[THEME_BUTTONS_PILLS_CORNER_RADIUS_PATH],
     THEME_DEFAULT_BUTTONS.pills.cornerRadius
@@ -305,19 +312,23 @@ export function ThemeButtonsSettingsPanel({ values, colorPalette, onFieldChange 
         onFieldChange={onFieldChange}
       />
 
-      <SectionHeading
-        title="Pills"
-        helper="Used for applied filters, discount codes, and search suggestions"
-      />
-      <PxSliderField
-        label="Corner radius"
-        value={pillsRadius}
-        min={THEME_BUTTON_CORNER_RADIUS_MIN}
-        max={THEME_BUTTON_CORNER_RADIUS_MAX}
-        onChange={(next) =>
-          onFieldChange(THEME_BUTTONS_PILLS_CORNER_RADIUS_PATH, 'number', String(next))
-        }
-      />
+      {showPills ? (
+        <>
+          <SectionHeading
+            title="Pills"
+            helper="Used for applied filters, discount codes, and search suggestions"
+          />
+          <PxSliderField
+            label="Corner radius"
+            value={pillsRadius}
+            min={THEME_BUTTON_CORNER_RADIUS_MIN}
+            max={THEME_BUTTON_CORNER_RADIUS_MAX}
+            onChange={(next) =>
+              onFieldChange(THEME_BUTTONS_PILLS_CORNER_RADIUS_PATH, 'number', String(next))
+            }
+          />
+        </>
+      ) : null}
     </div>
   );
 }

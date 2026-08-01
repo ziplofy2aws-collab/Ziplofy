@@ -1,27 +1,15 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './theme-editor-sidebar.types';
 import { layoutBlueprintKey, remapLayoutSchemaPath } from '../../../utils/theme-editor-insert-section';
 
-const BLOCK_PANEL_GROUPS = new Set(['Content', 'Typography']);
+const BLOCK_PANEL_GROUPS = new Set(['Content']);
 
 const BLOCK_FIELD_SORT: Record<string, number> = {
   text: 0,
   link: 1,
-  font: 10,
-  fontSize: 11,
-  fontWeight: 12,
-  letterSpacing: 13,
-  textCase: 14,
+  linkLabel: 2,
 };
 
-const BLOCK_SETTING_KEYS = new Set([
-  'text',
-  'link',
-  'font',
-  'fontSize',
-  'fontWeight',
-  'letterSpacing',
-  'textCase',
-]);
+const BLOCK_SETTING_KEYS = new Set(['text', 'link', 'linkLabel']);
 
 function blockSettingKey(path: string): string {
   return path.split('.').pop() ?? '';
@@ -95,7 +83,10 @@ export function announcementBlockFieldDefsFromSchema(
   const blueprint = layoutBlueprintKey(instanceId);
   const block = editorSchema.layout?.[blueprint]?.blocks?.find((b) => b.id === 'announcement');
   if (!block?.settingsFields?.length) return [];
-  return block.settingsFields.map((f) => {
+  return block.settingsFields
+    .filter((f) => f.sidebar !== false)
+    .filter(isAnnouncementBlockPanelField)
+    .map((f) => {
     const path = remapLayoutSchemaPath(f.path, instanceId).replace(
       /\.blocks\.announcement\./,
       `.blocks.${blockInstanceId}.`

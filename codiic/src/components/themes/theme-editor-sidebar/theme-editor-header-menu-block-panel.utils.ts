@@ -1,35 +1,9 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './theme-editor-sidebar.types';
 import { layoutBlueprintKey, remapLayoutSchemaPath } from '../../../utils/theme-editor-insert-section';
 
-const MENU_BLOCK_PANEL_KEYS = new Set([
-  'menu',
-  'colorScheme',
-  'topLevelSize',
-  'submenuSize',
-  'font',
-  'textCase',
-  'submenuMediaType',
-  'submenuImageRatio',
-  'submenuImageCornerRadius',
-  'mobileNavigationBar',
-  'mobileAccordion',
-  'mobileDividers',
-]);
+const MENU_BLOCK_PANEL_KEYS = new Set(['menu']);
 
-const MENU_BLOCK_FIELD_ORDER = [
-  'menu',
-  'colorScheme',
-  'topLevelSize',
-  'submenuSize',
-  'font',
-  'textCase',
-  'submenuMediaType',
-  'submenuImageRatio',
-  'submenuImageCornerRadius',
-  'mobileNavigationBar',
-  'mobileAccordion',
-  'mobileDividers',
-] as const;
+const MENU_BLOCK_FIELD_ORDER = ['menu'] as const;
 
 function blockSettingKey(path: string): string {
   return path.split('.').pop() ?? '';

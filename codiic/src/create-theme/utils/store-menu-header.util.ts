@@ -8,6 +8,7 @@ const RAW_LINK_TYPE_LABELS = new Set([
   'specific-product',
   'all-collections',
   'all-products',
+  'all-blogs',
   'homepage',
   'custom',
 ]);
@@ -30,9 +31,11 @@ function resolveHeaderNavLabel(item: StoreMenuItem): string {
     case 'homepage':
       return 'Home page';
     case 'all-collections':
-      return 'Collections';
+      return 'All collections';
     case 'all-products':
-      return 'Products';
+      return 'All products';
+    case 'all-blogs':
+      return 'All blogs';
     case 'specific-collection':
       return collectionTitle || 'Collection';
     case 'specific-product':
@@ -101,13 +104,13 @@ function syncMenuNestedBlockOrder(
   if (blockBase === menuFieldPath) return;
   const nestedIds = Array.from({ length: itemCount }, (_, index) =>
     index === 0
-      ? 'link_shop'
+      ? 'link_home'
       : index === 1
-        ? 'link_collections'
+        ? 'link_all_products'
         : index === 2
-          ? 'link_about'
+          ? 'link_all_collections'
           : index === 3
-            ? 'link_account'
+            ? 'link_all_blogs'
             : `link_${index}`
   );
   setConfigAtPath(config, `${blockBase}.nested_block_order`, nestedIds);

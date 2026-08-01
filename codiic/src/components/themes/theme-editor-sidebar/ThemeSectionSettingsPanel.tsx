@@ -1,14 +1,16 @@
-import React, { memo, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ChevronDownIcon,
   CircleStackIcon,
   EllipsisHorizontalIcon,
   EyeIcon,
   LinkIcon,
+  PencilSquareIcon,
   PhotoIcon,
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import toast from 'react-hot-toast';
 import type { EditorFieldDef, SidebarNode } from './theme-editor-sidebar.types';
 import {
   fieldInputId,
@@ -18,6 +20,23 @@ import {
 } from './theme-editor-field.utils';
 import { ThemeEditorLinkField } from '../../theme-editor/ThemeEditorLinkField';
 import { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
+import { ThemeEditorImageEditorSheet } from './ThemeEditorImageEditorSheet';
+import { useCollections } from '../../../contexts/collection.context';
+import { useStore } from '../../../contexts/store.context';
+import type { Collection } from '../../../contexts/collection.context';
+import { CollectionsPickerFieldRow } from '../../../create-theme/sidebar/CollectionsPickerFieldRow';
+import { ThemeEditorCreateCollectionSheet } from '../../../create-theme/sidebar/ThemeEditorCreateCollectionSheet';
+import {
+  serializeCollectionLinksPicker,
+} from '../../../create-theme/utils/collection-links-collections.util';
+import { StyledTextFieldRow } from './StyledTextFieldRow';
+import {
+  filterCatalogSettingsFields,
+} from './catalog-text-style.utils';
+import {
+  isProductsCategorySection,
+  sidebarNodeSectionKey,
+} from './catalog-section-category.utils';
 import {
   groupHeroPanelFields,
   HERO_PANEL_GROUP_ORDER,
@@ -81,7 +100,7 @@ import {
   PRODUCT_HIGHLIGHT_PANEL_GROUP_ORDER,
   groupProductHighlightPanelFields,
   isProductHighlightSettingsPanelFields,
-  productHighlightSiblingPath,
+  resolveProductPickerSiblingPaths,
 } from './theme-editor-product-highlight-panel.utils';
 import {
   FEATURED_PRODUCT_PANEL_GROUP_ORDER,
@@ -328,6 +347,14 @@ import {
 import { HeaderSettingsPanel } from './theme-editor-header-settings-panel';
 import { isHeaderLogoBlockPanelFields } from './theme-editor-header-logo-block-panel.utils';
 import { isHeaderMenuBlockPanelFields } from './theme-editor-header-menu-block-panel.utils';
+import {
+  isWatchFooterBottomLinksBlockNodeId,
+  isWatchFooterBrandBlockNodeId,
+  isWatchFooterMenuColumnBlockNodeId,
+} from './theme-editor-watch-footer-block-panel.utils';
+import {
+  WatchFooterSimpleSettingsPanel,
+} from './theme-editor-watch-footer-block-settings-panel';
 
 function SectionIcon({ className }: { className?: string }) {
   return (
@@ -450,6 +477,7 @@ function ImagePickerFieldRow({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
   const url = fieldValueAsString(values, field);
   const hasImage = Boolean(url.trim());
 
@@ -459,8 +487,16 @@ function ImagePickerFieldRow({
         <span className="block text-[13px] font-medium text-gray-800">{field.label}</span>
         <div className="rounded-lg border border-dashed border-[#c9cccf] bg-[#fafbfb] p-3">
           {hasImage ? (
-            <div className="mb-2 overflow-hidden rounded-md border border-[#e1e1e1] bg-white">
+            <div className="relative mb-2 overflow-hidden rounded-md border border-[#e1e1e1] bg-white">
               <img src={url} alt="" className="max-h-28 w-full object-cover" />
+              <button
+                type="button"
+                title="Edit image"
+                onClick={() => setEditorOpen(true)}
+                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-lg border border-[#c9cccf] bg-white/95 text-gray-700 shadow-sm hover:bg-white"
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+              </button>
             </div>
           ) : (
             <div className="mb-2 flex h-20 items-center justify-center rounded-md border border-[#e1e1e1] bg-white text-gray-400">
@@ -483,6 +519,16 @@ function ImagePickerFieldRow({
             >
               <CircleStackIcon className="h-4 w-4" />
             </button>
+            {hasImage ? (
+              <button
+                type="button"
+                title="Edit image"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+                onClick={() => setEditorOpen(true)}
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+              </button>
+            ) : null}
           </div>
           <button
             type="button"
@@ -498,6 +544,12 @@ function ImagePickerFieldRow({
         onClose={() => setPickerOpen(false)}
         initialUrl={url}
         onSelect={(nextUrl) => onFieldChange(field.path, 'text', nextUrl)}
+      />
+      <ThemeEditorImageEditorSheet
+        open={editorOpen}
+        imageUrl={url}
+        onClose={() => setEditorOpen(false)}
+        onSaved={(nextUrl) => onFieldChange(field.path, 'text', nextUrl)}
       />
     </>
   );
@@ -2104,9 +2156,12 @@ function ProductPickerFieldRow({
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const productId = fieldValueAsString(values, field);
-  const titlePath = productHighlightSiblingPath(field.path, 'productTitle');
-  const pricePath = productHighlightSiblingPath(field.path, 'price');
-  const imagePath = productHighlightSiblingPath(field.path, 'productImageUrl');
+  const siblings = resolveProductPickerSiblingPaths(field.path);
+  const titlePath = siblings.title;
+  const pricePath = siblings.price;
+  const imagePath = siblings.image;
+  const hrefPath = siblings.href;
+  const compareAtPath = siblings.compareAt;
   const displayTitle = String(values[titlePath] ?? '');
   const hasProduct = Boolean(productId.trim());
 
@@ -2114,7 +2169,22 @@ function ProductPickerFieldRow({
     onFieldChange(field.path, 'text', product._id);
     onFieldChange(titlePath, 'text', product.title);
     onFieldChange(pricePath, 'text', formatProductPrice(product.price));
-    onFieldChange(imagePath, 'text', product.imageUrls?.[0] ?? '');
+    const imageUrl = product.imageUrls?.[0] ?? '';
+    onFieldChange(imagePath, 'text', imageUrl);
+    if (hrefPath) {
+      const handle = (product.urlHandle ?? '').trim();
+      onFieldChange(hrefPath, 'text', handle ? `/product/${handle}` : '/collections/all');
+    }
+    if (compareAtPath && product.compareAtPrice != null && product.compareAtPrice > 0) {
+      onFieldChange(compareAtPath, 'text', formatProductPrice(product.compareAtPrice));
+    }
+    // Signature cards: also fill lifestyle image so the card preview updates immediately.
+    const signatureMatch = field.path.match(/\.watch_signature\.settings\.card(\d+)ProductId$/);
+    if (signatureMatch && imageUrl) {
+      const n = signatureMatch[1];
+      const settingsBase = field.path.replace(/\.card\d+ProductId$/, '');
+      onFieldChange(`${settingsBase}.card${n}LifestyleImageUrl`, 'text', imageUrl);
+    }
   };
 
   const clearProduct = () => {
@@ -2122,6 +2192,8 @@ function ProductPickerFieldRow({
     onFieldChange(titlePath, 'text', 'Product title');
     onFieldChange(pricePath, 'text', 'Rs. 19.99');
     onFieldChange(imagePath, 'text', '');
+    if (hrefPath) onFieldChange(hrefPath, 'text', '/collections/all');
+    if (compareAtPath) onFieldChange(compareAtPath, 'text', '');
   };
 
   return (
@@ -2137,13 +2209,14 @@ function ProductPickerFieldRow({
             onClick={() => setPickerOpen(true)}
             className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-left text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
           >
-            {hasProduct ? 'Change' : 'Select'}
+            {hasProduct ? 'Change product' : 'Select product'}
           </button>
           <button
             type="button"
-            title="Connect dynamic source"
+            title="Select product from store"
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
             onClick={() => setPickerOpen(true)}
+            aria-label="Select product"
           >
             <CircleStackIcon className="h-4 w-4" />
           </button>
@@ -3555,9 +3628,11 @@ function CollectionListBentoGroupedSettingsPanel({
                 field.widget === 'collections' ? (
                   <CollectionsPickerFieldRow
                     key={field.path}
-                    field={field}
+                    field={field as any}
                     values={values}
-                    onFieldChange={onFieldChange}
+                    onCollectionsApply={(settingsPath, collections) =>
+                      applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+                    }
                   />
                 ) : (
                   <DefaultFieldRow
@@ -3689,9 +3764,11 @@ function CollectionListCarouselGroupedSettingsPanel({
                 field.widget === 'collections' ? (
                   <CollectionsPickerFieldRow
                     key={field.path}
-                    field={field}
+                    field={field as any}
                     values={values}
-                    onFieldChange={onFieldChange}
+                    onCollectionsApply={(settingsPath, collections) =>
+                      applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+                    }
                   />
                 ) : (
                   <DefaultFieldRow
@@ -3853,9 +3930,11 @@ function CollectionListEditorialGroupedSettingsPanel({
                 field.widget === 'collections' ? (
                   <CollectionsPickerFieldRow
                     key={field.path}
-                    field={field}
+                    field={field as any}
                     values={values}
-                    onFieldChange={onFieldChange}
+                    onCollectionsApply={(settingsPath, collections) =>
+                      applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+                    }
                   />
                 ) : (
                   <DefaultFieldRow
@@ -3987,9 +4066,11 @@ function CollectionListGridGroupedSettingsPanel({
                 field.widget === 'collections' ? (
                   <CollectionsPickerFieldRow
                     key={field.path}
-                    field={field}
+                    field={field as any}
                     values={values}
-                    onFieldChange={onFieldChange}
+                    onCollectionsApply={(settingsPath, collections) =>
+                      applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+                    }
                   />
                 ) : (
                   <DefaultFieldRow
@@ -4496,9 +4577,11 @@ function CollectionLinksSpotlightGroupedSettingsPanel({
                 field.widget === 'collections' ? (
                   <CollectionsPickerFieldRow
                     key={field.path}
-                    field={field}
+                    field={field as any}
                     values={values}
-                    onFieldChange={onFieldChange}
+                    onCollectionsApply={(settingsPath, collections) =>
+                      applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+                    }
                   />
                 ) : (
                   <DefaultFieldRow
@@ -6015,37 +6098,17 @@ function BlogPostsGridGroupedSettingsPanel({
   );
 }
 
-function CollectionsPickerFieldRow({
-  field,
-  values,
-  onFieldChange,
-}: {
-  field: EditorFieldDef;
-  values: Record<string, string | boolean>;
-  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
-}) {
-  const current = fieldValueAsString(values, field);
+const CREATE_COLLECTION_OPTION_VALUE = '__create_collection__';
 
-  return (
-    <div className="space-y-2 py-1">
-      <span className="block text-[13px] font-medium text-gray-800">{field.label}</span>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-4 py-2 text-left text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
-        >
-          {current ? current : 'Select'}
-        </button>
-        <button
-          type="button"
-          title="Connect collections"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
-          aria-label="Connect collections"
-        >
-          <CircleStackIcon className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
+function applyCollectionsPickerToValues(
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void,
+  settingsPath: string,
+  collections: Collection[]
+) {
+  onFieldChange(
+    settingsPath,
+    'text',
+    serializeCollectionLinksPicker(collections.map((c) => c.urlHandle).filter(Boolean))
   );
 }
 
@@ -6058,9 +6121,61 @@ function CollectionSelectFieldRow({
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
+  const { activeStoreId } = useStore();
+  const { collections, fetchCollectionsByStoreId, loading } = useCollections();
+  const [createSheetOpen, setCreateSheetOpen] = useState(false);
   const current = fieldValueAsString(values, field);
+
+  useEffect(() => {
+    if (!activeStoreId) return;
+    void fetchCollectionsByStoreId(activeStoreId);
+  }, [activeStoreId, fetchCollectionsByStoreId]);
+
+  const options = useMemo(() => {
+    const fromStore = collections.map((collection) => ({
+      value: collection.urlHandle,
+      label: collection.title,
+    }));
+    const hasCurrent = Boolean(current) && fromStore.some((opt) => opt.value === current);
+    const legacy = current && !hasCurrent ? [{ value: current, label: current }] : [];
+    return [
+      { value: '', label: 'Select' },
+      ...legacy,
+      ...fromStore,
+      { value: CREATE_COLLECTION_OPTION_VALUE, label: 'Create collection' },
+    ];
+  }, [collections, current]);
+
   const label =
-    field.options?.find((o) => o.value === current)?.label ?? (current ? current : 'Select');
+    options.find((opt) => opt.value === current)?.label ?? (current ? current : 'Select');
+
+  const openCreateSheet = () => {
+    if (!activeStoreId) {
+      toast.error('Select a store before creating a collection');
+      return;
+    }
+    setCreateSheetOpen(true);
+  };
+
+  const applyCollectionHandle = (handle: string) => {
+    onFieldChange(field.path, 'text', handle);
+    const signatureMatch = field.path.match(/\.watch_signature\.settings\.card(\d+)CollectionHandle$/);
+    if (!signatureMatch) return;
+    const n = signatureMatch[1];
+    const settingsBase = field.path.replace(/\.card\d+CollectionHandle$/, '');
+    const selected = collections.find((c) => c.urlHandle === handle);
+    if (!selected) return;
+    onFieldChange(`${settingsBase}.card${n}Label`, 'text', selected.title || `Collection ${n}`);
+    onFieldChange(
+      `${settingsBase}.card${n}Href`,
+      'text',
+      handle ? `/collections/${handle}` : '/collections'
+    );
+    const imageUrl = (selected.imageUrl ?? '').trim();
+    if (imageUrl) {
+      onFieldChange(`${settingsBase}.card${n}LifestyleImageUrl`, 'text', imageUrl);
+    }
+  };
 
   return (
     <div className="space-y-2 py-1">
@@ -6069,27 +6184,57 @@ function CollectionSelectFieldRow({
         <select
           id={fieldInputId(field.path)}
           value={current}
-          onChange={(e) => onFieldChange(field.path, 'text', e.target.value)}
-          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50"
+          onChange={(e) => {
+            const next = e.target.value;
+            if (next === CREATE_COLLECTION_OPTION_VALUE) {
+              openCreateSheet();
+              return;
+            }
+            applyCollectionHandle(next);
+          }}
+          disabled={loading && collections.length === 0}
+          className="min-h-9 flex-1 rounded-lg border border-[#c9cccf] bg-white px-3 py-2 text-[13px] font-medium text-gray-900 shadow-sm hover:bg-gray-50 disabled:cursor-wait disabled:opacity-60"
         >
-          {(field.options ?? []).map((opt) => (
-            <option key={opt.value || '__empty'} value={opt.value}>
+          {options.map((opt) => (
+            <option
+              key={opt.value || '__empty'}
+              value={opt.value}
+              className={opt.value === CREATE_COLLECTION_OPTION_VALUE ? 'font-medium text-[#2c6ecb]' : undefined}
+            >
               {opt.label}
             </option>
           ))}
         </select>
         <button
           type="button"
-          title="Connect collection"
+          title="Create collection"
+          onClick={openCreateSheet}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
-          aria-label="Connect collection"
+          aria-label="Create collection"
         >
           <CircleStackIcon className="h-4 w-4" />
         </button>
       </div>
       {current ? (
         <p className="truncate text-[12px] text-gray-600">{label}</p>
+      ) : loading ? (
+        <p className="text-[12px] text-gray-500">Loading collections…</p>
       ) : null}
+      <button
+        type="button"
+        onClick={openCreateSheet}
+        className="text-[13px] font-medium text-[#2c6ecb] hover:underline"
+      >
+        Create collection
+      </button>
+      <ThemeEditorCreateCollectionSheet
+        open={createSheetOpen}
+        onClose={() => setCreateSheetOpen(false)}
+        onCreated={(collection) => {
+          applyCollectionHandle(collection.urlHandle);
+          setCreateSheetOpen(false);
+        }}
+      />
     </div>
   );
 }
@@ -7707,13 +7852,44 @@ function SettingsFieldRow({
       return <InlineSelectFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     case 'image':
       return <ImagePickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
+    case 'collections':
+      return (
+        <CollectionsPickerFieldRow
+          field={field as any}
+          values={values}
+          onCollectionsApply={(settingsPath, collections) =>
+            applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+          }
+        />
+      );
+    case 'collection':
+      return <CollectionSelectFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     case 'product':
       return <ProductPickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     case 'toggle':
       return <ToggleSwitchFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     case 'color':
       return <ColorPickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
+    case 'styled-text':
+      return <StyledTextFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     default:
+      if (field.path.endsWith('.collectionsPicker') || field.widget === 'collections') {
+        return (
+          <CollectionsPickerFieldRow
+            field={field as any}
+            values={values}
+            onCollectionsApply={(settingsPath, collections) =>
+              applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+            }
+          />
+        );
+      }
+      if (field.path.endsWith('.collectionHandle') || field.widget === 'collection') {
+        return <CollectionSelectFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
+      }
+      if (field.path.endsWith('.productId') || field.path.endsWith('ProductId')) {
+        return <ProductPickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
+      }
       if (
         field.path.endsWith('ImageUrl') ||
         field.path.endsWith('imageUrl') ||
@@ -7736,15 +7912,28 @@ function GroupedSettingsFields({
   fields,
   values,
   onFieldChange,
+  productsCategory = false,
 }: {
   fields: EditorFieldDef[];
   values: Record<string, string | boolean>;
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
+  /** When true, Product / Collection groups sort first (products-category sections). */
+  productsCategory?: boolean;
 }) {
+  const visibleFields = useMemo(() => filterCatalogSettingsFields(fields), [fields]);
+
+  const hasProductPicker = useMemo(
+    () =>
+      visibleFields.some(
+        (f) => f.widget === 'product' || /ProductId$/i.test(f.path) || f.path.endsWith('.productId')
+      ),
+    [visibleFields]
+  );
+
   const groups = useMemo(() => {
     const map = new Map<string, EditorFieldDef[]>();
     const ungrouped: EditorFieldDef[] = [];
-    for (const field of fields) {
+    for (const field of visibleFields) {
       if (field.group) {
         const list = map.get(field.group) ?? [];
         list.push(field);
@@ -7754,7 +7943,10 @@ function GroupedSettingsFields({
       }
     }
     const order = [
+      ...(productsCategory ? (['Product', 'Products', 'Collection'] as const) : []),
       'Collection',
+      'Product',
+      'Products',
       'Media 1',
       'Media 2',
       'Mobile media',
@@ -7784,12 +7976,19 @@ function GroupedSettingsFields({
       'Theme settings',
       'Padding',
       'Custom CSS',
+      'Media',
+      'Carousel',
     ];
     const sorted: Array<{ label: string; fields: EditorFieldDef[] }> = [];
+    const seen = new Set<string>();
     for (const label of order) {
+      if (seen.has(label)) continue;
       const list = map.get(label);
-      if (list?.length) sorted.push({ label, fields: list });
-      map.delete(label);
+      if (list?.length) {
+        sorted.push({ label, fields: list });
+        map.delete(label);
+        seen.add(label);
+      }
     }
     for (const [label, list] of map) sorted.push({ label, fields: list });
     if (ungrouped.length) {
@@ -7799,132 +7998,32 @@ function GroupedSettingsFields({
       if (rest.length) sorted.unshift({ label: 'Settings', fields: rest });
     }
     return sorted;
-  }, [fields]);
-
-  const flatOnly = groups.length === 1 && groups[0]?.label === 'Settings';
-
-  if (flatOnly) {
-    return (
-      <div className="px-1 py-2">
-        <div className="space-y-1">
-          {groups[0].fields.map((field) => (
-            <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  }, [visibleFields, productsCategory]);
 
   return (
     <div className="divide-y divide-[#e1e1e1]">
+      {productsCategory ? (
+        <div className="px-1 py-3">
+          <p className="rounded-lg border border-[#dce6f5] bg-[#f6f9fc] px-3 py-2 text-[12px] leading-snug text-gray-700">
+            {hasProductPicker
+              ? 'Products section — use Select product to pick store products (loaded via your store catalog). Selected products appear in this section.'
+              : 'Products section — open a product card block in the left sidebar and use Select product.'}
+          </p>
+        </div>
+      ) : null}
       {groups.map((group) =>
         group.label === '__info__' ? (
-          <div key={group.label} className="px-1 pb-2 pt-1">
+          <div key="__info__" className="space-y-1 px-1 py-3">
             {group.fields.map((field) => (
               <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
             ))}
           </div>
-        ) : group.label === 'Custom CSS' ? (
-          <div key={group.label} className="px-1 py-1">
-            {group.fields.map((field) => (
-              <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
-            ))}
-          </div>
-        ) : group.label === 'Theme settings' ? (
-          <CollapsibleSettingsGroup
-            key={group.label}
-            label="Theme settings"
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : group.label === 'Typography' ? (
-          <div key={group.label} className="px-1 py-3">
-            <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{group.label}</h3>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-3">
-              {group.fields
-                .filter((f) => f.widget !== 'segmented')
-                .map((field) => (
-                  <SelectFieldRow
-                    key={field.path}
-                    field={field}
-                    values={values}
-                    onFieldChange={onFieldChange}
-                  />
-                ))}
-            </div>
-            {group.fields
-              .filter((f) => f.widget === 'segmented')
-              .map((field) => (
-                <div key={field.path} className="mt-3">
-                  <span className="mb-1.5 block text-[12px] text-gray-600">{field.label}</span>
-                  <div className="inline-flex w-full max-w-md rounded-lg border border-[#c9cccf] bg-[#f1f1f1] p-0.5">
-                    {(field.options ?? []).map((opt) => {
-                      const current =
-                        fieldValueAsString(values, field) || field.options?.[0]?.value || 'default';
-                      return (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          onClick={() => onFieldChange(field.path, 'text', opt.value)}
-                          className={`flex-1 rounded-md px-3 py-1.5 text-[12px] font-medium transition-colors ${
-                            current === opt.value
-                              ? 'bg-white text-gray-900 shadow-sm'
-                              : 'text-gray-600 hover:text-gray-900'
-                          }`}
-                        >
-                          {opt.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-          </div>
-        ) : group.label === 'Media 1' || group.label === 'Media 2' ? (
-          <HeroMediaSettingsGroup
-            key={group.label}
-            groupLabel={group.label}
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : group.label === 'Mobile media' ? (
-          <HeroMobileMediaGroup
-            key={group.label}
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : group.label === 'Section link' ? (
-          <HeroSectionLinkGroup
-            key={group.label}
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : group.label === 'Layout' ? (
-          <HeroLayoutSettingsGroup
-            key={group.label}
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : group.label === 'Appearance' ? (
-          <HeroAppearanceSettingsGroup
-            key={group.label}
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : group.label === 'Padding' ? (
-          <HeroPaddingSettingsGroup
-            key={group.label}
-            fields={group.fields}
-            values={values}
-            onFieldChange={onFieldChange}
-          />
-        ) : (
+        ) : group.label === 'Padding' ||
+          group.label === 'Layout' ||
+          group.label === 'Section layout' ||
+          group.label === 'Custom CSS' ||
+          group.label === 'Theme settings' ||
+          group.label === 'Theme Settings' ? null : (
           <div key={group.label} className="px-1 py-3">
             <h3 className="mb-2 text-[13px] font-semibold text-gray-900">{group.label}</h3>
             <div className="space-y-1">
@@ -7962,7 +8061,45 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   onRemoveBlock,
   onStoreMenuSelect,
 }) => {
-  const fields = node.fields ?? [];
+  const productsCategory =
+    isProductsCategorySection(sidebarNodeSectionKey(node)) ||
+    isProductsCategorySection(node.id) ||
+    (node.fields ?? []).some(
+      (f) => f.widget === 'product' || /ProductId$/i.test(f.path) || f.path.endsWith('.productId')
+    ) ||
+    (node.children ?? []).some((child) =>
+      (child.fields ?? []).some(
+        (f) => f.widget === 'product' || /ProductId$/i.test(f.path) || f.path.endsWith('.productId')
+      )
+    );
+
+  /** Products sections: surface Select product controls from card blocks on the section panel. */
+  const fields = useMemo(() => {
+    const own = node.fields ?? [];
+    if (!productsCategory || node.kind !== 'section') return own;
+    const ownPaths = new Set(own.map((f) => f.path));
+    const fromBlocks: EditorFieldDef[] = [];
+    for (const child of node.children ?? []) {
+      if (child.kind !== 'block') continue;
+      for (const field of child.fields ?? []) {
+        if (!(field.widget === 'product' || /ProductId$/i.test(field.path) || field.path.endsWith('.productId'))) {
+          continue;
+        }
+        if (ownPaths.has(field.path)) continue;
+        fromBlocks.push({
+          ...field,
+          group: 'Product',
+          label:
+            field.label === 'Product' || !field.label
+              ? `${child.label || 'Card'} — Select product`
+              : `${child.label || 'Card'} — ${field.label}`,
+          sidebar: true,
+        });
+      }
+    }
+    return fromBlocks.length ? [...fromBlocks, ...own] : own;
+  }, [node, productsCategory]);
+
   const canRemoveSection = node.kind === 'section' && Boolean(onRemoveSection);
   const canRemoveBlock = node.kind === 'block' && Boolean(onRemoveBlock);
   const isLargeLogoPanel =
@@ -8056,16 +8193,23 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
   const isHeaderMenuBlockPanel =
     isHeaderMenuBlockNodeId(node.id) ||
     (fields.length > 0 && isHeaderMenuBlockPanelFields(fields));
+  const isWatchFooterBrandPanel = isWatchFooterBrandBlockNodeId(node.id);
+  const isWatchFooterMenuColumnPanel = isWatchFooterMenuColumnBlockNodeId(node.id);
+  const isWatchFooterBottomLinksPanel = isWatchFooterBottomLinksBlockNodeId(node.id);
+  const isWatchFooterBlockPanel =
+    isWatchFooterBrandPanel || isWatchFooterMenuColumnPanel || isWatchFooterBottomLinksPanel;
   const isHeaderSectionPanel =
     isHeaderLayoutNodeId(node.id) ||
     (node.label === 'Header' &&
       node.kind === 'section' &&
       fields.some((f) => f.group === 'Logo' || f.group === 'Search'));
   const isCopyrightBlockPanel =
+    !isWatchFooterBrandPanel &&
     node.kind === 'block' &&
     (node.label === 'Copyright' ||
       fields.some((f) => f.path.endsWith('showPoweredBy') || f.path.endsWith('manageStoreName')));
   const isSocialLinksBlockPanel =
+    !isWatchFooterBrandPanel &&
     node.kind === 'block' &&
     (node.label === 'Social media links' ||
       fields.some(
@@ -8214,13 +8358,15 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
     !isStorytellingCarouselPanel &&
     !isDividerPanel &&
     !isAnnouncementBarPanel &&
-    (node.label === 'Footer' || isFooterSettingsPanelFields(fields));
+    !isWatchFooterBlockPanel &&
+    isFooterSettingsPanelFields(fields);
   const isHeroPanel =
     !isLargeLogoPanel &&
     !isSplitShowcasePanel &&
     (isHeroSectionSettingsNode(node) || isHeroSettingsPanelFields(fields));
   const useGrouped =
     !isHeaderSectionPanel &&
+    !isWatchFooterBlockPanel &&
     !isLargeLogoPanel &&
     !isSplitShowcasePanel &&
     !isHeadingBlockPanel &&
@@ -8312,6 +8458,13 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
           />
         ) : isHeaderMenuBlockPanel ? (
           <HeaderMenuBlockSettingsPanel
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            onStoreMenuSelect={onStoreMenuSelect}
+          />
+        ) : isWatchFooterBlockPanel ? (
+          <WatchFooterSimpleSettingsPanel
             fields={fields}
             values={values}
             onFieldChange={onFieldChange}
@@ -8705,7 +8858,12 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
         ) : isFooterPanel ? (
           <FooterGroupedSettingsPanel fields={fields} values={values} onFieldChange={onFieldChange} />
         ) : useGrouped ? (
-          <GroupedSettingsFields fields={fields} values={values} onFieldChange={onFieldChange} />
+          <GroupedSettingsFields
+            fields={fields}
+            values={values}
+            onFieldChange={onFieldChange}
+            productsCategory={productsCategory}
+          />
         ) : (
           <div className="space-y-4">
             {fields.map((field) => (

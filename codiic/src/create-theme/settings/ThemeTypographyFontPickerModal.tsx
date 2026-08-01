@@ -50,8 +50,6 @@ function FontRow({
   onSelect: () => void;
   onWeightChange: (weight: ThemeFontWeightKey) => void;
 }) {
-  const isGoogle = Boolean(font.googleFont);
-
   return (
     <div className="border-b border-[#e1e1e1] last:border-b-0">
       <button
@@ -73,11 +71,12 @@ function FontRow({
           <span className="h-5 w-5 shrink-0" aria-hidden />
         )}
       </button>
-      {selected && isGoogle ? (
+      {selected ? (
         <div className="px-4 pb-3">
           <div className="relative">
             <select
               value={weightValue}
+              onClick={(e) => e.stopPropagation()}
               onChange={(e) => onWeightChange(e.target.value as ThemeFontWeightKey)}
               className="w-full appearance-none rounded-lg border border-[#c9cccf] bg-white py-2 pl-3 pr-9 text-[13px] text-gray-900 focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
               aria-label={`${font.label} weight`}

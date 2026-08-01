@@ -289,10 +289,17 @@ export function blogPostsTemplatePreviewPage(templateId: string): string {
 }
 
 export function blogPostsTemplateIdFromPreviewPage(page: string): string | null {
-  if (page === DEFAULT_BLOG_POSTS_TEMPLATE_ID) return DEFAULT_BLOG_POSTS_TEMPLATE_ID;
+  // Catalog packs use `blog_posts`; create-theme / Horizon use `blog-posts`.
+  if (page === DEFAULT_BLOG_POSTS_TEMPLATE_ID || page === 'blog_posts') {
+    return page === 'blog_posts' ? 'blog_posts' : DEFAULT_BLOG_POSTS_TEMPLATE_ID;
+  }
   if (page.startsWith(`${DEFAULT_BLOG_POSTS_TEMPLATE_ID}:`)) {
     const slug = page.slice(`${DEFAULT_BLOG_POSTS_TEMPLATE_ID}:`.length).trim();
     return slug ? `${DEFAULT_BLOG_POSTS_TEMPLATE_ID}.${slug}` : DEFAULT_BLOG_POSTS_TEMPLATE_ID;
+  }
+  if (page.startsWith('blog_posts:')) {
+    const slug = page.slice('blog_posts:'.length).trim();
+    return slug ? `blog_posts.${slug}` : 'blog_posts';
   }
   return null;
 }

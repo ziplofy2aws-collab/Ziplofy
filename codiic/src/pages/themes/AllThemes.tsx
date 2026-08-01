@@ -27,7 +27,8 @@ import ThemeEditChoiceModal from "../../components/ThemeEditChoiceModal";
 import { DeleteThemeConfirmModal } from "../../components/DeleteThemeConfirmModal";
 import { axiosi } from "../../config/axios.config";
 import {
-  isThemeEditorStaticMode,
+  isStaticCatalogThemeEditorMode,
+  setStaticDevPackId,
   THEME_EDITOR_DEV_ROUTE,
 } from "../../config/theme-editor-static.config";
 import "./AllThemes.css";
@@ -539,19 +540,21 @@ const AllThemes: React.FC = () => {
 
   return (
     <div className="w-full space-y-5 pb-8">
-      {isThemeEditorStaticMode() ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+      {isStaticCatalogThemeEditorMode() ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3">
           <div>
-            <p className="text-sm font-semibold text-amber-950">Static theme editor (dev mode)</p>
-            <p className="mt-0.5 text-xs text-amber-900/80">
-              Preview and edit the local reference theme without installing.
+            <p className="text-sm font-semibold text-sky-950">Static catalog theme editor</p>
+            <p className="mt-0.5 text-xs text-sky-900/80">
+              Local Watch pack from <code className="rounded bg-sky-100 px-1">remote-themes/watch</code> — no S3
+              re-upload. Rebuild with <code className="rounded bg-sky-100 px-1">npm run build</code> in that folder.
             </p>
           </div>
           <Link
             to={THEME_EDITOR_DEV_ROUTE}
-            className="shrink-0 rounded-lg bg-amber-900 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800"
+            onClick={() => setStaticDevPackId('watch')}
+            className="shrink-0 rounded-lg bg-sky-800 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
           >
-            Open dev editor
+            Open catalog editor
           </Link>
         </div>
       ) : null}

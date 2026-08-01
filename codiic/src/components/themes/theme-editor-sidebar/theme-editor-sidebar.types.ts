@@ -34,7 +34,11 @@ export type EditorFieldWidget =
   | 'select-inline'
   | 'image'
   | 'toggle'
-  | 'color';
+  | 'color'
+  | 'styled-text'
+  | 'product'
+  | 'collection'
+  | 'collections';
 
 export type EditorFieldDef = {
   path: string;
@@ -96,6 +100,8 @@ export type EditorSchemaDoc = {
       id?: string;
       type?: string;
       label?: string;
+      /** Remote-theme section category (`products`, `collections`, …). */
+      category?: string;
       hasBlocks?: boolean;
       settingsFields?: EditorFieldDef[];
       blocks?: Array<{

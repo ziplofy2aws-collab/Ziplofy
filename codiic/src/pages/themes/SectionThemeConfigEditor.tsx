@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import {
   ArrowTopRightOnSquareIcon,
   DevicePhoneMobileIcon,
+  ArrowPathIcon,
 } from '@heroicons/react/24/outline';
 import { useStore } from '../../contexts/store.context';
 import type { StoreMenu, StoreMenuItem } from '../../contexts/store-menu.context';
@@ -14,6 +15,27 @@ import {
   applyStoreMenuSelectionToConfig,
   pruneStaleHeaderMenuItemValues,
 } from '../../create-theme/utils/store-menu-header.util';
+import { readThemeColorPalette, syncThemePaletteToFieldValues, ensureThemeColorPaletteDefaults, seedThemePaletteValues } from '../../create-theme/settings/theme-color-palette.settings';
+import {
+  ensureThemeButtonsDefaults,
+  seedThemeButtonsValues,
+} from '../../create-theme/settings/theme-buttons.settings';
+import {
+  ensureThemeLogoFaviconDefaults,
+  seedThemeLogoFaviconValues,
+  THEME_LOGO_DEFAULT_PATH,
+} from '../../create-theme/settings/theme-logo-favicon.settings';
+import {
+  ensureThemeTypographyDefaults,
+  seedThemeTypographyValues,
+  syncThemeTypographyFontFields,
+  THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH,
+  THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
+} from '../../create-theme/settings/theme-typography.settings';
+import { InspectorToggleIcon } from '../../create-theme/chrome/InspectorToggleIcon';
+import { shiftShortcutLabel } from '../../utils/keyboard-shortcut-label';
 import ThemeLivePreviewFrame, { type ThemePreviewPage } from '../../components/themes/ThemeLivePreviewFrame';
 import { AddBlockModal } from '../../components/themes/theme-editor-sidebar/AddBlockModal';
 import { AddSectionModal } from '../../components/themes/theme-editor-sidebar/AddSectionModal';
@@ -24,6 +46,23 @@ import {
   type SectionInsertContext,
 } from '../../components/themes/theme-editor-sidebar/add-section-catalog';
 import ThemeEditorSidebar from '../../components/themes/theme-editor-sidebar/ThemeEditorSidebar';
+import { ProductTemplatePreviewCard } from '../../create-theme/sidebar/ProductTemplatePreviewCard';
+import { CollectionTemplatePreviewCard } from '../../create-theme/sidebar/CollectionTemplatePreviewCard';
+import { BlogTemplatePreviewCard } from '../../create-theme/sidebar/BlogTemplatePreviewCard';
+import { BlogPostTemplatePreviewCard } from '../../create-theme/sidebar/BlogPostTemplatePreviewCard';
+import { resolveProductTemplatePreviewRoute } from '../../create-theme/utils/product-page-preview.util';
+import { resolveCollectionTemplatePreviewRoute } from '../../create-theme/utils/collection-page-preview.util';
+import {
+  resolveBlogPostsTemplatePreviewRoute,
+  resolveBlogsTemplatePreviewRoute,
+  type BlogPostPreviewSelection,
+} from '../../create-theme/utils/blog-page-preview.util';
+import { isProductTemplatePreviewPage } from '../../create-theme/utils/product-templates.util';
+import { isCollectionTemplatePreviewPage } from '../../create-theme/utils/collection-templates.util';
+import {
+  isBlogPostsTemplatePreviewPage,
+  isBlogsTemplatePreviewPage,
+} from '../../create-theme/utils/blog-templates.util';
 import type { BlockCatalogItem } from '../../components/themes/theme-editor-sidebar/add-block-catalog';
 import {
   getAddBlockCatalogItems,
@@ -54,6 +93,7 @@ import {
   settingsNodeForSelection,
 } from '../../components/themes/theme-editor-sidebar/theme-editor-sidebar.tree';
 import { announcementBlockNodeIdFromSelection } from '../../components/themes/theme-editor-sidebar/theme-editor-announcement-block-panel.utils';
+import { watchFooterBlockNodeIdFromSelection } from '../../components/themes/theme-editor-sidebar/theme-editor-watch-footer-block-panel.utils';
 import { axiosi } from '../../config/axios.config';
 import {
   DEV_STATIC_THEME_PACKS,
@@ -62,6 +102,7 @@ import {
   setStaticDevPackId,
   THEME_EDITOR_STATIC_CONFIG,
   displayNameForDevPack,
+  configLocalStorageKeyForPack,
   type DevStaticThemePackId,
 } from '../../config/theme-editor-static.config';
 import { DevThemePackSwitcher } from '../../components/themes/DevThemePackSwitcher';
@@ -71,6 +112,7 @@ import { useRafBatchedCounter } from '../../hooks/useRafBatchedState';
 import {
   applyValuesToThemeConfig,
   collectEditableFieldPaths,
+  setConfigAtPath,
 } from '../../utils/theme-editor-config.utils';
 import {
   extendValuesForHeroBlock,
@@ -101,6 +143,7 @@ import {
   mergeLayoutSectionDefaults,
   mergeTemplateSectionDefaults,
   saveStaticThemeConfigLocal,
+  clearStaticThemeConfigLocal,
 } from '../../utils/theme-editor-static-pack';
 import {
   fieldTypeFromSchema,
@@ -112,6 +155,16 @@ import {
 } from '../../utils/theme-editor-section-visibility.util';
 
 type FieldType = ThemeEditorFieldType;
+
+/** Map header field/preview clicks onto Logo / Menu block rows. */
+function headerBlockNodeIdFromSelection(nodeId: string): string | null {
+  const logo = nodeId.match(/^field:sections\.(header(?:_\d+)?)\.blocks\.logo\./);
+  if (logo) return `layout:${logo[1]}:block:logo`;
+  const menu = nodeId.match(/^field:sections\.(header(?:_\d+)?)\.blocks\.menu\./);
+  if (menu) return `layout:${menu[1]}:block:menu`;
+  if (/^layout:header(?:_\d+)?:block:(logo|menu)$/.test(nodeId)) return nodeId;
+  return null;
+}
 
 type SectionThemeConfigEditorProps = {
   themeId: string;
@@ -146,9 +199,15 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const [manifest, setManifest] = useState<Record<string, unknown> | null>(null);
   const [blockCatalog, setBlockCatalog] = useState<ThemeBlockCatalogApi | null>(null);
   const [previewPage, setPreviewPage] = useState<ThemePreviewPage>('index');
+  const [previewProductHandle, setPreviewProductHandle] = useState<string | null>(null);
+  const [previewCollectionHandle, setPreviewCollectionHandle] = useState<string | null>(null);
+  const [previewBlogHandle, setPreviewBlogHandle] = useState<string | null>(null);
+  const [previewBlogPostSelection, setPreviewBlogPostSelection] =
+    useState<BlogPostPreviewSelection | null>(null);
   const [canPersist, setCanPersist] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
+  const [inspectorEnabled, setInspectorEnabled] = useState(true);
   const [previewAnimDir, setPreviewAnimDir] = useState<'to-mobile' | 'to-desktop' | null>(null);
   const previewAnimTimerRef = useRef<number | null>(null);
   const [hiddenNodes, setHiddenNodes] = useState<Record<string, boolean>>({});
@@ -266,6 +325,10 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
         sec.blocks = blocks;
       }
       sanitizeThemeConfigStructure(working);
+      ensureThemeButtonsDefaults(working);
+      ensureThemeLogoFaviconDefaults(working);
+      ensureThemeTypographyDefaults(working);
+      ensureThemeColorPaletteDefaults(working);
       packDefaultRef.current = packDefault;
       setDefaultConfig(working);
       const schema = (data.editorSchema ?? null) as EditorSchemaDoc | null;
@@ -274,8 +337,18 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           ? {
               ...formValuesFromEditorConfig(schema, working),
               ...seedSectionEnabledValues(working),
+              ...seedThemeButtonsValues({}, working),
+              ...seedThemeLogoFaviconValues({}, working),
+              ...seedThemeTypographyValues({}, working),
+              ...seedThemePaletteValues({}, working),
             }
-          : data.values
+          : {
+              ...data.values,
+              ...seedThemeButtonsValues({}, working),
+              ...seedThemeLogoFaviconValues({}, working),
+              ...seedThemeTypographyValues({}, working),
+              ...seedThemePaletteValues({}, working),
+            }
       );
       setItemOrder(readStructureOrderFromConfig(working, previewPage));
       setManifest(data.manifest);
@@ -323,6 +396,27 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     [devPackId, reloadEditor]
   );
 
+  const handleClearDevEditorCache = useCallback(async () => {
+    if (!staticDevMode) return;
+    const ok = window.confirm(
+      `Clear saved local editor settings for ${displayNameForDevPack(devPackId)} and reload pack defaults?`
+    );
+    if (!ok) return;
+    setPackSwitching(true);
+    try {
+      clearStaticThemeConfigLocal(devPackId);
+      setSelectedNodeId('');
+      setAddBlockTarget(null);
+      setSidebarTab('sections');
+      await reloadEditor();
+      toast.success('Local editor cache cleared');
+    } catch (err: unknown) {
+      toast.error((err as Error)?.message ?? 'Failed to clear local cache');
+    } finally {
+      setPackSwitching(false);
+    }
+  }, [staticDevMode, devPackId, reloadEditor]);
+
   useEffect(() => {
     if (loadError) setError(loadError);
   }, [loadError]);
@@ -350,12 +444,36 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     return applyValuesToThemeConfig(defaultConfig, values, editorSchema);
   }, [defaultConfig, values, editorSchema]);
 
+  const themeColorPalette = useMemo(
+    () => readThemeColorPalette(livePreviewConfig),
+    [livePreviewConfig]
+  );
+
   const debouncedConfigForHints = useDebouncedValue(livePreviewConfig, 320);
 
   const selectionHints = useMemo(
     () => buildThemeEditorSelectionHints(editorSchema, debouncedConfigForHints, previewPage),
     [editorSchema, debouncedConfigForHints, previewPage, structureSyncKey]
   );
+
+  const productPreviewRoute = useMemo(
+    () => resolveProductTemplatePreviewRoute(previewPage, previewProductHandle),
+    [previewPage, previewProductHandle]
+  );
+  const collectionPreviewRoute = useMemo(
+    () => resolveCollectionTemplatePreviewRoute(previewPage, previewCollectionHandle),
+    [previewPage, previewCollectionHandle]
+  );
+  const blogsPreviewRoute = useMemo(
+    () => resolveBlogsTemplatePreviewRoute(previewPage, previewBlogHandle),
+    [previewPage, previewBlogHandle]
+  );
+  const blogPostsPreviewRoute = useMemo(
+    () => resolveBlogPostsTemplatePreviewRoute(previewPage, previewBlogPostSelection),
+    [previewPage, previewBlogPostSelection]
+  );
+  const entityPreviewRoute =
+    productPreviewRoute ?? collectionPreviewRoute ?? blogsPreviewRoute ?? blogPostsPreviewRoute;
 
   const previewStoreId = useMemo(
     () =>
@@ -404,10 +522,58 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const handleFieldChange = useCallback(
     (path: string, type: FieldType, raw: string | boolean) => {
       startTransition(() => {
-        setValues((prev) => ({
-          ...prev,
-          [path]: type === 'boolean' ? Boolean(raw) : String(raw),
-        }));
+        setValues((prev) => {
+          const next: Record<string, string | boolean> = {
+            ...prev,
+            [path]: type === 'boolean' ? Boolean(raw) : String(raw),
+          };
+          // Keep header logo in sync with global default so preview updates immediately.
+          if (path === THEME_LOGO_DEFAULT_PATH && type === 'text') {
+            const url = String(raw);
+            next['sections.header.settings.defaultLogoUrl'] = url;
+            next['sections.header.blocks.logo.settings.imageUrl'] = url;
+          }
+          if (
+            path === THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH ||
+            path === THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH ||
+            path === THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH ||
+            path === THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH
+          ) {
+            Object.assign(
+              next,
+              syncThemeTypographyFontFields({
+                body: next[THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH],
+                subheading: next[THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH],
+                heading: next[THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH],
+                accent: next[THEME_TYPOGRAPHY_FONT_ACCENT_KEY_PATH],
+              })
+            );
+          }
+          return next;
+        });
+      });
+      bumpValuesSync();
+    },
+    [bumpValuesSync]
+  );
+
+  /** Palette edits sync to background / text / accent tokens (Shopify-style). */
+  const handleThemePaletteChange = useCallback(
+    (colors: string[]) => {
+      const fieldUpdates = syncThemePaletteToFieldValues(colors);
+      startTransition(() => {
+        setValues((prev) => ({ ...prev, ...fieldUpdates }));
+        setDefaultConfig((prev) => {
+          if (!prev) return prev;
+          const config = JSON.parse(JSON.stringify(prev)) as Record<string, unknown>;
+          setConfigAtPath(config, 'settings.colors.palette', colors);
+          for (const [path, value] of Object.entries(fieldUpdates)) {
+            if (!path.startsWith('settings.colors.palette.')) {
+              setConfigAtPath(config, path, value);
+            }
+          }
+          return config;
+        });
       });
       bumpValuesSync();
     },
@@ -468,7 +634,11 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
         setSidebarTab('sections');
       }
       setAddBlockTarget(null);
-      const sidebarNodeId = announcementBlockNodeIdFromSelection(nodeId) ?? nodeId;
+      const sidebarNodeId =
+        announcementBlockNodeIdFromSelection(nodeId) ??
+        headerBlockNodeIdFromSelection(nodeId) ??
+        watchFooterBlockNodeIdFromSelection(nodeId) ??
+        nodeId;
       setSelectedNodeId(sidebarNodeId);
       setExpanded((prev) => ({
         ...prev,
@@ -519,6 +689,39 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       return next;
     });
   }, []);
+
+  const handleInspectorEnabledChange = useCallback((enabled: boolean) => {
+    setInspectorEnabled(enabled);
+    if (!enabled) {
+      setSelectedNodeId('');
+      setInsertHoverHighlight(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    const isTypingTarget = (target: EventTarget | null) => {
+      const el = target as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      return (
+        tag === 'input' ||
+        tag === 'textarea' ||
+        tag === 'select' ||
+        Boolean(el?.isContentEditable)
+      );
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      if (!event.shiftKey || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (key !== 'i') return;
+      if (isTypingTarget(event.target)) return;
+      event.preventDefault();
+      handleInspectorEnabledChange(!inspectorEnabled);
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [handleInspectorEnabledChange, inspectorEnabled]);
 
   const handleReorder = useCallback(
     (listKey: string, orderedIds: string[]) => {
@@ -847,6 +1050,18 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           ) : staticDevMode ? (
             <span className="border-r border-gray-200 pr-2 text-xs font-semibold text-gray-700">Horizon</span>
           ) : null}
+          {staticDevMode ? (
+            <button
+              type="button"
+              onClick={() => void handleClearDevEditorCache()}
+              disabled={packSwitching || loading}
+              className="flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              title={`Clear local editor cache (${configLocalStorageKeyForPack(devPackId)})`}
+            >
+              <ArrowPathIcon className="h-4 w-4" />
+              <span className="hidden sm:inline">Clear cache</span>
+            </button>
+          ) : null}
           {storeSubdomain?.url ? (
             <a
               href={storeSubdomain.url}
@@ -858,6 +1073,27 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
               <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             </a>
           ) : null}
+          <button
+            type="button"
+            onClick={() => handleInspectorEnabledChange(!inspectorEnabled)}
+            className={`flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 ${
+              inspectorEnabled ? 'bg-gray-100 text-gray-900' : 'text-gray-600'
+            }`}
+            title={
+              inspectorEnabled
+                ? `Deactivate inspector ${shiftShortcutLabel('I')}`
+                : `Activate inspector ${shiftShortcutLabel('I')}`
+            }
+            aria-pressed={inspectorEnabled}
+            aria-keyshortcuts="Shift+I"
+            aria-label={
+              inspectorEnabled
+                ? `Deactivate inspector (${shiftShortcutLabel('I')})`
+                : `Activate inspector (${shiftShortcutLabel('I')})`
+            }
+          >
+            <InspectorToggleIcon className="h-5 w-5" />
+          </button>
           <button
             type="button"
             onClick={handleToggleDevice}
@@ -883,6 +1119,33 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       <div className="flex min-h-0 flex-1">
         <ThemeEditorSidebar
           pageLabel={pageLabel}
+          sectionsHeaderSlot={
+            isProductTemplatePreviewPage(previewPage) ? (
+              <ProductTemplatePreviewCard
+                previewProductHandle={previewProductHandle}
+                onPreviewProductHandleChange={setPreviewProductHandle}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : isCollectionTemplatePreviewPage(previewPage) ? (
+              <CollectionTemplatePreviewCard
+                previewCollectionHandle={previewCollectionHandle}
+                onPreviewCollectionHandleChange={setPreviewCollectionHandle}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : isBlogsTemplatePreviewPage(previewPage) ? (
+              <BlogTemplatePreviewCard
+                previewBlogHandle={previewBlogHandle}
+                onPreviewBlogHandleChange={setPreviewBlogHandle}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : isBlogPostsTemplatePreviewPage(previewPage) ? (
+              <BlogPostTemplatePreviewCard
+                previewSelection={previewBlogPostSelection}
+                onPreviewSelectionChange={setPreviewBlogPostSelection}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : null
+          }
           sidebarTab={sidebarTab}
           onSidebarTabChange={(tab) => {
             setSidebarTab(tab);
@@ -977,6 +1240,10 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           onRemoveSettingsSection={handleRemoveSettingsSection}
           onRemoveSettingsBlock={handleRemoveSettingsBlock}
           onStoreMenuSelect={handleStoreMenuSelect}
+          themeSettingsValues={values}
+          themeSettingsColorPalette={themeColorPalette}
+          onThemeSettingsFieldChange={handleFieldChange}
+          onThemePaletteChange={handleThemePaletteChange}
         />
 
         {/* Preview canvas */}
@@ -1011,8 +1278,10 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
                 structureSyncKey={structureSyncKey}
                 valuesSyncKey={valuesSyncKey}
                 page={previewPage}
+                previewRoute={entityPreviewRoute}
                 selectionHints={selectionHints}
-                highlightNodeId={selectedNodeId || null}
+                highlightNodeId={inspectorEnabled ? selectedNodeId || null : null}
+                inspectorEnabled={inspectorEnabled}
                 onPreviewSelect={({ nodeId }) => handlePreviewSelect(nodeId)}
                 onPreviewDeselect={() => {
                   setSelectedNodeId('');

@@ -542,6 +542,14 @@ export function ThemeEditorLinkPickerDropdown({
               <p className="px-3 py-4 text-center text-[13px] text-gray-500">Loading blogs…</p>
             ) : (
               <>
+                <button
+                  type="button"
+                  onClick={() => pickAndClose({ link: '/blogs/all', label: 'All blogs' })}
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-100"
+                >
+                  <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                  <span className="min-w-0 flex-1 truncate">All blogs</span>
+                </button>
                 {filteredBlogs.map((blog) => (
                   <button
                     key={blog._id}

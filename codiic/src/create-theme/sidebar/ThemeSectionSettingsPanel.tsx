@@ -5,6 +5,7 @@ import {
   EllipsisHorizontalIcon,
   EyeIcon,
   LinkIcon,
+  PencilSquareIcon,
   PhotoIcon,
   TrashIcon,
   XMarkIcon,
@@ -28,6 +29,7 @@ import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { ThemeEditorRichTextField } from '../../components/theme-editor/ThemeEditorRichTextField';
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
 import { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
+import { ThemeEditorImageEditorSheet } from '../../components/themes/theme-editor-sidebar/ThemeEditorImageEditorSheet';
 import { ThemeEditorCreateCollectionSheet } from './ThemeEditorCreateCollectionSheet';
 import {
   CheckoutThemeColorField,
@@ -952,6 +954,7 @@ function ImagePickerFieldRow({
   onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
   const url = fieldValueAsString(values, field);
   const hasImage = Boolean(url.trim());
 
@@ -961,8 +964,16 @@ function ImagePickerFieldRow({
         <span className="block text-[13px] font-medium text-gray-800">{field.label}</span>
         <div className="rounded-lg border border-dashed border-[#c9cccf] bg-[#fafbfb] p-3">
           {hasImage ? (
-            <div className="mb-2 overflow-hidden rounded-md border border-[#e1e1e1] bg-white">
+            <div className="relative mb-2 overflow-hidden rounded-md border border-[#e1e1e1] bg-white">
               <img src={url} alt="" className="max-h-28 w-full object-cover" />
+              <button
+                type="button"
+                title="Edit image"
+                onClick={() => setEditorOpen(true)}
+                className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-lg border border-[#c9cccf] bg-white/95 text-gray-700 shadow-sm hover:bg-white"
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+              </button>
             </div>
           ) : (
             <div className="mb-2 flex h-20 items-center justify-center rounded-md border border-[#e1e1e1] bg-white text-gray-400">
@@ -985,6 +996,16 @@ function ImagePickerFieldRow({
             >
               <CircleStackIcon className="h-4 w-4" />
             </button>
+            {hasImage ? (
+              <button
+                type="button"
+                title="Edit image"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+                onClick={() => setEditorOpen(true)}
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+              </button>
+            ) : null}
           </div>
           {hasImage ? (
             <button
@@ -1010,6 +1031,12 @@ function ImagePickerFieldRow({
         onClose={() => setPickerOpen(false)}
         initialUrl={url}
         onSelect={(nextUrl) => onFieldChange(field.path, 'text', nextUrl)}
+      />
+      <ThemeEditorImageEditorSheet
+        open={editorOpen}
+        imageUrl={url}
+        onClose={() => setEditorOpen(false)}
+        onSaved={(nextUrl) => onFieldChange(field.path, 'text', nextUrl)}
       />
     </>
   );

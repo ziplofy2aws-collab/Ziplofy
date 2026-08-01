@@ -11,6 +11,7 @@ export type {
 } from './theme-editor-sidebar.types';
 export { AddBlockModal } from './AddBlockModal';
 export { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
+export { ThemeEditorImageEditorSheet } from './ThemeEditorImageEditorSheet';
 export type { AddBlockModalProps } from './AddBlockModal';
 export type { BlockCatalogItem } from './add-block-catalog';
 export {

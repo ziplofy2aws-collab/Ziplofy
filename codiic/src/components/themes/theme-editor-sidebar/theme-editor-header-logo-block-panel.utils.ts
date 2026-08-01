@@ -1,15 +1,10 @@
 import type { EditorFieldDef, EditorSchemaDoc, SidebarNode } from './theme-editor-sidebar.types';
 import { layoutBlueprintKey, remapLayoutSchemaPath } from '../../../utils/theme-editor-insert-section';
 
-const LOGO_BLOCK_PANEL_KEYS = new Set(['text', 'tagline', 'hideLogoOnHomePage', 'paddingTop', 'paddingBottom']);
+/** Catalog logo panel — image + store name only (no Create Theme padding/visibility chrome). */
+const LOGO_BLOCK_PANEL_KEYS = new Set(['imageUrl', 'text']);
 
-const LOGO_BLOCK_FIELD_ORDER = [
-  'text',
-  'tagline',
-  'hideLogoOnHomePage',
-  'paddingTop',
-  'paddingBottom',
-] as const;
+const LOGO_BLOCK_FIELD_ORDER = ['imageUrl', 'text'] as const;
 
 function blockSettingKey(path: string): string {
   return path.split('.').pop() ?? '';
@@ -36,48 +31,24 @@ export function instanceIdFromHeaderLogoBlockNodeId(nodeId: string): string | nu
   return m ? m[1] : null;
 }
 
+export function isHeaderLogoBlockNodeId(nodeId: string): boolean {
+  return /^layout:header(?:_\d+)?:block:logo$/.test(nodeId);
+}
+
 function defaultLogoBlockFields(instanceId: string): EditorFieldDef[] {
   const base = `sections.${instanceId}.blocks.logo.settings`;
   return [
+    {
+      path: `${base}.imageUrl`,
+      type: 'text',
+      label: 'Logo image',
+      widget: 'image',
+    },
     {
       path: `${base}.text`,
       type: 'text',
       label: 'Store name',
       placeholder: 'My Store',
-    },
-    {
-      path: `${base}.tagline`,
-      type: 'text',
-      label: 'Tagline',
-      placeholder: 'Optional tagline',
-    },
-    {
-      path: `${base}.hideLogoOnHomePage`,
-      type: 'boolean',
-      label: 'Hide logo on home page',
-      description: 'Logo will remain visible when sticky header is active',
-    },
-    {
-      path: `${base}.paddingTop`,
-      type: 'number',
-      label: 'Top',
-      group: 'Desktop padding',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
-    },
-    {
-      path: `${base}.paddingBottom`,
-      type: 'number',
-      label: 'Bottom',
-      group: 'Desktop padding',
-      widget: 'slider',
-      min: 0,
-      max: 80,
-      step: 1,
-      unit: 'px',
     },
   ];
 }
@@ -90,33 +61,25 @@ export function headerLogoBlockFieldDefsFromSchema(
   const block = editorSchema.layout?.[blueprint]?.blocks?.find((b) => b.id === 'logo');
   if (!block?.settingsFields?.length) return defaultLogoBlockFields(instanceId);
   const fromSchema = block.settingsFields
+    .filter((f) => f.sidebar !== false)
     .filter(isHeaderLogoBlockPanelField)
     .map((f) => ({
       ...f,
       path: remapLayoutSchemaPath(f.path, instanceId),
     }));
-  if (!fromSchema.some((f) => blockSettingKey(f.path) === 'text')) {
-    const textField = defaultLogoBlockFields(instanceId).find(
-      (f) => blockSettingKey(f.path) === 'text'
-    );
-    if (textField) fromSchema.unshift(textField);
+  const defaults = defaultLogoBlockFields(instanceId);
+  const out: EditorFieldDef[] = [];
+  for (const key of LOGO_BLOCK_FIELD_ORDER) {
+    const found = fromSchema.find((f) => blockSettingKey(f.path) === key) ?? defaults.find((f) => blockSettingKey(f.path) === key);
+    if (found) out.push(found);
   }
-  return fromSchema;
+  return out.length ? out : defaults;
 }
 
 export function prepareHeaderLogoBlockSettingsNode(node: SidebarNode): SidebarNode {
-  const instanceId =
-    instanceIdFromHeaderLogoBlockNodeId(node.id) ??
-    node.id.replace(/^layout:/, '').split(':')[0] ??
-    'header';
-  const existing = node.fields ?? [];
-  const defaults = defaultLogoBlockFields(instanceId);
-  const fields = LOGO_BLOCK_FIELD_ORDER.map((key) => {
-    return (
-      pickHeaderLogoBlockField(existing, key) ??
-      defaults.find((f) => blockSettingKey(f.path) === key)
-    );
-  }).filter((f): f is EditorFieldDef => Boolean(f));
+  const fields = LOGO_BLOCK_FIELD_ORDER.map((key) => pickHeaderLogoBlockField(node.fields ?? [], key)).filter(
+    (f): f is EditorFieldDef => Boolean(f)
+  );
   return { ...node, label: 'Logo', kind: 'block', fields };
 }
 

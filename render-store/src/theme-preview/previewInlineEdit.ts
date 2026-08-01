@@ -12,7 +12,14 @@ export function hintForNodeId(
   return hints.find((h) => h.nodeId === nodeId);
 }
 
+/**
+ * Inline preview text editing is disabled — it desyncs from sidebar field values.
+ * Inspect / hover / click-to-select still work via PreviewSelectionLayer.
+ */
+export const PREVIEW_INLINE_EDIT_ENABLED = false;
+
 export function canInlineEdit(nodeId: string, hints: ThemePreviewSelectionHint[]): boolean {
+  if (!PREVIEW_INLINE_EDIT_ENABLED) return false;
   const path = fieldPathFromNodeId(nodeId);
   if (!path) return false;
   const hint = hintForNodeId(nodeId, hints);

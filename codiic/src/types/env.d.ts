@@ -5,7 +5,12 @@ interface ImportMetaEnv {
     readonly VITE_SOCKET_URL: string;
     readonly VITE_AUTH_MICROSERVICE_FRONTEND_URL: string;
     readonly VITE_APP_ENV?: 'development' | 'staging' | 'production';
-    /** When "true", theme editor uses local static pack — see theme-editor-static.config.ts */
+    /**
+     * Static catalog theme editor mode (boolean string: "true" / "false").
+     * When true: Themes page shows Open catalog editor; loads Watch from remote-themes/watch locally.
+     */
+    readonly VITE_STATIC_CATALOG_THEME_EDITOR_MODE?: string;
+    /** Alias of VITE_STATIC_CATALOG_THEME_EDITOR_MODE — see theme-editor-static.config.ts */
     readonly VITE_THEME_EDITOR_STATIC_MODE?: string;
     readonly VITE_THEME_EDITOR_STATIC_PACK?: string;
     readonly VITE_THEME_EDITOR_STATIC_BASE_URL?: string;

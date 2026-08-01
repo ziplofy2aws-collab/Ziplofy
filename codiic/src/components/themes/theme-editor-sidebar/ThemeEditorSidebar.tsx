@@ -674,6 +674,16 @@ export type ThemeEditorSidebarProps = {
     menu: import('../../../contexts/store-menu.context').StoreMenu,
     items: import('../../../contexts/store-menu.context').StoreMenuItem[]
   ) => void;
+  themeSettingsValues?: Record<string, string | boolean>;
+  themeSettingsColorPalette?: string[];
+  onThemeSettingsFieldChange?: (
+    path: string,
+    type: import('./theme-editor-field.utils').ThemeEditorFieldType,
+    value: string | boolean
+  ) => void;
+  onThemePaletteChange?: (colors: string[]) => void;
+  /** Product / collection / blog picker shown above the sections tree. */
+  sectionsHeaderSlot?: React.ReactNode;
 };
 
 const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
@@ -702,6 +712,11 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
   onRemoveSettingsSection,
   onRemoveSettingsBlock,
   onStoreMenuSelect,
+  themeSettingsValues = {},
+  themeSettingsColorPalette = ['#ffffff', '#111827'],
+  onThemeSettingsFieldChange,
+  onThemePaletteChange,
+  sectionsHeaderSlot,
 }) => {
   const [dragState, setDragState] = useState<DragState>({
     listKey: null,
@@ -722,7 +737,7 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
 
   return (
     <aside
-      className={`relative flex h-full min-h-0 shrink-0 flex-col border-r border-[#e1e1e1] bg-[#f6f6f7] ${
+      className={`relative flex h-full min-h-0 shrink-0 flex-col border-r border-[#e8e9eb] bg-white ${
         isResizingSidebar ? 'select-none' : ''
       }`}
       style={{ width: sidebarWidth }}
@@ -778,11 +793,11 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
           );
         }}
       />
-      <div className="flex items-center gap-0.5 border-b border-[#e1e1e1] bg-[#f6f6f7] px-2 py-2">
+      <div className="flex items-center gap-1 border-b border-[#eceef0] bg-white px-3 py-2.5">
         <button
           type="button"
           onClick={onExit}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-700 shadow-sm hover:bg-gray-50"
+          className="mr-1 flex h-8 w-8 items-center justify-center rounded-lg border border-[#dfe1e4] bg-white text-gray-600 shadow-sm transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
           title="Exit editor"
         >
           <ArrowLeftIcon className="h-4 w-4" />
@@ -790,10 +805,10 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
         <button
           type="button"
           onClick={() => onSidebarTabChange('sections')}
-          className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
             sidebarTab === 'sections'
-              ? 'bg-[#d4e3ff] text-[#005bd3]'
-              : 'text-gray-600 hover:bg-[#ededed]'
+              ? 'bg-[#eaf2ff] text-[#005bd3]'
+              : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
           }`}
           title="Sections"
         >
@@ -802,10 +817,10 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
         <button
           type="button"
           onClick={() => onSidebarTabChange('theme-settings')}
-          className={`flex h-8 w-8 items-center justify-center rounded-lg ${
+          className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
             sidebarTab === 'theme-settings'
-              ? 'bg-[#d4e3ff] text-[#005bd3]'
-              : 'text-gray-600 hover:bg-[#ededed]'
+              ? 'bg-[#eaf2ff] text-[#005bd3]'
+              : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
           }`}
           title="Theme settings"
         >
@@ -813,20 +828,37 @@ const ThemeEditorSidebarInner: React.FC<ThemeEditorSidebarProps> = ({
         </button>
       </div>
 
-      <h2 className="border-b border-[#e1e1e1] bg-[#f6f6f7] px-3 py-3 text-[13px] font-medium text-gray-500">
+      <h2 className="border-b border-[#f0f1f2] bg-white px-4 py-3.5 text-[12px] font-medium text-gray-400">
         {sidebarTab === 'sections' ? (
           <>
-            Editing: <span className="font-semibold text-gray-900">{pageLabel}</span>
+            Editing <span className="text-[14px] font-semibold text-gray-900">{pageLabel}</span>
           </>
         ) : (
-          title
+          <span className="text-[14px] font-semibold text-gray-900">{title}</span>
         )}
       </h2>
 
-      <div className="theme-editor-sidebar-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+      {sidebarTab === 'sections' && sectionsHeaderSlot ? sectionsHeaderSlot : null}
+
+      <div className="theme-editor-sidebar-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto bg-[#f7f8f9]">
         {loading ? <p className="p-4 text-sm text-gray-500">Loading theme…</p> : null}
         {error ? <p className="p-4 text-sm text-red-600">{error}</p> : null}
-        {!loading && sidebarTab === 'theme-settings' ? <ThemeSettingsNav /> : null}
+        {!loading && sidebarTab === 'theme-settings' ? (
+          onThemeSettingsFieldChange ? (
+            <ThemeSettingsNav
+              values={themeSettingsValues}
+              colorPalette={themeSettingsColorPalette}
+              onFieldChange={onThemeSettingsFieldChange}
+              onPaletteChange={onThemePaletteChange}
+            />
+          ) : (
+            <ThemeSettingsNav
+              values={{}}
+              colorPalette={themeSettingsColorPalette}
+              onFieldChange={() => undefined}
+            />
+          )
+        ) : null}
         {!loading && sidebarTab === 'sections' && tree.length > 0 ? (
           <div className="pb-3 pt-1">
             {tree.map((node) =>

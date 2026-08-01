@@ -104,6 +104,15 @@ export function resolveThemeFontWeightNumber(value: unknown): number {
   return THEME_FONT_WEIGHT_OPTIONS.find((opt) => opt.value === key)?.weight ?? 400;
 }
 
+export function readThemeFontWeightForRole(
+  config: Record<string, unknown> | null | undefined,
+  role: 'body' | 'subheading' | 'heading' | 'accent'
+): number {
+  const typography = readTypographySettings(config);
+  const key = themeFontWeightPathForRole(role).replace('settings.typography.', '');
+  return resolveThemeFontWeightNumber(typography[key]);
+}
+
 export function themeFontWeightPathForRole(
   role: 'body' | 'subheading' | 'heading' | 'accent'
 ): string {

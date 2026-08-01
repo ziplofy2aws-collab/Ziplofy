@@ -18,6 +18,8 @@ export function resolveStoreMenuItemHref(input: MenuLinkResolveInput): string {
       return "/collections";
     case "all-products":
       return "/collections/all";
+    case "all-blogs":
+      return "/blogs/all";
     case "specific-collection": {
       const urlHandle = handle(input.collectionId?.urlHandle);
       return urlHandle ? `/collection/${urlHandle}` : "/collections";
@@ -44,6 +46,8 @@ export function menuItemListSummaryLabel(linkType: MenuItemLinkType, label?: str
       return "Collections";
     case "all-products":
       return "Products";
+    case "all-blogs":
+      return "All blogs";
     case "specific-collection":
       return "Collection";
     case "specific-product":

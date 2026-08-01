@@ -1,6 +1,7 @@
-import { CircleStackIcon, ChevronUpDownIcon, PhotoIcon } from '@heroicons/react/24/outline';
+import { CircleStackIcon, ChevronUpDownIcon, PencilSquareIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useState } from 'react';
 import { ThemeEditorImagePickerModal } from '../sidebar/ThemeEditorImagePickerModal';
+import { ThemeEditorImageEditorSheet } from '../../components/themes/theme-editor-sidebar/ThemeEditorImageEditorSheet';
 import {
   THEME_LOGO_HEIGHT_MAX,
   THEME_LOGO_HEIGHT_MIN,
@@ -26,6 +27,7 @@ type Props = {
 
 export function ThemeLogoFaviconImageField({ label, imageUrl, helper, onChange }: Props) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
   const hasImage = Boolean(imageUrl.trim());
   const fileName = hasImage ? fileNameFromUrl(imageUrl) : null;
 
@@ -37,17 +39,27 @@ export function ThemeLogoFaviconImageField({ label, imageUrl, helper, onChange }
         <span className="block text-[13px] font-medium text-gray-800">{label}</span>
 
         {hasImage ? (
-          <button
-            type="button"
-            onClick={openPicker}
-            className="flex w-full items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-2 py-2 text-left hover:border-[#aeb4b9]"
-          >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded border border-[#e1e1e1] bg-[#f6f6f7]">
-              <img src={imageUrl} alt="" className="h-full w-full object-cover" />
-            </span>
-            <span className="min-w-0 flex-1 truncate text-[13px] text-gray-900">{fileName}</span>
-            <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-gray-500" aria-hidden />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={openPicker}
+              className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-[#c9cccf] bg-white px-2 py-2 text-left hover:border-[#aeb4b9]"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded border border-[#e1e1e1] bg-[#f6f6f7]">
+                <img src={imageUrl} alt="" className="h-full w-full object-cover" />
+              </span>
+              <span className="min-w-0 flex-1 truncate text-[13px] text-gray-900">{fileName}</span>
+              <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-gray-500" aria-hidden />
+            </button>
+            <button
+              type="button"
+              title="Edit image"
+              onClick={() => setEditorOpen(true)}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+            >
+              <PencilSquareIcon className="h-4 w-4" />
+            </button>
+          </div>
         ) : null}
 
         <div className="rounded-lg border border-dashed border-[#c9cccf] bg-[#fafbfb] p-3">
@@ -72,6 +84,16 @@ export function ThemeLogoFaviconImageField({ label, imageUrl, helper, onChange }
             >
               <CircleStackIcon className="h-4 w-4" />
             </button>
+            {hasImage ? (
+              <button
+                type="button"
+                title="Edit image"
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9cccf] bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+                onClick={() => setEditorOpen(true)}
+              >
+                <PencilSquareIcon className="h-4 w-4" />
+              </button>
+            ) : null}
             {hasImage ? (
               <button
                 type="button"
@@ -101,6 +123,12 @@ export function ThemeLogoFaviconImageField({ label, imageUrl, helper, onChange }
           onChange(nextUrl);
           setPickerOpen(false);
         }}
+      />
+      <ThemeEditorImageEditorSheet
+        open={editorOpen}
+        imageUrl={imageUrl}
+        onClose={() => setEditorOpen(false)}
+        onSaved={(nextUrl) => onChange(nextUrl)}
       />
     </>
   );

@@ -152,6 +152,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
   const AllProducts = contract.AllProductsPage ?? Home;
   const CollectionDetail = contract.CollectionPage ?? Home;
   const NotFound = contract.NotFoundPage;
+  const AllBlogs = contract.AllBlogsPage;
   const Blog = contract.BlogPage;
   const BlogPost = contract.BlogPostPage;
 
@@ -180,7 +181,8 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
         <Route path="/checkout/payment-confirmation" element={<CheckoutPaymentConfirmationPage />} />
-                <Route
+        <Route path="/blogs/all" element={AllBlogs ? <AllBlogs /> : Blog ? <Blog /> : <Home />} />
+        <Route
           path="/blogs/:blogHandle"
           element={Blog ? <Blog /> : <Home />}
         />
@@ -188,7 +190,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
           path="/blogs/:blogHandle/:articleHandle"
           element={BlogPost ? <BlogPost /> : <Home />}
         />
-<Route
+        <Route
           path="/search"
           element={
             contract.SearchPage ? (

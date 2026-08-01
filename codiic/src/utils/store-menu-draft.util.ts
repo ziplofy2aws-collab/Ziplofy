@@ -66,6 +66,9 @@ export function menuItemDraftToApiInput(
   if (link === '/collections/all' || link === '/products') {
     return { label, linkType: 'all-products', position };
   }
+  if (link === '/blogs/all') {
+    return { label, linkType: 'all-blogs', position };
+  }
   if (draft.collectionId) {
     return {
       label,
@@ -104,6 +107,9 @@ export function storeMenuItemToDraft(item: StoreMenuItem): MenuItemDraft {
   } else if (item.linkType === 'all-products') {
     link = '/collections/all';
     linkLabel = 'All products';
+  } else if (item.linkType === 'all-blogs') {
+    link = '/blogs/all';
+    linkLabel = 'All blogs';
   } else if (item.linkType === 'custom') {
     linkLabel = item.label;
   }

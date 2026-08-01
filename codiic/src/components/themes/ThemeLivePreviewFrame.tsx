@@ -44,6 +44,8 @@ export type ThemeLivePreviewFrameProps = {
   cssUrl?: string | null;
   config: Record<string, unknown>;
   page?: ThemePreviewPage;
+  /** Storefront path for entity templates (product/collection/blog) — sent with INIT + SET_PAGE. */
+  previewRoute?: string;
   selectionHints?: ThemePreviewSelectionHint[];
   onPreviewSelect?: (payload: ThemePreviewSelectPayload) => void;
   /** Preview clicked empty canvas or cleared selection in iframe. */
@@ -53,6 +55,8 @@ export type ThemeLivePreviewFrameProps = {
   onPreviewInsertSection?: (payload: { afterNodeId?: string; beforeNodeId?: string }) => void;
   insertHoverHighlight?: { afterNodeId?: string; beforeNodeId?: string } | null;
   highlightNodeId?: string | null;
+  /** Theme inspector: click sections/blocks in preview to select and edit. */
+  inspectorEnabled?: boolean;
   /** Bumped on sidebar structure reorder — posts config to iframe immediately. */
   structureSyncKey?: number;
   /** Bumped on sidebar / inline field edits — posts config immediately (keeps preview in sync). */
@@ -142,6 +146,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   cssUrl,
   config,
   page = 'index',
+  previewRoute,
   selectionHints = [],
   onPreviewSelect,
   onPreviewDeselect,
@@ -150,6 +155,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   onPreviewInsertSection,
   insertHoverHighlight = null,
   highlightNodeId,
+  inspectorEnabled = true,
   structureSyncKey = 0,
   valuesSyncKey = 0,
   className = '',
@@ -165,8 +171,14 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   const initSentRef = useRef(false);
   const configRef = useRef(config);
   configRef.current = config;
+  const pageRef = useRef(page);
+  pageRef.current = page;
+  const previewRouteRef = useRef(previewRoute);
+  previewRouteRef.current = previewRoute;
   const selectionHintsRef = useRef(selectionHints);
   selectionHintsRef.current = selectionHints;
+  const inspectorEnabledRef = useRef(inspectorEnabled);
+  inspectorEnabledRef.current = inspectorEnabled;
   const onPreviewSelectRef = useRef(onPreviewSelect);
   onPreviewSelectRef.current = onPreviewSelect;
   const onPreviewDeselectRef = useRef(onPreviewDeselect);
@@ -208,7 +220,7 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     );
   }, []);
 
-  /** INIT only when runtime identity changes — never on every config keystroke. */
+  /** INIT only when runtime identity changes — never on page/route switches (SET_PAGE handles those). */
   const postInit = useCallback(() => {
     const frame = iframeRef.current?.contentWindow;
     if (!frame || !jsUrl || !storeId) return;
@@ -222,14 +234,29 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
           jsUrl,
           cssUrl: cssUrl ?? null,
           config: configRef.current,
-          page,
+          page: pageRef.current,
+          previewRoute: previewRouteRef.current,
           selectionHints: selectionHintsRef.current,
+          inspectorEnabled: inspectorEnabledRef.current,
         },
       },
       '*'
     );
     initSentRef.current = true;
-  }, [storeId, storeName, jsUrl, cssUrl, page]);
+  }, [storeId, storeName, jsUrl, cssUrl]);
+
+  const postInspectorState = useCallback((enabled: boolean) => {
+    const frame = iframeRef.current?.contentWindow;
+    if (!frame || !initSentRef.current) return;
+    frame.postMessage(
+      {
+        source: EDITOR_SOURCE,
+        type: 'codiic_PREVIEW_INSPECTOR',
+        payload: { enabled },
+      },
+      '*'
+    );
+  }, []);
 
   const postConfigNow = useCallback((immediate = false) => {
     const frame = iframeRef.current?.contentWindow;
@@ -399,10 +426,18 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
     const frame = iframeRef.current?.contentWindow;
     if (!frame) return;
     frame.postMessage(
-      { source: EDITOR_SOURCE, type: 'codiic_PREVIEW_SET_PAGE', payload: { page } },
+      {
+        source: EDITOR_SOURCE,
+        type: 'codiic_PREVIEW_SET_PAGE',
+        payload: { page, previewRoute: previewRouteRef.current },
+      },
       '*'
     );
-  }, [page, ready]);
+  }, [page, previewRoute, ready]);
+
+  useEffect(() => {
+    postInspectorState(inspectorEnabled);
+  }, [inspectorEnabled, ready, postInspectorState]);
 
   useEffect(() => {
     if (!ready) return;

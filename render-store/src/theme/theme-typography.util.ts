@@ -117,6 +117,34 @@ export function applyThemeTypographyCssVars(config: Record<string, unknown> | nu
     root.style.setProperty('--codiic-font-family-accent', typography.fontFamilyAccent);
   }
 
+  const weightMap: Record<string, number> = {
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+  };
+  const resolveWeight = (raw: unknown, fallback = 400) => {
+    if (typeof raw === 'string' && weightMap[raw] != null) return weightMap[raw];
+    const n = Number(raw);
+    return Number.isFinite(n) && n > 0 ? n : fallback;
+  };
+  root.style.setProperty(
+    '--codiic-font-weight-body',
+    String(resolveWeight(typography.fontBodyWeight, 400))
+  );
+  root.style.setProperty(
+    '--codiic-font-weight-subheading',
+    String(resolveWeight(typography.fontSubheadingWeight, 400))
+  );
+  root.style.setProperty(
+    '--codiic-font-weight-heading',
+    String(resolveWeight(typography.fontHeadingWeight, 400))
+  );
+  root.style.setProperty(
+    '--codiic-font-weight-accent',
+    String(resolveWeight(typography.fontAccentWeight, 400))
+  );
+
   const textColor = readThemeTypographyTextColor(config);
   if (textColor) root.style.setProperty('--codiic-text', textColor);
 }

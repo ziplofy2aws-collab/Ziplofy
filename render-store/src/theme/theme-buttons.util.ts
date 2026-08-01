@@ -45,6 +45,8 @@ export function readThemeButtonCssVars(
   const pillsRadius = Number(pills.cornerRadius);
   const primaryBorder = Number(primary.borderThickness);
   const secondaryBorder = Number(secondary.borderThickness);
+  const primaryTextCase = primary.textCase === 'uppercase' ? 'uppercase' : 'none';
+  const secondaryTextCase = secondary.textCase === 'uppercase' ? 'uppercase' : 'none';
 
   return {
     '--codiic-btn-primary-bg': resolvePaletteColor(config, primary.background, 1, '#111827'),
@@ -52,11 +54,13 @@ export function readThemeButtonCssVars(
     '--codiic-btn-primary-border-color': resolvePaletteColor(config, primary.border, 1, '#111827'),
     '--codiic-btn-primary-border-width': `${Number.isFinite(primaryBorder) ? primaryBorder : 0}px`,
     '--codiic-btn-primary-radius': `${Number.isFinite(primaryRadius) ? primaryRadius : 14}px`,
+    '--codiic-btn-primary-text-transform': primaryTextCase,
     '--codiic-btn-secondary-bg': resolvePaletteColor(config, secondary.background, 0, 'transparent'),
     '--codiic-btn-secondary-text': resolvePaletteColor(config, secondary.text, 1, '#111827'),
     '--codiic-btn-secondary-border-color': resolvePaletteColor(config, secondary.border, 1, '#111827'),
     '--codiic-btn-secondary-border-width': `${Number.isFinite(secondaryBorder) ? secondaryBorder : 1}px`,
     '--codiic-btn-secondary-radius': `${Number.isFinite(secondaryRadius) ? secondaryRadius : 14}px`,
+    '--codiic-btn-secondary-text-transform': secondaryTextCase,
     '--codiic-pill-radius': `${Number.isFinite(pillsRadius) ? pillsRadius : 40}px`,
   };
 }

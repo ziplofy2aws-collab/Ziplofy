@@ -29,6 +29,14 @@ export type ThemeEditorPageMenuItem = {
 const DEFAULT_LABELS: Record<string, string> = {
   index: 'Home page',
   product: 'Product page',
+  search: 'Search',
+  collections_list: 'Collections list',
+  all_products: 'All products',
+  collection: 'Collection',
+  all_blogs: 'All blogs',
+  blogs: 'Blog',
+  blog_posts: 'Blog post',
+  '404': '404 page',
   cart: 'Cart',
   login: 'Login',
   signup: 'Sign up',
@@ -42,13 +50,20 @@ const DEFAULT_LABELS: Record<string, string> = {
 const PAGE_ORDER: string[] = [
   'index',
   'product',
+  'search',
+  'collections_list',
+  'all_products',
+  '404',
+  'collection',
+  'all_blogs',
+  'blogs',
+  'blog_posts',
   'cart',
   'login',
   'signup',
   'forgot_password',
   'profile',
   'orders',
-  'preferences',
 ];
 
 function formatLabel(id: string): string {

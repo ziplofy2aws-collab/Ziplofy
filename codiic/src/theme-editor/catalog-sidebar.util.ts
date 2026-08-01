@@ -66,6 +66,14 @@ export function settingsNodeFromCatalog(node: SidebarNode): SidebarNode | null {
   if (!ctx) return null;
   // Layout header uses schema-merged tree fields + HeaderSettingsPanel (Shopify order).
   if (ctx.placement === 'layout' && ctx.sectionType === 'header') return null;
+  // Prefer theme.schema footer fields (e.g. Watch bg/text) over create-theme chrome.
+  if (
+    ctx.placement === 'layout' &&
+    ctx.sectionType === 'footer' &&
+    (node.fields?.length ?? 0) > 0
+  ) {
+    return null;
+  }
   if (!sectionTypeUsesCatalogSidebar(ctx.sectionType)) return null;
 
   return {

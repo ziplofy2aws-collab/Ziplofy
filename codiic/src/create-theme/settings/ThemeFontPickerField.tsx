@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import type { ThemeEditorFieldType } from '../sidebar/create-theme-field.utils';
 import { ThemeTypographyFontPickerModal } from './ThemeTypographyFontPickerModal';
 import {
+  THEME_FONT_WEIGHT_OPTIONS,
   THEME_SYSTEM_FONT_PICKER_OPTIONS,
   THEME_TYPOGRAPHY_FONT_OPTIONS,
   normalizeThemeFontWeight,
@@ -28,6 +29,11 @@ function fontLabelForKey(fontKey: string): string {
   return THEME_TYPOGRAPHY_FONT_OPTIONS.find((font) => font.value === normalized)?.label ?? 'Inter';
 }
 
+function weightLabelForKey(weightKey: string): string {
+  const normalized = normalizeThemeFontWeight(weightKey);
+  return THEME_FONT_WEIGHT_OPTIONS.find((opt) => opt.value === normalized)?.label ?? 'Regular';
+}
+
 type Props = {
   role: FontRole;
   values: Record<string, string | boolean>;
@@ -44,7 +50,7 @@ export function ThemeFontPickerField({ role, values, onFieldChange }: Props) {
   const fontKey = typeof values[fontKeyPath] === 'string' ? String(values[fontKeyPath]) : 'inter';
   const weightValue =
     typeof values[weightPath] === 'string' ? String(values[weightPath]) : 'regular';
-  const label = fontLabelForKey(fontKey);
+  const label = `${fontLabelForKey(fontKey)} · ${weightLabelForKey(weightValue)}`;
 
   const openPicker = () => {
     const rect = buttonRef.current?.getBoundingClientRect() ?? null;

@@ -1,19 +1,20 @@
 /**
- * Static theme editor dev mode — bypasses production S3 / store-theme-config flow.
+ * Static catalog theme editor — local Watch (or Horizon) pack without S3 upload.
  *
- * Enable in `.env.local` (or any Vite env file):
+ * Enable in `.env.development` or `.env.local`:
+ *
+ *   VITE_STATIC_CATALOG_THEME_EDITOR_MODE=true
+ *
+ * Alias (same behavior):
  *
  *   VITE_THEME_EDITOR_STATIC_MODE=true
  *
- * Optional overrides (defaults work for local dev with horizon pack in `src/theme-packs/horizon/`):
+ * Defaults when catalog static mode is on:
+ *   - pack: watch
+ *   - runtime: /remote-themes/watch/theme.js + theme.css (served from remote-themes/watch)
+ *   - schema/config: /remote-themes/watch/*.json
  *
- *   VITE_THEME_EDITOR_STATIC_PACK=horizon
- *   VITE_THEME_EDITOR_STATIC_BASE_URL=/static-editor-theme
- *   VITE_THEME_EDITOR_STATIC_JS_URL=http://localhost:5180/...
- *   VITE_THEME_EDITOR_STATIC_CSS_URL=http://localhost:5180/...
- *   VITE_THEME_EDITOR_STATIC_THEME_NAME=My reference theme
- *
- * When static mode is on, open `/themes/dev-editor` (no DB theme or install required).
+ * Open from Themes page → **Open catalog editor** → `/themes/dev-editor`
  */
 
 function envFlag(value: string | undefined): boolean {
@@ -30,27 +31,41 @@ function envOr(defaultValue: string, ...keys: string[]): string {
   return defaultValue;
 }
 
+/** User-facing name for the catalog static-dev toggle. */
+export const STATIC_CATALOG_THEME_EDITOR_MODE = envFlag(
+  (import.meta.env.VITE_STATIC_CATALOG_THEME_EDITOR_MODE as string | undefined) ??
+    (import.meta.env.VITE_THEME_EDITOR_STATIC_MODE as string | undefined)
+);
+
+const catalogMode = STATIC_CATALOG_THEME_EDITOR_MODE;
+
+const defaultPack = catalogMode ? 'watch' : 'horizon';
+const defaultBaseUrl = catalogMode ? '/remote-themes/watch' : '';
+const defaultThemeName = catalogMode ? 'Watch (local catalog)' : 'Static dev theme';
+const defaultJs = catalogMode ? '/remote-themes/watch/theme.js' : '';
+const defaultCss = catalogMode ? '/remote-themes/watch/theme.css' : '';
+
 export const THEME_EDITOR_STATIC_CONFIG = {
   /** Master toggle — when true, editor uses one local/static theme pack only. */
-  enabled: envFlag(import.meta.env.VITE_THEME_EDITOR_STATIC_MODE),
+  enabled: catalogMode || envFlag(import.meta.env.VITE_THEME_EDITOR_STATIC_MODE),
 
   /** Folder name under `src/theme-packs/` when not loading from `staticBaseUrl`. */
-  packId: envOr('horizon', 'VITE_THEME_EDITOR_STATIC_PACK'),
+  packId: envOr(defaultPack, 'VITE_THEME_EDITOR_STATIC_PACK'),
 
   /**
-   * If set, JSON + assets are fetched from this URL (e.g. `/static-editor-theme` in `public/`
-   * or a render-store static host). When empty, pack is loaded from bundled `src/theme-packs/{packId}/`.
+   * If set, JSON + assets are fetched from this URL (e.g. `/remote-themes/watch`).
+   * When empty, pack is loaded from bundled `src/theme-packs/{packId}/`.
    */
-  staticBaseUrl: envOr('', 'VITE_THEME_EDITOR_STATIC_BASE_URL'),
+  staticBaseUrl: envOr(defaultBaseUrl, 'VITE_THEME_EDITOR_STATIC_BASE_URL'),
 
-  themeId: envOr('static-dev', 'VITE_THEME_EDITOR_STATIC_THEME_ID'),
-  themeName: envOr('Static dev theme', 'VITE_THEME_EDITOR_STATIC_THEME_NAME'),
+  themeId: envOr('static-dev-watch', 'VITE_THEME_EDITOR_STATIC_THEME_ID'),
+  themeName: envOr(defaultThemeName, 'VITE_THEME_EDITOR_STATIC_THEME_NAME'),
 
-  /**
-   * Live preview — empty uses create-theme composer in render-store `/theme-preview` (no theme.js).
-   */
-  jsUrl: (import.meta.env.VITE_THEME_EDITOR_STATIC_JS_URL as string | undefined)?.trim() || '',
-  cssUrl: (import.meta.env.VITE_THEME_EDITOR_STATIC_CSS_URL as string | undefined)?.trim() || '',
+  /** Live preview runtime URLs (Watch local pack by default in catalog static mode). */
+  jsUrl:
+    (import.meta.env.VITE_THEME_EDITOR_STATIC_JS_URL as string | undefined)?.trim() || defaultJs,
+  cssUrl:
+    (import.meta.env.VITE_THEME_EDITOR_STATIC_CSS_URL as string | undefined)?.trim() || defaultCss,
 
   /** Fake store id for editor context when no store is selected. */
   devStoreId: envOr('dev-store', 'VITE_THEME_EDITOR_STATIC_STORE_ID'),
@@ -65,12 +80,17 @@ export function isThemeEditorStaticMode(): boolean {
   return FORCE_THEME_EDITOR_STATIC_MODE || THEME_EDITOR_STATIC_CONFIG.enabled;
 }
 
+/** Same as static mode — preferred name for catalog editor local development. */
+export function isStaticCatalogThemeEditorMode(): boolean {
+  return isThemeEditorStaticMode();
+}
+
 export const THEME_EDITOR_DEV_ROUTE = '/themes/dev-editor';
 
-/** Bundled pack for static dev editor (Horizon only). */
+/** Bundled / local packs for static catalog editor. */
 export const DEV_STATIC_THEME_PACKS = [
-  { id: 'horizon', label: 'Horizon' },
   { id: 'watch', label: 'Watch' },
+  { id: 'horizon', label: 'Horizon' },
 ] as const;
 
 export type DevStaticThemePackId = (typeof DEV_STATIC_THEME_PACKS)[number]['id'];
@@ -84,7 +104,7 @@ export function getStaticDevPackId(): DevStaticThemePackId {
   } catch {
     /* ignore */
   }
-  return THEME_EDITOR_STATIC_CONFIG.packId === 'watch' ? 'watch' : 'horizon';
+  return THEME_EDITOR_STATIC_CONFIG.packId === 'horizon' ? 'horizon' : 'watch';
 }
 
 export function setStaticDevPackId(packId: DevStaticThemePackId): void {

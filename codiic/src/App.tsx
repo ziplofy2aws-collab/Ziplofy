@@ -694,8 +694,9 @@ const App: React.FC = () => {
         <TaxAndDutiesGlobalSettingsProvider>
           <Router>
           <Toaster
-            position="top-center"
+            position="bottom-center"
             gutter={12}
+            containerStyle={{ zIndex: 30000 }}
             toastOptions={{
               duration: 7000,
               style: {

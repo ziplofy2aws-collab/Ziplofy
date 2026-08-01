@@ -6,6 +6,8 @@ export const STOREFRONT_PATHS = {
   allProducts: '/collections/all',
   /** Collections index */
   allCollections: '/collections',
+  /** All blogs index */
+  allBlogs: '/blogs/all',
   cart: '/cart',
   search: '/search',
 } as const;

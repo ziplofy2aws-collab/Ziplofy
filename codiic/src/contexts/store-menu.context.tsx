@@ -5,6 +5,7 @@ export const MENU_ITEM_LINK_TYPES = [
   'homepage',
   'all-collections',
   'all-products',
+  'all-blogs',
   'specific-collection',
   'specific-product',
   'custom',

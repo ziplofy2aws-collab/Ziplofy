@@ -32,6 +32,7 @@ import { withSearchPageSchema } from './search-page-schema.util';
 import { ensureCartPageTemplateBlocks } from './cart-page-preset.util';
 import {
   ensureThemeLogoFaviconDefaults,
+  seedThemeLogoFaviconValues,
   withThemeLogoFaviconSchema,
 } from '../create-theme/settings/theme-logo-favicon.settings';
 import {
@@ -438,6 +439,19 @@ export function saveStaticThemeConfigLocal(
   packId: string = getStaticDevPackId()
 ): void {
   localStorage.setItem(configLocalStorageKeyForPack(packId), JSON.stringify(config));
+}
+
+/** Clears the saved static/dev editor config for a pack (not auth or other app keys). */
+export function clearStaticThemeConfigLocal(packId: string = getStaticDevPackId()): void {
+  try {
+    localStorage.removeItem(configLocalStorageKeyForPack(packId));
+    // Legacy key used before pack-scoped storage.
+    if (packId === THEME_EDITOR_STATIC_CONFIG.packId) {
+      localStorage.removeItem(THEME_EDITOR_STATIC_CONFIG.localStorageKey);
+    }
+  } catch {
+    /* ignore */
+  }
 }
 
 export const THEME_CREATOR_CONFIG_STORAGE_KEY = 'codiic-theme-creator-config';
@@ -860,7 +874,18 @@ export async function loadStaticThemeEditorPack(
     mergeTemplateSectionBlueprintsFromPack(config, defaultConfig, tplId);
   }
   sanitizeThemeConfigStructure(config);
-  const values = formValuesFromEditorConfig(editorSchema, config);
+  ensureThemeLogoFaviconDefaults(defaultConfig);
+  ensureThemeLogoFaviconDefaults(config);
+  ensureThemeButtonsDefaults(defaultConfig);
+  ensureThemeButtonsDefaults(config);
+  ensureThemeTypographyDefaults(defaultConfig);
+  ensureThemeTypographyDefaults(config);
+  const values = {
+    ...formValuesFromEditorConfig(editorSchema, config),
+    ...seedThemeButtonsValues({}, config),
+    ...seedThemeLogoFaviconValues({}, config),
+    ...seedThemeTypographyValues({}, config),
+  };
 
   const packPreview = previewUrlsForPack(packId);
   const runtimeJs = staticBaseUrl

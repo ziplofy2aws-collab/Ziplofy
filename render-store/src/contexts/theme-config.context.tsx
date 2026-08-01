@@ -5,6 +5,7 @@ import {
   applyThemeTypographyFontsToDocument,
 } from '@/theme/theme-typography.util';
 import { readThemePageBackgroundForCss, readThemePageMaxWidthForCss } from '@/theme/theme-page.util';
+import { readThemeButtonCssVars } from '@/theme/theme-buttons.util';
 
 export type ThemeConfig = Record<string, unknown>;
 
@@ -32,6 +33,10 @@ function applyThemeConfigCssVars(config: ThemeConfig | null): void {
   if (colors?.muted) root.style.setProperty('--codiic-muted', colors.muted);
   if (colors?.border) root.style.setProperty('--codiic-border', colors.border);
   applyThemeTypographyCssVars(config);
+  const buttonVars = readThemeButtonCssVars(config);
+  for (const [key, value] of Object.entries(buttonVars)) {
+    root.style.setProperty(key, value);
+  }
 }
 
 function configSignature(config: ThemeConfig | null): string {

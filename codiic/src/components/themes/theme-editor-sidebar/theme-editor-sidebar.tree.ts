@@ -74,11 +74,25 @@ import {
   instanceIdFromHeaderMenuBlockNodeId,
   prepareHeaderMenuBlockSettingsNode,
 } from './theme-editor-header-menu-block-panel.utils';
+import {
+  blockIdFromWatchFooterBlockNodeId,
+  instanceIdFromWatchFooterBlockNodeId,
+  isWatchFooterBottomLinksBlockNodeId,
+  isWatchFooterBrandBlockNodeId,
+  isWatchFooterMenuColumnBlockNodeId,
+  prepareWatchFooterBottomLinksSettingsNode,
+  prepareWatchFooterBrandSettingsNode,
+  prepareWatchFooterMenuColumnSettingsNode,
+  watchFooterBottomLinksFieldDefsFromSchema,
+  watchFooterBrandFieldDefsFromSchema,
+  watchFooterMenuColumnFieldDefsFromSchema,
+} from './theme-editor-watch-footer-block-panel.utils';
 import { isHeaderMenuBlockNodeId } from './theme-editor-header-panel.utils';
 import {
   collectFooterPanelFieldDefs,
   findFooterSectionInTree,
   isFooterLayoutNodeId,
+  isFooterSettingsPanelFields,
   prepareFooterSettingsNode,
 } from './theme-editor-footer-panel.utils';
 import {
@@ -878,6 +892,52 @@ function mapHeaderBlockNodes(
   return reorderSidebarChildren(blockNodes, childrenListKey, itemOrder);
 }
 
+/** Watch / catalog footer: Brand, menu columns, bottom links — flat editable blocks. */
+function mapFooterBlockNodes(
+  blocks: BlockDef[],
+  prefix: string,
+  values: Record<string, string | boolean>,
+  itemOrder: Record<string, string[]>,
+  childrenListKey: string,
+  config: Record<string, unknown> | null,
+  instanceId: string
+): SidebarNode[] {
+  const order =
+    readConfigBlockOrder(config, ['sections', instanceId, 'block_order']) ?? [
+      'brand',
+      'menu_main',
+      'menu_help',
+      'menu_collections',
+      'bottom_links',
+    ];
+  const byId = new Map(blocks.map((b) => [b.id ?? b.label ?? '', b]));
+
+  const blockNodes: SidebarNode[] = order
+    .map((blockInstanceId) => {
+      const base = byId.get(blockInstanceId);
+      if (!base) return null;
+      const blockId = blockInstanceId;
+      const label = base.label ?? blockId;
+      const blockSettingsFields = remapFields(base.settingsFields, instanceId).filter(
+        (f) => f.sidebar !== false
+      );
+
+      return {
+        id: `${prefix}:block:${blockId}`,
+        label,
+        kind: 'block' as const,
+        icon: iconForBlockLabel(label),
+        fields: blockSettingsFields.length ? blockSettingsFields : undefined,
+        showVisibilityToggle: true,
+        showDeleteButton: false,
+        children: undefined,
+      };
+    })
+    .filter((n): n is SidebarNode => Boolean(n));
+
+  return reorderSidebarChildren(blockNodes, childrenListKey, itemOrder);
+}
+
 /** Shopify hero sidebar: Add block → Text → Text → Button (with inline previews). */
 function mapHeroBlockNodes(
   blocks: BlockDef[],
@@ -1240,6 +1300,17 @@ function layoutSectionNode(
   }
   if (isHeader && remappedBlocks?.length) {
     blockNodes = mapHeaderBlockNodes(
+      remappedBlocks,
+      id,
+      values,
+      itemOrder,
+      layoutChildrenKey,
+      config,
+      instanceId
+    );
+  }
+  if (isFooter && remappedBlocks?.length) {
+    blockNodes = mapFooterBlockNodes(
       remappedBlocks,
       id,
       values,
@@ -2153,6 +2224,37 @@ export function settingsNodeForSelection(
     return prepareHeaderMenuBlockSettingsNode({ ...blockNode, fields });
   }
 
+  if (isWatchFooterBrandBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    const instanceId = instanceIdFromWatchFooterBlockNodeId(blockNode.id);
+    let fields = (blockNode.fields ?? []).filter((f) => f.sidebar !== false);
+    if (editorSchema && instanceId) {
+      fields = watchFooterBrandFieldDefsFromSchema(editorSchema, instanceId);
+    }
+    return prepareWatchFooterBrandSettingsNode({ ...blockNode, fields });
+  }
+
+  if (isWatchFooterMenuColumnBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    const instanceId = instanceIdFromWatchFooterBlockNodeId(blockNode.id);
+    const blockId = blockIdFromWatchFooterBlockNodeId(blockNode.id);
+    let fields = (blockNode.fields ?? []).filter((f) => f.sidebar !== false);
+    if (editorSchema && instanceId && blockId) {
+      fields = watchFooterMenuColumnFieldDefsFromSchema(editorSchema, instanceId, blockId);
+    }
+    return prepareWatchFooterMenuColumnSettingsNode({ ...blockNode, fields });
+  }
+
+  if (isWatchFooterBottomLinksBlockNodeId(node.id)) {
+    const blockNode = findSidebarNode(tree, node.id) ?? node;
+    const instanceId = instanceIdFromWatchFooterBlockNodeId(blockNode.id);
+    let fields = (blockNode.fields ?? []).filter((f) => f.sidebar !== false);
+    if (editorSchema && instanceId) {
+      fields = watchFooterBottomLinksFieldDefsFromSchema(editorSchema, instanceId);
+    }
+    return prepareWatchFooterBottomLinksSettingsNode({ ...blockNode, fields });
+  }
+
   const headerSection =
     node.kind === 'section' && isHeaderLayoutNodeId(node.id)
       ? node
@@ -2201,7 +2303,10 @@ export function settingsNodeForSelection(
       ? node
       : findFooterSectionInTree(node.id, tree);
   if (footerSection?.fields?.length) {
-    return prepareFooterSettingsNode(footerSection);
+    if (isFooterSettingsPanelFields(footerSection.fields)) {
+      return prepareFooterSettingsNode(footerSection);
+    }
+    return { ...footerSection, label: 'Footer', kind: 'section' };
   }
 
   const copyrightBlock = findCopyrightBlockInTree(node.id, tree);

@@ -163,6 +163,23 @@ const StorefrontBlogListRoute = () => {
   );
 };
 
+const StorefrontAllBlogsRoute = () => {
+  const theme = useLoadedThemeContract();
+  if (theme.AllBlogsPage) {
+    const Page = theme.AllBlogsPage;
+    return <Page />;
+  }
+  if (theme.BlogPage) {
+    const Page = theme.BlogPage;
+    return <Page />;
+  }
+  return (
+    <StorefrontBlogContentShell>
+      <StorefrontBlogPage />
+    </StorefrontBlogContentShell>
+  );
+};
+
 
 const StorefrontBlogPostRoute = () => {
   const theme = useLoadedThemeContract();
@@ -240,6 +257,7 @@ export const StorefrontRoutes = () => (
       <Route path="/checkout/thank-you" element={<CheckoutThankYouPage />} />
       <Route path="/checkout/payment-confirmation" element={<CheckoutPaymentConfirmationPage />} />
       <Route path="/search" element={<StorefrontSearchRoute />} />
+      <Route path="/blogs/all" element={<StorefrontAllBlogsRoute />} />
       <Route path="/blogs/:blogHandle/:articleHandle" element={<StorefrontBlogPostRoute />} />
       <Route path="/blogs/:blogHandle" element={<StorefrontBlogListRoute />} />
       <Route path="/404" element={<StorefrontCatchAllRoute />} />

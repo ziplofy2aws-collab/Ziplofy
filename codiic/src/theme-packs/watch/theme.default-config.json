@@ -1,28 +1,59 @@
 {
-  "version": "1.0.0",
-  "themeId": "watch",
-  "themeName": "Watch",
   "settings": {
     "colors": {
-      "primary": "#1a1a1a",
+      "primary": "#111111",
       "background": "#ffffff",
       "text": "#111111",
-      "accent": "#c5a059",
       "surface": "#ffffff",
-      "muted": "#666666",
-      "border": "#eeeeee"
+      "muted": "#6b6b6b",
+      "accent": "#c5a059",
+      "border": "#e5e7eb",
+      "palette": [
+        "#ffffff",
+        "#111111",
+        "#c5a059"
+      ]
     },
     "typography": {
-      "fontFamily": "\"Cormorant Garamond\", \"Times New Roman\", Georgia, serif",
-      "fontFamilyBody": "\"Montserrat\", \"Segoe UI\", sans-serif",
-      "baseSize": 16,
-      "lineHeight": 1.5,
-      "headingWeight": 600
+      "fontFamily": "\"EB Garamond\", Georgia, serif",
+      "fontFamilyBody": "\"Montserrat\", system-ui, sans-serif",
+      "fontBodyKey": "montserrat",
+      "fontSubheadingKey": "montserrat",
+      "fontHeadingKey": "eb-garamond",
+      "fontAccentKey": "eb-garamond",
+      "fontFamilySubheading": "\"Montserrat\", system-ui, sans-serif",
+      "fontFamilyAccent": "\"EB Garamond\", Georgia, serif",
+      "fontBodyWeight": "regular",
+      "fontSubheadingWeight": "regular",
+      "fontHeadingWeight": "regular",
+      "fontAccentWeight": "regular"
     },
-    "spacing": {
-      "sectionGap": 48,
-      "contentMaxWidth": 1200,
-      "pagePadding": 24
+    "buttons": {
+      "primary": {
+        "background": "#c5a059",
+        "text": "#ffffff",
+        "border": "#c5a059",
+        "borderThickness": 0,
+        "cornerRadius": 0,
+        "font": "body",
+        "textCase": "default"
+      },
+      "secondary": {
+        "background": "transparent",
+        "text": "#c5a059",
+        "border": "#c5a059",
+        "borderThickness": 1,
+        "cornerRadius": 0,
+        "font": "body",
+        "textCase": "default"
+      }
+    },
+    "logo": {
+      "defaultUrl": "/remote-themes/watch/assets/img/logo.png",
+      "inverseUrl": "",
+      "faviconUrl": "",
+      "desktopHeight": 36,
+      "mobileHeight": 28
     }
   },
   "layout_order": {
@@ -31,8 +62,7 @@
       "header"
     ],
     "footer": [
-      "footer",
-      "footer_utilities"
+      "footer"
     ]
   },
   "sections": {
@@ -42,7 +72,7 @@
       "enabled": true,
       "settings": {
         "enabled": true,
-        "message": "Free shipping on orders over ₹999 — Shop the new collection",
+        "message": "Free shipping on orders over \u20b9999 \u2014 Shop the new collection",
         "linkLabel": "Shop now",
         "linkHref": "/products",
         "timeToNext": 5,
@@ -52,20 +82,21 @@
         "paddingTop": 15,
         "paddingBottom": 15,
         "customCss": "",
-        "dismissible": false,
+        "dismissible": true,
         "icon": ""
       },
       "blocks": {
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Just Launched: Dominator & Dominator Skeleton Watches — Shop Now",
+            "text": "Just Launched: Dominator & Dominator Skeleton Watches \u2014",
             "link": "/collections/all",
             "font": "subheading",
             "fontSize": "12px",
             "fontWeight": "default",
             "letterSpacing": "normal",
-            "textCase": "default"
+            "textCase": "default",
+            "linkLabel": "Shop Now"
           }
         }
       },
@@ -84,7 +115,7 @@
         "searchRow": "top",
         "searchPlaceholder": "Timegrapher Watches",
         "countryRegionEnabled": false,
-        "countryRegionLabel": "IN · USD",
+        "countryRegionLabel": "IN \u00b7 USD",
         "showFlag": false,
         "languageSelectorEnabled": false,
         "languageLabel": "English",
@@ -101,7 +132,7 @@
         "homeTransparentBackground": false,
         "productTransparentBackground": false,
         "collectionTransparentBackground": false,
-        "defaultLogoUrl": "",
+        "defaultLogoUrl": "/remote-themes/watch/assets/img/logo.png",
         "cartType": "drawer",
         "productTitleCase": "default",
         "emptyCartLink": "/products",
@@ -114,11 +145,12 @@
           "type": "logo",
           "settings": {
             "position": "left",
-            "text": "My Store",
+            "text": "exbuyer",
             "tagline": "",
             "hideLogoOnHomePage": false,
             "paddingTop": 0,
-            "paddingBottom": 0
+            "paddingBottom": 0,
+            "imageUrl": "/remote-themes/watch/assets/img/logo.png"
           }
         },
         "menu": {
@@ -150,13 +182,18 @@
               {
                 "label": "All collections",
                 "href": "/collections"
+              },
+              {
+                "label": "All blogs",
+                "href": "/blogs/all"
               }
             ]
           },
           "nested_block_order": [
-            "link_shop",
-            "link_collections",
-            "link_about"
+            "link_home",
+            "link_all_products",
+            "link_all_collections",
+            "link_all_blogs"
           ]
         }
       },
@@ -169,4374 +206,235 @@
       "id": "footer",
       "type": "footer",
       "enabled": true,
-      "blocks": {
-        "newsletter": {
-          "type": "newsletter",
-          "settings": {
-            "blockWidth": "fill",
-            "inheritColorScheme": true,
-            "title": "Join our email list",
-            "headingTypographyPreset": "heading-3",
-            "inputBorder": "all",
-            "inputBorderThickness": 1,
-            "inputCornerRadius": 100,
-            "inputTypographyPreset": "paragraph",
-            "submitStyle": "button",
-            "submitDisplay": "text",
-            "submitIntegratedButton": false,
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "paddingLeft": 0,
-            "paddingRight": 0,
-            "subtitle": "Get exclusive deals and early access to new products.",
-            "placeholder": "Email address",
-            "buttonLabel": "Sign up",
-            "privacyNote": ""
-          }
-        },
-        "social_links": {
-          "type": "social_links",
-          "enabled": true,
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "newsletter",
-        "social_links"
-      ],
       "settings": {
-        "sectionWidth": "page",
-        "gap": 20,
-        "colorScheme": "scheme-2",
-        "paddingTop": 36,
-        "paddingBottom": 36,
-        "customCss": ""
-      }
-    },
-    "footer_utilities": {
-      "id": "footer_utilities",
-      "type": "footer-utilities",
-      "enabled": true,
-      "blocks": {
-        "copyright": {
-          "type": "copyright",
-          "settings": {
-            "showPoweredBy": true,
-            "poweredByLabel": "Powered by Ziplofy",
-            "fontSize": "12px",
-            "textCase": "default",
-            "text": "© 2026 My Store"
-          }
-        },
-        "policy_links": {
-          "type": "policy_links",
-          "settings": {
-            "fontSize": "12px",
-            "textCase": "default",
-            "privacyLabel": "Privacy policy",
-            "privacyHref": "/policies",
-            "termsLabel": "Terms and Policies",
-            "termsHref": "/policies"
-          }
-        },
-        "social": {
-          "type": "social",
-          "settings": {
-            "facebookUrl": "",
-            "instagramUrl": "",
-            "youtubeUrl": "",
-            "tiktokUrl": "",
-            "twitterUrl": "",
-            "threadsUrl": "",
-            "linkedinUrl": "",
-            "blueskyUrl": "",
-            "snapchatUrl": "",
-            "pinterestUrl": "",
-            "tumblrUrl": "",
-            "vimeoUrl": "",
-            "customUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "copyright",
-        "policy_links",
-        "social"
-      ],
-      "settings": {
-        "sectionWidth": "page",
-        "gap": 24,
-        "dividerThickness": 1,
-        "colorScheme": "scheme-1",
-        "paddingTop": 20,
-        "paddingBottom": 20,
-        "paymentIcons": false,
-        "followOnShop": false,
-        "customCss": "",
-        "catalogVariant": "policies-links",
-        "enabled": false
-      }
-    },
-    "contact_form": {
-      "id": "contact_form",
-      "type": "contact-form",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "contact-form",
-        "title": "Contact us",
-        "namePlaceholder": "Name",
-        "emailPlaceholder": "Email",
-        "phonePlaceholder": "Phone",
-        "commentPlaceholder": "Comment",
-        "submitLabel": "Submit",
-        "direction": "vertical",
-        "layoutAlignment": "center",
-        "position": "center",
-        "layoutGap": 32,
-        "sectionWidth": "page",
-        "height": "auto",
-        "colorScheme": "scheme-1",
-        "backgroundMedia": "none",
-        "backgroundImageUrl": "",
-        "borderStyle": "none",
-        "cornerRadius": 0,
-        "backgroundOverlay": false,
-        "paddingTop": 32,
-        "paddingBottom": 32,
-        "customCss": ""
-      },
-      "blocks": {},
-      "block_order": []
-    },
-    "email_signup": {
-      "id": "email_signup",
-      "type": "email-signup",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "email-signup",
-        "title": "Subscribe to our emails",
-        "subtitle": "Be the first to know about new collections and special offers.",
-        "placeholder": "Email address",
-        "direction": "vertical",
-        "layoutAlignment": "center",
-        "position": "center",
-        "layoutGap": 16,
-        "sectionWidth": "page",
-        "height": "auto",
-        "colorScheme": "scheme-1",
-        "backgroundMedia": "none",
-        "backgroundImageUrl": "",
-        "borderStyle": "none",
-        "cornerRadius": 0,
-        "backgroundOverlay": false,
-        "paddingTop": 40,
-        "paddingBottom": 40,
-        "customCss": ""
-      },
-      "blocks": {},
-      "block_order": []
-    },
-    "text_marquee_section": {
-      "id": "text_marquee_section",
-      "type": "text-marquee",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "text-marquee",
-        "text": "We make things that work better and last longer.",
-        "motionDirection": "forward",
-        "colorScheme": "scheme-1",
-        "paddingTop": 24,
-        "paddingBottom": 24,
-        "layoutGap": 24,
-        "customCss": ""
-      }
-    },
-    "blog_posts_carousel": {
-      "id": "blog_posts_carousel",
-      "type": "blog-posts-carousel",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "blog-posts-carousel",
-        "heading": "Blog posts",
-        "blogHandle": "",
-        "layoutType": "carousel",
-        "postCount": 5,
-        "columns": 3,
-        "mobileCardSize": "1",
-        "horizontalGap": 8,
-        "navIcon": "arrows",
-        "navIconBackground": "circle",
-        "sectionWidth": "page",
-        "layoutGap": 12,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
+        "backgroundColor": "#0f0f0f",
+        "textColor": "#ffffff"
       },
       "blocks": {
-        "post_1": {
-          "type": "blog-post-card",
+        "brand": {
+          "type": "brand",
           "settings": {
-            "illustrationVariant": "sewing",
-            "title": "Title",
-            "date": "Jan 12",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
+            "brandName": "exbuyer",
+            "email": "support@exbuyerwatch.in",
+            "phone": "+91 82827 2045",
+            "facebookUrl": "https://facebook.com",
+            "instagramUrl": "https://instagram.com",
+            "xUrl": "https://x.com",
+            "youtubeUrl": "https://youtube.com"
           }
         },
-        "post_2": {
-          "type": "blog-post-card",
+        "menu_main": {
+          "type": "menu",
           "settings": {
-            "illustrationVariant": "thread",
-            "title": "Title",
-            "date": "Jan 10",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
+            "heading": "Main Menu",
+            "items": [
+              {
+                "label": "Home",
+                "href": "/"
+              },
+              {
+                "label": "All products",
+                "href": "/collections/all"
+              },
+              {
+                "label": "All collections",
+                "href": "/collections"
+              },
+              {
+                "label": "All blogs",
+                "href": "/blogs/all"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
           }
         },
-        "post_3": {
-          "type": "blog-post-card",
+        "menu_help": {
+          "type": "menu",
           "settings": {
-            "illustrationVariant": "boxes",
-            "title": "Title",
-            "date": "Jan 8",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
+            "heading": "Help",
+            "items": [
+              {
+                "label": "Contact us",
+                "href": "/pages/contact"
+              },
+              {
+                "label": "FAQ",
+                "href": "/pages/faq"
+              },
+              {
+                "label": "Refund Policy",
+                "href": "/policies/refund"
+              },
+              {
+                "label": "Privacy Policy",
+                "href": "/policies/privacy"
+              },
+              {
+                "label": "Shipping Policy",
+                "href": "/policies/shipping"
+              },
+              {
+                "label": "Terms of Service",
+                "href": "/policies/terms"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
           }
         },
-        "post_4": {
-          "type": "blog-post-card",
+        "menu_collections": {
+          "type": "menu",
           "settings": {
-            "illustrationVariant": "thread",
-            "title": "Title",
-            "date": "Jan 5",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
+            "heading": "Our Collections",
+            "items": [
+              {
+                "label": "All collections",
+                "href": "/collections"
+              },
+              {
+                "label": "All products",
+                "href": "/collections/all"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
           }
         },
-        "post_5": {
-          "type": "blog-post-card",
+        "bottom_links": {
+          "type": "menu",
           "settings": {
-            "illustrationVariant": "sewing",
-            "title": "Title",
-            "date": "Jan 2",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
+            "items": [
+              {
+                "label": "Contact us",
+                "href": "/pages/contact"
+              },
+              {
+                "label": "FAQ",
+                "href": "/pages/faq"
+              },
+              {
+                "label": "Refund Policy",
+                "href": "/policies/refund"
+              },
+              {
+                "label": "Privacy Policy",
+                "href": "/policies/privacy"
+              },
+              {
+                "label": "Shipping Policy",
+                "href": "/policies/shipping"
+              },
+              {
+                "label": "Terms of Service",
+                "href": "/policies/terms"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
           }
         }
       },
       "block_order": [
-        "post_1",
-        "post_2",
-        "post_3",
-        "post_4",
-        "post_5"
-      ]
-    },
-    "blog_posts_editorial": {
-      "id": "blog_posts_editorial",
-      "type": "blog-posts-editorial",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "blog-posts-editorial",
-        "heading": "Blog posts",
-        "blogHandle": "",
-        "layoutType": "editorial",
-        "carouselOnMobile": false,
-        "postCount": 3,
-        "sectionWidth": "page",
-        "layoutGap": 64,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "post_1": {
-          "type": "blog-post-card",
-          "settings": {
-            "illustrationVariant": "thread",
-            "title": "Title",
-            "date": "Jan 12",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
-          }
-        },
-        "post_2": {
-          "type": "blog-post-card",
-          "settings": {
-            "illustrationVariant": "sewing",
-            "title": "Title",
-            "date": "Jan 10",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
-          }
-        },
-        "post_3": {
-          "type": "blog-post-card",
-          "settings": {
-            "illustrationVariant": "boxes",
-            "title": "Title",
-            "date": "Jan 8",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "post_1",
-        "post_2",
-        "post_3"
-      ]
-    },
-    "blog_posts_grid": {
-      "id": "blog_posts_grid",
-      "type": "blog-posts-grid",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "blog-posts-grid",
-        "heading": "Blog posts",
-        "blogHandle": "",
-        "layoutType": "grid",
-        "carouselOnMobile": false,
-        "postCount": 3,
-        "columns": 3,
-        "mobileColumns": "2",
-        "horizontalGap": 8,
-        "verticalGap": 8,
-        "sectionWidth": "page",
-        "layoutGap": 12,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "post_1": {
-          "type": "blog-post-card",
-          "settings": {
-            "illustrationVariant": "sewing",
-            "title": "Title",
-            "date": "Jan 12",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
-          }
-        },
-        "post_2": {
-          "type": "blog-post-card",
-          "settings": {
-            "illustrationVariant": "thread",
-            "title": "Title",
-            "date": "Jan 12",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
-          }
-        },
-        "post_3": {
-          "type": "blog-post-card",
-          "settings": {
-            "illustrationVariant": "boxes",
-            "title": "Title",
-            "date": "Jan 12",
-            "author": "Author",
-            "excerpt": "An excerpt of your blog post's content",
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "post_1",
-        "post_2",
-        "post_3"
-      ]
-    },
-    "storytelling_carousel": {
-      "id": "storytelling_carousel",
-      "type": "storytelling-carousel",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "storytelling-carousel",
-        "heading": "Discover elevated design",
-        "columns": 3,
-        "mobileColumns": "1",
-        "sectionWidth": "page",
-        "horizontalGap": 12,
-        "colorScheme": "scheme-1",
-        "navIcon": "arrows",
-        "navIconBackground": "none",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "slide_1": {
-          "type": "carousel-slide",
-          "settings": {
-            "title": "Artistry in action",
-            "description": "Made with care and unconditionally loved by our customers.",
-            "imageUrl": ""
-          }
-        },
-        "slide_2": {
-          "type": "carousel-slide",
-          "settings": {
-            "title": "Uncompromising quality",
-            "description": "Made with care and unconditionally loved by our customers.",
-            "imageUrl": ""
-          }
-        },
-        "slide_3": {
-          "type": "carousel-slide",
-          "settings": {
-            "title": "Made to last",
-            "description": "Made with care and unconditionally loved by our customers.",
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "slide_1",
-        "slide_2",
-        "slide_3"
-      ]
-    },
-    "product_hotspots": {
-      "id": "product_hotspots",
-      "type": "product-hotspots",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "product-hotspots",
-        "heading": "Shop the look",
-        "imageUrl": "",
-        "mediaOverlay": false,
-        "sectionWidth": "page",
-        "sectionHeight": "auto",
-        "hotspotColor": "#FFFFFF57",
-        "innerColor": "#FFFFFF",
-        "colorScheme": "scheme-1",
-        "popoverGap": 8,
-        "titleTypography": "default",
-        "priceTypography": "default",
-        "paddingTop": 40,
-        "paddingBottom": 40,
-        "customCss": ""
-      },
-      "blocks": {
-        "hotspot_1": {
-          "type": "product-hotspot",
-          "settings": {
-            "positionX": 50,
-            "positionY": 10,
-            "productId": "",
-            "productTitle": "Product title",
-            "price": "Rs. 19.99"
-          }
-        },
-        "hotspot_2": {
-          "type": "product-hotspot",
-          "settings": {
-            "positionX": 22,
-            "positionY": 38,
-            "productId": "",
-            "productTitle": "Product title",
-            "price": "Rs. 19.99"
-          }
-        },
-        "hotspot_3": {
-          "type": "product-hotspot",
-          "settings": {
-            "positionX": 58,
-            "positionY": 55,
-            "productId": "",
-            "productTitle": "Product title",
-            "price": "Rs. 19.99"
-          }
-        },
-        "hotspot_4": {
-          "type": "product-hotspot",
-          "settings": {
-            "positionX": 35,
-            "positionY": 50,
-            "productId": "",
-            "productTitle": "Product title",
-            "price": "Rs. 19.99"
-          }
-        },
-        "hotspot_5": {
-          "type": "product-hotspot",
-          "settings": {
-            "positionX": 76,
-            "positionY": 48,
-            "productId": "",
-            "productTitle": "Product title",
-            "price": "Rs. 19.99"
-          }
-        }
-      },
-      "block_order": [
-        "hotspot_1",
-        "hotspot_2",
-        "hotspot_3",
-        "hotspot_4",
-        "hotspot_5"
-      ]
-    },
-    "recommended_products": {
-      "id": "recommended_products",
-      "type": "recommended-products",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "recommended-products",
-        "heading": "Related products",
-        "productId": "",
-        "recommendationType": "related",
-        "cardStyle": "grid",
-        "carouselOnMobile": false,
-        "productCount": 4,
-        "columns": 4,
-        "mobileColumns": "2",
-        "horizontalGap": 12,
-        "verticalGap": 24,
-        "sectionWidth": "page",
-        "layoutGap": 28,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "product_1": {
-          "type": "recommended-product-card",
-          "settings": {
-            "shirtColor": "#d45454",
-            "withSun": false,
-            "productTitle": "Product title",
-            "price": "Rs. 19.99",
-            "productId": ""
-          }
-        },
-        "product_2": {
-          "type": "recommended-product-card",
-          "settings": {
-            "shirtColor": "#5a9a6a",
-            "withSun": false,
-            "productTitle": "Product title",
-            "price": "Rs. 19.99",
-            "productId": ""
-          }
-        },
-        "product_3": {
-          "type": "recommended-product-card",
-          "settings": {
-            "shirtColor": "#4b5563",
-            "withSun": true,
-            "productTitle": "Product title",
-            "price": "Rs. 19.99",
-            "productId": ""
-          }
-        },
-        "product_4": {
-          "type": "recommended-product-card",
-          "settings": {
-            "shirtColor": "#d45454",
-            "withSun": false,
-            "productTitle": "Product title",
-            "price": "Rs. 19.99",
-            "productId": ""
-          }
-        }
-      },
-      "block_order": [
-        "product_1",
-        "product_2",
-        "product_3",
-        "product_4"
-      ]
-    },
-    "collection_links_spotlight": {
-      "id": "collection_links_spotlight",
-      "type": "collection-links-spotlight",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "collection-links-spotlight",
-        "collectionsPicker": "",
-        "layoutMode": "spotlight",
-        "sectionWidth": "page",
-        "alignment": "left",
-        "imagePosition": "right",
-        "imageUrl": "",
-        "colorScheme": "scheme-1",
-        "paddingTop": 40,
-        "paddingBottom": 40,
-        "customCss": ""
-      },
-      "blocks": {
-        "link_1": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        },
-        "link_2": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        },
-        "link_3": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        },
-        "link_4": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        }
-      },
-      "block_order": [
-        "link_1",
-        "link_2",
-        "link_3",
-        "link_4"
-      ]
-    },
-    "collection_links_text": {
-      "id": "collection_links_text",
-      "type": "collection-links-spotlight",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "collection-links-text",
-        "collectionsPicker": "",
-        "layoutMode": "text",
-        "sectionWidth": "page",
-        "alignment": "center",
-        "imagePosition": "right",
-        "imageUrl": "",
-        "colorScheme": "scheme-1",
-        "paddingTop": 40,
-        "paddingBottom": 40,
-        "customCss": ""
-      },
-      "blocks": {
-        "link_1": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        },
-        "link_2": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        },
-        "link_3": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        },
-        "link_4": {
-          "type": "collection-link",
-          "settings": {
-            "title": "Collection title",
-            "productCount": 5,
-            "collectionHandle": "",
-            "href": "/collections/all"
-          }
-        }
-      },
-      "block_order": [
-        "link_1",
-        "link_2",
-        "link_3",
-        "link_4"
-      ]
-    },
-    "collection_list_bento": {
-      "id": "collection_list_bento",
-      "type": "collection-list-bento",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "collection-list-bento",
-        "heading": "Shop by collection",
-        "collectionsPicker": "",
-        "cardsLayoutType": "bento",
-        "carouselOnMobile": false,
-        "cardsGap": 8,
-        "sectionWidth": "page",
-        "layoutGap": 12,
-        "colorScheme": "scheme-1",
-        "paddingTop": 24,
-        "paddingBottom": 24,
-        "customCss": ""
-      },
-      "blocks": {
-        "tile_1": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "folded-shirts",
-            "columnSpan": 1,
-            "imageUrl": ""
-          }
-        },
-        "tile_2": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanger-shirts",
-            "columnSpan": 2,
-            "imageUrl": ""
-          }
-        },
-        "tile_3": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanging-sweaters",
-            "columnSpan": 2,
-            "imageUrl": ""
-          }
-        },
-        "tile_4": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "clothing-rack",
-            "columnSpan": 1,
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "tile_1",
-        "tile_2",
-        "tile_3",
-        "tile_4"
-      ]
-    },
-    "collection_list_carousel": {
-      "id": "collection_list_carousel",
-      "type": "collection-list-carousel",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "collection-list-carousel",
-        "heading": "Shop by collection",
-        "collectionsPicker": "",
-        "cardsLayoutType": "carousel",
-        "columns": 3,
-        "mobileColumns": "1",
-        "horizontalGap": 8,
-        "navigationIcon": "arrows",
-        "navigationIconBackground": "circle",
-        "sectionWidth": "page",
-        "layoutGap": 12,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "tile_1": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "folded-shirts",
-            "imageUrl": ""
-          }
-        },
-        "tile_2": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanger-shirts",
-            "imageUrl": ""
-          }
-        },
-        "tile_3": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanging-sweaters",
-            "imageUrl": ""
-          }
-        },
-        "tile_4": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "clothing-rack",
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "tile_1",
-        "tile_2",
-        "tile_3",
-        "tile_4"
-      ]
-    },
-    "collection_list_editorial": {
-      "id": "collection_list_editorial",
-      "type": "collection-list-editorial",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "collection-list-editorial",
-        "heading": "Shop by collection",
-        "collectionsPicker": "",
-        "cardsLayoutType": "editorial",
-        "carouselOnMobile": false,
-        "collectionCount": 4,
-        "sectionWidth": "page",
-        "layoutGap": 64,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "tile_1": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "folded-shirts",
-            "imageUrl": ""
-          }
-        },
-        "tile_2": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanger-shirts",
-            "imageUrl": ""
-          }
-        },
-        "tile_3": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanging-sweaters",
-            "imageUrl": ""
-          }
-        },
-        "tile_4": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "clothing-rack",
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "tile_1",
-        "tile_2",
-        "tile_3",
-        "tile_4"
-      ]
-    },
-    "collection_list_grid": {
-      "id": "collection_list_grid",
-      "type": "collection-list-grid",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "collection-list-grid",
-        "heading": "Shop by collection",
-        "collectionsPicker": "",
-        "cardsLayoutType": "grid",
-        "carouselOnMobile": false,
-        "columns": 3,
-        "mobileColumns": "2",
-        "horizontalGap": 8,
-        "verticalGap": 8,
-        "sectionWidth": "page",
-        "layoutGap": 12,
-        "colorScheme": "scheme-1",
-        "paddingTop": 48,
-        "paddingBottom": 48,
-        "customCss": ""
-      },
-      "blocks": {
-        "tile_1": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "folded-shirts",
-            "imageUrl": ""
-          }
-        },
-        "tile_2": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanger-shirts",
-            "imageUrl": ""
-          }
-        },
-        "tile_3": {
-          "type": "collection-tile",
-          "settings": {
-            "title": "Collection title",
-            "collectionHandle": "",
-            "href": "/collections/all",
-            "illustrationVariant": "hanging-sweaters",
-            "imageUrl": ""
-          }
-        }
-      },
-      "block_order": [
-        "tile_1",
-        "tile_2",
-        "tile_3"
-      ]
-    },
-    "layered_slideshow": {
-      "id": "layered_slideshow",
-      "type": "layered-slideshow",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "layered-slideshow",
-        "sectionWidth": "page",
-        "height": "medium",
-        "cornerRadius": 0,
-        "borderThickness": 1,
-        "dropShadow": false,
-        "colorScheme": "scheme-1",
-        "paddingTop": 40,
-        "paddingBottom": 40,
-        "customCss": ""
-      },
-      "blocks": {
-        "slide_1": {
-          "type": "slideshow-slide",
-          "settings": {
-            "title": "New arrivals",
-            "body": "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
-            "buttonLabel": "Shop now",
-            "buttonHref": "/collections/all",
-            "imageUrl": "",
-            "peekVariant": "figure"
-          }
-        },
-        "slide_2": {
-          "type": "slideshow-slide",
-          "settings": {
-            "title": "Bestsellers",
-            "body": "Our most-loved pieces, back in stock for a limited time.",
-            "buttonLabel": "Shop now",
-            "buttonHref": "/collections/all",
-            "imageUrl": "",
-            "peekVariant": "landscape"
-          }
-        }
-      },
-      "block_order": [
-        "slide_1",
-        "slide_2"
-      ]
-    },
-    "slideshow_full_frame": {
-      "id": "slideshow_full_frame",
-      "type": "slideshow-full-frame",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "slideshow-full-frame",
-        "sectionLayout": "full-frame",
-        "sectionWidth": "full",
-        "mediaHeight": "medium",
-        "contentPosition": "on-media",
-        "colorScheme": "scheme-1",
-        "navigationIcon": "large-arrows",
-        "navigationIconBackground": "none",
-        "pagination": "dots",
-        "autoRotate": false,
-        "paddingTop": 0,
-        "paddingBottom": 0,
-        "customCss": ""
-      },
-      "blocks": {
-        "slide_1": {
-          "type": "slideshow-slide",
-          "settings": {
-            "title": "New arrivals",
-            "body": "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
-            "buttonLabel": "Shop now",
-            "buttonHref": "/collections/all",
-            "imageUrl": "",
-            "peekVariant": "landscape"
-          }
-        },
-        "slide_2": {
-          "type": "slideshow-slide",
-          "settings": {
-            "title": "Bestsellers",
-            "body": "Our most-loved pieces, back in stock for a limited time.",
-            "buttonLabel": "Shop now",
-            "buttonHref": "/collections/all",
-            "imageUrl": "",
-            "peekVariant": "landscape"
-          }
-        }
-      },
-      "block_order": [
-        "slide_1",
-        "slide_2"
-      ]
-    },
-    "slideshow_inset": {
-      "id": "slideshow_inset",
-      "type": "slideshow-inset",
-      "enabled": true,
-      "settings": {
-        "catalogVariant": "slideshow-inset",
-        "sectionLayout": "with-hints",
-        "fullWidthOnMobile": false,
-        "gap": 18,
-        "cornerRadius": 20,
-        "mediaHeight": "medium",
-        "contentPosition": "below-media",
-        "colorScheme": "scheme-1",
-        "navigationIcon": "large-arrows",
-        "navigationIconBackground": "none",
-        "pagination": "none",
-        "paddingTop": 0,
-        "paddingBottom": 0,
-        "customCss": ""
-      },
-      "blocks": {
-        "slide_1": {
-          "type": "slideshow-slide",
-          "settings": {
-            "title": "New arrivals",
-            "body": "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
-            "buttonLabel": "Shop now",
-            "buttonHref": "/collections/all",
-            "imageUrl": "",
-            "peekVariant": "landscape"
-          }
-        },
-        "slide_2": {
-          "type": "slideshow-slide",
-          "settings": {
-            "title": "Bestsellers",
-            "body": "Our most-loved pieces, back in stock for a limited time.",
-            "buttonLabel": "Shop now",
-            "buttonHref": "/collections/all",
-            "imageUrl": "",
-            "peekVariant": "landscape"
-          }
-        }
-      },
-      "block_order": [
-        "slide_1",
-        "slide_2"
+        "brand",
+        "menu_main",
+        "menu_help",
+        "menu_collections",
+        "bottom_links"
       ]
     }
   },
   "templates": {
     "404": {
-      "order": [
-        "not_found_main"
-      ],
-      "sections": {
-        "not_found_main": {
-          "type": "not-found-main",
-          "enabled": true,
-          "settings": {
-            "title": "Page not found",
-            "message": "The page you requested could not be found.",
-            "homeLabel": "Continue shopping",
-            "collectionsLabel": "Browse collections",
-            "showCollectionsLink": true
-          }
-        }
-      }
+      "sections": {},
+      "order": []
     },
     "index": {
-      "name": "Home page",
-      "sections": {
-        "hero_main": {
-          "type": "hero",
-          "enabled": false,
-          "settings": {
-            "media1Type": "image",
-            "media1ImageUrl": "",
-            "media2Type": "image",
-            "media2ImageUrl": "",
-            "mobileStackMedia": false,
-            "mobileDifferentMedia": false,
-            "mobileImageUrl": "",
-            "sectionLink": "",
-            "sectionLinkNewTab": false,
-            "direction": "vertical",
-            "alignTextBaseline": true,
-            "layoutAlignment": "left",
-            "position": "left",
-            "layoutGap": 16,
-            "sectionWidth": "full",
-            "height": "small",
-            "colorScheme": "scheme-6",
-            "mediaOverlay": true,
-            "overlayColor": "#0f1f24aa",
-            "overlayStyle": "gradient",
-            "blurredReflection": false,
-            "paddingTop": 72,
-            "paddingBottom": 72,
-            "customCss": "",
-            "title": "Made for the everyday edit",
-            "headingWidth": "fit",
-            "headingMaxWidth": "normal",
-            "headingTypographyPreset": "heading-1",
-            "headingColor": "heading",
-            "headingBackgroundEnabled": false,
-            "headingPaddingTop": 0,
-            "headingPaddingBottom": 0,
-            "headingPaddingLeft": 0,
-            "headingPaddingRight": 0,
-            "eyebrow": "Horizon",
-            "subtitle": "Quiet materials, considered cuts, and pieces that earn their place.",
-            "overlayGradientDirection": "up",
-            "textAlign": "left",
-            "minHeight": 640,
-            "backgroundTone": "gradient",
-            "fullWidth": false,
-            "overlayOpacity": 0.35
-          },
-          "settings_field_order": [
-            "templates.index.sections.hero_main.settings.eyebrow",
-            "templates.index.sections.hero_main.settings.title",
-            "templates.index.sections.hero_main.settings.subtitle"
-          ],
-          "blocks": {
-            "primary_button": {
-              "type": "button",
-              "settings": {
-                "label": "Shop the collection",
-                "href": "/products",
-                "openInNewTab": false,
-                "buttonStyle": "primary",
-                "desktopWidth": "fit",
-                "mobileWidth": "fit",
-                "ariaLabel": ""
-              },
-              "settings_field_order": [
-                "templates.index.sections.hero_main.blocks.primary_button.settings.label",
-                "templates.index.sections.hero_main.blocks.primary_button.settings.href"
-              ]
-            },
-            "secondary_button": {
-              "type": "button",
-              "settings": {
-                "label": "Browse looks",
-                "href": "/collections",
-                "openInNewTab": false,
-                "buttonStyle": "secondary",
-                "desktopWidth": "fit",
-                "mobileWidth": "fit",
-                "ariaLabel": ""
-              },
-              "settings_field_order": [
-                "templates.index.sections.hero_main.blocks.secondary_button.settings.label",
-                "templates.index.sections.hero_main.blocks.secondary_button.settings.href"
-              ]
-            }
-          },
-          "block_order": [
-            "heading",
-            "primary_button"
-          ]
-        },
-        "featured_collection": {
-          "type": "featured-collection",
-          "enabled": false,
-          "settings": {
-            "collectionHandle": "products",
-            "layoutType": "grid",
-            "carouselOnMobile": false,
-            "productsToShow": 4,
-            "columns": 4,
-            "mobileColumns": "2",
-            "horizontalGap": 24,
-            "verticalGap": 24,
-            "sectionWidth": "page",
-            "alignment": "left",
-            "sectionGap": 28,
-            "colorScheme": "scheme-1",
-            "paddingTop": 72,
-            "paddingBottom": 72,
-            "customCss": "",
-            "subtitle": "New and noted",
-            "showRating": false,
-            "emptyMessage": "No products yet.",
-            "gap": 24,
-            "navIcon": "arrows",
-            "navIconBackground": "circle",
-            "catalogVariant": "featured-collection"
-          },
-          "settings_field_order": [
-            "templates.index.sections.featured_collection.settings.productsToShow"
-          ],
-          "blocks": {
-            "collection_header": {
-              "type": "collection-header",
-              "settings": {
-                "direction": "horizontal",
-                "verticalOnMobile": false,
-                "layoutAlignment": "left",
-                "position": "bottom",
-                "alignTextBaseline": true,
-                "layoutGap": 12,
-                "width": "fill",
-                "mobileWidth": "fill",
-                "height": "fit",
-                "inheritColorScheme": true,
-                "backgroundMedia": "none",
-                "backgroundImageUrl": "",
-                "borderStyle": "none",
-                "cornerRadius": 0,
-                "paddingTop": 0,
-                "paddingBottom": 0,
-                "paddingLeft": 0,
-                "paddingRight": 0,
-                "title": "Selected pieces",
-                "titleWidth": "fit",
-                "titleMaxWidth": "normal",
-                "titleTypographyPreset": "heading-2",
-                "titleColor": "text",
-                "titleBackgroundEnabled": false,
-                "titlePaddingTop": 0,
-                "titlePaddingBottom": 0,
-                "titlePaddingLeft": 0,
-                "titlePaddingRight": 0,
-                "viewAllLabel": "View all",
-                "viewAllHref": "/products",
-                "subtitle": ""
-              },
-              "nested_block_order": [
-                "collection_title",
-                "view_all_button"
-              ]
-            },
-            "product_card": {
-              "type": "product-card",
-              "settings": {
-                "verticalGap": 4,
-                "inheritColorScheme": true,
-                "borderStyle": "none",
-                "cornerRadius": 0,
-                "paddingTop": 0,
-                "paddingBottom": 0,
-                "paddingLeft": 0,
-                "paddingRight": 0,
-                "mediaAspectRatio": "1/1",
-                "mediaBorderStyle": "none",
-                "mediaCornerRadius": 0,
-                "mediaPaddingTop": 0,
-                "mediaPaddingBottom": 0,
-                "mediaPaddingLeft": 0,
-                "mediaPaddingRight": 0,
-                "productTitleWidth": "fill",
-                "productTitleMaxWidth": "normal",
-                "productTitleAlignment": "left",
-                "productTitleTypographyPreset": "body",
-                "productTitleBackgroundEnabled": false,
-                "productTitlePaddingTop": 4,
-                "productTitlePaddingBottom": 0,
-                "productTitlePaddingLeft": 0,
-                "productTitlePaddingRight": 0,
-                "priceShowSaleFirst": true,
-                "priceInstallments": false,
-                "priceTaxInfo": false,
-                "priceTypographyPreset": "body",
-                "priceWidth": "fill",
-                "priceAlignment": "left",
-                "priceColor": "text",
-                "pricePaddingTop": 0,
-                "pricePaddingBottom": 0,
-                "pricePaddingLeft": 0,
-                "pricePaddingRight": 0,
-                "showMedia": true,
-                "showTitle": true,
-                "showPrice": true
-              },
-              "nested_block_order": [
-                "media",
-                "product_title",
-                "price",
-                "quick_view",
-                "badge"
-              ],
-              "blocks": {
-                "quick_view": {
-                  "type": "quick-view",
-                  "settings": {
-                    "label": "Quick view",
-                    "show": true
-                  }
-                },
-                "badge": {
-                  "type": "badge",
-                  "settings": {
-                    "saleLabel": "Sale",
-                    "newLabel": "New"
-                  }
-                }
-              },
-              "block_order": [
-                "media",
-                "product_title",
-                "price",
-                "quick_view",
-                "badge"
-              ]
-            }
-          },
-          "block_order": [
-            "collection_header",
-            "product_card"
-          ]
-        },
-        "contact_form": {
-          "type": "contact-form",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "contact-form",
-            "title": "Contact us",
-            "namePlaceholder": "Name",
-            "emailPlaceholder": "Email",
-            "phonePlaceholder": "Phone",
-            "commentPlaceholder": "Comment",
-            "submitLabel": "Submit",
-            "direction": "vertical",
-            "layoutAlignment": "center",
-            "position": "center",
-            "layoutGap": 32,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 32,
-            "paddingBottom": 32,
-            "customCss": ""
-          }
-        },
-        "email_signup": {
-          "type": "email-signup",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "email-signup",
-            "title": "Stay in the loop",
-            "subtitle": "New drops, quiet notes, and early access — no noise.",
-            "placeholder": "Email address",
-            "direction": "vertical",
-            "layoutAlignment": "center",
-            "position": "center",
-            "layoutGap": 16,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 64,
-            "paddingBottom": 64,
-            "customCss": ""
-          }
-        },
-        "product_highlight": {
-          "type": "product-highlight",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "product-highlight",
-            "productId": "",
-            "productTitle": "Product title",
-            "price": "Rs. 19.99",
-            "productImageUrl": "",
-            "mediaPosition": "left",
-            "colorScheme": "scheme-3",
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "customCss": ""
-          }
-        },
-        "editorial": {
-          "type": "editorial",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "editorial",
-            "imageUrl": "",
-            "subheading": "Bestseller",
-            "heading": "Our signature product",
-            "description": "Made with care and unconditionally loved by our customers, this signature bestseller exceeds all expectations.",
-            "linkLabel": "Shop now",
-            "linkUrl": "/products",
-            "mediaPosition": "left",
-            "mediaWidth": "medium",
-            "mediaHeight": "medium",
-            "sectionWidth": "page",
-            "colorScheme": "scheme-4",
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "customCss": ""
-          }
-        },
-        "editorial_jumbo": {
-          "type": "editorial-jumbo",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "editorial-jumbo",
-            "headline": "UP THE ANTE",
-            "imageUrl": "",
-            "mediaPosition": "right",
-            "mediaWidth": "medium",
-            "mediaHeight": "medium",
-            "sectionWidth": "page",
-            "colorScheme": "scheme-4",
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "customCss": ""
-          }
-        },
-        "image_compare": {
-          "type": "image-compare",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "image-compare",
-            "heading": "Find your perfect fit",
-            "subheading": "Discover the best of both worlds",
-            "button1Label": "View all",
-            "button1Url": "/collections",
-            "button2Label": "Shop now",
-            "button2Url": "/products",
-            "imageBeforeUrl": "",
-            "imageAfterUrl": "",
-            "direction": "horizontal",
-            "verticalOnMobile": false,
-            "layoutAlignment": "space-between",
-            "position": "center",
-            "layoutGap": 46,
-            "sectionWidth": "page",
-            "height": "small",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 40,
-            "paddingBottom": 40,
-            "customCss": ""
-          }
-        },
-        "image_with_text": {
-          "type": "image-with-text",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "image-with-text",
-            "imageUrl": "",
-            "heading": "Designed to last the season",
-            "description": "Horizon favors calm color, honest texture, and silhouettes that move with you — from first light to last call.",
-            "buttonLabel": "Discover the story",
-            "buttonUrl": "/collections",
-            "direction": "horizontal",
-            "verticalOnMobile": false,
-            "layoutAlignment": "left",
-            "position": "center",
-            "layoutGap": 32,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 72,
-            "paddingBottom": 72,
-            "customCss": ""
-          }
-        },
-        "divider": {
-          "type": "divider",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "divider",
-            "colorScheme": "scheme-1",
-            "sectionWidth": "page",
-            "thickness": 1,
-            "length": 100,
-            "paddingTop": 16,
-            "paddingBottom": 16,
-            "customCss": ""
-          }
-        },
-        "custom_section": {
-          "type": "custom-section",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "custom-section",
-            "direction": "vertical",
-            "layoutAlignment": "left",
-            "position": "center",
-            "layoutGap": 12,
-            "sectionWidth": "page",
-            "height": "small",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "customCss": ""
-          },
-          "blocks": {},
-          "block_order": []
-        },
-        "storytelling_logo": {
-          "type": "storytelling-logo",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "logo",
-            "logoText": "My Store",
-            "logoImageUrl": "",
-            "logoLinkUrl": "/",
-            "logoFont": "heading",
-            "sizeUnit": "pixel",
-            "pixelHeight": 48,
-            "percentWidth": 100,
-            "customMobileSize": false,
-            "mobileSizeUnit": "percent",
-            "mobilePercentWidth": 100,
-            "mobilePixelHeight": 120,
-            "sectionWidth": "page",
-            "layoutAlignment": "center",
-            "colorScheme": "scheme-1",
-            "paddingTop": 32,
-            "paddingBottom": 32,
-            "defaultLogoUrl": "",
-            "customCss": ""
-          }
-        },
-        "storytelling_video": {
-          "type": "storytelling-video",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "video",
-            "videoSource": "url",
-            "videoUrl": "",
-            "coverImageUrl": "",
-            "caption": "Take a look behind the scenes of our latest product launch.",
-            "linkLabel": "Discover the collection",
-            "linkUrl": "/collections",
-            "direction": "vertical",
-            "layoutAlignment": "left",
-            "position": "center",
-            "layoutGap": 16,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 32,
-            "paddingBottom": 32,
-            "customCss": ""
-          }
-        },
-        "faq_section": {
-          "type": "faq",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "faq",
-            "heading": "Frequently asked questions",
-            "openFirstItem": false,
-            "direction": "vertical",
-            "layoutAlignment": "left",
-            "position": "center",
-            "layoutGap": 32,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "faq_1": {
-              "type": "faq-item",
-              "settings": {
-                "question": "What is the return policy?",
-                "answer": "We offer a 30-day return policy on most items. Products must be unused and in original packaging."
-              }
-            },
-            "faq_2": {
-              "type": "faq-item",
-              "settings": {
-                "question": "Are any purchases final sale?",
-                "answer": "Yes, items marked final sale cannot be returned or exchanged."
-              }
-            },
-            "faq_3": {
-              "type": "faq-item",
-              "settings": {
-                "question": "When will I get my order?",
-                "answer": "Most orders ship within 2–3 business days. Delivery times vary by location."
-              }
-            },
-            "faq_4": {
-              "type": "faq-item",
-              "settings": {
-                "question": "Where are your products manufactured?",
-                "answer": "Our products are designed in-house and manufactured with trusted partners worldwide."
-              }
-            },
-            "faq_5": {
-              "type": "faq-item",
-              "settings": {
-                "question": "How much does shipping cost?",
-                "answer": "Shipping is calculated at checkout. Free shipping may apply on qualifying orders."
-              }
-            }
-          },
-          "block_order": [
-            "faq_1",
-            "faq_2",
-            "faq_3",
-            "faq_4",
-            "faq_5"
-          ]
-        },
-        "icons_with_text": {
-          "type": "icons-with-text",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "icons-with-text",
-            "direction": "horizontal",
-            "verticalOnMobile": false,
-            "layoutAlignment": "left",
-            "position": "center",
-            "layoutGap": 16,
-            "columns": 3,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "icon_1": {
-              "type": "icon-with-text-item",
-              "settings": {
-                "icon": "eye",
-                "heading": "Intentional design",
-                "text": "Everything we do starts with why"
-              }
-            },
-            "icon_2": {
-              "type": "icon-with-text-item",
-              "settings": {
-                "icon": "heart",
-                "heading": "Made with care",
-                "text": "We believe in building better"
-              }
-            },
-            "icon_3": {
-              "type": "icon-with-text-item",
-              "settings": {
-                "icon": "person",
-                "heading": "A team with a goal",
-                "text": "Real people making great products"
-              }
-            }
-          },
-          "block_order": [
-            "icon_1",
-            "icon_2",
-            "icon_3"
-          ]
-        },
-        "multicolumn_section": {
-          "type": "multicolumn",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "multicolumn",
-            "direction": "horizontal",
-            "verticalOnMobile": true,
-            "layoutAlignment": "left",
-            "position": "top",
-            "layoutGap": 16,
-            "columns": 3,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "column_1": {
-              "type": "multicolumn-item",
-              "settings": {
-                "heading": "Intentional design",
-                "text": "We create with intention. Our products solve real problems with clean design and honest materials."
-              }
-            },
-            "column_2": {
-              "type": "multicolumn-item",
-              "settings": {
-                "heading": "Quality first",
-                "text": "We obsess over the details and strive to deliver the best products at the best prices, every time."
-              }
-            },
-            "column_3": {
-              "type": "multicolumn-item",
-              "settings": {
-                "heading": "Customer care",
-                "text": "We're always on your side: keeping our loyal customers happy is our top priority and number one goal."
-              }
-            }
-          },
-          "block_order": [
-            "column_1",
-            "column_2",
-            "column_3"
-          ]
-        },
-        "pull_quote_section": {
-          "type": "pull-quote",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "pull-quote",
-            "quote": "At the heart of every product lies a unique story, driven by our passion for quality and innovation. Each item enhances your everyday life and sparks joy.",
-            "linkLabel": "Shop now",
-            "linkUrl": "/collections",
-            "direction": "vertical",
-            "layoutAlignment": "center",
-            "position": "center",
-            "layoutGap": 16,
-            "sectionWidth": "page",
-            "height": "auto",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 64,
-            "paddingBottom": 64,
-            "customCss": ""
-          }
-        },
-        "rich_text_section": {
-          "type": "rich-text",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "rich-text",
-            "heading": "New arrivals",
-            "text": "We make things that work better and last longer. Our products solve real problems with clean design and honest materials.",
-            "buttonLabel": "Shop now",
-            "buttonUrl": "/collections",
-            "direction": "vertical",
-            "layoutAlignment": "center",
-            "position": "center",
-            "layoutGap": 25,
-            "sectionWidth": "page",
-            "height": "small",
-            "colorScheme": "scheme-1",
-            "backgroundMedia": "none",
-            "backgroundImageUrl": "",
-            "borderStyle": "none",
-            "cornerRadius": 0,
-            "backgroundOverlay": false,
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          }
-        },
-        "text_marquee_section": {
-          "type": "text-marquee",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "text-marquee",
-            "text": "We make things that work better and last longer.",
-            "motionDirection": "forward",
-            "colorScheme": "scheme-1",
-            "paddingTop": 24,
-            "paddingBottom": 24,
-            "layoutGap": 24,
-            "customCss": ""
-          }
-        },
-        "blog_posts_carousel": {
-          "type": "blog-posts-carousel",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "blog-posts-carousel",
-            "heading": "Blog posts",
-            "blogHandle": "",
-            "layoutType": "carousel",
-            "postCount": 5,
-            "columns": 3,
-            "mobileCardSize": "1",
-            "horizontalGap": 8,
-            "navIcon": "arrows",
-            "navIconBackground": "circle",
-            "sectionWidth": "page",
-            "layoutGap": 12,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "post_1": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "sewing",
-                "title": "Title",
-                "date": "Jan 12",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_2": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "thread",
-                "title": "Title",
-                "date": "Jan 10",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_3": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "boxes",
-                "title": "Title",
-                "date": "Jan 8",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_4": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "thread",
-                "title": "Title",
-                "date": "Jan 5",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_5": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "sewing",
-                "title": "Title",
-                "date": "Jan 2",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "post_1",
-            "post_2",
-            "post_3",
-            "post_4",
-            "post_5"
-          ]
-        },
-        "blog_posts_editorial": {
-          "type": "blog-posts-editorial",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "blog-posts-editorial",
-            "heading": "Blog posts",
-            "blogHandle": "",
-            "layoutType": "editorial",
-            "carouselOnMobile": false,
-            "postCount": 3,
-            "sectionWidth": "page",
-            "layoutGap": 64,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "post_1": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "thread",
-                "title": "Title",
-                "date": "Jan 12",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_2": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "sewing",
-                "title": "Title",
-                "date": "Jan 10",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_3": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "boxes",
-                "title": "Title",
-                "date": "Jan 8",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "post_1",
-            "post_2",
-            "post_3"
-          ]
-        },
-        "blog_posts_grid": {
-          "type": "blog-posts-grid",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "blog-posts-grid",
-            "heading": "Blog posts",
-            "blogHandle": "",
-            "layoutType": "grid",
-            "carouselOnMobile": false,
-            "postCount": 3,
-            "columns": 3,
-            "mobileColumns": "2",
-            "horizontalGap": 8,
-            "verticalGap": 8,
-            "sectionWidth": "page",
-            "layoutGap": 12,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "post_1": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "sewing",
-                "title": "Title",
-                "date": "Jan 12",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_2": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "thread",
-                "title": "Title",
-                "date": "Jan 12",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            },
-            "post_3": {
-              "type": "blog-post-card",
-              "settings": {
-                "illustrationVariant": "boxes",
-                "title": "Title",
-                "date": "Jan 12",
-                "author": "Author",
-                "excerpt": "An excerpt of your blog post's content",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "post_1",
-            "post_2",
-            "post_3"
-          ]
-        },
-        "storytelling_carousel": {
-          "type": "storytelling-carousel",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "storytelling-carousel",
-            "heading": "Discover elevated design",
-            "columns": 3,
-            "mobileColumns": "1",
-            "sectionWidth": "page",
-            "horizontalGap": 12,
-            "colorScheme": "scheme-1",
-            "navIcon": "arrows",
-            "navIconBackground": "none",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "slide_1": {
-              "type": "carousel-slide",
-              "settings": {
-                "title": "Artistry in action",
-                "description": "Made with care and unconditionally loved by our customers.",
-                "imageUrl": ""
-              }
-            },
-            "slide_2": {
-              "type": "carousel-slide",
-              "settings": {
-                "title": "Uncompromising quality",
-                "description": "Made with care and unconditionally loved by our customers.",
-                "imageUrl": ""
-              }
-            },
-            "slide_3": {
-              "type": "carousel-slide",
-              "settings": {
-                "title": "Made to last",
-                "description": "Made with care and unconditionally loved by our customers.",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "slide_1",
-            "slide_2",
-            "slide_3"
-          ]
-        },
-        "product_hotspots": {
-          "type": "product-hotspots",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "product-hotspots",
-            "heading": "Shop the look",
-            "imageUrl": "",
-            "mediaOverlay": false,
-            "sectionWidth": "page",
-            "sectionHeight": "auto",
-            "hotspotColor": "#FFFFFF57",
-            "innerColor": "#FFFFFF",
-            "colorScheme": "scheme-1",
-            "popoverGap": 8,
-            "titleTypography": "default",
-            "priceTypography": "default",
-            "paddingTop": 40,
-            "paddingBottom": 40,
-            "customCss": ""
-          },
-          "blocks": {
-            "hotspot_1": {
-              "type": "product-hotspot",
-              "settings": {
-                "positionX": 50,
-                "positionY": 10,
-                "productId": "",
-                "productTitle": "Product title",
-                "price": "Rs. 19.99"
-              }
-            },
-            "hotspot_2": {
-              "type": "product-hotspot",
-              "settings": {
-                "positionX": 22,
-                "positionY": 38,
-                "productId": "",
-                "productTitle": "Product title",
-                "price": "Rs. 19.99"
-              }
-            },
-            "hotspot_3": {
-              "type": "product-hotspot",
-              "settings": {
-                "positionX": 58,
-                "positionY": 55,
-                "productId": "",
-                "productTitle": "Product title",
-                "price": "Rs. 19.99"
-              }
-            },
-            "hotspot_4": {
-              "type": "product-hotspot",
-              "settings": {
-                "positionX": 35,
-                "positionY": 50,
-                "productId": "",
-                "productTitle": "Product title",
-                "price": "Rs. 19.99"
-              }
-            },
-            "hotspot_5": {
-              "type": "product-hotspot",
-              "settings": {
-                "positionX": 76,
-                "positionY": 48,
-                "productId": "",
-                "productTitle": "Product title",
-                "price": "Rs. 19.99"
-              }
-            }
-          },
-          "block_order": [
-            "hotspot_1",
-            "hotspot_2",
-            "hotspot_3",
-            "hotspot_4",
-            "hotspot_5"
-          ]
-        },
-        "recommended_products": {
-          "type": "recommended-products",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "recommended-products",
-            "heading": "Related products",
-            "productId": "",
-            "recommendationType": "related",
-            "cardStyle": "grid",
-            "carouselOnMobile": false,
-            "productCount": 4,
-            "columns": 4,
-            "mobileColumns": "2",
-            "horizontalGap": 12,
-            "verticalGap": 24,
-            "sectionWidth": "page",
-            "layoutGap": 28,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "product_1": {
-              "type": "recommended-product-card",
-              "settings": {
-                "shirtColor": "#d45454",
-                "withSun": false,
-                "productTitle": "Product title",
-                "price": "Rs. 19.99",
-                "productId": ""
-              }
-            },
-            "product_2": {
-              "type": "recommended-product-card",
-              "settings": {
-                "shirtColor": "#5a9a6a",
-                "withSun": false,
-                "productTitle": "Product title",
-                "price": "Rs. 19.99",
-                "productId": ""
-              }
-            },
-            "product_3": {
-              "type": "recommended-product-card",
-              "settings": {
-                "shirtColor": "#4b5563",
-                "withSun": true,
-                "productTitle": "Product title",
-                "price": "Rs. 19.99",
-                "productId": ""
-              }
-            },
-            "product_4": {
-              "type": "recommended-product-card",
-              "settings": {
-                "shirtColor": "#d45454",
-                "withSun": false,
-                "productTitle": "Product title",
-                "price": "Rs. 19.99",
-                "productId": ""
-              }
-            }
-          },
-          "block_order": [
-            "product_1",
-            "product_2",
-            "product_3",
-            "product_4"
-          ]
-        },
-        "collection_links_spotlight": {
-          "type": "collection-links-spotlight",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "collection-links-spotlight",
-            "collectionsPicker": "",
-            "layoutMode": "spotlight",
-            "sectionWidth": "page",
-            "alignment": "left",
-            "imagePosition": "right",
-            "imageUrl": "",
-            "colorScheme": "scheme-1",
-            "paddingTop": 40,
-            "paddingBottom": 40,
-            "customCss": ""
-          },
-          "blocks": {
-            "link_1": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            },
-            "link_2": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            },
-            "link_3": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            },
-            "link_4": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            }
-          },
-          "block_order": [
-            "link_1",
-            "link_2",
-            "link_3",
-            "link_4"
-          ]
-        },
-        "collection_links_text": {
-          "type": "collection-links-spotlight",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "collection-links-text",
-            "collectionsPicker": "",
-            "layoutMode": "text",
-            "sectionWidth": "page",
-            "alignment": "center",
-            "imagePosition": "right",
-            "imageUrl": "",
-            "colorScheme": "scheme-1",
-            "paddingTop": 40,
-            "paddingBottom": 40,
-            "customCss": ""
-          },
-          "blocks": {
-            "link_1": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            },
-            "link_2": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            },
-            "link_3": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            },
-            "link_4": {
-              "type": "collection-link",
-              "settings": {
-                "title": "Collection title",
-                "productCount": 5,
-                "collectionHandle": "",
-                "href": "/collections/all"
-              }
-            }
-          },
-          "block_order": [
-            "link_1",
-            "link_2",
-            "link_3",
-            "link_4"
-          ]
-        },
-        "collection_list_bento": {
-          "type": "collection-list-bento",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "collection-list-bento",
-            "heading": "Shop by collection",
-            "collectionsPicker": "",
-            "cardsLayoutType": "bento",
-            "carouselOnMobile": false,
-            "cardsGap": 8,
-            "sectionWidth": "page",
-            "layoutGap": 12,
-            "colorScheme": "scheme-1",
-            "paddingTop": 24,
-            "paddingBottom": 24,
-            "customCss": ""
-          },
-          "blocks": {
-            "tile_1": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "folded-shirts",
-                "columnSpan": 1,
-                "imageUrl": ""
-              }
-            },
-            "tile_2": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanger-shirts",
-                "columnSpan": 2,
-                "imageUrl": ""
-              }
-            },
-            "tile_3": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanging-sweaters",
-                "columnSpan": 2,
-                "imageUrl": ""
-              }
-            },
-            "tile_4": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "clothing-rack",
-                "columnSpan": 1,
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "tile_1",
-            "tile_2",
-            "tile_3",
-            "tile_4"
-          ]
-        },
-        "collection_list_carousel": {
-          "type": "collection-list-carousel",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "collection-list-carousel",
-            "heading": "Shop by collection",
-            "collectionsPicker": "",
-            "cardsLayoutType": "carousel",
-            "columns": 3,
-            "mobileColumns": "1",
-            "horizontalGap": 8,
-            "navigationIcon": "arrows",
-            "navigationIconBackground": "circle",
-            "sectionWidth": "page",
-            "layoutGap": 12,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "tile_1": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "folded-shirts",
-                "imageUrl": ""
-              }
-            },
-            "tile_2": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanger-shirts",
-                "imageUrl": ""
-              }
-            },
-            "tile_3": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanging-sweaters",
-                "imageUrl": ""
-              }
-            },
-            "tile_4": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "clothing-rack",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "tile_1",
-            "tile_2",
-            "tile_3",
-            "tile_4"
-          ]
-        },
-        "collection_list_editorial": {
-          "type": "collection-list-editorial",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "collection-list-editorial",
-            "heading": "Shop by collection",
-            "collectionsPicker": "",
-            "cardsLayoutType": "editorial",
-            "carouselOnMobile": false,
-            "collectionCount": 4,
-            "sectionWidth": "page",
-            "layoutGap": 64,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "tile_1": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "folded-shirts",
-                "imageUrl": ""
-              }
-            },
-            "tile_2": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanger-shirts",
-                "imageUrl": ""
-              }
-            },
-            "tile_3": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanging-sweaters",
-                "imageUrl": ""
-              }
-            },
-            "tile_4": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "clothing-rack",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "tile_1",
-            "tile_2",
-            "tile_3",
-            "tile_4"
-          ]
-        },
-        "collection_list_grid": {
-          "type": "collection-list-grid",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "collection-list-grid",
-            "heading": "Shop by collection",
-            "collectionsPicker": "",
-            "cardsLayoutType": "grid",
-            "carouselOnMobile": false,
-            "columns": 3,
-            "mobileColumns": "2",
-            "horizontalGap": 8,
-            "verticalGap": 8,
-            "sectionWidth": "page",
-            "layoutGap": 12,
-            "colorScheme": "scheme-1",
-            "paddingTop": 48,
-            "paddingBottom": 48,
-            "customCss": ""
-          },
-          "blocks": {
-            "tile_1": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "folded-shirts",
-                "imageUrl": ""
-              }
-            },
-            "tile_2": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanger-shirts",
-                "imageUrl": ""
-              }
-            },
-            "tile_3": {
-              "type": "collection-tile",
-              "settings": {
-                "title": "Collection title",
-                "collectionHandle": "",
-                "href": "/collections/all",
-                "illustrationVariant": "hanging-sweaters",
-                "imageUrl": ""
-              }
-            }
-          },
-          "block_order": [
-            "tile_1",
-            "tile_2",
-            "tile_3"
-          ]
-        },
-        "layered_slideshow": {
-          "type": "layered-slideshow",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "layered-slideshow",
-            "sectionWidth": "page",
-            "height": "medium",
-            "cornerRadius": 0,
-            "borderThickness": 1,
-            "dropShadow": false,
-            "colorScheme": "scheme-1",
-            "paddingTop": 40,
-            "paddingBottom": 40,
-            "customCss": ""
-          },
-          "blocks": {
-            "slide_1": {
-              "type": "slideshow-slide",
-              "settings": {
-                "title": "New arrivals",
-                "body": "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
-                "buttonLabel": "Shop now",
-                "buttonHref": "/collections/all",
-                "imageUrl": "",
-                "peekVariant": "figure"
-              }
-            },
-            "slide_2": {
-              "type": "slideshow-slide",
-              "settings": {
-                "title": "Bestsellers",
-                "body": "Our most-loved pieces, back in stock for a limited time.",
-                "buttonLabel": "Shop now",
-                "buttonHref": "/collections/all",
-                "imageUrl": "",
-                "peekVariant": "landscape"
-              }
-            }
-          },
-          "block_order": [
-            "slide_1",
-            "slide_2"
-          ]
-        },
-        "slideshow_full_frame": {
-          "type": "slideshow-full-frame",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "slideshow-full-frame",
-            "sectionLayout": "full-frame",
-            "sectionWidth": "full",
-            "mediaHeight": "medium",
-            "contentPosition": "on-media",
-            "colorScheme": "scheme-1",
-            "navigationIcon": "large-arrows",
-            "navigationIconBackground": "none",
-            "pagination": "dots",
-            "autoRotate": false,
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "customCss": ""
-          },
-          "blocks": {
-            "slide_1": {
-              "type": "slideshow-slide",
-              "settings": {
-                "title": "New arrivals",
-                "body": "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
-                "buttonLabel": "Shop now",
-                "buttonHref": "/collections/all",
-                "imageUrl": "",
-                "peekVariant": "landscape"
-              }
-            },
-            "slide_2": {
-              "type": "slideshow-slide",
-              "settings": {
-                "title": "Bestsellers",
-                "body": "Our most-loved pieces, back in stock for a limited time.",
-                "buttonLabel": "Shop now",
-                "buttonHref": "/collections/all",
-                "imageUrl": "",
-                "peekVariant": "landscape"
-              }
-            }
-          },
-          "block_order": [
-            "slide_1",
-            "slide_2"
-          ]
-        },
-        "slideshow_inset": {
-          "type": "slideshow-inset",
-          "enabled": false,
-          "settings": {
-            "catalogVariant": "slideshow-inset",
-            "sectionLayout": "with-hints",
-            "fullWidthOnMobile": false,
-            "gap": 18,
-            "cornerRadius": 20,
-            "mediaHeight": "medium",
-            "contentPosition": "below-media",
-            "colorScheme": "scheme-1",
-            "navigationIcon": "large-arrows",
-            "navigationIconBackground": "none",
-            "pagination": "none",
-            "paddingTop": 0,
-            "paddingBottom": 0,
-            "customCss": ""
-          },
-          "blocks": {
-            "slide_1": {
-              "type": "slideshow-slide",
-              "settings": {
-                "title": "New arrivals",
-                "body": "Introducing our latest products, made especially for the season. Shop your favorites before they're gone!",
-                "buttonLabel": "Shop now",
-                "buttonHref": "/collections/all",
-                "imageUrl": "",
-                "peekVariant": "landscape"
-              }
-            },
-            "slide_2": {
-              "type": "slideshow-slide",
-              "settings": {
-                "title": "Bestsellers",
-                "body": "Our most-loved pieces, back in stock for a limited time.",
-                "buttonLabel": "Shop now",
-                "buttonHref": "/collections/all",
-                "imageUrl": "",
-                "peekVariant": "landscape"
-              }
-            }
-          },
-          "block_order": [
-            "slide_1",
-            "slide_2"
-          ]
-        },
-        "watch_hero": {
-          "type": "watch-hero",
-          "enabled": true,
-          "settings": {
-            "slide1DesktopImageUrl": "",
-            "slide1MobileImageUrl": "",
-            "slide1Eyebrow": "Timex Atelier",
-            "slide1Title": "A Legacy Of Modernity",
-            "slide1Tagline": "A Modern Time Traveller has Landed",
-            "slide2DesktopImageUrl": "",
-            "slide2MobileImageUrl": "",
-            "slide2Eyebrow": "Dominator Series",
-            "slide2Title": "Engineered For The Edge",
-            "slide2Tagline": "Precision Meets Fearless Design",
-            "slide3DesktopImageUrl": "",
-            "slide3MobileImageUrl": "",
-            "slide3Eyebrow": "Studio Collection",
-            "slide3Title": "Crafted In Silence",
-            "slide3Tagline": "Where Light Meets Mechanical Art",
-            "slide4DesktopImageUrl": "",
-            "slide4MobileImageUrl": "",
-            "slide4Eyebrow": "Skeleton Edit",
-            "slide4Title": "Time Unveiled",
-            "slide4Tagline": "Every Gear Tells A Story",
-            "autoplayMs": 8000,
-            "ctaLabel": "Shop Now",
-            "ctaHref": "/collections/all",
-            "paddingTop": 0,
-            "paddingBottom": 0
-          },
-          "settings_field_order": [
-            "slide1DesktopImageUrl",
-            "slide1MobileImageUrl",
-            "slide1Eyebrow",
-            "slide1Title",
-            "slide1Tagline",
-            "slide2DesktopImageUrl",
-            "slide2MobileImageUrl",
-            "slide2Eyebrow",
-            "slide2Title",
-            "slide2Tagline",
-            "slide3DesktopImageUrl",
-            "slide3MobileImageUrl",
-            "slide3Eyebrow",
-            "slide3Title",
-            "slide3Tagline",
-            "slide4DesktopImageUrl",
-            "slide4MobileImageUrl",
-            "slide4Eyebrow",
-            "slide4Title",
-            "slide4Tagline"
-          ],
-          "blocks": {
-            "slide_1": {
-              "type": "watch-slide",
-              "enabled": true,
-              "settings": {}
-            },
-            "slide_2": {
-              "type": "watch-slide",
-              "enabled": true,
-              "settings": {}
-            },
-            "slide_3": {
-              "type": "watch-slide",
-              "enabled": true,
-              "settings": {}
-            },
-            "slide_4": {
-              "type": "watch-slide",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "slide_1",
-            "slide_2",
-            "slide_3",
-            "slide_4"
-          ],
-          "hasBlocks": true,
-          "label": "Watch hero"
-        },
-        "watch_category": {
-          "type": "watch-category",
-          "enabled": true,
-          "settings": {
-            "fallback1ImageUrl": "",
-            "fallback2ImageUrl": "",
-            "fallback3ImageUrl": "",
-            "fallback4ImageUrl": "",
-            "fallback5ImageUrl": "",
-            "fallback6ImageUrl": "",
-            "heading": "Shop",
-            "headingAccent": "The Legacy",
-            "subheading": "Collection",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "fallback1ImageUrl",
-            "fallback2ImageUrl",
-            "fallback3ImageUrl",
-            "fallback4ImageUrl",
-            "fallback5ImageUrl",
-            "fallback6ImageUrl"
-          ],
-          "blocks": {
-            "collection_1": {
-              "type": "watch-collection-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "collection_2": {
-              "type": "watch-collection-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "collection_3": {
-              "type": "watch-collection-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "collection_4": {
-              "type": "watch-collection-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "collection_5": {
-              "type": "watch-collection-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "collection_6": {
-              "type": "watch-collection-item",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "collection_1",
-            "collection_2",
-            "collection_3",
-            "collection_4",
-            "collection_5",
-            "collection_6"
-          ],
-          "hasBlocks": true,
-          "label": "Shop collections"
-        },
-        "watch_promo": {
-          "type": "watch-promo",
-          "enabled": true,
-          "settings": {
-            "himImageUrl": "",
-            "herImageUrl": "",
-            "heading": "Shop by style",
-            "himLabel": "Watches for him",
-            "herLabel": "Watches for her",
-            "himHref": "/collections/all",
-            "herHref": "/collections/all",
-            "paddingTop": 24,
-            "paddingBottom": 24
-          },
-          "settings_field_order": [
-            "himImageUrl",
-            "herImageUrl"
-          ],
-          "blocks": {
-            "promo_him": {
-              "type": "watch-promo-panel",
-              "enabled": true,
-              "settings": {}
-            },
-            "promo_her": {
-              "type": "watch-promo-panel",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "promo_him",
-            "promo_her"
-          ],
-          "hasBlocks": true,
-          "label": "Gender promo"
-        },
-        "watch_bestsellers": {
-          "type": "watch-bestsellers",
-          "enabled": true,
-          "settings": {
-            "backgroundImageUrl": "",
-            "card1PrimaryImageUrl": "",
-            "card1HoverImageUrl": "",
-            "card1Name": "Apollo III - Cadmium Yellow Silver Leather",
-            "card2PrimaryImageUrl": "",
-            "card2HoverImageUrl": "",
-            "card2Name": "Apollo III - Ivory Leather",
-            "card3PrimaryImageUrl": "",
-            "card3HoverImageUrl": "",
-            "card3Name": "Apollo III - Ice Blue",
-            "card4PrimaryImageUrl": "",
-            "card4HoverImageUrl": "",
-            "card4Name": "Apollo III - Wine Red",
-            "card5PrimaryImageUrl": "",
-            "card5HoverImageUrl": "",
-            "card5Name": "Apollo III - Emerald",
-            "card6PrimaryImageUrl": "",
-            "card6HoverImageUrl": "",
-            "card6Name": "Apollo III - Midnight",
-            "heading": "Our Icons at Upto 25% Off",
-            "ctaLabel": "Shop All Icons",
-            "ctaHref": "/collections/all",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "backgroundImageUrl",
-            "card1PrimaryImageUrl",
-            "card1HoverImageUrl",
-            "card1Name",
-            "card2PrimaryImageUrl",
-            "card2HoverImageUrl",
-            "card2Name",
-            "card3PrimaryImageUrl",
-            "card3HoverImageUrl",
-            "card3Name",
-            "card4PrimaryImageUrl",
-            "card4HoverImageUrl",
-            "card4Name",
-            "card5PrimaryImageUrl",
-            "card5HoverImageUrl",
-            "card5Name",
-            "card6PrimaryImageUrl",
-            "card6HoverImageUrl",
-            "card6Name"
-          ],
-          "blocks": {
-            "card_1": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_2": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_3": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_4": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_5": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_6": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "card_1",
-            "card_2",
-            "card_3",
-            "card_4",
-            "card_5",
-            "card_6"
-          ],
-          "hasBlocks": true,
-          "label": "Bestsellers"
-        },
-        "watch_signature": {
-          "type": "watch-signature",
-          "enabled": true,
-          "settings": {
-            "card1LifestyleImageUrl": "",
-            "card1ProductImageUrl": "",
-            "card1Label": "Urbane Watches",
-            "card2LifestyleImageUrl": "",
-            "card2ProductImageUrl": "",
-            "card2Label": "Bolt Watches",
-            "card3LifestyleImageUrl": "",
-            "card3ProductImageUrl": "",
-            "card3Label": "Dominator Watches",
-            "card4LifestyleImageUrl": "",
-            "card4ProductImageUrl": "",
-            "card4Label": "Gravitas Watches",
-            "heading": "Signature Edit",
-            "subheading": "Curated looks, crafted for every wrist.",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "card1LifestyleImageUrl",
-            "card1ProductImageUrl",
-            "card1Label",
-            "card2LifestyleImageUrl",
-            "card2ProductImageUrl",
-            "card2Label",
-            "card3LifestyleImageUrl",
-            "card3ProductImageUrl",
-            "card3Label",
-            "card4LifestyleImageUrl",
-            "card4ProductImageUrl",
-            "card4Label"
-          ],
-          "blocks": {
-            "card_1": {
-              "type": "watch-signature-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_2": {
-              "type": "watch-signature-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_3": {
-              "type": "watch-signature-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_4": {
-              "type": "watch-signature-card",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "card_1",
-            "card_2",
-            "card_3",
-            "card_4"
-          ],
-          "hasBlocks": true,
-          "label": "Signature edit"
-        },
-        "watch_banner": {
-          "type": "watch-banner",
-          "enabled": true,
-          "settings": {
-            "panel1DesktopImageUrl": "",
-            "panel1MobileImageUrl": "",
-            "panel2DesktopImageUrl": "",
-            "panel2MobileImageUrl": "",
-            "panel3DesktopImageUrl": "",
-            "panel3MobileImageUrl": "",
-            "paddingTop": 24,
-            "paddingBottom": 24
-          },
-          "settings_field_order": [
-            "panel1DesktopImageUrl",
-            "panel1MobileImageUrl",
-            "panel2DesktopImageUrl",
-            "panel2MobileImageUrl",
-            "panel3DesktopImageUrl",
-            "panel3MobileImageUrl"
-          ],
-          "blocks": {
-            "panel_1": {
-              "type": "watch-banner-panel",
-              "enabled": true,
-              "settings": {}
-            },
-            "panel_2": {
-              "type": "watch-banner-panel",
-              "enabled": true,
-              "settings": {}
-            },
-            "panel_3": {
-              "type": "watch-banner-panel",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "panel_1",
-            "panel_2",
-            "panel_3"
-          ],
-          "hasBlocks": true,
-          "label": "Banner showcase"
-        },
-        "watch_collection": {
-          "type": "watch-collection",
-          "enabled": true,
-          "settings": {
-            "product1ImageUrl": "",
-            "product1Name": "Chrono Elite",
-            "product2ImageUrl": "",
-            "product2Name": "Midnight Diver",
-            "product3ImageUrl": "",
-            "product3Name": "Gold Horizon",
-            "product4ImageUrl": "",
-            "product4Name": "Silver Arc",
-            "product5ImageUrl": "",
-            "product5Name": "Noir Field",
-            "product6ImageUrl": "",
-            "product6Name": "Rose Atlas",
-            "product7ImageUrl": "",
-            "product7Name": "Steel Pulse",
-            "product8ImageUrl": "",
-            "product8Name": "Carbon Drift",
-            "product9ImageUrl": "",
-            "product9Name": "Imperial Open Heart",
-            "eyebrow": "New Collection",
-            "heading": "Timeless Elegance, Crafted for You",
-            "subheading": "Discover our most loved timepieces — precision engineered, designed to last.",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "product1ImageUrl",
-            "product1Name",
-            "product2ImageUrl",
-            "product2Name",
-            "product3ImageUrl",
-            "product3Name",
-            "product4ImageUrl",
-            "product4Name",
-            "product5ImageUrl",
-            "product5Name",
-            "product6ImageUrl",
-            "product6Name",
-            "product7ImageUrl",
-            "product7Name",
-            "product8ImageUrl",
-            "product8Name",
-            "product9ImageUrl",
-            "product9Name"
-          ],
-          "blocks": {
-            "product_1": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_2": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_3": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_4": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_5": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_6": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_7": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_8": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "product_9": {
-              "type": "watch-product-card",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "product_1",
-            "product_2",
-            "product_3",
-            "product_4",
-            "product_5",
-            "product_6",
-            "product_7",
-            "product_8",
-            "product_9"
-          ],
-          "hasBlocks": true,
-          "label": "New collection"
-        },
-        "watch_engineering": {
-          "type": "watch-engineering",
-          "enabled": true,
-          "settings": {
-            "mediaImageUrl": "",
-            "heading": "Engineered for forever",
-            "body": "Swiss-inspired movements, hardened crystals, and finishes made to age with character.",
-            "ctaLabel": "Learn more",
-            "ctaHref": "/collections/all",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "mediaImageUrl"
-          ],
-          "blocks": {
-            "media": {
-              "type": "watch-media",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "media"
-          ],
-          "hasBlocks": true,
-          "label": "Engineering story"
-        },
-        "watch_launches": {
-          "type": "watch-launches",
-          "enabled": true,
-          "settings": {
-            "featuredImageUrl": "",
-            "card1ImageUrl": "",
-            "card2ImageUrl": "",
-            "card3ImageUrl": "",
-            "heading": "New Launches",
-            "subheading": "Just dropped — limited editions and fresh dials.",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "featuredImageUrl",
-            "card1ImageUrl",
-            "card2ImageUrl",
-            "card3ImageUrl"
-          ],
-          "blocks": {
-            "featured": {
-              "type": "watch-launch-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_1": {
-              "type": "watch-launch-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_2": {
-              "type": "watch-launch-card",
-              "enabled": true,
-              "settings": {}
-            },
-            "card_3": {
-              "type": "watch-launch-card",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "featured",
-            "card_1",
-            "card_2",
-            "card_3"
-          ],
-          "hasBlocks": true,
-          "label": "New launches"
-        },
-        "watch_insta": {
-          "type": "watch-insta",
-          "enabled": true,
-          "settings": {
-            "itemAImageUrl": "",
-            "itemBImageUrl": "",
-            "itemCVideoUrl": "",
-            "itemCPosterImageUrl": "",
-            "itemDImageUrl": "",
-            "itemEImageUrl": "",
-            "itemFImageUrl": "",
-            "eyebrow": "Social Media",
-            "heading": "Follow us on Instagram",
-            "ctaLabel": "Follow on Instagram",
-            "ctaHref": "https://instagram.com",
-            "paddingTop": 48,
-            "paddingBottom": 48
-          },
-          "settings_field_order": [
-            "itemAImageUrl",
-            "itemBImageUrl",
-            "itemCVideoUrl",
-            "itemCPosterImageUrl",
-            "itemDImageUrl",
-            "itemEImageUrl",
-            "itemFImageUrl"
-          ],
-          "blocks": {
-            "item_a": {
-              "type": "watch-insta-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "item_b": {
-              "type": "watch-insta-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "item_c": {
-              "type": "watch-insta-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "item_d": {
-              "type": "watch-insta-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "item_e": {
-              "type": "watch-insta-item",
-              "enabled": true,
-              "settings": {}
-            },
-            "item_f": {
-              "type": "watch-insta-item",
-              "enabled": true,
-              "settings": {}
-            }
-          },
-          "block_order": [
-            "item_a",
-            "item_b",
-            "item_c",
-            "item_d",
-            "item_e",
-            "item_f"
-          ],
-          "hasBlocks": true,
-          "label": "Instagram"
-        }
-      },
-      "section_order": [
-        "watch_hero",
-        "watch_category",
-        "watch_promo",
-        "watch_bestsellers",
-        "watch_signature",
-        "watch_banner",
-        "watch_collection",
-        "watch_engineering",
-        "watch_launches",
-        "watch_insta"
-      ],
-      "sectionOrder": [
-        "hero_main",
-        "featured_collection",
-        "image_with_text",
-        "email_signup"
-      ]
+      "sections": {},
+      "order": []
     },
     "product": {
-      "name": "Product",
       "sections": {
         "product_main": {
           "type": "product-main",
           "enabled": true,
           "settings": {
-            "layoutMode": "split",
-            "showSku": false,
-            "stickyBuyBox": true
-          },
-          "blocks": {
-            "product_media": {
-              "type": "product-media",
-              "settings": {
-                "showImage": true
-              }
-            },
-            "product_header": {
-              "type": "product-header",
-              "blocks": {
-                "vendor_line": {
-                  "type": "vendor-line",
-                  "settings": {
-                    "showVendor": true,
-                    "vendorPrefix": "Sold by"
-                  }
-                },
-                "product_title": {
-                  "type": "product-title",
-                  "settings": {
-                    "loadingLabel": "Loading…"
-                  }
-                }
-              },
-              "block_order": [
-                "vendor_line",
-                "product_title"
-              ],
-              "nested_block_order": [
-                "vendor_line",
-                "product_title"
-              ]
-            },
-            "product_content": {
-              "type": "product-content",
-              "blocks": {
-                "description": {
-                  "type": "description",
-                  "settings": {
-                    "showDescription": true
-                  }
-                },
-                "price_line": {
-                  "type": "price-line",
-                  "settings": {
-                    "priceFallback": "—"
-                  }
-                }
-              },
-              "block_order": [
-                "description",
-                "price_line"
-              ]
-            },
-            "buy_box": {
-              "type": "buy-box",
-              "blocks": {
-                "add_to_cart_button": {
-                  "type": "add-to-cart",
-                  "settings": {
-                    "label": "Add to cart",
-                    "addingLabel": "Adding…"
-                  }
-                },
-                "quantity_field": {
-                  "settings": {
-                    "showQuantity": true,
-                    "label": "Quantity",
-                    "min": 1,
-                    "max": 20
-                  }
-                },
-                "buy_now_button": {
-                  "settings": {
-                    "showBuyNow": false,
-                    "label": "Buy it now"
-                  }
-                },
-                "variant_picker": {
-                  "settings": {
-                    "showVariantPicker": true,
-                    "label": "Options"
-                  }
-                }
-              },
-              "block_order": [
-                "quantity_field",
-                "add_to_cart_button",
-                "buy_now_button"
-              ]
-            },
-            "trust_badges": {
-              "settings": {
-                "enabled": false,
-                "text": "Free returns within 30 days · Secure checkout"
-              }
-            },
-            "size_guide": {
-              "settings": {
-                "enabled": false,
-                "label": "Size guide",
-                "content": ""
-              }
-            }
-          },
-          "block_order": [
-            "product_media",
-            "product_header",
-            "product_content",
-            "buy_box",
-            "trust_badges"
-          ]
+            "taxNote": "MRP (Inclusive of all taxes). Shipping calculated at checkout.",
+            "addToCartLabel": "ADD TO CART",
+            "buyNowLabel": "BUY NOW",
+            "addingLabel": "ADDING…",
+            "warrantyText": "1-year manufacturer warranty covering movement defects under normal use.",
+            "shippingText": "Standard delivery in 2–5 business days. Express options available at checkout.",
+            "returnsText": "Easy 14-day returns on unused products in original packaging.",
+            "sizeChartText": "Case sizes typically run 40–44 mm. Choose based on wrist comfort and preference.",
+            "trust1": "EXPRESS SHIPPING",
+            "trust2": "10-DAY RETURN POLICY*",
+            "trust3": "1-YEAR* WARRANTY",
+            "trust4": "100% SECURE CHECKOUT",
+            "specsTitle": "Product Specifications",
+            "specsCase": "Case details are listed in the product description when provided by the merchant.",
+            "specsStrap": "Strap and clasp details vary by model — see description for materials and finish.",
+            "specsDial": "Dial markers, hands, and complications are described on the product listing.",
+            "specsMovement": "Movement type and accuracy details are included when available from the seller.",
+            "specsOther": "Glass, water resistance, and warranty information appear in the listing details.",
+            "specsImageUrl": "",
+            "qtyMin": 1,
+            "qtyMax": 20
+          }
         }
       },
-      "section_order": [
-        "product_main"
-      ]
-    },
-    "cart": {
-      "name": "Cart",
-      "sections": {
-        "cart_main": {
-          "type": "cart-main",
-          "enabled": true,
-          "settings": {
-            "title": "Your cart",
-            "subtitle": "Review items before checkout",
-            "shippingNote": "Shipping calculated at checkout",
-            "taxDisclaimer": "Taxes may apply"
-          },
-          "blocks": {
-            "empty_state": {
-              "type": "empty-state",
-              "blocks": {
-                "empty_message": {
-                  "type": "empty-message",
-                  "settings": {
-                    "emptyTitle": "Your cart is empty"
-                  }
-                },
-                "continue_link": {
-                  "type": "continue-link",
-                  "settings": {
-                    "label": "Continue shopping",
-                    "href": "/"
-                  }
-                }
-              },
-              "block_order": [
-                "empty_message",
-                "continue_link"
-              ]
-            },
-            "line_items": {
-              "type": "line-items",
-              "blocks": {
-                "item_actions": {
-                  "type": "item-actions",
-                  "settings": {
-                    "removeLabel": "Remove",
-                    "loadingLabel": "Loading…"
-                  }
-                }
-              },
-              "block_order": [
-                "item_actions"
-              ]
-            },
-            "cart_summary": {
-              "type": "cart-summary",
-              "blocks": {
-                "subtotal": {
-                  "type": "subtotal",
-                  "settings": {
-                    "label": "Subtotal:"
-                  }
-                },
-                "checkout_button": {
-                  "settings": {
-                    "label": "Checkout",
-                    "helperText": ""
-                  }
-                },
-                "shipping_line": {
-                  "settings": {
-                    "showShippingNote": true,
-                    "text": "Shipping calculated at checkout"
-                  }
-                }
-              },
-              "block_order": [
-                "subtotal",
-                "shipping_line",
-                "checkout_button"
-              ],
-              "settings": {
-                "taxDisclaimer": "",
-                "offersLabel": "Eligible offers"
-              }
-            }
-          },
-          "block_order": [
-            "empty_state",
-            "line_items",
-            "cart_summary"
-          ]
-        }
-      },
-      "section_order": [
-        "cart_main"
-      ]
-    },
-    "login": {
-      "name": "Login",
-      "sections": {
-        "login_main": {
-          "type": "login-main",
-          "enabled": true,
-          "settings": {
-            "eyebrow": "Account",
-            "title": "Sign in",
-            "subtitle": "Welcome back — enter your details to continue.",
-            "backgroundStyle": "split",
-            "sidePanelTitle": "Welcome back"
-          },
-          "blocks": {
-            "form_fields": {
-              "type": "form-fields",
-              "blocks": {
-                "email_field": {
-                  "type": "email",
-                  "settings": {
-                    "placeholder": "Email"
-                  }
-                },
-                "password_field": {
-                  "type": "password",
-                  "settings": {
-                    "placeholder": "Password"
-                  }
-                }
-              },
-              "block_order": [
-                "email_field",
-                "password_field"
-              ],
-              "nested_block_order": [
-                "email_field",
-                "password_field"
-              ]
-            },
-            "primary_button": {
-              "type": "primary-button",
-              "settings": {
-                "label": "Continue",
-                "loadingLabel": "Please wait…"
-              }
-            },
-            "footer_link": {
-              "type": "footer-link",
-              "blocks": {
-                "signup_prompt": {
-                  "type": "prompt",
-                  "settings": {
-                    "text": "New here?"
-                  }
-                },
-                "signup_link": {
-                  "type": "link",
-                  "settings": {
-                    "label": "Create an account",
-                    "href": "/auth/signup"
-                  }
-                }
-              },
-              "block_order": [
-                "signup_prompt",
-                "signup_link"
-              ]
-            },
-            "forgot_password_link": {
-              "type": "forgot-link",
-              "settings": {
-                "label": "Forgot password?",
-                "href": "/auth/forgot-password"
-              }
-            },
-            "remember_me": {
-              "type": "checkbox",
-              "settings": {
-                "label": "Remember me"
-              }
-            }
-          },
-          "block_order": [
-            "form_fields",
-            "primary_button",
-            "footer_link",
-            "forgot_password_link",
-            "remember_me"
-          ]
-        }
-      },
-      "section_order": [
-        "login_main"
-      ]
-    },
-    "signup": {
-      "name": "Sign up",
-      "sections": {
-        "signup_main": {
-          "type": "signup-main",
-          "enabled": true,
-          "settings": {
-            "eyebrow": "Join us",
-            "title": "Create account",
-            "subtitle": "Start shopping with a free account.",
-            "termsIntro": "By creating an account you agree to our"
-          },
-          "blocks": {
-            "form_fields": {
-              "type": "form-fields",
-              "blocks": {
-                "first_name_field": {
-                  "type": "first-name",
-                  "settings": {
-                    "placeholder": "First name"
-                  }
-                },
-                "last_name_field": {
-                  "type": "last-name",
-                  "settings": {
-                    "placeholder": "Last name"
-                  }
-                },
-                "email_field": {
-                  "type": "email",
-                  "settings": {
-                    "placeholder": "Email"
-                  }
-                },
-                "password_field": {
-                  "type": "password",
-                  "settings": {
-                    "placeholder": "Password"
-                  }
-                },
-                "confirm_password_field": {
-                  "type": "password",
-                  "settings": {
-                    "placeholder": "Confirm password",
-                    "label": "Confirm password"
-                  }
-                }
-              },
-              "block_order": [
-                "first_name_field",
-                "last_name_field",
-                "email_field",
-                "password_field"
-              ]
-            },
-            "primary_button": {
-              "type": "primary-button",
-              "settings": {
-                "label": "Create account",
-                "loadingLabel": "Please wait…"
-              }
-            },
-            "footer_link": {
-              "type": "footer-link",
-              "blocks": {
-                "login_prompt": {
-                  "type": "prompt",
-                  "settings": {
-                    "text": "Already a member?"
-                  }
-                },
-                "login_link": {
-                  "type": "link",
-                  "settings": {
-                    "label": "Sign in",
-                    "href": "/auth/login"
-                  }
-                }
-              },
-              "block_order": [
-                "login_prompt",
-                "login_link"
-              ]
-            },
-            "terms_checkbox": {
-              "type": "terms",
-              "settings": {
-                "label": "I agree to the Terms of Service",
-                "href": "/terms"
-              }
-            }
-          },
-          "block_order": [
-            "form_fields",
-            "primary_button",
-            "footer_link",
-            "terms_checkbox"
-          ]
-        }
-      },
-      "section_order": [
-        "signup_main"
-      ]
-    },
-    "forgot_password": {
-      "name": "Forgot password",
-      "sections": {
-        "forgot_main": {
-          "type": "forgot-main",
-          "enabled": true,
-          "settings": {
-            "eyebrow": "Account",
-            "title": "Reset your password",
-            "subtitle": "Enter your email and we will send you a link to reset your password."
-          },
-          "blocks": {
-            "form_fields": {
-              "type": "form-fields",
-              "blocks": {
-                "email_field": {
-                  "type": "email",
-                  "settings": {
-                    "placeholder": "Email"
-                  }
-                }
-              },
-              "block_order": [
-                "email_field"
-              ]
-            },
-            "primary_button": {
-              "type": "primary-button",
-              "settings": {
-                "label": "Send reset link"
-              }
-            },
-            "success_message": {
-              "type": "success-message",
-              "settings": {
-                "text": "Check your inbox for reset instructions."
-              }
-            },
-            "footer_link": {
-              "type": "footer-link",
-              "blocks": {
-                "back_link": {
-                  "type": "link",
-                  "settings": {
-                    "label": "Back to sign in",
-                    "href": "/auth/login"
-                  }
-                }
-              },
-              "block_order": [
-                "back_link"
-              ]
-            },
-            "resend_hint": {
-              "type": "hint",
-              "settings": {
-                "text": "Did not receive an email? Check spam or try again."
-              }
-            }
-          },
-          "block_order": [
-            "form_fields",
-            "primary_button",
-            "success_message",
-            "footer_link",
-            "resend_hint"
-          ]
-        }
-      },
-      "section_order": [
-        "forgot_main"
-      ]
-    },
-    "profile": {
-      "name": "Profile",
-      "sections": {
-        "profile_main": {
-          "type": "profile-main",
-          "enabled": true,
-          "settings": {
-            "title": "Profile",
-            "subtitle": "Update your personal information.",
-            "avatarSize": 72
-          },
-          "blocks": {
-            "signed_out": {
-              "type": "signed-out",
-              "blocks": {
-                "empty_message": {
-                  "type": "empty-message",
-                  "settings": {
-                    "text": "Please sign in to view your profile."
-                  }
-                },
-                "sign_in_button": {
-                  "type": "sign-in-button",
-                  "settings": {
-                    "label": "Sign in"
-                  }
-                }
-              },
-              "block_order": [
-                "empty_message",
-                "sign_in_button"
-              ]
-            },
-            "profile_form": {
-              "type": "profile-form",
-              "blocks": {
-                "first_name_field": {
-                  "type": "first-name",
-                  "settings": {
-                    "placeholder": "First name"
-                  }
-                },
-                "last_name_field": {
-                  "type": "last-name",
-                  "settings": {
-                    "placeholder": "Last name"
-                  }
-                },
-                "phone_field": {
-                  "type": "phone",
-                  "settings": {
-                    "placeholder": "Phone"
-                  }
-                },
-                "email_field": {
-                  "type": "email",
-                  "settings": {
-                    "label": "Email",
-                    "helperText": "Contact email cannot be changed here."
-                  }
-                },
-                "address_section": {
-                  "type": "address",
-                  "settings": {
-                    "heading": "Shipping address",
-                    "helperText": "Used for order delivery"
-                  }
-                }
-              },
-              "block_order": [
-                "email_field",
-                "first_name_field",
-                "last_name_field",
-                "phone_field"
-              ],
-              "nested_block_order": [
-                "email_field",
-                "first_name_field",
-                "last_name_field",
-                "phone_field"
-              ]
-            },
-            "save_button": {
-              "type": "save-button",
-              "settings": {
-                "label": "Save",
-                "savingLabel": "Saving…"
-              }
-            },
-            "avatar": {
-              "type": "avatar",
-              "settings": {
-                "initialsFallback": "U",
-                "show": true
-              }
-            }
-          },
-          "block_order": [
-            "avatar",
-            "signed_out",
-            "profile_form",
-            "save_button"
-          ]
-        }
-      },
-      "section_order": [
-        "profile_main"
-      ]
-    },
-    "orders": {
-      "name": "Orders",
-      "sections": {
-        "orders_main": {
-          "type": "orders-main",
-          "enabled": true,
-          "settings": {
-            "title": "Your orders",
-            "subtitle": "Track purchases and order status."
-          },
-          "blocks": {
-            "loading_state": {
-              "type": "loading",
-              "settings": {
-                "message": "Loading orders…"
-              }
-            },
-            "empty_state": {
-              "type": "empty",
-              "settings": {
-                "message": "No orders yet.",
-                "ctaLabel": "Start shopping",
-                "ctaHref": "/products"
-              }
-            },
-            "order_card": {
-              "type": "order-card",
-              "blocks": {
-                "status_line": {
-                  "type": "status",
-                  "settings": {
-                    "prefix": "Status:"
-                  }
-                },
-                "order_total_line": {
-                  "type": "total-line",
-                  "settings": {
-                    "label": "Total"
-                  }
-                },
-                "order_date_line": {
-                  "type": "date-line",
-                  "settings": {
-                    "prefix": "Placed"
-                  }
-                },
-                "order_number_line": {
-                  "type": "number",
-                  "settings": {
-                    "prefix": "Order"
-                  }
-                },
-                "view_details": {
-                  "type": "link",
-                  "settings": {
-                    "label": "View details"
-                  }
-                },
-                "items_count_line": {
-                  "type": "items",
-                  "settings": {
-                    "suffix": "items"
-                  }
-                }
-              },
-              "block_order": [
-                "order_number_line",
-                "order_total_line",
-                "status_line",
-                "order_date_line",
-                "items_count_line",
-                "view_details"
-              ],
-              "nested_block_order": [
-                "order_total_line",
-                "status_line",
-                "order_date_line"
-              ]
-            }
-          },
-          "block_order": [
-            "loading_state",
-            "empty_state",
-            "order_card"
-          ]
-        }
-      },
-      "section_order": [
-        "orders_main"
-      ]
-    },
-    "preferences": {
-      "name": "Preferences",
-      "sections": {
-        "preferences_main": {
-          "type": "preferences-main",
-          "enabled": true,
-          "settings": {
-            "title": "Preferences",
-            "subtitle": "Manage notifications and language."
-          },
-          "blocks": {
-            "signed_out": {
-              "type": "signed-out",
-              "settings": {
-                "message": "Sign in to manage preferences."
-              }
-            },
-            "marketing_options": {
-              "type": "marketing",
-              "blocks": {
-                "email_marketing": {
-                  "type": "email",
-                  "settings": {
-                    "label": "Email marketing"
-                  }
-                },
-                "sms_marketing": {
-                  "type": "sms",
-                  "settings": {
-                    "label": "SMS marketing"
-                  }
-                },
-                "language_field": {
-                  "type": "language",
-                  "settings": {
-                    "label": "Language"
-                  }
-                }
-              },
-              "block_order": [
-                "language_field",
-                "email_marketing",
-                "sms_marketing"
-              ]
-            },
-            "save_button": {
-              "type": "save-button",
-              "settings": {
-                "label": "Save preferences",
-                "savingLabel": "Saving…"
-              }
-            },
-            "privacy_options": {
-              "type": "privacy",
-              "blocks": {
-                "cookies_toggle": {
-                  "type": "toggle",
-                  "settings": {
-                    "label": "Functional cookies",
-                    "description": "Required for cart and login"
-                  }
-                },
-                "analytics_toggle": {
-                  "type": "toggle",
-                  "settings": {
-                    "label": "Analytics"
-                  }
-                }
-              },
-              "block_order": [
-                "cookies_toggle",
-                "analytics_toggle"
-              ]
-            }
-          },
-          "block_order": [
-            "signed_out",
-            "marketing_options",
-            "save_button",
-            "privacy_options"
-          ]
-        }
-      },
-      "section_order": [
-        "preferences_main"
-      ]
+      "order": ["product_main"]
     },
     "search": {
-      "order": [
-        "search_main"
-      ],
       "sections": {
         "search_main": {
           "type": "search-main",
           "enabled": true,
           "settings": {
-            "title": "Search",
+            "eyebrow": "Search",
+            "title": "Find a watch",
+            "subtitle": "Search by name, model, or keyword.",
             "placeholder": "Search products",
             "emptyMessage": "No products found.",
             "hintMessage": "Try a product name or keyword.",
-            "columns": 3,
             "submitLabel": "Search",
-            "resultsLabel": "Results"
+            "browseLabel": "Browse all products"
           }
         }
-      }
+      },
+      "order": ["search_main"]
     },
     "collections_list": {
-      "order": [
-        "collections_list_main"
-      ],
       "sections": {
         "collections_list_main": {
           "type": "collections-list-main",
           "enabled": true,
           "settings": {
+            "eyebrow": "Explore",
             "title": "Collections",
-            "subtitle": "Shop by collection",
+            "subtitle": "Shop curated lines and signature series.",
             "emptyMessage": "No collections yet.",
             "allProductsLabel": "View all products",
-            "columns": 3,
-            "showImage": true
+            "loadingLabel": "Loading collections…"
           }
         }
-      }
+      },
+      "order": ["collections_list_main"]
     },
     "all_products": {
-      "order": [
-        "all_products_main"
-      ],
       "sections": {
         "all_products_main": {
           "type": "all-products-main",
           "enabled": true,
           "settings": {
-            "title": "All products",
-            "subtitle": "",
-            "emptyMessage": "No products yet.",
-            "collectionsLabel": "Browse collections",
-            "columns": 4,
-            "productsPerPage": 24
+            "breadcrumb": "Home / Product Catalogue / All products",
+            "emptyMessage": "No products match your filters."
           }
         }
-      }
-    },
-    "blogs": {
-      "order": [
-        "blog_main"
-      ],
-      "sections": {
-        "blog_main": {
-          "type": "blog-main",
-          "enabled": true,
-          "settings": {
-            "emptyTitle": "No published articles yet.",
-            "notFoundTitle": "Blog not found",
-            "notFoundMessage": "This blog could not be found or is unavailable.",
-            "loadingLabel": "Loading blog…",
-            "showExcerpt": true,
-            "columns": 2
-          }
-        }
-      }
-    },
-    "blog_posts": {
-      "order": [
-        "blog_post_main"
-      ],
-      "sections": {
-        "blog_post_main": {
-          "type": "blog-post-main",
-          "enabled": true,
-          "settings": {
-            "loadingLabel": "Loading article…",
-            "notFoundTitle": "Article not found",
-            "backLabel": "Back to blog",
-            "showAuthor": true,
-            "showPublishedDate": true
-          }
-        }
-      }
+      },
+      "order": ["all_products_main"]
     },
     "collection": {
-      "order": [
-        "collection_main"
-      ],
       "sections": {
         "collection_main": {
           "type": "collection-main",
@@ -4547,13 +445,193 @@
             "notFoundMessage": "This collection could not be found or is unavailable.",
             "loadingLabel": "Loading collection…",
             "allCollectionsLabel": "All collections",
-            "showDescription": true,
-            "showProductCount": true,
-            "columns": 4,
-            "productsPerPage": 24
+            "allProductsLabel": "View all products",
+            "shopLabel": "Shop the collection"
           }
         }
-      }
+      },
+      "order": ["collection_main"]
+    },
+    "all_blogs": {
+      "sections": {
+        "all_blogs_main": {
+          "type": "all-blogs-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Journal",
+            "title": "All blogs",
+            "subtitle": "Stories, craft, and collections from the atelier.",
+            "emptyTitle": "No blogs yet.",
+            "loadingLabel": "Loading blogs…"
+          }
+        }
+      },
+      "order": ["all_blogs_main"]
+    },
+    "blogs": {
+      "sections": {
+        "blog_main": {
+          "type": "blog-main",
+          "enabled": true,
+          "settings": {
+            "emptyTitle": "No published articles yet.",
+            "notFoundTitle": "Blog not found",
+            "notFoundMessage": "This blog could not be found or is unavailable.",
+            "loadingLabel": "Loading blog…"
+          }
+        }
+      },
+      "order": ["blog_main"]
+    },
+    "blog_posts": {
+      "sections": {
+        "blog_post_main": {
+          "type": "blog-post-main",
+          "enabled": true,
+          "settings": {
+            "loadingLabel": "Loading article…",
+            "notFoundTitle": "Article not found",
+            "backLabel": "Back to blog"
+          }
+        }
+      },
+      "order": ["blog_post_main"]
+    },
+    "cart": {
+      "sections": {
+        "cart_main": {
+          "type": "cart-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Your bag",
+            "title": "Shopping cart",
+            "subtitle": "Review your pieces before checkout.",
+            "emptyTitle": "Your cart is empty.",
+            "continueLabel": "Continue shopping",
+            "removeLabel": "Remove",
+            "loadingLabel": "Loading cart…",
+            "subtotalLabel": "Subtotal",
+            "checkoutLabel": "Checkout",
+            "shippingNote": "Shipping calculated at checkout",
+            "offersLabel": "Eligible offers"
+          }
+        }
+      },
+      "order": ["cart_main"]
+    },
+    "login": {
+      "sections": {
+        "login_main": {
+          "type": "login-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Sign in",
+            "subtitle": "Welcome back — enter your details to continue.",
+            "emailPlaceholder": "Email",
+            "passwordPlaceholder": "Password",
+            "submitLabel": "Sign in",
+            "loadingLabel": "Please wait…",
+            "forgotLabel": "Forgot password?",
+            "signupPrompt": "New here?",
+            "signupLabel": "Create an account"
+          }
+        }
+      },
+      "order": ["login_main"]
+    },
+    "signup": {
+      "sections": {
+        "signup_main": {
+          "type": "signup-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Join us",
+            "title": "Create account",
+            "subtitle": "Start shopping with a free account.",
+            "firstNamePlaceholder": "First name",
+            "lastNamePlaceholder": "Last name",
+            "emailPlaceholder": "Email",
+            "passwordPlaceholder": "Password",
+            "submitLabel": "Create account",
+            "loadingLabel": "Please wait…",
+            "loginPrompt": "Already have an account?",
+            "loginLabel": "Sign in"
+          }
+        }
+      },
+      "order": ["signup_main"]
+    },
+    "forgot_password": {
+      "sections": {
+        "forgot_main": {
+          "type": "forgot-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Reset password",
+            "subtitle": "Enter your email and we’ll send reset instructions.",
+            "emailPlaceholder": "Email",
+            "submitLabel": "Send reset link",
+            "loadingLabel": "Sending…",
+            "successMessage": "If an account exists for that email, reset instructions are on the way.",
+            "backLabel": "Back to sign in"
+          }
+        }
+      },
+      "order": ["forgot_main"]
+    },
+    "profile": {
+      "sections": {
+        "profile_main": {
+          "type": "profile-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Your profile",
+            "subtitle": "Update your details and communication preferences.",
+            "signedOutMessage": "Sign in to view and edit your profile.",
+            "signInLabel": "Sign in",
+            "emailLabel": "Email",
+            "emailHelper": "Email cannot be changed here.",
+            "firstNamePlaceholder": "First name",
+            "lastNamePlaceholder": "Last name",
+            "phonePlaceholder": "Phone number",
+            "saveLabel": "Save profile",
+            "savingLabel": "Saving…",
+            "preferencesTitle": "Preferences",
+            "preferencesSubtitle": "Language and marketing choices for this store.",
+            "languageLabel": "Language",
+            "emailMarketingLabel": "Email me about new releases and offers",
+            "smsMarketingLabel": "Text me about orders and promotions",
+            "preferencesSaveLabel": "Save preferences",
+            "ordersLinkLabel": "View orders"
+          }
+        }
+      },
+      "order": ["profile_main"]
+    },
+    "orders": {
+      "sections": {
+        "orders_main": {
+          "type": "orders-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Your orders",
+            "subtitle": "Track purchases and past deliveries.",
+            "loadingMessage": "Loading orders…",
+            "emptyMessage": "No orders yet. When you place one, it will appear here.",
+            "signedOutMessage": "Sign in to view your order history.",
+            "signInLabel": "Sign in",
+            "totalLabel": "Total",
+            "datePrefix": "Ordered",
+            "statusPrefix": "Status",
+            "profileLinkLabel": "Back to profile"
+          }
+        }
+      },
+      "order": ["orders_main"]
     }
   }
 }
