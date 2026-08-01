@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raah — Premium Footwear</title>
+  <link rel="icon" href="assets/img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Pacifico&family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+  <header class="site-header" role="banner">
+
+    <!-- Announcement bar -->
+    <div class="announce-bar" role="region" aria-label="Promotions" data-announce>
+      <button type="button" class="announce-bar__arrow announce-bar__arrow--prev" aria-label="Previous announcement"
+        data-announce-prev>
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+
+      <div class="announce-bar__viewport">
+        <div class="announce-bar__track" data-announce-track>
+          <p class="announce-bar__msg is-active">
+            Raah Plus is right now available Online and Stores in Mumbai.
+            <a href="#">Join Now for Free</a>
+          </p>
+          <p class="announce-bar__msg">
+            Free shipping on orders above &#8377;2,999.
+            <a href="#">Shop Now</a>
+          </p>
+          <p class="announce-bar__msg">
+            New season drops are live — explore Men &amp; Women.
+            <a href="#">Discover More</a>
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="announce-bar__arrow announce-bar__arrow--next" aria-label="Next announcement"
+        data-announce-next>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Utility bar -->
+    <div class="utility-bar">
+      <div class="utility-bar__inner">
+        <ul class="utility-bar__list">
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+              <span>Login / Signup</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+              <span>My Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+              <span>Track Order</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="header-main">
+      <div class="header-main__inner">
+
+        <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false"
+          aria-controls="mobile-nav" data-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="brand-logo" aria-label="Raah home">
+          <img src="assets/img/logo.png" alt="Raah" width="160" height="48" decoding="async">
+        </a>
+
+        <nav class="main-nav" id="mobile-nav" aria-label="Primary" data-main-nav>
+          <ul class="main-nav__list">
+            <li><a href="shop.html?cat=Women">Women</a></li>
+            <li><a href="shop.html?cat=Men">Men</a></li>
+            <li><a href="shop.html?cat=Kids">Kids</a></li>
+            <li><a href="shop.html">Apparels</a></li>
+            <li><a href="shop.html">Collections</a></li>
+            <li><a href="shop.html?cat=Sports">Sports</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-tools">
+          <form class="header-search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="header-search">Search</label>
+            <input id="header-search" class="header-search__input" type="search" name="q" placeholder="Search"
+              autocomplete="off">
+            <button type="submit" class="header-search__btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <a href="#" class="header-cart" aria-label="Shopping bag">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            <span class="header-cart__badge" data-cart-count>0</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="nav-overlay" data-nav-overlay hidden></div>
+  </header>
+
+  <main id="main-content">
+
+    <section class="hero" aria-label="Featured promotions" data-hero>
+      <div class="hero__viewport">
+        <div class="hero__track" data-hero-track>
+
+          <article class="hero__slide is-active" data-hero-slide data-tone="light">
+            <img class="hero__media" src="assets/img/hero-banner-1.png" alt="Raah Pay Day Sale — up to 50% off"
+              width="1915" height="821" decoding="async" fetchpriority="high">
+            <div class="hero__shade" aria-hidden="true"></div>
+            <div class="hero__copy">
+              <div class="hero__headline">
+                <h2 class="hero__title">PAY DAY</h2>
+                <span class="hero__sale">Sale</span>
+              </div>
+              <p class="hero__badge">UPTO 50% OFF<span>*</span></p>
+              <ul class="hero__offers">
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 12% OFF ABOVE 1199</span>
+                  <span class="hero__offer-code">(CODE: PDS12)</span>
+                </li>
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 15% OFF ABOVE 1499</span>
+                  <span class="hero__offer-code">(CODE: PDS15)</span>
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="hero__slide" data-hero-slide data-tone="light">
+            <img class="hero__media" src="assets/img/hero-banner-2.png" alt="Raah Pay Day Sale — performance footwear"
+              width="1915" height="821" decoding="async">
+            <div class="hero__shade" aria-hidden="true"></div>
+            <div class="hero__copy">
+              <div class="hero__headline">
+                <h2 class="hero__title">PAY DAY</h2>
+                <span class="hero__sale">Sale</span>
+              </div>
+              <p class="hero__badge">UPTO 50% OFF<span>*</span></p>
+              <ul class="hero__offers">
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 12% OFF ABOVE 1199</span>
+                  <span class="hero__offer-code">(CODE: PDS12)</span>
+                </li>
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 15% OFF ABOVE 1499</span>
+                  <span class="hero__offer-code">(CODE: PDS15)</span>
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="hero__slide" data-hero-slide data-tone="dark">
+            <img class="hero__media" src="assets/img/hero-banner-3.png" alt="Raah Pay Day Sale — everyday style"
+              width="1915" height="821" decoding="async">
+            <div class="hero__shade" aria-hidden="true"></div>
+            <div class="hero__copy">
+              <div class="hero__headline">
+                <h2 class="hero__title">PAY DAY</h2>
+                <span class="hero__sale">Sale</span>
+              </div>
+              <p class="hero__badge">UPTO 50% OFF<span>*</span></p>
+              <ul class="hero__offers">
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 12% OFF ABOVE 1199</span>
+                  <span class="hero__offer-code">(CODE: PDS12)</span>
+                </li>
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 15% OFF ABOVE 1499</span>
+                  <span class="hero__offer-code">(CODE: PDS15)</span>
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="hero__slide" data-hero-slide data-tone="light">
+            <img class="hero__media" src="assets/img/hero-banner-4.png" alt="Raah Pay Day Sale — run further"
+              width="1915" height="821" decoding="async">
+            <div class="hero__shade" aria-hidden="true"></div>
+            <div class="hero__copy">
+              <div class="hero__headline">
+                <h2 class="hero__title">PAY DAY</h2>
+                <span class="hero__sale">Sale</span>
+              </div>
+              <p class="hero__badge">UPTO 50% OFF<span>*</span></p>
+              <ul class="hero__offers">
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 12% OFF ABOVE 1199</span>
+                  <span class="hero__offer-code">(CODE: PDS12)</span>
+                </li>
+                <li class="hero__offer">
+                  <span class="hero__offer-text">EXTRA 15% OFF ABOVE 1499</span>
+                  <span class="hero__offer-code">(CODE: PDS15)</span>
+                </li>
+              </ul>
+            </div>
+          </article>
+
+        </div>
+
+        <button type="button" class="hero__arrow hero__arrow--prev" aria-label="Previous slide" data-hero-prev>
+          <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="hero__arrow hero__arrow--next" aria-label="Next slide" data-hero-next>
+          <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
+
+    <section class="promo-split" aria-label="Smart formals">
+      <a href="shop.html" class="promo-split__card promo-split__card--him">
+        <img class="promo-split__media" src="assets/img/promo-1.png" alt="Smart formals for him" width="1298"
+          height="1212" loading="lazy" decoding="async">
+        <div class="promo-split__shade" aria-hidden="true"></div>
+        <!-- <div class="promo-split__copy">
+          <span class="promo-split__smart">SMART</span>
+          <span class="promo-split__formals">FORMALS</span>
+          <span class="promo-split__line">
+            <span class="promo-split__for">FOR</span>
+            <span class="promo-split__who">Him</span>
+          </span>
+        </div> -->
+      </a>
+
+      <a href="shop.html" class="promo-split__card promo-split__card--her">
+        <img class="promo-split__media" src="assets/img/promo-2.png" alt="Smart formals for her" width="1306"
+          height="1204" loading="lazy" decoding="async">
+        <div class="promo-split__shade" aria-hidden="true"></div>
+        <!-- <div class="promo-split__copy">
+          <span class="promo-split__smart">SMART</span>
+          <span class="promo-split__formals">FORMALS</span>
+          <span class="promo-split__line">
+            <span class="promo-split__for">FOR</span>
+            <span class="promo-split__who">Her</span>
+          </span>
+        </div> -->
+      </a>
+    </section>
+
+    <section class="bestsellers" aria-labelledby="bestsellers-heading" data-product-rail>
+      <div class="bestsellers__inner">
+        <div class="bestsellers__head">
+          <button type="button" class="bestsellers__nav bestsellers__nav--prev" aria-label="Previous bestsellers"
+            data-bs-prev>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="bestsellers__titles">
+            <h2 id="bestsellers-heading" class="bestsellers__title">Bestsellers</h2>
+            <a href="shop.html" class="bestsellers__view-all">VIEW ALL</a>
+          </div>
+          <button type="button" class="bestsellers__nav bestsellers__nav--next" aria-label="Next bestsellers"
+            data-bs-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="bestsellers__viewport">
+          <div class="bestsellers__track" data-bs-track>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-1" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-8.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">48% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-8">Aether Cream Men's Running Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                  </span>
+                  <span class="product-card__reviews">4.6 | 42 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,549.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-8" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-2.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">55% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-2">Pulse Black Men's Training Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.8 | 67 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,349.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-3" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-3.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">62% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-3">Stride White Men's Casual Sneakers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.2 | 28 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,149.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-4" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-4.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">50% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-4">Nova Grey Men's Everyday Walkers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                  </span>
+                  <span class="product-card__reviews">4.5 | 51 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,499.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-1" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-1.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">45% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-1">Orbit Navy Men's Mesh Runners</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.9 | 88 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,649.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">7 8 9 10</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-2" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-2.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">58% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-2">Volt Black Men's Sport Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.1 | 19 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,249.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-3" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-3.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">40% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-3">Summit White Men's Lifestyle Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                  </span>
+                  <span class="product-card__reviews">4.4 | 36 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,799.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=bs-4" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/BS-4.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">52% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge">
+                  <i class="fa-solid fa-star" aria-hidden="true"></i>
+                  BEST SELLER
+                </span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=bs-4">Drift Grey Men's Comfort Sneakers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.7 | 74 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,429.00</span>
+                  <span class="product-card__price-was">Rs. 2,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="brand-focus" aria-labelledby="brand-focus-heading">
+      <h2 id="brand-focus-heading" class="brand-focus__title">BRAND IN FOCUS</h2>
+      <div class="brand-focus__banner">
+        <img src="assets/img/banner.png" alt="Raah — Step into premium elegance" width="1672" height="941"
+          loading="lazy" decoding="async">
+      </div>
+    </section>
+
+    <section class="new-drops" aria-label="New drops" data-new-drops>
+      <div class="new-drops__viewport">
+        <div class="new-drops__track" data-drops-track>
+
+          <article class="drop-card">
+            <div class="drop-card__content">
+              <div class="drop-card__tags">
+                <span>NEW DROP</span>
+                <span>MENS</span>
+              </div>
+              <h3 class="drop-card__title">ELAN-01 Black Men's Formal Sneakers</h3>
+              <p class="drop-card__desc">Command the street with a sleek, structured monochrome upper paired with a
+                comfortable lifestyle sole.</p>
+              <div class="drop-card__price-block">
+                <span class="drop-card__price-label">LAUNCH PRICE</span>
+                <span class="drop-card__price">Rs. 1,799.00</span>
+              </div>
+              <a href="shop.html" class="drop-card__cta">SHOP NOW</a>
+            </div>
+            <div class="drop-card__media">
+              <img src="assets/img/coll-1.avif" alt="ELAN-01 Black Men's Formal Sneakers" width="387" height="516"
+                loading="lazy" decoding="async">
+            </div>
+          </article>
+
+          <article class="drop-card">
+            <div class="drop-card__content">
+              <div class="drop-card__tags">
+                <span>NEW DROP</span>
+                <span>MENS</span>
+              </div>
+              <h3 class="drop-card__title">Effortless Slip-On. Elevated Style.</h3>
+              <p class="drop-card__desc">Step in and go — soft leather uppers with a cushioned footbed built for
+                all-day ease and sharp looks.</p>
+              <div class="drop-card__price-block">
+                <span class="drop-card__price-label">LAUNCH PRICE</span>
+                <span class="drop-card__price">Rs. 1,999.00</span>
+              </div>
+              <a href="shop.html" class="drop-card__cta">SHOP NOW</a>
+            </div>
+            <div class="drop-card__media">
+              <img src="assets/img/coll-2.jpg" alt="Effortless slip-on elevated style" width="387" height="516"
+                loading="lazy" decoding="async">
+            </div>
+          </article>
+
+          <article class="drop-card">
+            <div class="drop-card__content">
+              <div class="drop-card__tags">
+                <span>NEW DROP</span>
+                <span>MENS</span>
+              </div>
+              <h3 class="drop-card__title">Dark Attitude. Pure Motion.</h3>
+              <p class="drop-card__desc">A bold silhouette with deep tones and responsive cushioning for nights that
+                never slow down.</p>
+              <div class="drop-card__price-block">
+                <span class="drop-card__price-label">LAUNCH PRICE</span>
+                <span class="drop-card__price">Rs. 2,199.00</span>
+              </div>
+              <a href="shop.html" class="drop-card__cta">SHOP NOW</a>
+            </div>
+            <div class="drop-card__media">
+              <img src="assets/img/coll-3.avif" alt="Dark Attitude Pure Motion" width="387" height="516" loading="lazy"
+                decoding="async">
+            </div>
+          </article>
+
+          <article class="drop-card">
+            <div class="drop-card__content">
+              <div class="drop-card__tags">
+                <span>NEW DROP</span>
+                <span>MENS</span>
+              </div>
+              <h3 class="drop-card__title">Urban Runner Cream Edition</h3>
+              <p class="drop-card__desc">Lightweight mesh meets refined detailing — crafted for city miles with
+                everyday polish.</p>
+              <div class="drop-card__price-block">
+                <span class="drop-card__price-label">LAUNCH PRICE</span>
+                <span class="drop-card__price">Rs. 1,899.00</span>
+              </div>
+              <a href="shop.html" class="drop-card__cta">SHOP NOW</a>
+            </div>
+            <div class="drop-card__media">
+              <img src="assets/img/coll-4.jpg" alt="Urban Runner Cream Edition" width="387" height="516" loading="lazy"
+                decoding="async">
+            </div>
+          </article>
+
+          <article class="drop-card">
+            <div class="drop-card__content">
+              <div class="drop-card__tags">
+                <span>NEW DROP</span>
+                <span>MENS</span>
+              </div>
+              <h3 class="drop-card__title">Heritage Loafer — Walnut Brown</h3>
+              <p class="drop-card__desc">Timeless hand-finished leather with a modern sole for boardrooms and
+                weekends alike.</p>
+              <div class="drop-card__price-block">
+                <span class="drop-card__price-label">LAUNCH PRICE</span>
+                <span class="drop-card__price">Rs. 2,499.00</span>
+              </div>
+              <a href="shop.html" class="drop-card__cta">SHOP NOW</a>
+            </div>
+            <div class="drop-card__media">
+              <img src="assets/img/coll-5.jpg" alt="Heritage Loafer Walnut Brown" width="387" height="516"
+                loading="lazy" decoding="async">
+            </div>
+          </article>
+
+          <article class="drop-card">
+            <div class="drop-card__content">
+              <div class="drop-card__tags">
+                <span>NEW DROP</span>
+                <span>MENS</span>
+              </div>
+              <h3 class="drop-card__title">Trail Flex Olive Walkers</h3>
+              <p class="drop-card__desc">Rugged grip and breathable build — dialed for weekend escapes without
+                losing style.</p>
+              <div class="drop-card__price-block">
+                <span class="drop-card__price-label">LAUNCH PRICE</span>
+                <span class="drop-card__price">Rs. 2,099.00</span>
+              </div>
+              <a href="shop.html" class="drop-card__cta">SHOP NOW</a>
+            </div>
+            <div class="drop-card__media">
+              <img src="assets/img/coll-6.jpg" alt="Trail Flex Olive Walkers" width="387" height="516" loading="lazy"
+                decoding="async">
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="women-promo" aria-label="Women's collection">
+      <a href="shop.html" class="women-promo__link">
+        <img class="women-promo__media" src="assets/img/banner-2.png"
+          alt="Women's Collection — up to 50% off on women's footwear" width="1915" height="821" loading="lazy"
+          decoding="async">
+      </a>
+    </section>
+
+    <section class="new-collection" aria-labelledby="new-collection-heading" data-product-rail>
+      <div class="new-collection__inner">
+        <div class="new-collection__head">
+          <button type="button" class="new-collection__nav new-collection__nav--prev" aria-label="Previous new arrivals"
+            data-rail-prev>
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <div class="new-collection__titles">
+            <h2 id="new-collection-heading" class="new-collection__title">New Collection</h2>
+            <a href="shop.html" class="new-collection__view-all">VIEW ALL</a>
+          </div>
+          <button type="button" class="new-collection__nav new-collection__nav--next" aria-label="Next new arrivals"
+            data-rail-next>
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="new-collection__viewport">
+          <div class="new-collection__track" data-rail-track>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-1" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-8.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">40% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-8">ELAN-13 Black Men's Formal Sneakers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.0 | 1 Review</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 2,399.00</span>
+                  <span class="product-card__price-was">Rs. 3,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-8" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-2.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">35% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-2">VISTA White Men's Court Sneakers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                  </span>
+                  <span class="product-card__reviews">4.5 | 12 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 2,199.00</span>
+                  <span class="product-card__price-was">Rs. 3,399.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-3" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-3.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">42% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-3">NEXUS Grey Men's Lifestyle Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">5.0 | 8 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,999.00</span>
+                  <span class="product-card__price-was">Rs. 3,499.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-4" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-4.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">38% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-4">PRIME Navy Men's Running Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.2 | 5 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 2,599.00</span>
+                  <span class="product-card__price-was">Rs. 4,199.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-1" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-1.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">45% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-1">AURA Beige Men's Casual Sneakers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                  </span>
+                  <span class="product-card__reviews">4.6 | 15 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,899.00</span>
+                  <span class="product-card__price-was">Rs. 3,499.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-2" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-2.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">30% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-2">FORGE Black Men's Training Shoes</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.8 | 22 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 2,799.00</span>
+                  <span class="product-card__price-was">Rs. 3,999.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-3" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-3.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">48% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-3">DRIFT Olive Men's Everyday Walkers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-regular fa-star"></i>
+                  </span>
+                  <span class="product-card__reviews">4.1 | 3 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 1,749.00</span>
+                  <span class="product-card__price-was">Rs. 3,399.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10 11</p>
+              </div>
+            </article>
+
+            <article class="product-card">
+              <div class="product-card__media">
+                <a href="product.html?id=na-4" class="product-card__link" tabindex="-1" aria-hidden="true">
+                  <img src="assets/img/NA-4.png" alt="" width="1086" height="1448" loading="lazy" decoding="async">
+                </a>
+                <span class="product-card__discount">33% off</span>
+                <button type="button" class="product-card__wish" aria-label="Add to wishlist">
+                  <i class="fa-regular fa-heart" aria-hidden="true"></i>
+                </button>
+                <span class="product-card__badge product-card__badge--arrival">NEW ARRIVAL</span>
+              </div>
+              <div class="product-card__body">
+                <h3 class="product-card__name">
+                  <a href="product.html?id=na-4">EDGE Cream Men's Street Sneakers</a>
+                </h3>
+                <div class="product-card__rating">
+                  <span class="product-card__stars" aria-hidden="true">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                  </span>
+                  <span class="product-card__reviews">4.4 | 9 Reviews</span>
+                </div>
+                <div class="product-card__price">
+                  <span class="product-card__price-now">Rs. 2,299.00</span>
+                  <span class="product-card__price-was">Rs. 3,449.00</span>
+                  <span class="product-card__sale">Sale</span>
+                </div>
+                <p class="product-card__sizes">6 7 8 9 10</p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lifestyle-promo" aria-label="Shop by lifestyle">
+      <a href="shop.html" class="lifestyle-promo__card">
+        <img class="lifestyle-promo__media" src="assets/img/promo-3.png"
+          alt="Casual Shoes for Men — Meet Your Go-To Pair" width="1204" height="1306" loading="lazy" decoding="async">
+      </a>
+
+      <a href="shop.html" class="lifestyle-promo__card">
+        <img class="lifestyle-promo__media" src="assets/img/promo-4.png"
+          alt="Athleisure for Women — For Women Who Run the World" width="1163" height="1353" loading="lazy"
+          decoding="async">
+      </a>
+    </section>
+
+    <section class="spotlights" aria-labelledby="spotlights-heading">
+      <div class="spotlights__inner">
+        <header class="spotlights__head">
+          <h2 id="spotlights-heading" class="spotlights__title">CREATIVE SPOTLIGHTS</h2>
+          <p class="spotlights__handle">@raahfootwear</p>
+        </header>
+
+        <div class="spotlights__grid" data-spotlights-track>
+          <a href="#" class="spotlights__item">
+            <img src="assets/img/NA-5.png" alt="Raah lifestyle spotlight" width="600" height="600" loading="lazy"
+              decoding="async">
+          </a>
+          <a href="#" class="spotlights__item">
+            <img src="assets/img/NA-6.png" alt="Raah lifestyle spotlight" width="600" height="600" loading="lazy"
+              decoding="async">
+          </a>
+          <a href="#" class="spotlights__item">
+            <img src="assets/img/NA-7.png" alt="Raah lifestyle spotlight" width="600" height="600" loading="lazy"
+              decoding="async">
+          </a>
+          <a href="#" class="spotlights__item">
+            <img src="assets/img/NA-8.png" alt="Raah lifestyle spotlight" width="600" height="600" loading="lazy"
+              decoding="async">
+          </a>
+          <a href="#" class="spotlights__item">
+            <img src="assets/img/BS-5.png" alt="Raah lifestyle spotlight" width="600" height="600" loading="lazy"
+              decoding="async">
+          </a>
+          <a href="#" class="spotlights__item">
+            <img src="assets/img/BS-6.png" alt="Raah lifestyle spotlight" width="600" height="600" loading="lazy"
+              decoding="async">
+          </a>
+        </div>
+
+        <div class="spotlights__dots" data-spotlights-dots aria-hidden="true"></div>
+
+        <div class="spotlights__action">
+          <a href="shop.html" class="spotlights__cta">VIEW GALLERY</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-benefits">
+      <div class="footer-benefits__inner">
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+          <span>Fast Delivery</span>
+        </div>
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-tag" aria-hidden="true"></i>
+          <span>15 days easy return</span>
+        </div>
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+          <span>Track Order</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-main__inner">
+        <div class="footer-col">
+          <h3 class="footer-col__title">What's In Store</h3>
+          <ul class="footer-col__links">
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html?cat=Men">Men</a></li>
+            <li><a href="shop.html?cat=Women">Women</a></li>
+            <li><a href="shop.html?cat=Kids">Kids</a></li>
+            <li><a href="#">Track Order</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col__title">Company Info &amp; Policies</h3>
+          <ul class="footer-col__links">
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Sneaker Care</a></li>
+            <li><a href="#">Corporate</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy &amp; Cookies Policy</a></li>
+            <li><a href="#">FAQ's</a></li>
+            <li><a href="#">Return &amp; Claim Policy</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Return/Exchange</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-col--contact">
+          <h3 class="footer-col__title">Get In Touch</h3>
+          <p class="footer-col__subtitle">Online Order</p>
+          <p class="footer-col__line">
+            Inquiry/Complaint: <strong>9667706012</strong> (10.00AM to 7:00PM)
+          </p>
+          <p class="footer-col__line">
+            Any Other queries: <strong>9667706012</strong> (10.00AM to 7:00PM)
+          </p>
+          <p class="footer-col__line">
+            Email:
+            <a href="mailto:customercare@raah.com">customercare@raah.com</a>
+          </p>
+          <p class="footer-col__note">
+            For Bulk/B2B/Corporate &amp; Institutional enquiries/orders, please
+            drop an email at
+            <a href="mailto:instt@raah.com">instt@raah.com</a>
+            &amp; we will connect with you within 2 working days.
+          </p>
+        </div>
+
+        <div class="footer-col footer-col--newsletter">
+          <h3 class="footer-col__title">Newsletter</h3>
+          <p class="footer-col__desc">
+            Sign up for exclusive offers, original stories, upcoming events and more.
+          </p>
+          <form class="footer-newsletter" action="#" method="post">
+            <label class="visually-hidden" for="footer-email">Email address</label>
+            <input id="footer-email" class="footer-newsletter__input" type="email" name="email"
+              placeholder="Enter email" autocomplete="email" required>
+            <button type="submit" class="footer-newsletter__btn">SIGN UP</button>
+          </form>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

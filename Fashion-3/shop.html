@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Vastra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/shop.css">
+</head>
+
+<body>
+
+  <header class="site-header" role="banner" data-header>
+    <div class="header-backdrop" data-backdrop hidden aria-hidden="true"></div>
+
+    <aside class="header-drawer" id="header-drawer" data-drawer aria-hidden="true" tabindex="-1">
+      <div class="header-drawer__head">
+        <span class="header-drawer__title">Menu</span>
+        <button type="button" class="header-drawer__close" aria-label="Close menu" data-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="header-drawer__nav" aria-label="Mobile navigation">
+        <ul class="header-drawer__list">
+          <li><a href="shop.html">Shop All</a></li>
+          <li><a href="shop.html">Shirts</a></li>
+          <li><a href="shop.html">Polo</a></li>
+          <li><a href="shop.html">T-Shirts</a></li>
+          <li><a href="shop.html">Jeans</a></li>
+          <li><a href="shop.html">Trousers</a></li>
+          <li><a href="shop.html">Sneakers</a></li>
+          <li><a href="shop.html">Sunglasses</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Top announcement bar -->
+    <div class="announcement-bar">
+      <p>Trusted by 1.5M+ Customers Across India</p>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="header-main">
+      <div class="header-main__inner">
+        <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false"
+          aria-controls="header-drawer" data-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="brand-logo" aria-label="Vastra home">
+          <img src="assets/img/logo.png" alt="Vastra" width="160" height="70" decoding="async">
+        </a>
+
+        <nav class="main-nav" aria-label="Primary">
+          <ul class="main-nav__list">
+            <li><a href="shop.html">Shop All</a></li>
+            <li><a href="shop.html">Shirts</a></li>
+            <li><a href="shop.html">Polo</a></li>
+            <li><a href="shop.html">T-Shirts</a></li>
+            <li><a href="shop.html">Jeans</a></li>
+            <li><a href="shop.html">Trousers</a></li>
+            <li><a href="shop.html">Sneakers</a></li>
+            <li><a href="shop.html">Sunglasses</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-actions">
+          <form class="header-search" role="search" action="#" method="get">
+            <label class="visually-hidden" for="header-search-shop">Search</label>
+            <input id="header-search-shop" class="header-search__input" type="search" name="q"
+              placeholder="Search For Shorts" autocomplete="off">
+            <button type="submit" class="header-search__btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <div class="header-icons">
+            <a href="#" class="header-icon" aria-label="Wishlist">
+              <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              <span class="header-icon__badge">0</span>
+            </a>
+            <a href="#" class="header-icon" aria-label="Shopping bag">
+              <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="header-icon header-icon--account" aria-label="Account">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+              <span class="header-icon__bolt" aria-hidden="true">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category pills -->
+    <nav class="category-pills" aria-label="Shop categories">
+      <div class="category-pills__inner">
+        <a href="shop.html" class="pill pill--sale">Sale</a>
+        <a href="shop.html" class="pill pill--new">
+          <span class="pill__badge">New</span>
+          Oxford Shirts
+        </a>
+        <a href="shop.html" class="pill">Bestseller</a>
+        <a href="shop.html" class="pill">Limited Drop</a>
+        <a href="shop.html" class="pill">Topwear</a>
+        <a href="shop.html" class="pill">Bottomwear</a>
+        <a href="shop.html" class="pill">Footwear</a>
+        <a href="shop.html" class="pill">Accessories</a>
+        <a href="shop.html" class="pill">Rewards</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="shop-main">
+    <div class="shop-layout">
+      <aside class="shop-sidebar" id="shop-sidebar" aria-label="Product filters">
+        <div class="shop-sidebar-sheet-header">
+          <h2 class="shop-sidebar-sheet-title">Filters</h2>
+          <button type="button" class="shop-filter-close" id="shop-filter-close" aria-label="Close filters">
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="shop-sidebar-body">
+          <div class="shop-filter-block">
+            <h2 class="shop-filter-heading">Category</h2>
+            <ul class="collection-filters">
+              <li><button type="button" class="collection-filter is-active" data-collection="all"><span>All</span><span
+                    class="collection-count" data-count-for="all">(0)</span></button></li>
+              <li><button type="button" class="collection-filter" data-collection="shirts"><span>Shirts</span><span
+                    class="collection-count" data-count-for="shirts">(0)</span></button></li>
+              <li><button type="button" class="collection-filter" data-collection="polos"><span>Polos</span><span
+                    class="collection-count" data-count-for="polos">(0)</span></button></li>
+              <li><button type="button" class="collection-filter" data-collection="trousers"><span>Trousers</span><span
+                    class="collection-count" data-count-for="trousers">(0)</span></button></li>
+              <li><button type="button" class="collection-filter" data-collection="jeans"><span>Jeans</span><span
+                    class="collection-count" data-count-for="jeans">(0)</span></button></li>
+            </ul>
+          </div>
+
+          <div class="shop-filter-block">
+            <h2 class="shop-filter-heading">Size</h2>
+            <div class="size-filters">
+              <button type="button" class="size-filter is-active" data-size="all">All</button>
+              <button type="button" class="size-filter" data-size="S">S</button>
+              <button type="button" class="size-filter" data-size="M">M</button>
+              <button type="button" class="size-filter" data-size="L">L</button>
+              <button type="button" class="size-filter" data-size="XL">XL</button>
+              <button type="button" class="size-filter" data-size="XXL">XXL</button>
+              <button type="button" class="size-filter" data-size="3XL">3XL</button>
+            </div>
+          </div>
+
+          <div class="shop-filter-block">
+            <h2 class="shop-filter-heading">Price</h2>
+            <div class="price-slider">
+              <div class="price-slider-track">
+                <div class="price-slider-range" id="price-range"></div>
+                <input type="range" id="price-min" min="999" max="4999" value="999" step="100"
+                  aria-label="Minimum price">
+                <input type="range" id="price-max" min="999" max="4999" value="4999" step="100"
+                  aria-label="Maximum price">
+              </div>
+              <p class="price-slider-values">
+                <span id="price-min-label">₹ 999</span>
+                <span id="price-max-label">₹ 4,999</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-sidebar-sheet-footer">
+          <button type="button" class="shop-filter-apply" id="shop-filter-apply">Show Results</button>
+        </div>
+      </aside>
+
+      <div class="shop-filter-backdrop" id="shop-filter-backdrop" hidden></div>
+
+      <div class="shop-content">
+        <div class="shop-topbar">
+          <div class="shop-topbar-left">
+            <button type="button" class="shop-filter-toggle" id="shop-filter-toggle" aria-expanded="false"
+              aria-controls="shop-sidebar">
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+              <span>Filter</span>
+            </button>
+            <div>
+              <p class="shop-breadcrumb"><a href="index.html">Home</a> / Shop</p>
+              <h1 class="shop-title">Shop All</h1>
+            </div>
+          </div>
+          <p class="shop-product-count" id="shop-product-count">0 PRODUCTS</p>
+          <div class="shop-sort-wrap">
+            <label class="visually-hidden" for="shop-sort">Sort</label>
+            <select id="shop-sort">
+              <option value="new-old">Newest</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name-asc">Name: A to Z</option>
+              <option value="name-desc">Name: Z to A</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="shop-grid" id="shop-grid">
+          <article class="shop-card" data-collection="shirts" data-price="2590"
+            data-name="Giza Cotton White Twill Shirt" data-sizes="S,M,L,XL,XXL" data-date="8">
+            <a href="product.html?id=tn-1" class="shop-card__media">
+              <img src="assets/img/TN-1.png" alt="Giza Cotton White Twill Shirt" width="400" height="500" loading="lazy"
+                decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-1">Giza Cotton White Twill Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="shirts" data-price="2590"
+            data-name="Giza Cotton Navy Checked Shirt" data-sizes="S,M,L,XL" data-date="7">
+            <a href="product.html?id=tn-2" class="shop-card__media">
+              <img src="assets/img/TN-2.png" alt="Giza Cotton Navy Checked Shirt" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-2">Giza Cotton Navy Checked Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="shirts" data-price="2590"
+            data-name="Giza Cotton Light Blue Twill Shirt" data-sizes="M,L,XL,XXL" data-date="6">
+            <a href="product.html?id=tn-3" class="shop-card__media">
+              <img src="assets/img/TN-3.png" alt="Giza Cotton Light Blue Twill Shirt" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-3">Giza Cotton Light Blue Twill Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="shirts" data-price="2590"
+            data-name="Giza Cotton Light Green Checked Shirt" data-sizes="S,M,L,XL,XXL,3XL" data-date="5">
+            <a href="product.html?id=tn-4" class="shop-card__media">
+              <img src="assets/img/TN-4.png" alt="Giza Cotton Light Green Checked Shirt" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-4">Giza Cotton Light Green Checked Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="shirts" data-price="2690"
+            data-name="Giza Cotton Sage Oxford Shirt" data-sizes="S,M,L,XL" data-date="4">
+            <a href="product.html?id=tn-5" class="shop-card__media">
+              <img src="assets/img/TN-5.png" alt="Giza Cotton Sage Oxford Shirt" width="400" height="500" loading="lazy"
+                decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-5">Giza Cotton Sage Oxford Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,690</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="shirts" data-price="2790"
+            data-name="Giza Cotton Beige Linen Shirt" data-sizes="M,L,XL" data-date="3">
+            <a href="product.html?id=tn-6" class="shop-card__media">
+              <img src="assets/img/TN-6.png" alt="Giza Cotton Beige Linen Shirt" width="400" height="500" loading="lazy"
+                decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-6">Giza Cotton Beige Linen Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,790</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="polos" data-price="2490" data-name="Giza Cotton Sky Stripe Shirt"
+            data-sizes="S,M,L,XL,XXL" data-date="2">
+            <a href="product.html?id=tn-7" class="shop-card__media">
+              <img src="assets/img/TN-7.png" alt="Giza Cotton Sky Stripe Shirt" width="400" height="500" loading="lazy"
+                decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-7">Giza Cotton Sky Stripe Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,490</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="shirts" data-price="2690"
+            data-name="Giza Cotton Olive Twill Shirt" data-sizes="S,M,L,XL" data-date="1">
+            <a href="product.html?id=tn-8" class="shop-card__media">
+              <img src="assets/img/TN-8.png" alt="Giza Cotton Olive Twill Shirt" width="400" height="500" loading="lazy"
+                decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=tn-8">Giza Cotton Olive Twill Shirt</a></h3>
+            <p class="shop-card__price">₹ 2,690</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="trousers" data-price="2590"
+            data-name="Caldris Stretch Dress Pants - Brown" data-sizes="S,M,L,XL" data-date="8">
+            <a href="product.html?id=na-1" class="shop-card__media">
+              <img src="assets/img/NA-1.webp" alt="Caldris Stretch Dress Pants - Brown" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-1">Caldris Stretch Dress Pants - Brown</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="trousers" data-price="2590"
+            data-name="Marcello Stretch Dress Pants - Navy" data-sizes="M,L,XL,XXL" data-date="7">
+            <a href="product.html?id=na-2" class="shop-card__media">
+              <img src="assets/img/NA-2.webp" alt="Marcello Stretch Dress Pants - Navy" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-2">Marcello Stretch Dress Pants - Navy</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="trousers" data-price="2590"
+            data-name="Sorento Structured Dress Pants - Light Grey" data-sizes="S,M,L,XL" data-date="6">
+            <a href="product.html?id=na-3" class="shop-card__media">
+              <img src="assets/img/NA-3.jpg" alt="Sorento Structured Dress Pants - Light Grey" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-3">Sorento Structured Dress Pants - Light Grey</a>
+            </h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="trousers" data-price="2590"
+            data-name="Montere Structured Dress Pants - Grey" data-sizes="S,M,L,XL,XXL" data-date="5">
+            <a href="product.html?id=na-4" class="shop-card__media">
+              <img src="assets/img/NA-4.jpg" alt="Montere Structured Dress Pants - Grey" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-4">Montere Structured Dress Pants - Grey</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="trousers" data-price="2590"
+            data-name="Caldris Stretch Dress Pants - Olive" data-sizes="M,L,XL" data-date="4">
+            <a href="product.html?id=na-5" class="shop-card__media">
+              <img src="assets/img/NA-5.webp" alt="Caldris Stretch Dress Pants - Olive" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-5">Caldris Stretch Dress Pants - Olive</a></h3>
+            <p class="shop-card__price">₹ 2,590</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="jeans" data-price="2690"
+            data-name="Marcello Stretch Pants - Charcoal" data-sizes="S,M,L,XL" data-date="3">
+            <a href="product.html?id=na-6" class="shop-card__media">
+              <img src="assets/img/NA-6.webp" alt="Marcello Stretch Pants - Charcoal" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-6">Marcello Stretch Pants - Charcoal</a></h3>
+            <p class="shop-card__price">₹ 2,690</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="trousers" data-price="2490"
+            data-name="Sorento Structured Pants - Beige" data-sizes="S,M,L,XL,XXL" data-date="2">
+            <a href="product.html?id=na-7" class="shop-card__media">
+              <img src="assets/img/NA-7.webp" alt="Sorento Structured Pants - Beige" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-7">Sorento Structured Pants - Beige</a></h3>
+            <p class="shop-card__price">₹ 2,490</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+          <article class="shop-card" data-collection="jeans" data-price="2790"
+            data-name="Montere Structured Pants - Black" data-sizes="S,M,L,XL" data-date="1">
+            <a href="product.html?id=na-8" class="shop-card__media">
+              <img src="assets/img/NA-8.webp" alt="Montere Structured Pants - Black" width="400" height="500"
+                loading="lazy" decoding="async">
+            </a>
+            <span class="shop-card__badge">New</span>
+            <h3 class="shop-card__name"><a href="product.html?id=na-8">Montere Structured Pants - Black</a></h3>
+            <p class="shop-card__price">₹ 2,790</p>
+            <div class="shop-card__actions">
+              <button type="button" class="shop-card__icon" aria-label="Add to wishlist"><i class="fa-regular fa-heart"
+                  aria-hidden="true"></i></button>
+              <button type="button" class="shop-card__icon" aria-label="Add to bag"><i class="fa-solid fa-bag-shopping"
+                  aria-hidden="true"></i></button>
+            </div>
+          </article>
+        </div>
+        <p class="shop-empty" id="shop-empty">No products match your filters.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-members">
+      <div class="footer-members__watermark" aria-hidden="true">
+        <i class="fa-regular fa-user"></i>
+        <span>Vastra Club</span>
+      </div>
+      <div class="footer-members__content">
+        <p class="footer-members__eyebrow">Vastra Members Exclusive</p>
+        <p class="footer-members__headline">The more you style, The more you earn</p>
+        <p class="footer-members__cta">
+          Not Member yet -
+          <a href="#">Sign Up Now</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-perks">
+      <div class="footer-perks__inner">
+        <div class="footer-perk">
+          <i class="fa-solid fa-truck" aria-hidden="true"></i>
+          <div>
+            <p class="footer-perk__title">Free Home Delivery</p>
+            <p class="footer-perk__text">Shop with us &amp; get free delivery</p>
+          </div>
+        </div>
+        <div class="footer-perk">
+          <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+          <div>
+            <p class="footer-perk__title">Get Full Refund</p>
+            <p class="footer-perk__text">Easy &amp; quick refund process</p>
+          </div>
+        </div>
+        <div class="footer-perk">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <div>
+            <p class="footer-perk__title">Secure Payments</p>
+            <p class="footer-perk__text">Make safe and secure payments</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-main__inner">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-logo" aria-label="Vastra home">
+            <img src="assets/img/logo.png" alt="Vastra" width="140" height="60" loading="lazy" decoding="async">
+          </a>
+          <p class="footer-brand-text">Discover styles that elevate your confidence &amp; comfort with sense of urban
+            chic style.</p>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-heading">Information</h3>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Investor Information</a></li>
+            <li><a href="#">Store Locator</a></li>
+            <li><a href="#">In the News</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Site Map</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-heading">Manage</h3>
+          <ul class="footer-links">
+            <li><a href="#">My Profile</a></li>
+            <li><a href="#">Order</a></li>
+            <li><a href="#">Favorites</a></li>
+            <li><a href="#">Track Your Order</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-heading">Support</h3>
+          <ul class="footer-links">
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Cancellation</a></li>
+            <li><a href="#">Returns and Refunds</a></li>
+            <li><a href="#">Terms and Conditions</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-contact">
+          <h3 class="footer-heading">Contact Us</h3>
+          <p class="footer-contact__row">
+            <i class="fa-solid fa-phone" aria-hidden="true"></i>
+            <a href="tel:+919990904222">+91 999-090-4222</a>
+          </p>
+          <p class="footer-contact__hours">(Mon-Fri: 10am - 6pm)</p>
+          <p class="footer-contact__row">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:support@vastra.com">support@vastra.com</a>
+          </p>
+          <div class="footer-social">
+            <a href="#" class="footer-social__link" aria-label="Facebook">
+              <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="footer-social__link" aria-label="Instagram">
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+            </a>
+            <a href="#" class="footer-social__link" aria-label="YouTube">
+              <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="back-to-top" aria-label="Back to top" data-back-to-top>
+      <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+    </button>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>

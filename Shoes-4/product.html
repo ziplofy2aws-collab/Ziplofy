@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — Raah Footwear</title>
+  <link rel="icon" href="assets/img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Pacifico&family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/product.css">
+</head>
+
+<body>
+
+  <header class="site-header" role="banner">
+
+    <!-- Announcement bar -->
+    <div class="announce-bar" role="region" aria-label="Promotions" data-announce>
+      <button type="button" class="announce-bar__arrow announce-bar__arrow--prev" aria-label="Previous announcement"
+        data-announce-prev>
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+
+      <div class="announce-bar__viewport">
+        <div class="announce-bar__track" data-announce-track>
+          <p class="announce-bar__msg is-active">
+            Raah Plus is right now available Online and Stores in Mumbai.
+            <a href="#">Join Now for Free</a>
+          </p>
+          <p class="announce-bar__msg">
+            Free shipping on orders above &#8377;2,999.
+            <a href="#">Shop Now</a>
+          </p>
+          <p class="announce-bar__msg">
+            New season drops are live — explore Men &amp; Women.
+            <a href="#">Discover More</a>
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="announce-bar__arrow announce-bar__arrow--next" aria-label="Next announcement"
+        data-announce-next>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Utility bar -->
+    <div class="utility-bar">
+      <div class="utility-bar__inner">
+        <ul class="utility-bar__list">
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+              <span>Login / Signup</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+              <span>My Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+              <span>Track Order</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="header-main">
+      <div class="header-main__inner">
+
+        <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false"
+          aria-controls="mobile-nav" data-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="brand-logo" aria-label="Raah home">
+          <img src="assets/img/logo.png" alt="Raah" width="160" height="48" decoding="async">
+        </a>
+
+        <nav class="main-nav" id="mobile-nav" aria-label="Primary" data-main-nav>
+          <ul class="main-nav__list">
+            <li><a href="shop.html?cat=Women">Women</a></li>
+            <li><a href="shop.html?cat=Men">Men</a></li>
+            <li><a href="shop.html?cat=Kids">Kids</a></li>
+            <li><a href="shop.html">Apparels</a></li>
+            <li><a href="shop.html">Collections</a></li>
+            <li><a href="shop.html?cat=Sports">Sports</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-tools">
+          <form class="header-search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="header-search-product">Search</label>
+            <input id="header-search-product" class="header-search__input" type="search" name="q" placeholder="Search"
+              autocomplete="off">
+            <button type="submit" class="header-search__btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <a href="#" class="header-cart" aria-label="Shopping bag">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            <span class="header-cart__badge" data-cart-count>0</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="nav-overlay" data-nav-overlay hidden></div>
+  </header>
+
+  <main id="main-content" class="pdp-page">
+    <div class="pdp-page__inner">
+      <nav class="pdp-crumbs" aria-label="Breadcrumb">
+        <a href="index.html" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i></a>
+        <span>/</span>
+        <a href="shop.html" data-pdp-cat-link>Men Shoes</a>
+      </nav>
+
+      <div class="pdp-layout">
+        <div class="pdp-gallery" data-pdp-gallery>
+          <div class="pdp-thumbs">
+            <button type="button" class="pdp-thumbs__nav pdp-thumbs__nav--up" data-pdp-thumb-up
+              aria-label="Previous thumbnails">
+              <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+            </button>
+            <div class="pdp-thumbs__viewport">
+              <div class="pdp-thumbs__track" data-pdp-thumbs></div>
+            </div>
+            <button type="button" class="pdp-thumbs__nav pdp-thumbs__nav--down" data-pdp-thumb-down
+              aria-label="Next thumbnails">
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="pdp-stage">
+            <button type="button" class="pdp-stage__arrow pdp-stage__arrow--prev" data-pdp-prev
+              aria-label="Previous image">
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="pdp-stage__media">
+              <img src="assets/img/BS-1.png" alt="" width="900" height="900" decoding="async" data-pdp-main>
+            </div>
+            <button type="button" class="pdp-stage__arrow pdp-stage__arrow--next" data-pdp-next aria-label="Next image">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="pdp-info">
+          <div class="pdp-info__head">
+            <div class="pdp-info__titles">
+              <p class="pdp-info__brand">Raah</p>
+              <h1 class="pdp-info__title" data-pdp-title>Product</h1>
+              <p class="pdp-info__sku">SKU: <span data-pdp-sku>RAAH-000</span></p>
+            </div>
+            <div class="pdp-info__utils">
+              <button type="button" class="pdp-icon-btn" data-pdp-wish aria-label="Add to wishlist">
+                <i class="fa-regular fa-heart" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="pdp-icon-btn" data-pdp-share aria-label="Share">
+                <i class="fa-solid fa-share-nodes" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="pdp-price">
+            <span class="pdp-price__now" data-pdp-price>Rs. 0.00</span>
+            <span class="pdp-price__mrp">MRP: <del data-pdp-mrp>Rs. 0.00</del></span>
+            <span class="pdp-price__off" data-pdp-discount>(0% OFF)</span>
+          </div>
+          <p class="pdp-tax">Inclusive of all taxes</p>
+
+          <div class="pdp-block">
+            <div class="pdp-block__row">
+              <p class="pdp-block__label">Select Size(UK)</p>
+              <a href="#" class="pdp-size-guide">SIZE GUIDE</a>
+            </div>
+            <div class="pdp-sizes" data-pdp-sizes role="group" aria-label="Select size"></div>
+            <p class="pdp-notify">SIZE NOT AVAILABLE? <button type="button" data-pdp-notify>Notify Me</button></p>
+          </div>
+
+          <div class="pdp-block">
+            <p class="pdp-block__label pdp-block__label--caps">AVAILABLE COLORS</p>
+            <div class="pdp-colors" data-pdp-colors></div>
+            <p class="pdp-color-name" data-pdp-color-name></p>
+          </div>
+
+          <div class="pdp-cta">
+            <button type="button" class="pdp-cta__cart" data-pdp-add>ADD TO CART</button>
+            <button type="button" class="pdp-cta__checkout" data-pdp-buy>
+              <span class="pdp-cta__checkout-text">
+                <strong>QUICK CHECKOUT</strong>
+                <small>Extra 5% discount on prepaid orders</small>
+              </span>
+              <span class="pdp-cta__pays" aria-hidden="true">
+                <i class="fa-brands fa-cc-visa"></i>
+                <i class="fa-brands fa-cc-mastercard"></i>
+                <i class="fa-brands fa-cc-amex"></i>
+                <i class="fa-brands fa-cc-apple-pay"></i>
+              </span>
+            </button>
+          </div>
+
+          <div class="pdp-block">
+            <p class="pdp-block__label pdp-block__label--caps">AVAILABLE OFFERS</p>
+            <ul class="pdp-offers">
+              <li>Get 5% Extra Discount On Prepaid Orders for orders above Rs. 1000.</li>
+            </ul>
+          </div>
+
+          <div class="pdp-block">
+            <p class="pdp-block__label pdp-block__label--caps">CHECK DELIVERY DATE</p>
+            <form class="pdp-pincode" data-pdp-pincode>
+              <label class="visually-hidden" for="pdp-pincode">Pincode</label>
+              <input id="pdp-pincode" type="text" inputmode="numeric" maxlength="6" placeholder="CHECK PINCODE"
+                autocomplete="postal-code">
+              <button type="submit">CHECK</button>
+            </form>
+            <p class="pdp-pincode__msg" data-pdp-pincode-msg hidden></p>
+          </div>
+
+          <ul class="pdp-services">
+            <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> 100% Original</li>
+            <li><i class="fa-solid fa-truck" aria-hidden="true"></i> Free Delivery on items above Rs. 1000</li>
+            <li><i class="fa-solid fa-indian-rupee-sign" aria-hidden="true"></i> COD not applicable for orders below Rs.
+              1000 and for orders above Rs. 1999.</li>
+            <li><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Easy 15 days returns and refunds</li>
+          </ul>
+
+          <div class="pdp-accordion" data-pdp-accordion>
+            <div class="pdp-acc">
+              <button type="button" class="pdp-acc__btn" aria-expanded="false">
+                <span>Product Details</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pdp-acc__panel" hidden>
+                <p data-pdp-desc></p>
+              </div>
+            </div>
+            <div class="pdp-acc">
+              <button type="button" class="pdp-acc__btn" aria-expanded="false">
+                <span>Care Instruction</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pdp-acc__panel" hidden>
+                <p>Wipe with a clean, dry cloth. Avoid soaking. Store in a cool, dry place away from direct sunlight.
+                </p>
+              </div>
+            </div>
+            <div class="pdp-acc">
+              <button type="button" class="pdp-acc__btn" aria-expanded="false">
+                <span>Return and shipping policy</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pdp-acc__panel" hidden>
+                <p>Easy 15-day returns on unused products with original packaging. Standard shipping timelines apply
+                  based on pincode.</p>
+              </div>
+            </div>
+            <div class="pdp-acc">
+              <button type="button" class="pdp-acc__btn" aria-expanded="false">
+                <span>Other Details</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pdp-acc__panel" hidden>
+                <p data-pdp-other>Material: Premium synthetic / mesh upper · Closure: Lace-up · Warranty: 6 months
+                  manufacturing defect.</p>
+              </div>
+            </div>
+            <div class="pdp-acc">
+              <button type="button" class="pdp-acc__btn" aria-expanded="false">
+                <span>Consumer Complaint Contact</span>
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="pdp-acc__panel" hidden>
+                <p>Email: customercare@raah.com · Phone: 9667706012 (10.00AM to 7:00PM)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section class="pdp-reviews" aria-labelledby="pdp-reviews-heading">
+        <div class="pdp-reviews__head">
+          <h2 id="pdp-reviews-heading" class="pdp-reviews__title">Customer Reviews</h2>
+          <button type="button" class="pdp-reviews__write" data-pdp-write-review>Write a Review</button>
+        </div>
+
+        <div class="pdp-reviews__summary">
+          <div class="pdp-reviews__score">
+            <p class="pdp-reviews__avg" data-pdp-review-avg>4.6</p>
+            <div class="pdp-reviews__stars" role="img" aria-label="Rated 4.6 out of 5" data-pdp-review-stars>
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              <i class="fa-solid fa-star" aria-hidden="true"></i>
+              <i class="fa-solid fa-star-half-stroke" aria-hidden="true"></i>
+            </div>
+            <p class="pdp-reviews__count" data-pdp-review-count>Based on 42 reviews</p>
+          </div>
+
+          <div class="pdp-reviews__bars" aria-label="Rating breakdown" data-pdp-review-bars>
+            <div class="pdp-reviews__bar-row">
+              <span>5</span>
+              <div class="pdp-reviews__bar"><span style="width:68%"></span></div>
+              <span>68%</span>
+            </div>
+            <div class="pdp-reviews__bar-row">
+              <span>4</span>
+              <div class="pdp-reviews__bar"><span style="width:18%"></span></div>
+              <span>18%</span>
+            </div>
+            <div class="pdp-reviews__bar-row">
+              <span>3</span>
+              <div class="pdp-reviews__bar"><span style="width:8%"></span></div>
+              <span>8%</span>
+            </div>
+            <div class="pdp-reviews__bar-row">
+              <span>2</span>
+              <div class="pdp-reviews__bar"><span style="width:4%"></span></div>
+              <span>4%</span>
+            </div>
+            <div class="pdp-reviews__bar-row">
+              <span>1</span>
+              <div class="pdp-reviews__bar"><span style="width:2%"></span></div>
+              <span>2%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdp-reviews__list" data-pdp-review-list>
+          <article class="pdp-review">
+            <div class="pdp-review__top">
+              <div class="pdp-review__stars" role="img" aria-label="Rated 5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <time datetime="2026-07-18">18 Jul 2026</time>
+            </div>
+            <h3 class="pdp-review__title">Comfortable all-day wear</h3>
+            <p class="pdp-review__text">True to size and very cushioned. Walked around the office for hours without any
+              heel bite. Looks sharp with both chinos and jeans.</p>
+            <p class="pdp-review__author">Rahul M. <span>· Verified Buyer</span></p>
+          </article>
+
+          <article class="pdp-review">
+            <div class="pdp-review__top">
+              <div class="pdp-review__stars" role="img" aria-label="Rated 5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <time datetime="2026-07-09">9 Jul 2026</time>
+            </div>
+            <h3 class="pdp-review__title">Great finish &amp; colour</h3>
+            <p class="pdp-review__text">Colour matches the photos perfectly. Stitching is neat and the sole has good
+              grip. Packaging was neat and delivery was quick.</p>
+            <p class="pdp-review__author">Amit S. <span>· Verified Buyer</span></p>
+          </article>
+
+          <article class="pdp-review">
+            <div class="pdp-review__top">
+              <div class="pdp-review__stars" role="img" aria-label="Rated 4 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-regular fa-star" aria-hidden="true"></i>
+              </div>
+              <time datetime="2026-06-30">30 Jun 2026</time>
+            </div>
+            <h3 class="pdp-review__title">Good quality — size up if in between</h3>
+            <p class="pdp-review__text">Overall very happy. I usually wear UK 8 but went with 9 for a slightly roomier
+              fit and it worked perfectly after a short break-in.</p>
+            <p class="pdp-review__author">Karan P. <span>· Verified Buyer</span></p>
+          </article>
+
+          <article class="pdp-review">
+            <div class="pdp-review__top">
+              <div class="pdp-review__stars" role="img" aria-label="Rated 5 out of 5">
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+                <i class="fa-solid fa-star" aria-hidden="true"></i>
+              </div>
+              <time datetime="2026-06-14">14 Jun 2026</time>
+            </div>
+            <h3 class="pdp-review__title">Worth every rupee</h3>
+            <p class="pdp-review__text">Premium feel for the price. Lightweight, stylish, and holds up well for daily
+              city use. Will buy another colour soon.</p>
+            <p class="pdp-review__author">Nikhil R. <span>· Verified Buyer</span></p>
+          </article>
+        </div>
+      </section>
+
+      <section class="pdp-related" aria-labelledby="pdp-related-heading">
+        <h2 id="pdp-related-heading" class="pdp-related__title">You May Also Like</h2>
+        <div class="pdp-related__grid" data-pdp-related></div>
+        <div class="pdp-related__dots" data-pdp-related-dots aria-hidden="true"></div>
+      </section>
+    </div>
+
+    <aside class="pdp-recent" aria-label="Recently viewed">
+      <span>Recently Viewed</span>
+      <i class="fa-regular fa-clock" aria-hidden="true"></i>
+    </aside>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-benefits">
+      <div class="footer-benefits__inner">
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+          <span>Fast Delivery</span>
+        </div>
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-tag" aria-hidden="true"></i>
+          <span>15 days easy return</span>
+        </div>
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+          <span>Track Order</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-main__inner">
+        <div class="footer-col">
+          <h3 class="footer-col__title">What's In Store</h3>
+          <ul class="footer-col__links">
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html?cat=Men">Men</a></li>
+            <li><a href="shop.html?cat=Women">Women</a></li>
+            <li><a href="shop.html?cat=Kids">Kids</a></li>
+            <li><a href="#">Track Order</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col__title">Company Info &amp; Policies</h3>
+          <ul class="footer-col__links">
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Sneaker Care</a></li>
+            <li><a href="#">Corporate</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy &amp; Cookies Policy</a></li>
+            <li><a href="#">FAQ's</a></li>
+            <li><a href="#">Return &amp; Claim Policy</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Return/Exchange</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-col--contact">
+          <h3 class="footer-col__title">Get In Touch</h3>
+          <p class="footer-col__subtitle">Online Order</p>
+          <p class="footer-col__line">
+            Inquiry/Complaint: <strong>9667706012</strong> (10.00AM to 7:00PM)
+          </p>
+          <p class="footer-col__line">
+            Any Other queries: <strong>9667706012</strong> (10.00AM to 7:00PM)
+          </p>
+          <p class="footer-col__line">
+            Email:
+            <a href="mailto:customercare@raah.com">customercare@raah.com</a>
+          </p>
+          <p class="footer-col__note">
+            For Bulk/B2B/Corporate &amp; Institutional enquiries/orders, please
+            drop an email at
+            <a href="mailto:instt@raah.com">instt@raah.com</a>
+            &amp; we will connect with you within 2 working days.
+          </p>
+        </div>
+
+        <div class="footer-col footer-col--newsletter">
+          <h3 class="footer-col__title">Newsletter</h3>
+          <p class="footer-col__desc">
+            Sign up for exclusive offers, original stories, upcoming events and more.
+          </p>
+          <form class="footer-newsletter" action="#" method="post">
+            <label class="visually-hidden" for="footer-email-product">Email address</label>
+            <input id="footer-email-product" class="footer-newsletter__input" type="email" name="email"
+              placeholder="Enter email" autocomplete="email" required>
+            <button type="submit" class="footer-newsletter__btn">SIGN UP</button>
+          </form>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>

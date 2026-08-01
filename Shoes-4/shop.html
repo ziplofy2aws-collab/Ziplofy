@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Raah Footwear</title>
+  <link rel="icon" href="assets/img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Pacifico&family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/shop.css">
+</head>
+
+<body>
+
+  <header class="site-header" role="banner">
+
+    <!-- Announcement bar -->
+    <div class="announce-bar" role="region" aria-label="Promotions" data-announce>
+      <button type="button" class="announce-bar__arrow announce-bar__arrow--prev" aria-label="Previous announcement"
+        data-announce-prev>
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+      </button>
+
+      <div class="announce-bar__viewport">
+        <div class="announce-bar__track" data-announce-track>
+          <p class="announce-bar__msg is-active">
+            Raah Plus is right now available Online and Stores in Mumbai.
+            <a href="#">Join Now for Free</a>
+          </p>
+          <p class="announce-bar__msg">
+            Free shipping on orders above &#8377;2,999.
+            <a href="#">Shop Now</a>
+          </p>
+          <p class="announce-bar__msg">
+            New season drops are live — explore Men &amp; Women.
+            <a href="#">Discover More</a>
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="announce-bar__arrow announce-bar__arrow--next" aria-label="Next announcement"
+        data-announce-next>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <!-- Utility bar -->
+    <div class="utility-bar">
+      <div class="utility-bar__inner">
+        <ul class="utility-bar__list">
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+              <span>Login / Signup</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-regular fa-user" aria-hidden="true"></i>
+              <span>My Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+              <span>Track Order</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="utility-bar__link">
+              <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Main navigation -->
+    <div class="header-main">
+      <div class="header-main__inner">
+
+        <button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false"
+          aria-controls="mobile-nav" data-menu-toggle>
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+
+        <a href="index.html" class="brand-logo" aria-label="Raah home">
+          <img src="assets/img/logo.png" alt="Raah" width="160" height="48" decoding="async">
+        </a>
+
+        <nav class="main-nav" id="mobile-nav" aria-label="Primary" data-main-nav>
+          <ul class="main-nav__list">
+            <li><a href="shop.html?cat=Women">Women</a></li>
+            <li><a href="shop.html?cat=Men">Men</a></li>
+            <li><a href="shop.html?cat=Kids">Kids</a></li>
+            <li><a href="shop.html">Apparels</a></li>
+            <li><a href="shop.html">Collections</a></li>
+            <li><a href="shop.html?cat=Sports">Sports</a></li>
+            <li><a href="shop.html">Sale</a></li>
+          </ul>
+        </nav>
+
+        <div class="header-tools">
+          <form class="header-search" role="search" action="shop.html" method="get">
+            <label class="visually-hidden" for="header-search-shop">Search</label>
+            <input id="header-search-shop" class="header-search__input" type="search" name="q" placeholder="Search"
+              autocomplete="off">
+            <button type="submit" class="header-search__btn" aria-label="Search">
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <a href="#" class="header-cart" aria-label="Shopping bag">
+            <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
+            <span class="header-cart__badge" data-cart-count>0</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="nav-overlay" data-nav-overlay hidden></div>
+  </header>
+
+  <main id="main-content" class="shop-page">
+    <div class="shop-page__inner">
+      <div class="shop-layout">
+        <aside class="shop-sidebar" id="shop-filters" data-shop-filters>
+          <nav class="shop-crumbs" aria-label="Breadcrumb">
+            <a href="index.html">HOME</a>
+            <span>/</span>
+            <a href="shop.html">SHOP</a>
+            <span>/</span>
+            <span data-shop-crumb>ALL SHOES</span>
+          </nav>
+
+          <div class="shop-accordion" data-shop-accordion>
+            <div class="shop-acc is-open" data-acc>
+              <button type="button" class="shop-acc__btn" data-acc-toggle aria-expanded="true">
+                <span>PRICE</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="shop-acc__panel" data-filter-price>
+                <label class="shop-check"><input type="checkbox" value="0-1500"> Under Rs. 1,500</label>
+                <label class="shop-check"><input type="checkbox" value="1500-2000"> Rs. 1,500 – 2,000</label>
+                <label class="shop-check"><input type="checkbox" value="2000-2500"> Rs. 2,000 – 2,500</label>
+                <label class="shop-check"><input type="checkbox" value="2500-99999"> Above Rs. 2,500</label>
+              </div>
+            </div>
+
+            <div class="shop-acc" data-acc>
+              <button type="button" class="shop-acc__btn" data-acc-toggle aria-expanded="false">
+                <span>DISCOUNT</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="shop-acc__panel" data-filter-discount hidden>
+                <label class="shop-check"><input type="checkbox" value="30"> 30% &amp; above</label>
+                <label class="shop-check"><input type="checkbox" value="40"> 40% &amp; above</label>
+                <label class="shop-check"><input type="checkbox" value="50"> 50% &amp; above</label>
+                <label class="shop-check"><input type="checkbox" value="60"> 60% &amp; above</label>
+              </div>
+            </div>
+
+            <div class="shop-acc" data-acc>
+              <button type="button" class="shop-acc__btn" data-acc-toggle aria-expanded="false">
+                <span>SIZE</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="shop-acc__panel shop-acc__panel--sizes" data-filter-size hidden></div>
+            </div>
+
+            <div class="shop-acc" data-acc>
+              <button type="button" class="shop-acc__btn" data-acc-toggle aria-expanded="false">
+                <span>GENDER</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="shop-acc__panel" data-filter-gender hidden>
+                <label class="shop-check"><input type="checkbox" value="Men"> Men</label>
+                <label class="shop-check"><input type="checkbox" value="Women"> Women</label>
+                <label class="shop-check"><input type="checkbox" value="Kids"> Kids</label>
+              </div>
+            </div>
+
+            <div class="shop-acc" data-acc>
+              <button type="button" class="shop-acc__btn" data-acc-toggle aria-expanded="false">
+                <span>COLOR</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="shop-acc__panel" data-filter-color hidden></div>
+            </div>
+
+            <div class="shop-acc" data-acc>
+              <button type="button" class="shop-acc__btn" data-acc-toggle aria-expanded="false">
+                <span>PRODUCT TYPE</span>
+                <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              </button>
+              <div class="shop-acc__panel" data-filter-type hidden></div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="shop-main">
+          <header class="shop-toolbar">
+            <div class="shop-toolbar__views" role="group" aria-label="View mode">
+              <button type="button" class="shop-view is-active" data-view="grid" aria-label="Grid view"
+                aria-pressed="true">
+                <i class="fa-solid fa-border-all" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="shop-view" data-view="list" aria-label="List view" aria-pressed="false">
+                <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="shop-toolbar__center">
+              <h1 class="shop-toolbar__title" data-shop-title>All Shoes</h1>
+              <p class="shop-toolbar__count" data-shop-count>0 products</p>
+            </div>
+
+            <div class="shop-toolbar__right">
+              <button type="button" class="shop-filter-toggle" data-shop-filter-toggle aria-expanded="false"
+                aria-controls="shop-filters">
+                <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+                Filters
+              </button>
+              <label class="shop-sort-wrap">
+                <span class="visually-hidden">Sort</span>
+                <select class="shop-sort" data-shop-sort aria-label="Sort products">
+                  <option value="recommended">Sort</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="discount">Highest Discount</option>
+                  <option value="rating">Top Rated</option>
+                </select>
+              </label>
+            </div>
+          </header>
+
+          <div class="shop-grid" data-shop-grid data-view-mode="grid"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-benefits">
+      <div class="footer-benefits__inner">
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-truck-fast" aria-hidden="true"></i>
+          <span>Fast Delivery</span>
+        </div>
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-tag" aria-hidden="true"></i>
+          <span>15 days easy return</span>
+        </div>
+        <div class="footer-benefits__item">
+          <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+          <span>Track Order</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-main__inner">
+        <div class="footer-col">
+          <h3 class="footer-col__title">What's In Store</h3>
+          <ul class="footer-col__links">
+            <li><a href="shop.html">New Arrivals</a></li>
+            <li><a href="shop.html?cat=Men">Men</a></li>
+            <li><a href="shop.html?cat=Women">Women</a></li>
+            <li><a href="shop.html?cat=Kids">Kids</a></li>
+            <li><a href="#">Track Order</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3 class="footer-col__title">Company Info &amp; Policies</h3>
+          <ul class="footer-col__links">
+            <li><a href="#">Blogs</a></li>
+            <li><a href="#">Sneaker Care</a></li>
+            <li><a href="#">Corporate</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Privacy &amp; Cookies Policy</a></li>
+            <li><a href="#">FAQ's</a></li>
+            <li><a href="#">Return &amp; Claim Policy</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Return/Exchange</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Shipping Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col footer-col--contact">
+          <h3 class="footer-col__title">Get In Touch</h3>
+          <p class="footer-col__subtitle">Online Order</p>
+          <p class="footer-col__line">
+            Inquiry/Complaint: <strong>9667706012</strong> (10.00AM to 7:00PM)
+          </p>
+          <p class="footer-col__line">
+            Any Other queries: <strong>9667706012</strong> (10.00AM to 7:00PM)
+          </p>
+          <p class="footer-col__line">
+            Email:
+            <a href="mailto:customercare@raah.com">customercare@raah.com</a>
+          </p>
+          <p class="footer-col__note">
+            For Bulk/B2B/Corporate &amp; Institutional enquiries/orders, please
+            drop an email at
+            <a href="mailto:instt@raah.com">instt@raah.com</a>
+            &amp; we will connect with you within 2 working days.
+          </p>
+        </div>
+
+        <div class="footer-col footer-col--newsletter">
+          <h3 class="footer-col__title">Newsletter</h3>
+          <p class="footer-col__desc">
+            Sign up for exclusive offers, original stories, upcoming events and more.
+          </p>
+          <form class="footer-newsletter" action="#" method="post">
+            <label class="visually-hidden" for="footer-email-shop">Email address</label>
+            <input id="footer-email-shop" class="footer-newsletter__input" type="email" name="email"
+              placeholder="Enter email" autocomplete="email" required>
+            <button type="submit" class="footer-newsletter__btn">SIGN UP</button>
+          </form>
+          <div class="footer-social" aria-label="Social media">
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook" aria-hidden="true"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" aria-label="X"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+
+</html>
