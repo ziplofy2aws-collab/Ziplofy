@@ -146,6 +146,19 @@ function notFoundMainSection(): NonNullable<
 /** Inject 404 template schema (404 message + featured collection carousel). */
 export function withNotFoundPageSchema(schema: EditorSchemaDoc): EditorSchemaDoc {
   const templates = schema.templates ?? [];
+  const existing = templates.find((tpl) => tpl.id === NOT_FOUND_TEMPLATE_ID);
+  /**
+   * Catalog / remote packs already declare simple 404 section fields (styled-text, etc.).
+   * Do not replace them with Create Theme container layout / alignment chrome.
+   */
+  if (
+    existing?.sections?.some(
+      (section) => (section.settingsFields?.length ?? 0) > 0 || (section.blocks?.length ?? 0) > 0
+    )
+  ) {
+    return schema;
+  }
+
   const index = templates.find((tpl) => tpl.id === 'index');
   const featured = index?.sections?.find((s) => s.id === NOT_FOUND_FEATURED_COLLECTION_SECTION_ID);
 

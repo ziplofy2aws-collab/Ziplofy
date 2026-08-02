@@ -405,11 +405,7 @@ export function isAuthChromeHiddenPreviewPage(page: string): boolean {
 
 /** Pages that must use create-theme composer preview (not remote theme.js). */
 export function usesCreateThemeComposerPreview(page: string): boolean {
-  return (
-    isPasswordPreviewPage(page) ||
-    page === '404' ||
-    isPageTemplatePreviewPage(page)
-  );
+  return isPasswordPreviewPage(page) || isPageTemplatePreviewPage(page);
 }
 
 export function previewPageToTemplateId(page: string): string {

@@ -126,6 +126,14 @@ function normalize404SectionOrder(order: string[]): string[] {
   return [...next, ...rest];
 }
 
+/** Catalog remote 404: flat settings only — no Create Theme heading/message/button blocks. */
+function isCatalogNotFoundMainSection(section: Record<string, unknown> | undefined): boolean {
+  if (!section || typeof section !== 'object') return false;
+  const blocks = section.blocks;
+  if (!blocks || typeof blocks !== 'object') return true;
+  return Object.keys(blocks as Record<string, unknown>).length === 0;
+}
+
 /** Seed / upgrade 404 page: 404 message section + featured collection carousel. */
 export function ensureNotFoundPageTemplateBlocks(config: Record<string, unknown>): boolean {
   if (!config.templates || typeof config.templates !== 'object') {
@@ -156,6 +164,16 @@ export function ensureNotFoundPageTemplateBlocks(config: Record<string, unknown>
   if (!sections[NOT_FOUND_MAIN_SECTION_ID]) {
     sections[NOT_FOUND_MAIN_SECTION_ID] = defaultNotFoundMainSection();
     changed = true;
+  } else if (isCatalogNotFoundMainSection(sections[NOT_FOUND_MAIN_SECTION_ID])) {
+    // Keep pack/catalog 404 copy settings — do not inject Create Theme layout blocks.
+    const order = Array.isArray(tpl.section_order)
+      ? (tpl.section_order as unknown[]).map(String)
+      : [];
+    if (!order.includes(NOT_FOUND_MAIN_SECTION_ID)) {
+      tpl.section_order = [NOT_FOUND_MAIN_SECTION_ID, ...order];
+      changed = true;
+    }
+    return changed;
   } else {
     const existing = sections[NOT_FOUND_MAIN_SECTION_ID];
     const defaults = defaultNotFoundMainSection();

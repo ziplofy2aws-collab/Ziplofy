@@ -1107,7 +1107,50 @@
     {
       "id": "404",
       "label": "404",
-      "sections": []
+      "sections": [
+        {
+          "id": "not_found_main",
+          "type": "not-found-main",
+          "label": "Not found",
+          "settingsFields": [
+            {
+              "path": "templates.404.sections.not_found_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.message",
+              "type": "textarea",
+              "label": "Message",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.homeLabel",
+              "type": "text",
+              "label": "Home button",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.shopLabel",
+              "type": "text",
+              "label": "Shop button",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "collection",

@@ -346,8 +346,22 @@
   },
   "templates": {
     "404": {
-      "sections": {},
-      "section_order": []
+      "sections": {
+        "not_found_main": {
+          "type": "not-found-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "404",
+            "title": "Page not found",
+            "message": "The page you are looking for may have moved or no longer exists.",
+            "homeLabel": "Back to home",
+            "shopLabel": "Browse watches"
+          }
+        }
+      },
+      "section_order": [
+        "not_found_main"
+      ]
     },
     "index": {
       "sections": {
