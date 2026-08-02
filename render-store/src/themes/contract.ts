@@ -16,6 +16,8 @@ export interface ThemeContract {
   ForgotPasswordPage?: ThemeComponent;
   ProfilePage: ThemeComponent;
   OrdersPage: ThemeComponent;
+  /** `/my-orders/:orderId` */
+  OrderDetailsPage?: ThemeComponent;
   PreferencesPage: ThemeComponent;
   CartPage: ThemeComponent;
   /** `/search` */

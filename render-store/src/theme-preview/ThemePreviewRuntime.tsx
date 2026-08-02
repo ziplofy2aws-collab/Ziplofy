@@ -146,6 +146,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
   const Forgot = contract.ForgotPasswordPage ?? contract.LoginPage;
   const Profile = contract.ProfilePage;
   const Orders = contract.OrdersPage;
+  const OrderDetails = contract.OrderDetailsPage;
   const Preferences = contract.PreferencesPage;
   const Search = contract.SearchPage ?? Home;
   const CollectionsList = contract.CollectionsListPage ?? Home;
@@ -175,7 +176,10 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/auth/forgot" element={<Forgot />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-orders" element={<Orders />} />
-        <Route path="/my-orders/:orderId" element={<CheckoutOrderStatusPage />} />
+        <Route
+          path="/my-orders/:orderId"
+          element={OrderDetails ? <OrderDetails /> : <CheckoutOrderStatusPage />}
+        />
         <Route path="/preferences" element={<Preferences />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<CheckoutPage />} />

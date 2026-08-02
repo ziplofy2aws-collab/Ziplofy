@@ -33,6 +33,7 @@ import { StyledTextFieldRow } from './StyledTextFieldRow';
 import {
   filterCatalogSettingsFields,
 } from './catalog-text-style.utils';
+import { catalogImageStyleCompanionPaths } from './catalog-image-style.utils';
 import {
   isProductsCategorySection,
   sidebarNodeSectionKey,
@@ -478,8 +479,17 @@ function ImagePickerFieldRow({
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
   const url = fieldValueAsString(values, field);
   const hasImage = Boolean(url.trim());
+  const companions = catalogImageStyleCompanionPaths(field.path);
+  const cornerRadius = String(values[companions.CornerRadius] ?? '');
+  const overlayColor = String(values[companions.OverlayColor] ?? '');
+  const overlayOpacity = String(values[companions.OverlayOpacity] ?? '');
+  const gradientEnabled = Boolean(values[companions.GradientEnabled]);
+  const gradientFrom = String(values[companions.GradientFrom] ?? '');
+  const gradientTo = String(values[companions.GradientTo] ?? '');
+  const gradientDirection = String(values[companions.GradientDirection] ?? 'to-bottom') || 'to-bottom';
 
   return (
     <>
@@ -529,6 +539,15 @@ function ImagePickerFieldRow({
                 <PencilSquareIcon className="h-4 w-4" />
               </button>
             ) : null}
+            {hasImage ? (
+              <button
+                type="button"
+                className="text-[12px] text-[#005bd3] hover:underline"
+                onClick={() => onFieldChange(field.path, 'text', '')}
+              >
+                Clear
+              </button>
+            ) : null}
           </div>
           <button
             type="button"
@@ -538,6 +557,145 @@ function ImagePickerFieldRow({
             Explore free images
           </button>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setStyleOpen((v) => !v)}
+          className="flex w-full items-center justify-between rounded-lg border border-[#e1e1e1] bg-[#fafafa] px-3 py-2 text-left text-[12px] font-semibold text-gray-700 hover:bg-[#f3f3f3]"
+          aria-expanded={styleOpen}
+        >
+          <span>Image style</span>
+          <ChevronDownIcon className={`h-4 w-4 transition-transform ${styleOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {styleOpen ? (
+          <div className="space-y-3 rounded-lg border border-[#e8e8e8] bg-white p-3">
+            <label className="block space-y-1">
+              <span className="text-[12px] font-medium text-gray-700">Corner radius (px)</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min={0}
+                  max={40}
+                  step={1}
+                  value={cornerRadius ? Number(cornerRadius) || 0 : 0}
+                  onChange={(e) => onFieldChange(companions.CornerRadius, 'number', e.target.value)}
+                  className="min-w-0 flex-1"
+                />
+                <input
+                  type="number"
+                  min={0}
+                  max={40}
+                  value={cornerRadius}
+                  placeholder="0"
+                  onChange={(e) => onFieldChange(companions.CornerRadius, 'number', e.target.value)}
+                  className="h-8 w-16 rounded border border-[#c9cccf] px-2 text-[12px]"
+                />
+              </div>
+            </label>
+
+            <label className="block space-y-1">
+              <span className="text-[12px] font-medium text-gray-700">Overlay color</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={/^#[0-9a-fA-F]{6}$/.test(overlayColor) ? overlayColor : '#000000'}
+                  onChange={(e) => onFieldChange(companions.OverlayColor, 'color', e.target.value)}
+                  className="h-8 w-10 cursor-pointer rounded border border-[#c9cccf] bg-white p-0.5"
+                />
+                <input
+                  type="text"
+                  value={overlayColor}
+                  placeholder="#000000"
+                  onChange={(e) => onFieldChange(companions.OverlayColor, 'color', e.target.value)}
+                  className="min-h-8 min-w-0 flex-1 rounded border border-[#c9cccf] px-2 text-[12px]"
+                />
+              </div>
+            </label>
+
+            <label className="block space-y-1">
+              <span className="text-[12px] font-medium text-gray-700">Overlay opacity</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={overlayOpacity ? Number(overlayOpacity) || 0 : 0}
+                  onChange={(e) => onFieldChange(companions.OverlayOpacity, 'number', e.target.value)}
+                  className="min-w-0 flex-1"
+                />
+                <span className="w-10 text-right text-[11px] text-gray-500">
+                  {overlayOpacity ? `${overlayOpacity}%` : '0%'}
+                </span>
+              </div>
+            </label>
+
+            <label className="flex items-center justify-between gap-3 text-[12px] font-medium text-gray-700">
+              <span>Gradient overlay</span>
+              <input
+                type="checkbox"
+                checked={gradientEnabled}
+                onChange={(e) => onFieldChange(companions.GradientEnabled, 'boolean', e.target.checked)}
+                className="h-4 w-4 rounded border-[#c9cccf]"
+              />
+            </label>
+
+            {gradientEnabled ? (
+              <>
+                <label className="block space-y-1">
+                  <span className="text-[12px] font-medium text-gray-700">Gradient from</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={/^#[0-9a-fA-F]{6}$/.test(gradientFrom) ? gradientFrom : '#000000'}
+                      onChange={(e) => onFieldChange(companions.GradientFrom, 'color', e.target.value)}
+                      className="h-8 w-10 cursor-pointer rounded border border-[#c9cccf] bg-white p-0.5"
+                    />
+                    <input
+                      type="text"
+                      value={gradientFrom}
+                      placeholder="#000000"
+                      onChange={(e) => onFieldChange(companions.GradientFrom, 'color', e.target.value)}
+                      className="min-h-8 min-w-0 flex-1 rounded border border-[#c9cccf] px-2 text-[12px]"
+                    />
+                  </div>
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-[12px] font-medium text-gray-700">Gradient to</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={/^#[0-9a-fA-F]{6}$/.test(gradientTo) ? gradientTo : '#ffffff'}
+                      onChange={(e) => onFieldChange(companions.GradientTo, 'color', e.target.value)}
+                      className="h-8 w-10 cursor-pointer rounded border border-[#c9cccf] bg-white p-0.5"
+                    />
+                    <input
+                      type="text"
+                      value={gradientTo}
+                      placeholder="transparent"
+                      onChange={(e) => onFieldChange(companions.GradientTo, 'color', e.target.value)}
+                      className="min-h-8 min-w-0 flex-1 rounded border border-[#c9cccf] px-2 text-[12px]"
+                    />
+                  </div>
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-[12px] font-medium text-gray-700">Gradient direction</span>
+                  <select
+                    value={gradientDirection}
+                    onChange={(e) => onFieldChange(companions.GradientDirection, 'text', e.target.value)}
+                    className="h-9 w-full rounded border border-[#c9cccf] bg-white px-2 text-[12px]"
+                  >
+                    <option value="to-top">To top</option>
+                    <option value="to-bottom">To bottom</option>
+                    <option value="to-left">To left</option>
+                    <option value="to-right">To right</option>
+                  </select>
+                </label>
+              </>
+            ) : null}
+          </div>
+        ) : null}
       </div>
       <ThemeEditorImagePickerModal
         open={pickerOpen}

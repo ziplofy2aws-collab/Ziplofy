@@ -256,12 +256,18 @@ export function existingTemplateSectionIds(
   tplId: string
 ): string[] {
   const tpl = getNested(config ?? {}, ['templates', tplId]) as
-    | { section_order?: string[]; sections?: Record<string, unknown> }
+    | { section_order?: string[]; order?: string[]; sections?: Record<string, unknown> }
     | undefined;
   const sections = tpl?.sections ?? {};
   const keys = new Set(Object.keys(sections));
-  if (Array.isArray(tpl?.section_order)) {
-    return tpl.section_order.map((id) => String(id)).filter((id) => keys.has(id));
+  const preferred = Array.isArray(tpl?.section_order)
+    ? tpl!.section_order
+    : Array.isArray(tpl?.order)
+      ? tpl!.order
+      : null;
+  if (preferred && preferred.length > 0) {
+    const fromOrder = preferred.map((id) => String(id)).filter((id) => keys.has(id));
+    if (fromOrder.length > 0) return fromOrder;
   }
   return Object.keys(sections).filter((id) => keys.has(id));
 }
@@ -303,14 +309,24 @@ export function sanitizeThemeConfigStructure(config: Record<string, unknown>): v
 
   const templates = (config.templates ?? {}) as Record<
     string,
-    { sections?: Record<string, unknown>; section_order?: string[] }
+    { sections?: Record<string, unknown>; section_order?: string[]; order?: string[] }
   >;
-  for (const [tplId, tpl] of Object.entries(templates)) {
+  for (const [, tpl] of Object.entries(templates)) {
     const sections = tpl.sections ?? {};
     const keys = new Set(Object.keys(sections));
-    const order = Array.isArray(tpl.section_order) ? tpl.section_order : [];
-    const next = order.filter((id) => keys.has(id));
+    const legacyOrder = Array.isArray(tpl.order) ? tpl.order.map((id) => String(id)) : [];
+    const explicitOrder = Array.isArray(tpl.section_order)
+      ? tpl.section_order.map((id) => String(id))
+      : [];
+    const sourceOrder =
+      explicitOrder.length > 0
+        ? explicitOrder
+        : legacyOrder.length > 0
+          ? legacyOrder
+          : Object.keys(sections);
+    const next = sourceOrder.filter((id) => keys.has(id));
     tpl.section_order = next;
+    if ('order' in tpl) delete tpl.order;
     for (const id of Object.keys(sections)) {
       if (!next.includes(id)) {
         delete sections[id];
@@ -794,10 +810,10 @@ export function mergeTemplateSectionBlueprintsFromPack(
   templateId: string
 ): void {
   const templates = config.templates as
-    | Record<string, { sections?: Record<string, unknown>; section_order?: string[] }>
+    | Record<string, { sections?: Record<string, unknown>; section_order?: string[]; order?: string[] }>
     | undefined;
   const defTemplates = packDefault.templates as
-    | Record<string, { sections?: Record<string, unknown>; section_order?: string[] }>
+    | Record<string, { sections?: Record<string, unknown>; section_order?: string[]; order?: string[] }>
     | undefined;
   if (!templates?.[templateId] || !defTemplates?.[templateId]?.sections) return;
 
@@ -809,11 +825,27 @@ export function mergeTemplateSectionBlueprintsFromPack(
       tpl.sections[sectionId] = JSON.parse(JSON.stringify(defSec)) as Record<string, unknown>;
     }
   }
-  if (!Array.isArray(tpl.section_order)) {
-    tpl.section_order = defTemplates[templateId].section_order
-      ? [...(defTemplates[templateId].section_order ?? [])]
-      : [];
+
+  const packOrder =
+    (Array.isArray(defTemplates[templateId].section_order) &&
+      defTemplates[templateId].section_order!.length > 0
+      ? defTemplates[templateId].section_order
+      : Array.isArray(defTemplates[templateId].order) && defTemplates[templateId].order!.length > 0
+        ? defTemplates[templateId].order
+        : null) ?? null;
+
+  const hasUsableOrder =
+    (Array.isArray(tpl.section_order) && tpl.section_order.length > 0) ||
+    (Array.isArray(tpl.order) && tpl.order.length > 0);
+
+  if (!hasUsableOrder) {
+    tpl.section_order = packOrder
+      ? [...packOrder]
+      : Object.keys(tpl.sections ?? {});
+  } else if (!Array.isArray(tpl.section_order) || tpl.section_order.length === 0) {
+    tpl.section_order = Array.isArray(tpl.order) ? [...tpl.order] : packOrder ? [...packOrder] : [];
   }
+  if ('order' in tpl) delete tpl.order;
 }
 
 function ensureTemplateInConfig(

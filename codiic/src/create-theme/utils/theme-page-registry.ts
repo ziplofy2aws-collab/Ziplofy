@@ -348,6 +348,14 @@ export const THEME_PAGE_REGISTRY: ThemePageRegistryEntry[] = [
     routes: [{ path: '/my-orders', templateId: 'orders' }],
   },
   {
+    pageId: 'order_details',
+    templateId: 'order_details',
+    label: 'Order details',
+    icon: 'orders',
+    previewPath: '/my-orders/preview-order-2401',
+    routes: [{ path: '/my-orders/:orderId', templateId: 'order_details' }],
+  },
+  {
     pageId: 'preferences',
     templateId: 'preferences',
     label: 'Preferences',
@@ -369,6 +377,7 @@ const MANIFEST_TEMPLATE_IDS = new Set([
   'forgot_password',
   'profile',
   'orders',
+  'order_details',
   'preferences',
 ]);
 
@@ -379,6 +388,19 @@ export function isPasswordTemplateId(templateId: string): boolean {
 
 export function isPasswordPreviewPage(page: string): boolean {
   return page === 'password' || isPasswordTemplateId(previewPageToTemplateId(page));
+}
+
+/**
+ * Auth templates render without store header/footer (`hideChrome`).
+ * Sidebar must not expose Header / Footer editing for these pages.
+ */
+export function isAuthChromeHiddenTemplateId(templateId: string): boolean {
+  const id = templateId.split('.')[0] || templateId;
+  return id === 'login' || id === 'signup' || id === 'forgot_password';
+}
+
+export function isAuthChromeHiddenPreviewPage(page: string): boolean {
+  return isAuthChromeHiddenTemplateId(previewPageToTemplateId(page));
 }
 
 /** Pages that must use create-theme composer preview (not remote theme.js). */

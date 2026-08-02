@@ -67,11 +67,22 @@ const StorefrontOrdersRoute = () => (
   </CheckoutAuthRequiredRoute>
 );
 
-const StorefrontOrderStatusRoute = () => (
-  <CheckoutAuthRequiredRoute>
-    <CheckoutOrderStatusPage />
-  </CheckoutAuthRequiredRoute>
-);
+const StorefrontOrderStatusRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.OrderDetailsPage;
+  if (Page) {
+    return (
+      <CheckoutAuthRequiredRoute>
+        <Page />
+      </CheckoutAuthRequiredRoute>
+    );
+  }
+  return (
+    <CheckoutAuthRequiredRoute>
+      <CheckoutOrderStatusPage />
+    </CheckoutAuthRequiredRoute>
+  );
+};
 
 const StorefrontPreferencesRoute = () => {
   const theme = useLoadedThemeContract();

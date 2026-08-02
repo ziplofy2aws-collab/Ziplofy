@@ -26,7 +26,7 @@ const ROUTE_SPECS = listThemePageRouteSpecs();
 
 /** Auth pages use checkout editor UI — not theme JSON templates. */
 const CHECKOUT_AUTH_PATHS = new Set(['/auth/login', '/auth/signup']);
-const CHECKOUT_PROFILE_PATHS = new Set(['/my-orders', '/profile']);
+const CHECKOUT_PROFILE_PATHS = new Set(['/my-orders', '/my-orders/:orderId', '/profile']);
 
 export function renderCheckoutAuthRoutes(): ReactElement[] {
   return [

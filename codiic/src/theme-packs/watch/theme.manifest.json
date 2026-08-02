@@ -26,7 +26,8 @@
     "signup",
     "forgot_password",
     "profile",
-    "orders"
+    "orders",
+    "order_details"
   ],
   "capabilities": {
     "sections": true,

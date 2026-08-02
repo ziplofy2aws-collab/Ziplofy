@@ -361,7 +361,549 @@
     {
       "id": "index",
       "label": "Home page",
-      "sections": []
+      "sections": [
+        {
+          "id": "hero_banner",
+          "type": "hero-banner",
+          "label": "Banner",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1Eyebrow",
+              "type": "text",
+              "label": "Slide 1 \u2014 Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1Title",
+              "type": "text",
+              "label": "Slide 1 \u2014 Heading",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1Tagline",
+              "type": "text",
+              "label": "Slide 1 \u2014 Tagline",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1PrimaryLabel",
+              "type": "text",
+              "label": "Slide 1 \u2014 Primary button",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1PrimaryUrl",
+              "type": "text",
+              "label": "Slide 1 \u2014 Primary link",
+              "widget": "url",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1SecondaryLabel",
+              "type": "text",
+              "label": "Slide 1 \u2014 Secondary button",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1SecondaryUrl",
+              "type": "text",
+              "label": "Slide 1 \u2014 Secondary link",
+              "widget": "url",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1ImageUrl",
+              "type": "text",
+              "label": "Slide 1 \u2014 Desktop image",
+              "widget": "image",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1MobileImageUrl",
+              "type": "text",
+              "label": "Slide 1 \u2014 Mobile image",
+              "widget": "image",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2Eyebrow",
+              "type": "text",
+              "label": "Slide 2 \u2014 Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2Title",
+              "type": "text",
+              "label": "Slide 2 \u2014 Heading",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2Tagline",
+              "type": "text",
+              "label": "Slide 2 \u2014 Tagline",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2PrimaryLabel",
+              "type": "text",
+              "label": "Slide 2 \u2014 Primary button",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2PrimaryUrl",
+              "type": "text",
+              "label": "Slide 2 \u2014 Primary link",
+              "widget": "url",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2SecondaryLabel",
+              "type": "text",
+              "label": "Slide 2 \u2014 Secondary button",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2SecondaryUrl",
+              "type": "text",
+              "label": "Slide 2 \u2014 Secondary link",
+              "widget": "url",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2ImageUrl",
+              "type": "text",
+              "label": "Slide 2 \u2014 Desktop image",
+              "widget": "image",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2MobileImageUrl",
+              "type": "text",
+              "label": "Slide 2 \u2014 Mobile image",
+              "widget": "image",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3Eyebrow",
+              "type": "text",
+              "label": "Slide 3 \u2014 Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3Title",
+              "type": "text",
+              "label": "Slide 3 \u2014 Heading",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3Tagline",
+              "type": "text",
+              "label": "Slide 3 \u2014 Tagline",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3PrimaryLabel",
+              "type": "text",
+              "label": "Slide 3 \u2014 Primary button",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3PrimaryUrl",
+              "type": "text",
+              "label": "Slide 3 \u2014 Primary link",
+              "widget": "url",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3SecondaryLabel",
+              "type": "text",
+              "label": "Slide 3 \u2014 Secondary button",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3SecondaryUrl",
+              "type": "text",
+              "label": "Slide 3 \u2014 Secondary link",
+              "widget": "url",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3ImageUrl",
+              "type": "text",
+              "label": "Slide 3 \u2014 Desktop image",
+              "widget": "image",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3MobileImageUrl",
+              "type": "text",
+              "label": "Slide 3 \u2014 Mobile image",
+              "widget": "image",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4Eyebrow",
+              "type": "text",
+              "label": "Slide 4 \u2014 Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4Title",
+              "type": "text",
+              "label": "Slide 4 \u2014 Heading",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4Tagline",
+              "type": "text",
+              "label": "Slide 4 \u2014 Tagline",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4PrimaryLabel",
+              "type": "text",
+              "label": "Slide 4 \u2014 Primary button",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4PrimaryUrl",
+              "type": "text",
+              "label": "Slide 4 \u2014 Primary link",
+              "widget": "url",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4SecondaryLabel",
+              "type": "text",
+              "label": "Slide 4 \u2014 Secondary button",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4SecondaryUrl",
+              "type": "text",
+              "label": "Slide 4 \u2014 Secondary link",
+              "widget": "url",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4ImageUrl",
+              "type": "text",
+              "label": "Slide 4 \u2014 Desktop image",
+              "widget": "image",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4MobileImageUrl",
+              "type": "text",
+              "label": "Slide 4 \u2014 Mobile image",
+              "widget": "image",
+              "group": "Slide 4",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "watch_collection",
+          "type": "watch-collection",
+          "label": "New Collection",
+          "category": "products",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.watch_collection.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.lead",
+              "type": "textarea",
+              "label": "Description",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.card1ProductId",
+              "type": "text",
+              "label": "Card 1 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.card2ProductId",
+              "type": "text",
+              "label": "Card 2 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.card3ProductId",
+              "type": "text",
+              "label": "Card 3 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.card4ProductId",
+              "type": "text",
+              "label": "Card 4 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "engineering",
+          "type": "engineering",
+          "label": "Engineering Meets Elegance",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.engineering.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.mediaImageUrl",
+              "type": "text",
+              "label": "Feature image",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature1Title",
+              "type": "text",
+              "label": "Feature 1 title",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature1Text",
+              "type": "textarea",
+              "label": "Feature 1 text",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature2Title",
+              "type": "text",
+              "label": "Feature 2 title",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature2Text",
+              "type": "textarea",
+              "label": "Feature 2 text",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature3Title",
+              "type": "text",
+              "label": "Feature 3 title",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature3Text",
+              "type": "textarea",
+              "label": "Feature 3 text",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "instagram",
+          "type": "instagram",
+          "label": "Follow us on Instagram",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.instagram.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.ctaLabel",
+              "type": "text",
+              "label": "CTA label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.ctaUrl",
+              "type": "text",
+              "label": "CTA link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileAImageUrl",
+              "type": "text",
+              "label": "Image A (tall left)",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileALink",
+              "type": "text",
+              "label": "Image A link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileBImageUrl",
+              "type": "text",
+              "label": "Image B",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileBLink",
+              "type": "text",
+              "label": "Image B link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileCImageUrl",
+              "type": "text",
+              "label": "Image C (tall center)",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileCLink",
+              "type": "text",
+              "label": "Image C link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileDImageUrl",
+              "type": "text",
+              "label": "Image D",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileDLink",
+              "type": "text",
+              "label": "Image D link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileEImageUrl",
+              "type": "text",
+              "label": "Image E",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileELink",
+              "type": "text",
+              "label": "Image E link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileFImageUrl",
+              "type": "text",
+              "label": "Image F",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileFLink",
+              "type": "text",
+              "label": "Image F link",
+              "widget": "url",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "product",
@@ -753,48 +1295,74 @@
       "sections": [
         {
           "id": "login_main",
+          "type": "login-main",
           "label": "Login form",
           "settingsFields": [
             {
               "path": "templates.login.sections.login_main.settings.eyebrow",
               "type": "text",
               "label": "Eyebrow",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.login.sections.login_main.settings.title",
               "type": "text",
               "label": "Heading",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.login.sections.login_main.settings.subtitle",
-              "type": "text",
+              "type": "textarea",
               "label": "Subtext",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.emailPlaceholder",
+              "type": "text",
+              "label": "Email placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.passwordPlaceholder",
+              "type": "text",
+              "label": "Password placeholder",
               "sidebar": true
             },
             {
               "path": "templates.login.sections.login_main.settings.submitLabel",
               "type": "text",
               "label": "Button label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
               "sidebar": true
             },
             {
               "path": "templates.login.sections.login_main.settings.forgotLabel",
               "type": "text",
               "label": "Forgot password label",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.login.sections.login_main.settings.signupPrompt",
               "type": "text",
               "label": "Sign up prompt",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.login.sections.login_main.settings.signupLabel",
               "type": "text",
               "label": "Sign up link",
+              "widget": "styled-text",
               "sidebar": true
             }
           ]
@@ -807,42 +1375,79 @@
       "sections": [
         {
           "id": "signup_main",
+          "type": "signup-main",
           "label": "Sign up form",
           "settingsFields": [
             {
               "path": "templates.signup.sections.signup_main.settings.eyebrow",
               "type": "text",
               "label": "Eyebrow",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.signup.sections.signup_main.settings.title",
               "type": "text",
               "label": "Heading",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.signup.sections.signup_main.settings.subtitle",
-              "type": "text",
+              "type": "textarea",
               "label": "Subtext",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.firstNamePlaceholder",
+              "type": "text",
+              "label": "First name placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.lastNamePlaceholder",
+              "type": "text",
+              "label": "Last name placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.emailPlaceholder",
+              "type": "text",
+              "label": "Email placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.passwordPlaceholder",
+              "type": "text",
+              "label": "Password placeholder",
               "sidebar": true
             },
             {
               "path": "templates.signup.sections.signup_main.settings.submitLabel",
               "type": "text",
               "label": "Button label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
               "sidebar": true
             },
             {
               "path": "templates.signup.sections.signup_main.settings.loginPrompt",
               "type": "text",
               "label": "Sign in prompt",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.signup.sections.signup_main.settings.loginLabel",
               "type": "text",
               "label": "Sign in link",
+              "widget": "styled-text",
               "sidebar": true
             }
           ]
@@ -855,42 +1460,61 @@
       "sections": [
         {
           "id": "forgot_main",
+          "type": "forgot-main",
           "label": "Reset password",
           "settingsFields": [
             {
               "path": "templates.forgot_password.sections.forgot_main.settings.eyebrow",
               "type": "text",
               "label": "Eyebrow",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.forgot_password.sections.forgot_main.settings.title",
               "type": "text",
               "label": "Heading",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.forgot_password.sections.forgot_main.settings.subtitle",
-              "type": "text",
+              "type": "textarea",
               "label": "Instructions",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.emailPlaceholder",
+              "type": "text",
+              "label": "Email placeholder",
               "sidebar": true
             },
             {
               "path": "templates.forgot_password.sections.forgot_main.settings.submitLabel",
               "type": "text",
               "label": "Button label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
               "sidebar": true
             },
             {
               "path": "templates.forgot_password.sections.forgot_main.settings.successMessage",
-              "type": "text",
+              "type": "textarea",
               "label": "Success message",
+              "widget": "styled-text",
               "sidebar": true
             },
             {
               "path": "templates.forgot_password.sections.forgot_main.settings.backLabel",
               "type": "text",
               "label": "Back link",
+              "widget": "styled-text",
               "sidebar": true
             }
           ]
@@ -997,6 +1621,84 @@
             },
             {
               "path": "templates.orders.sections.orders_main.settings.totalLabel",
+              "type": "text",
+              "label": "Total label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.viewDetailsLabel",
+              "type": "text",
+              "label": "View details link",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order_details",
+      "label": "Order details",
+      "sections": [
+        {
+          "id": "order_details_main",
+          "label": "Order details",
+          "settingsFields": [
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.backLabel",
+              "type": "text",
+              "label": "Back to orders",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.itemsHeading",
+              "type": "text",
+              "label": "Items heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.summaryHeading",
+              "type": "text",
+              "label": "Summary heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.shippingHeading",
+              "type": "text",
+              "label": "Shipping heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.notFoundMessage",
+              "type": "text",
+              "label": "Not found message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.signedOutMessage",
+              "type": "text",
+              "label": "Signed-out message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.totalLabel",
               "type": "text",
               "label": "Total label",
               "sidebar": true

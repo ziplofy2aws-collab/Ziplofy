@@ -398,10 +398,6 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
 
   const handleClearDevEditorCache = useCallback(async () => {
     if (!staticDevMode) return;
-    const ok = window.confirm(
-      `Clear saved local editor settings for ${displayNameForDevPack(devPackId)} and reload pack defaults?`
-    );
-    if (!ok) return;
     setPackSwitching(true);
     try {
       clearStaticThemeConfigLocal(devPackId);

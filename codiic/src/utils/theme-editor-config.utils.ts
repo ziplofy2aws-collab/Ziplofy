@@ -1,5 +1,14 @@
 import type { EditorFieldDef, EditorSchemaDoc } from '../components/themes/theme-editor-sidebar/theme-editor-sidebar.types';
 import { fieldTypeFromSchema } from '../components/themes/theme-editor-sidebar/theme-editor-field.utils';
+import {
+  catalogStyledTextCompanionFieldPaths,
+  resolveCatalogTextStyleCompanionType,
+} from '../components/themes/theme-editor-sidebar/catalog-text-style.utils';
+import {
+  catalogImageStyleCompanionFieldPaths,
+  isCatalogImageWidgetField,
+  resolveCatalogImageStyleCompanionType,
+} from '../components/themes/theme-editor-sidebar/catalog-image-style.utils';
 import { schemaTemplateIdForConfigKey } from '../create-theme/utils/product-templates.util';
 import {
   findSectionSchemaByBlueprint,
@@ -23,12 +32,36 @@ type BlockLike = {
   blocks?: BlockLike[];
 };
 
+function pushEditableSchemaField(
+  field: EditorFieldDef,
+  path: string,
+  out: SchemaFieldPath[],
+  seen: Set<string>
+): void {
+  if (!path || seen.has(path)) return;
+  seen.add(path);
+  out.push({ path, type: field.type, label: field.label || path });
+  if (field.widget === 'styled-text') {
+    for (const companion of catalogStyledTextCompanionFieldPaths(path)) {
+      if (seen.has(companion.path)) continue;
+      seen.add(companion.path);
+      out.push(companion);
+    }
+  }
+  if (isCatalogImageWidgetField({ ...field, path })) {
+    for (const companion of catalogImageStyleCompanionFieldPaths(path)) {
+      if (seen.has(companion.path)) continue;
+      seen.add(companion.path);
+      out.push(companion);
+    }
+  }
+}
+
 function pushBlockFields(blocks: BlockLike[] | undefined, out: SchemaFieldPath[], seen: Set<string>): void {
   for (const block of blocks ?? []) {
     for (const field of block.settingsFields ?? []) {
-      if (!field.path || seen.has(field.path)) continue;
-      seen.add(field.path);
-      out.push({ path: field.path, type: field.type, label: field.label || field.path });
+      if (!field.path) continue;
+      pushEditableSchemaField(field, field.path, out, seen);
     }
     pushBlockFields(block.blocks, out, seen);
   }
@@ -41,17 +74,15 @@ export function flattenSchemaFieldPaths(schema: EditorSchemaDoc): SchemaFieldPat
 
   for (const group of schema.globalSettings?.groups ?? []) {
     for (const field of group.fields ?? []) {
-      if (!field.path || seen.has(field.path)) continue;
-      seen.add(field.path);
-      out.push({ path: field.path, type: field.type, label: field.label || field.path });
+      if (!field.path) continue;
+      pushEditableSchemaField(field, field.path, out, seen);
     }
   }
 
   for (const layout of Object.values(schema.layout ?? {})) {
     for (const field of layout.settingsFields ?? []) {
-      if (!field.path || seen.has(field.path)) continue;
-      seen.add(field.path);
-      out.push({ path: field.path, type: field.type, label: field.label || field.path });
+      if (!field.path) continue;
+      pushEditableSchemaField(field, field.path, out, seen);
     }
     pushBlockFields(layout.blocks, out, seen);
   }
@@ -59,9 +90,8 @@ export function flattenSchemaFieldPaths(schema: EditorSchemaDoc): SchemaFieldPat
   for (const tpl of schema.templates ?? []) {
     for (const sec of tpl.sections ?? []) {
       for (const field of sec.settingsFields ?? []) {
-        if (!field.path || seen.has(field.path)) continue;
-        seen.add(field.path);
-        out.push({ path: field.path, type: field.type, label: field.label || field.path });
+        if (!field.path) continue;
+        pushEditableSchemaField(field, field.path, out, seen);
       }
       pushBlockFields(sec.blocks, out, seen);
     }
@@ -79,9 +109,7 @@ function pushRemappedFields(
   for (const field of fields ?? []) {
     if (!field.path) continue;
     const path = remapLayoutSchemaPath(field.path, instanceId);
-    if (seen.has(path)) continue;
-    seen.add(path);
-    out.push({ path, type: field.type, label: field.label || path });
+    pushEditableSchemaField(field, path, out, seen);
   }
 }
 
@@ -107,9 +135,7 @@ function pushRemappedTemplateFields(
   for (const field of fields ?? []) {
     if (!field.path) continue;
     const path = remapTemplateSchemaPath(field.path, tplId, instanceId);
-    if (seen.has(path)) continue;
-    seen.add(path);
-    out.push({ path, type: field.type, label: field.label || path });
+    pushEditableSchemaField(field, path, out, seen);
   }
 }
 
@@ -1742,6 +1768,12 @@ function resolveFieldTypeForPath(
 ): string | undefined {
   const direct = typeByPath.get(path);
   if (direct) return direct;
+
+  const catalogCompanion = resolveCatalogTextStyleCompanionType(path);
+  if (catalogCompanion) return catalogCompanion;
+
+  const catalogImageCompanion = resolveCatalogImageStyleCompanionType(path);
+  if (catalogImageCompanion) return catalogImageCompanion;
 
   const sharedHeadingSection = resolveSharedHeadingSectionSettingType(path, typeByPath);
   if (sharedHeadingSection) return sharedHeadingSection;

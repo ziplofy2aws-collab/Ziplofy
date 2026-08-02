@@ -43,6 +43,7 @@ const DEFAULT_LABELS: Record<string, string> = {
   forgot_password: 'Forgot password',
   profile: 'Profile',
   orders: 'Orders',
+  order_details: 'Order details',
   preferences: 'Preferences',
 };
 
@@ -64,6 +65,7 @@ const PAGE_ORDER: string[] = [
   'forgot_password',
   'profile',
   'orders',
+  'order_details',
 ];
 
 function formatLabel(id: string): string {
@@ -76,7 +78,7 @@ function iconForTemplate(id: string): ThemePageIcon {
   if (id === 'cart') return 'cart';
   if (id === 'login' || id === 'signup' || id === 'forgot_password') return 'login';
   if (id === 'profile' || id === 'preferences') return 'user';
-  if (id === 'orders') return 'orders';
+  if (id === 'orders' || id === 'order_details') return 'orders';
   if (id.includes('collection')) return 'collection';
   if (id.includes('blog')) return 'blog';
   return 'page';
