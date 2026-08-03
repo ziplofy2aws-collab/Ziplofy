@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Component, useCallback, useEffect, useMemo, useRef, useState, type ErrorInfo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import {
   ArrowsPointingOutIcon,
@@ -11,6 +11,7 @@ import {
   LockClosedIcon,
   LockOpenIcon,
   PencilIcon,
+  PlusIcon,
   SparklesIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -25,7 +26,8 @@ import {
   type AspectRatioKey,
   type CropRect,
   type DrawStroke,
-  canvasToImageElement,
+  type EditableBitmap,
+  adoptEditedCanvas,
   canvasToPngFile,
   clampCrop,
   cropForAspect,
@@ -33,7 +35,9 @@ import {
   exportEditedImage,
   fileNameFromImageUrl,
   fullCrop,
+  isBitmapExportable,
   loadEditableImage,
+  bitmapCacheKey,
   renderTransformedImage,
   rotatedBounds,
 } from './theme-editor-image-editor.utils';
@@ -73,6 +77,43 @@ type EditSnapshot = {
 };
 
 const DRAW_COLORS = ['#ffffff', '#000000', '#ef4444', '#f59e0b', '#22c55e', '#3b82f6'];
+
+/** Isolate editor crashes so scribble/canvas bugs cannot blank the whole app shell. */
+class ImageEditorErrorBoundary extends Component<
+  { children: ReactNode; onClose: () => void },
+  { error: string | null }
+> {
+  state: { error: string | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error: error?.message || 'Something went wrong in the image editor.' };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('[ThemeEditorImageEditorSheet]', error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="fixed inset-0 z-[16000] flex items-center justify-center bg-black/80 p-6">
+          <div className="max-w-md rounded-2xl border border-white/15 bg-[#1a1a1a] p-5 text-white shadow-2xl">
+            <p className="text-sm font-semibold">Image editor crashed</p>
+            <p className="mt-2 text-[13px] text-white/70">{this.state.error}</p>
+            <button
+              type="button"
+              className="mt-4 w-full rounded-lg bg-white px-3 py-2.5 text-[13px] font-semibold text-black"
+              onClick={this.props.onClose}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function cloneSnapshot(snap: EditSnapshot): EditSnapshot {
   return {
@@ -137,11 +178,24 @@ export function ThemeEditorImageEditorSheet({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [applyingResize, setApplyingResize] = useState(false);
+  const [applyingCrop, setApplyingCrop] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
 
-  const [source, setSource] = useState<HTMLImageElement | null>(null);
+  type BakeOp = {
+    rotation: number;
+    flipH: boolean;
+    flipV: boolean;
+    crop: CropRect;
+    outW: number;
+    outH: number;
+    strokes: DrawStroke[];
+  };
+
+  const [source, setSource] = useState<EditableBitmap | null>(null);
   const objectUrlRef = useRef<string | null>(null);
+  /** Ops applied via Crop/Resize Apply — used to rebuild a clean export on Save if needed. */
+  const bakeStackRef = useRef<BakeOp[]>([]);
   const [naturalW, setNaturalW] = useState(0);
   const [naturalH, setNaturalH] = useState(0);
 
@@ -159,6 +213,8 @@ export function ThemeEditorImageEditorSheet({
   const [strokes, setStrokes] = useState<DrawStroke[]>([]);
   const [drawColor, setDrawColor] = useState('#ef4444');
   const [drawSize, setDrawSize] = useState(6);
+  const [customDrawColors, setCustomDrawColors] = useState<string[]>([]);
+  const customColorInputRef = useRef<HTMLInputElement>(null);
   const [zoom, setZoom] = useState(1);
   const [openAccordion, setOpenAccordion] = useState<AccordionId | null>('crop');
   const [dirtyCrop, setDirtyCrop] = useState(false);
@@ -176,7 +232,13 @@ export function ThemeEditorImageEditorSheet({
     scrollTop?: number;
   } | null>(null);
   const drawingRef = useRef<DrawStroke | null>(null);
+  /** Avoid rebuilding a full transformed bitmap on every scribble frame (OOM / blank page). */
+  const transformedCacheRef = useRef<{ key: string; canvas: HTMLCanvasElement } | null>(null);
+  /** Static stage (image + crop chrome + committed strokes) reused while the pointer is down drawing. */
+  const drawBaseCacheRef = useRef<{ key: string; canvas: HTMLCanvasElement } | null>(null);
+  const drawPaintRafRef = useRef<number | null>(null);
   const [isPanning, setIsPanning] = useState(false);
+  const [isMovingCrop, setIsMovingCrop] = useState(false);
   const historyRef = useRef<EditSnapshot[]>([]);
   const applyingHistoryRef = useRef(false);
   const editStateRef = useRef<EditSnapshot>({
@@ -343,6 +405,10 @@ export function ThemeEditorImageEditorSheet({
     setSaveError(null);
     historyRef.current = [];
     setHistoryIndex(0);
+    transformedCacheRef.current = null;
+    drawBaseCacheRef.current = null;
+    drawingRef.current = null;
+    bakeStackRef.current = [];
 
     loadEditableImage(imageUrl.trim())
       .then((loaded) => {
@@ -444,86 +510,149 @@ export function ThemeEditorImageEditorSheet({
     const pad = 48;
     const availW = Math.max(120, stageSize.w - pad);
     const availH = Math.max(120, stageSize.h - pad);
-    const baseScale = Math.min(
-      availW / Math.max(1, transformedSize.width),
-      availH / Math.max(1, transformedSize.height),
-      1
-    );
-    const scale = baseScale * zoom;
-    return {
-      scale,
-      displayW: transformedSize.width * scale,
-      displayH: transformedSize.height * scale,
-    };
+    const imgW = Math.max(1, transformedSize.width);
+    const imgH = Math.max(1, transformedSize.height);
+    const baseScale = Math.min(availW / imgW, availH / imgH, 1);
+    const scale = Math.max(0.01, baseScale * zoom);
+    const displayW = Math.max(1, Math.min(8192, imgW * scale));
+    const displayH = Math.max(1, Math.min(8192, imgH * scale));
+    return { scale, displayW, displayH };
   }, [transformedSize.width, transformedSize.height, zoom, stageSize.w, stageSize.h]);
+
+  const getTransformedCanvas = useCallback(
+    (img: EditableBitmap) => {
+      const key = `${bitmapCacheKey(img)}|${rotation}|${flipH ? 1 : 0}|${flipV ? 1 : 0}`;
+      const cached = transformedCacheRef.current;
+      if (cached?.key === key) return cached.canvas;
+      const canvas = renderTransformedImage(img, rotation, flipH, flipV);
+      transformedCacheRef.current = { key, canvas };
+      return canvas;
+    },
+    [rotation, flipH, flipV]
+  );
+
+  const paintStrokePath = (
+    ctx: CanvasRenderingContext2D,
+    stroke: DrawStroke,
+    scale: number
+  ) => {
+    if (stroke.points.length < 2) return;
+    ctx.strokeStyle = stroke.color;
+    ctx.lineWidth = Math.max(0.5, stroke.size * scale);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    stroke.points.forEach((p, i) => {
+      const x = p.x * scale;
+      const y = p.y * scale;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+  };
 
   const redraw = useCallback(() => {
     const canvas = canvasRef.current;
     const img = source;
     if (!canvas || !img) return;
-    const { scale, displayW, displayH } = viewLayout;
-    canvas.width = Math.max(1, Math.round(displayW));
-    canvas.height = Math.max(1, Math.round(displayH));
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    try {
+      const { scale, displayW, displayH } = viewLayout;
+      if (!Number.isFinite(displayW) || !Number.isFinite(displayH) || !Number.isFinite(scale)) {
+        return;
+      }
+      const nextW = Math.max(1, Math.round(displayW));
+      const nextH = Math.max(1, Math.round(displayH));
+      // Assigning width/height clears the bitmap — only do it when size actually changes.
+      if (canvas.width !== nextW) canvas.width = nextW;
+      if (canvas.height !== nextH) canvas.height = nextH;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
 
-    const transformed = renderTransformedImage(img, rotation, flipH, flipV);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(transformed, 0, 0, canvas.width, canvas.height);
+      const paintStageOnto = (target: CanvasRenderingContext2D, width: number, height: number) => {
+        const transformed = getTransformedCanvas(img);
+        target.clearRect(0, 0, width, height);
+        target.imageSmoothingEnabled = true;
+        target.drawImage(transformed, 0, 0, width, height);
 
-    // Dim outside crop
-    const cx = crop.x * scale;
-    const cy = crop.y * scale;
-    const cw = crop.w * scale;
-    const ch = crop.h * scale;
-    ctx.fillStyle = 'rgba(0,0,0,0.55)';
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.rect(cx, cy, cw, ch);
-    ctx.fill('evenodd');
+        const cx = crop.x * scale;
+        const cy = crop.y * scale;
+        const cw = Math.max(0, crop.w * scale);
+        const ch = Math.max(0, crop.h * scale);
+        target.fillStyle = 'rgba(0,0,0,0.55)';
+        target.beginPath();
+        target.rect(0, 0, width, height);
+        target.rect(cx, cy, cw, ch);
+        target.fill('evenodd');
 
-    // Crop border
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([6, 4]);
-    ctx.strokeRect(cx + 0.75, cy + 0.75, Math.max(0, cw - 1.5), Math.max(0, ch - 1.5));
-    ctx.setLineDash([]);
+        target.strokeStyle = '#ffffff';
+        target.lineWidth = 1.5;
+        target.setLineDash([6, 4]);
+        target.strokeRect(cx + 0.75, cy + 0.75, Math.max(0, cw - 1.5), Math.max(0, ch - 1.5));
+        target.setLineDash([]);
 
-    // Handles
-    const hs = 8;
-    const handles = [
-      [cx, cy],
-      [cx + cw / 2, cy],
-      [cx + cw, cy],
-      [cx + cw, cy + ch / 2],
-      [cx + cw, cy + ch],
-      [cx + cw / 2, cy + ch],
-      [cx, cy + ch],
-      [cx, cy + ch / 2],
-    ];
-    ctx.fillStyle = '#ffffff';
-    for (const [hx, hy] of handles) {
-      ctx.fillRect(hx - hs / 2, hy - hs / 2, hs, hs);
+        const hs = 8;
+        const handles = [
+          [cx, cy],
+          [cx + cw / 2, cy],
+          [cx + cw, cy],
+          [cx + cw, cy + ch / 2],
+          [cx + cw, cy + ch],
+          [cx + cw / 2, cy + ch],
+          [cx, cy + ch],
+          [cx, cy + ch / 2],
+        ];
+        target.fillStyle = '#ffffff';
+        for (const [hx, hy] of handles) {
+          target.fillRect(hx - hs / 2, hy - hs / 2, hs, hs);
+        }
+
+        for (const stroke of strokes) {
+          paintStrokePath(target, stroke, scale);
+        }
+      };
+
+      const live = drawingRef.current;
+      if (live) {
+        const key = [
+          bitmapCacheKey(img),
+          rotation,
+          flipH ? 1 : 0,
+          flipV ? 1 : 0,
+          nextW,
+          nextH,
+          scale.toFixed(6),
+          crop.x,
+          crop.y,
+          crop.w,
+          crop.h,
+          strokes.length,
+          strokes.reduce((n, s) => n + s.points.length, 0),
+        ].join('|');
+        let base = drawBaseCacheRef.current?.key === key ? drawBaseCacheRef.current.canvas : null;
+        if (!base) {
+          const off = document.createElement('canvas');
+          off.width = nextW;
+          off.height = nextH;
+          const offCtx = off.getContext('2d');
+          if (offCtx) {
+            paintStageOnto(offCtx, nextW, nextH);
+            drawBaseCacheRef.current = { key, canvas: off };
+            base = off;
+          }
+        }
+        if (base) {
+          ctx.drawImage(base, 0, 0);
+          paintStrokePath(ctx, live, scale);
+          return;
+        }
+      }
+
+      paintStageOnto(ctx, nextW, nextH);
+      if (live) paintStrokePath(ctx, live, scale);
+    } catch {
+      // Never let canvas paint take down the whole app.
     }
-
-    // Draw strokes in view space
-    for (const stroke of strokes) {
-      if (stroke.points.length < 2) continue;
-      ctx.strokeStyle = stroke.color;
-      ctx.lineWidth = stroke.size * scale;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      stroke.points.forEach((p, i) => {
-        const x = p.x * scale;
-        const y = p.y * scale;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-    }
-  }, [source, rotation, flipH, flipV, crop, strokes, viewLayout]);
+  }, [source, crop, strokes, viewLayout, getTransformedCanvas, rotation, flipH, flipV]);
 
   useEffect(() => {
     redraw();
@@ -536,18 +665,39 @@ export function ThemeEditorImageEditorSheet({
     return () => window.removeEventListener('resize', onResize);
   }, [open, redraw]);
 
+  useEffect(() => {
+    return () => {
+      if (drawPaintRafRef.current != null) {
+        window.cancelAnimationFrame(drawPaintRafRef.current);
+        drawPaintRafRef.current = null;
+      }
+    };
+  }, []);
+
+  const scheduleDrawPaint = useCallback(() => {
+    if (drawPaintRafRef.current != null) return;
+    drawPaintRafRef.current = window.requestAnimationFrame(() => {
+      drawPaintRafRef.current = null;
+      redraw();
+    });
+  }, [redraw]);
+
   const pointerToImage = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return null;
     const x = ((clientX - rect.left) / rect.width) * transformedSize.width;
     const y = ((clientY - rect.top) / rect.height) * transformedSize.height;
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
     return { x, y };
   };
 
   const hitHandle = (x: number, y: number): DragMode => {
-    const tol = 14 / (viewLayout.scale || 1);
     const { x: cx, y: cy, w: cw, h: ch } = crop;
+    // Keep a real move zone in the crop center when the box is small.
+    const baseTol = 14 / (viewLayout.scale || 1);
+    const tol = Math.max(4, Math.min(baseTol, Math.min(cw, ch) / 4));
     const pts: Array<[number, number, DragMode]> = [
       [cx, cy, 'nw'],
       [cx + cw / 2, cy, 'n'],
@@ -564,204 +714,346 @@ export function ThemeEditorImageEditorSheet({
     return null;
   };
 
+  const pointInCrop = (x: number, y: number) => {
+    const { x: cx, y: cy, w: cw, h: ch } = crop;
+    return x >= cx && x <= cx + cw && y >= cy && y <= cy + ch;
+  };
+
   const onPointerDown = (e: React.PointerEvent) => {
-    if (!source || e.button !== 0) return;
-    const stage = stageRef.current;
-    const pt = pointerToImage(e.clientX, e.clientY);
+    try {
+      if (!source || e.button !== 0) return;
+      const stage = stageRef.current;
+      const pt = pointerToImage(e.clientX, e.clientY);
 
-    if (openAccordion === 'draw') {
-      if (!pt) return;
-      (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-      const stroke: DrawStroke = { color: drawColor, size: drawSize, points: [pt] };
-      drawingRef.current = stroke;
-      setStrokes((prev) => [...prev, stroke]);
-      dragRef.current = { mode: 'draw', startX: pt.x, startY: pt.y, startCrop: crop };
-      return;
-    }
-
-    // Crop resize handles only — everything else pans the viewport.
-    if (pt) {
-      const handle = hitHandle(pt.x, pt.y);
-      if (handle) {
+      if (openAccordion === 'draw') {
+        if (!pt) return;
+        e.preventDefault();
         (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-        dragRef.current = { mode: handle, startX: pt.x, startY: pt.y, startCrop: { ...crop } };
+        // Keep the in-progress stroke off React state until pointer up — setState per move OOMs.
+        drawingRef.current = { color: drawColor, size: drawSize, points: [pt] };
+        dragRef.current = { mode: 'draw', startX: pt.x, startY: pt.y, startCrop: crop };
+        scheduleDrawPaint();
         return;
       }
-    }
 
-    if (!stage) return;
-    e.preventDefault();
-    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-    setIsPanning(true);
-    dragRef.current = {
-      mode: 'pan',
-      startX: e.clientX,
-      startY: e.clientY,
-      startCrop: crop,
-      scrollLeft: stage.scrollLeft,
-      scrollTop: stage.scrollTop,
-    };
+      if (pt) {
+        const handle = hitHandle(pt.x, pt.y);
+        if (handle) {
+          (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+          dragRef.current = { mode: handle, startX: pt.x, startY: pt.y, startCrop: { ...crop } };
+          return;
+        }
+        if (pointInCrop(pt.x, pt.y)) {
+          // When zoomed past fit, drag should pan the viewport so the image stays navigable.
+          // Hold Shift to move the crop box instead.
+          const stageNeedsPan =
+            zoom > 1 ||
+            (stage != null &&
+              (stage.scrollWidth > stage.clientWidth + 2 ||
+                stage.scrollHeight > stage.clientHeight + 2));
+          if (stageNeedsPan && stage && !e.shiftKey) {
+            e.preventDefault();
+            (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+            setIsPanning(true);
+            dragRef.current = {
+              mode: 'pan',
+              startX: e.clientX,
+              startY: e.clientY,
+              startCrop: crop,
+              scrollLeft: stage.scrollLeft,
+              scrollTop: stage.scrollTop,
+            };
+            return;
+          }
+          e.preventDefault();
+          (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+          setIsMovingCrop(true);
+          dragRef.current = { mode: 'move', startX: pt.x, startY: pt.y, startCrop: { ...crop } };
+          return;
+        }
+      }
+
+      // Outside the crop — pan the stage viewport.
+      if (!stage) return;
+      e.preventDefault();
+      (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+      setIsPanning(true);
+      dragRef.current = {
+        mode: 'pan',
+        startX: e.clientX,
+        startY: e.clientY,
+        startCrop: crop,
+        scrollLeft: stage.scrollLeft,
+        scrollTop: stage.scrollTop,
+      };
+    } catch {
+      dragRef.current = null;
+      drawingRef.current = null;
+      setIsPanning(false);
+      setIsMovingCrop(false);
+    }
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    const drag = dragRef.current;
-    if (!drag) return;
+    try {
+      const drag = dragRef.current;
+      if (!drag) return;
 
-    if (drag.mode === 'pan' && stageRef.current) {
-      const dx = e.clientX - drag.startX;
-      const dy = e.clientY - drag.startY;
-      stageRef.current.scrollLeft = (drag.scrollLeft ?? 0) - dx;
-      stageRef.current.scrollTop = (drag.scrollTop ?? 0) - dy;
-      return;
+      if (drag.mode === 'pan' && stageRef.current) {
+        const dx = e.clientX - drag.startX;
+        const dy = e.clientY - drag.startY;
+        stageRef.current.scrollLeft = (drag.scrollLeft ?? 0) - dx;
+        stageRef.current.scrollTop = (drag.scrollTop ?? 0) - dy;
+        return;
+      }
+
+      const pt = pointerToImage(e.clientX, e.clientY);
+      if (!pt) return;
+
+      if (drag.mode === 'draw' && drawingRef.current) {
+        const points = drawingRef.current.points;
+        const last = points[points.length - 1];
+        if (last) {
+          const dist = Math.hypot(pt.x - last.x, pt.y - last.y);
+          // Skip near-duplicate samples so strokes stay light.
+          if (dist < 1.25) return;
+        }
+        points.push(pt);
+        scheduleDrawPaint();
+        return;
+      }
+
+      const dx = pt.x - drag.startX;
+      const dy = pt.y - drag.startY;
+      let { x, y, w, h } = drag.startCrop;
+      const maxW = transformedSize.width;
+      const maxH = transformedSize.height;
+      const ratio =
+        aspect === 'freeform'
+          ? null
+          : aspect === 'original'
+            ? originalRatio
+            : (ASPECT_RATIO_OPTIONS.find((o) => o.key === aspect)?.ratio ?? null);
+
+      const applyRatioFromCorner = (nx: number, ny: number, nw: number, nh: number) => {
+        if (!ratio) return { x: nx, y: ny, w: nw, h: nh };
+        const nextH = nw / ratio;
+        return { x: nx, y: ny, w: nw, h: nextH };
+      };
+
+      switch (drag.mode) {
+        case 'move':
+          x += dx;
+          y += dy;
+          break;
+        case 'e':
+          w = drag.startCrop.w + dx;
+          if (ratio) h = w / ratio;
+          break;
+        case 'w': {
+          const nextW = drag.startCrop.w - dx;
+          x = drag.startCrop.x + dx;
+          w = nextW;
+          if (ratio) {
+            h = w / ratio;
+            y = drag.startCrop.y + (drag.startCrop.h - h) / 2;
+          }
+          break;
+        }
+        case 's':
+          h = drag.startCrop.h + dy;
+          if (ratio) w = h * ratio;
+          break;
+        case 'n': {
+          const nextH = drag.startCrop.h - dy;
+          y = drag.startCrop.y + dy;
+          h = nextH;
+          if (ratio) {
+            w = h * ratio;
+            x = drag.startCrop.x + (drag.startCrop.w - w) / 2;
+          }
+          break;
+        }
+        case 'se': {
+          w = drag.startCrop.w + dx;
+          h = drag.startCrop.h + dy;
+          if (ratio) ({ x, y, w, h } = applyRatioFromCorner(drag.startCrop.x, drag.startCrop.y, w, w / ratio));
+          break;
+        }
+        case 'nw': {
+          w = drag.startCrop.w - dx;
+          h = drag.startCrop.h - dy;
+          x = drag.startCrop.x + dx;
+          y = drag.startCrop.y + dy;
+          if (ratio) {
+            h = w / ratio;
+            y = drag.startCrop.y + drag.startCrop.h - h;
+            x = drag.startCrop.x + drag.startCrop.w - w;
+          }
+          break;
+        }
+        case 'ne': {
+          w = drag.startCrop.w + dx;
+          h = drag.startCrop.h - dy;
+          y = drag.startCrop.y + dy;
+          if (ratio) {
+            h = w / ratio;
+            y = drag.startCrop.y + drag.startCrop.h - h;
+          }
+          break;
+        }
+        case 'sw': {
+          w = drag.startCrop.w - dx;
+          h = drag.startCrop.h + dy;
+          x = drag.startCrop.x + dx;
+          if (ratio) {
+            h = w / ratio;
+          }
+          break;
+        }
+        default:
+          break;
+      }
+
+      const next = clampCrop({ x, y, w, h }, maxW, maxH);
+      setCrop(next);
+      setDirtyCrop(true);
+      const nextOutW = openAccordion !== 'resize' ? Math.round(next.w) : outW;
+      const nextOutH = openAccordion !== 'resize' ? Math.round(next.h) : outH;
+      if (openAccordion !== 'resize') {
+        setOutW(nextOutW);
+        setOutH(nextOutH);
+      }
+      editStateRef.current = {
+        ...editStateRef.current,
+        crop: next,
+        dirtyCrop: true,
+        outW: nextOutW,
+        outH: nextOutH,
+      };
+    } catch {
+      dragRef.current = null;
+      drawingRef.current = null;
+      setIsPanning(false);
+      setIsMovingCrop(false);
     }
-
-    const pt = pointerToImage(e.clientX, e.clientY);
-    if (!pt) return;
-
-    if (drag.mode === 'draw' && drawingRef.current) {
-      drawingRef.current.points.push(pt);
-      setStrokes((prev) => {
-        const next = [...prev];
-        next[next.length - 1] = { ...drawingRef.current! };
-        editStateRef.current = { ...editStateRef.current, strokes: next };
-        return next;
-      });
-      return;
-    }
-
-    const dx = pt.x - drag.startX;
-    const dy = pt.y - drag.startY;
-    let { x, y, w, h } = drag.startCrop;
-    const maxW = transformedSize.width;
-    const maxH = transformedSize.height;
-    const ratio =
-      aspect === 'freeform'
-        ? null
-        : aspect === 'original'
-          ? originalRatio
-          : (ASPECT_RATIO_OPTIONS.find((o) => o.key === aspect)?.ratio ?? null);
-
-    const applyRatioFromCorner = (nx: number, ny: number, nw: number, nh: number) => {
-      if (!ratio) return { x: nx, y: ny, w: nw, h: nh };
-      const nextH = nw / ratio;
-      return { x: nx, y: ny, w: nw, h: nextH };
-    };
-
-    switch (drag.mode) {
-      case 'move':
-        x += dx;
-        y += dy;
-        break;
-      case 'e':
-        w = drag.startCrop.w + dx;
-        if (ratio) h = w / ratio;
-        break;
-      case 'w': {
-        const nextW = drag.startCrop.w - dx;
-        x = drag.startCrop.x + dx;
-        w = nextW;
-        if (ratio) {
-          h = w / ratio;
-          y = drag.startCrop.y + (drag.startCrop.h - h) / 2;
-        }
-        break;
-      }
-      case 's':
-        h = drag.startCrop.h + dy;
-        if (ratio) w = h * ratio;
-        break;
-      case 'n': {
-        const nextH = drag.startCrop.h - dy;
-        y = drag.startCrop.y + dy;
-        h = nextH;
-        if (ratio) {
-          w = h * ratio;
-          x = drag.startCrop.x + (drag.startCrop.w - w) / 2;
-        }
-        break;
-      }
-      case 'se': {
-        w = drag.startCrop.w + dx;
-        h = drag.startCrop.h + dy;
-        if (ratio) ({ x, y, w, h } = applyRatioFromCorner(drag.startCrop.x, drag.startCrop.y, w, w / ratio));
-        break;
-      }
-      case 'nw': {
-        w = drag.startCrop.w - dx;
-        h = drag.startCrop.h - dy;
-        x = drag.startCrop.x + dx;
-        y = drag.startCrop.y + dy;
-        if (ratio) {
-          h = w / ratio;
-          y = drag.startCrop.y + drag.startCrop.h - h;
-          x = drag.startCrop.x + drag.startCrop.w - w;
-        }
-        break;
-      }
-      case 'ne': {
-        w = drag.startCrop.w + dx;
-        h = drag.startCrop.h - dy;
-        y = drag.startCrop.y + dy;
-        if (ratio) {
-          h = w / ratio;
-          y = drag.startCrop.y + drag.startCrop.h - h;
-        }
-        break;
-      }
-      case 'sw': {
-        w = drag.startCrop.w - dx;
-        h = drag.startCrop.h + dy;
-        x = drag.startCrop.x + dx;
-        if (ratio) {
-          h = w / ratio;
-        }
-        break;
-      }
-      default:
-        break;
-    }
-
-    const next = clampCrop({ x, y, w, h }, maxW, maxH);
-    setCrop(next);
-    setDirtyCrop(true);
-    const nextOutW = openAccordion !== 'resize' ? Math.round(next.w) : outW;
-    const nextOutH = openAccordion !== 'resize' ? Math.round(next.h) : outH;
-    if (openAccordion !== 'resize') {
-      setOutW(nextOutW);
-      setOutH(nextOutH);
-    }
-    editStateRef.current = {
-      ...editStateRef.current,
-      crop: next,
-      dirtyCrop: true,
-      outW: nextOutW,
-      outH: nextOutH,
-    };
   };
 
   const onPointerUp = () => {
-    const wasDragging = Boolean(dragRef.current);
-    const wasPan = dragRef.current?.mode === 'pan';
+    const drag = dragRef.current;
+    const wasDragging = Boolean(drag);
+    const wasPan = drag?.mode === 'pan';
+    const wasDraw = drag?.mode === 'draw';
+    const pendingStroke = drawingRef.current;
+
     dragRef.current = null;
     drawingRef.current = null;
     setIsPanning(false);
+    setIsMovingCrop(false);
+
+    if (wasDraw) {
+      if (pendingStroke && pendingStroke.points.length >= 2) {
+        const committed: DrawStroke = {
+          color: pendingStroke.color,
+          size: pendingStroke.size,
+          points: pendingStroke.points.map((p) => ({ x: p.x, y: p.y })),
+        };
+        const nextStrokes = [...editStateRef.current.strokes, committed];
+        const snap: EditSnapshot = {
+          ...editStateRef.current,
+          strokes: nextStrokes,
+        };
+        editStateRef.current = snap;
+        setStrokes(nextStrokes);
+        pushHistory(snap);
+      } else {
+        scheduleDrawPaint();
+      }
+      return;
+    }
+
     if (!wasDragging || wasPan) return;
-    // Commit after the last move state has flushed into editStateRef.
     window.requestAnimationFrame(() => {
       pushHistory();
     });
   };
 
-  const handleApplyCrop = () => {
-    const snap: EditSnapshot = {
-      ...editStateRef.current,
-      outW: Math.round(crop.w),
-      outH: Math.round(crop.h),
-      dirtyCrop: false,
-    };
-    applySnapshot(snap);
-    pushHistory(snap);
-    toast.success('Crop applied');
+  const handleApplyCrop = async () => {
+    if (!source) return;
+    const width = Math.max(1, Math.round(crop.w));
+    const height = Math.max(1, Math.round(crop.h));
+    try {
+      setApplyingCrop(true);
+      setSaveError(null);
+
+      // Fully local: draw → adopt canvas/blob. Never fetch (avoids production CORS / Failed to fetch).
+      const exported = exportEditedImage({
+        source,
+        rotation,
+        flipH,
+        flipV,
+        crop,
+        outputWidth: width,
+        outputHeight: height,
+        strokes,
+      });
+      const baked = await adoptEditedCanvas(exported);
+
+      bakeStackRef.current = [
+        ...bakeStackRef.current,
+        {
+          rotation,
+          flipH,
+          flipV,
+          crop: { ...crop },
+          outW: width,
+          outH: height,
+          strokes: strokes.map((s) => ({
+            ...s,
+            points: s.points.map((p) => ({ ...p })),
+          })),
+        },
+      ];
+      // Blob-backed apply becomes the new clean base — stack can be dropped for export.
+      if (baked.objectUrl) {
+        bakeStackRef.current = [];
+      }
+
+      if (objectUrlRef.current && objectUrlRef.current !== baked.objectUrl) {
+        URL.revokeObjectURL(objectUrlRef.current);
+      }
+      objectUrlRef.current = baked.objectUrl;
+      setSource(baked.image);
+      setNaturalW(width);
+      setNaturalH(height);
+      transformedCacheRef.current = null;
+      drawBaseCacheRef.current = null;
+
+      const nextCrop = fullCrop(width, height);
+      const snap: EditSnapshot = {
+        rotation: 0,
+        flipH: false,
+        flipV: false,
+        aspect: 'original',
+        crop: nextCrop,
+        outW: width,
+        outH: height,
+        strokes: [],
+        dirtyCrop: false,
+      };
+      applySnapshot(snap);
+      pushHistory(snap);
+      setDraftW(String(width));
+      setDraftH(String(height));
+      aspectLockRatioRef.current = height / width;
+      toast.success('Crop applied');
+    } catch (err: unknown) {
+      const msg = (err as Error)?.message || 'Could not apply crop';
+      setSaveError(msg);
+      toast.error(msg);
+    } finally {
+      setApplyingCrop(false);
+    }
   };
 
   const handleApplyResize = async () => {
@@ -775,38 +1067,40 @@ export function ThemeEditorImageEditorSheet({
       return;
     }
 
-    let tempObjectUrl: string | null = null;
     try {
       setApplyingResize(true);
       setSaveError(null);
 
-      const bake = async (img: HTMLImageElement) =>
-        canvasToImageElement(
-          exportEditedImage({
-            source: img,
-            rotation,
-            flipH,
-            flipV,
-            crop,
-            outputWidth: width,
-            outputHeight: height,
-            strokes,
-          })
-        );
+      // Fully local: draw → adopt canvas/blob. Never fetch (avoids production CORS / Failed to fetch).
+      const exported = exportEditedImage({
+        source,
+        rotation,
+        flipH,
+        flipV,
+        crop,
+        outputWidth: width,
+        outputHeight: height,
+        strokes,
+      });
+      const baked = await adoptEditedCanvas(exported);
 
-      let baked: { image: HTMLImageElement; objectUrl: string };
-      try {
-        // Prefer in-memory image — no network. Fixes intermittent "Failed to fetch".
-        baked = await bake(source);
-      } catch {
-        const fallbackUrl =
-          objectUrlRef.current ||
-          (source.src.startsWith('blob:') || source.src.startsWith('data:')
-            ? source.src
-            : imageUrl);
-        const exportable = await ensureExportableImage(source, fallbackUrl);
-        tempObjectUrl = exportable.objectUrl;
-        baked = await bake(exportable.image);
+      bakeStackRef.current = [
+        ...bakeStackRef.current,
+        {
+          rotation,
+          flipH,
+          flipV,
+          crop: { ...crop },
+          outW: width,
+          outH: height,
+          strokes: strokes.map((s) => ({
+            ...s,
+            points: s.points.map((p) => ({ ...p })),
+          })),
+        },
+      ];
+      if (baked.objectUrl) {
+        bakeStackRef.current = [];
       }
 
       if (objectUrlRef.current && objectUrlRef.current !== baked.objectUrl) {
@@ -816,6 +1110,8 @@ export function ThemeEditorImageEditorSheet({
       setSource(baked.image);
       setNaturalW(width);
       setNaturalH(height);
+      transformedCacheRef.current = null;
+      drawBaseCacheRef.current = null;
 
       const nextCrop = fullCrop(width, height);
       const snap: EditSnapshot = {
@@ -836,15 +1132,10 @@ export function ThemeEditorImageEditorSheet({
       aspectLockRatioRef.current = height / width;
       toast.success(`Resized to ${width} × ${height}px`);
     } catch (err: unknown) {
-      const raw = (err as Error)?.message || 'Could not apply resize';
-      const msg =
-        /failed to fetch/i.test(raw)
-          ? 'Could not resize this image (network/CORS). Try uploading it to store Files first, then edit that copy.'
-          : raw;
+      const msg = (err as Error)?.message || 'Could not apply resize';
       setSaveError(msg);
       toast.error(msg);
     } finally {
-      if (tempObjectUrl) URL.revokeObjectURL(tempObjectUrl);
       setApplyingResize(false);
     }
   };
@@ -912,7 +1203,7 @@ export function ThemeEditorImageEditorSheet({
       const width = Math.max(1, Math.round(Number.parseInt(draftW, 10) || outW || crop.w));
       const height = Math.max(1, Math.round(Number.parseInt(draftH, 10) || outH || crop.h));
 
-      const bakeCanvas = (img: HTMLImageElement) =>
+      const bakeCanvas = (img: EditableBitmap) =>
         exportEditedImage({
           source: img,
           rotation,
@@ -925,19 +1216,41 @@ export function ThemeEditorImageEditorSheet({
         });
 
       let canvas: HTMLCanvasElement;
-      try {
+      if (isBitmapExportable(source)) {
         canvas = bakeCanvas(source);
-        // Probe taint before upload work
-        canvas.toDataURL('image/png');
-      } catch {
+        canvas.toDataURL('image/png'); // probe
+      } else {
+        // Save is the only place we may hit the network — rebuild from the original URL
+        // and replay Apply ops so crop/resize are not lost.
         const fallbackUrl =
           objectUrlRef.current ||
-          (source.src.startsWith('blob:') || source.src.startsWith('data:')
+          (source instanceof HTMLImageElement &&
+          (source.src.startsWith('blob:') || source.src.startsWith('data:'))
             ? source.src
             : imageUrl);
         const exportable = await ensureExportableImage(source, fallbackUrl);
         tempObjectUrl = exportable.objectUrl;
-        canvas = bakeCanvas(exportable.image);
+        let bitmap: EditableBitmap = exportable.image;
+        for (const op of bakeStackRef.current) {
+          const step = exportEditedImage({
+            source: bitmap,
+            rotation: op.rotation,
+            flipH: op.flipH,
+            flipV: op.flipV,
+            crop: op.crop,
+            outputWidth: op.outW,
+            outputHeight: op.outH,
+            strokes: op.strokes,
+          });
+          const adopted = await adoptEditedCanvas(step);
+          if (tempObjectUrl && adopted.objectUrl && tempObjectUrl !== adopted.objectUrl) {
+            URL.revokeObjectURL(tempObjectUrl);
+          }
+          if (adopted.objectUrl) tempObjectUrl = adopted.objectUrl;
+          bitmap = adopted.image;
+        }
+        canvas = bakeCanvas(bitmap);
+        canvas.toDataURL('image/png');
       }
       const file = await canvasToPngFile(canvas, fileName);
       const { objectUrl } = await uploadFileForStoreQuiet(activeStoreId, file, {
@@ -948,20 +1261,26 @@ export function ThemeEditorImageEditorSheet({
       toast.success('Image saved to store files');
       onClose();
     } catch (err: unknown) {
-      const msg = (err as Error)?.message || 'Could not save edited image';
+      const raw = (err as Error)?.message || 'Could not save edited image';
+      const msg = /failed to fetch/i.test(raw)
+        ? 'Could not export this image for upload (CORS). Re-upload it to store Files first, then edit that copy.'
+        : raw;
       setSaveError(msg);
       toast.error(msg);
     } finally {
-      if (tempObjectUrl) URL.revokeObjectURL(tempObjectUrl);
+      if (tempObjectUrl && tempObjectUrl !== objectUrlRef.current) {
+        URL.revokeObjectURL(tempObjectUrl);
+      }
       setSaving(false);
     }
   };
 
-  const busy = loading || saving || applyingResize || imageUploadLoading;
+  const busy = loading || saving || applyingResize || applyingCrop || imageUploadLoading;
 
   if (!mounted || !open) return null;
 
   return createPortal(
+    <ImageEditorErrorBoundary onClose={onClose}>
     <div className="fixed inset-0 z-[16000] flex flex-col justify-end" role="presentation">
       <button
         type="button"
@@ -1032,70 +1351,74 @@ export function ThemeEditorImageEditorSheet({
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-          <div
-            ref={stageRef}
-            className="relative min-h-[280px] flex-1 overflow-auto overscroll-contain bg-[length:18px_18px] bg-[linear-gradient(45deg,#1a1a1a_25%,transparent_25%),linear-gradient(-45deg,#1a1a1a_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#1a1a1a_75%),linear-gradient(-45deg,transparent_75%,#1a1a1a_75%)] bg-[position:0_0,0_9px,9px_-9px,-9px_0] select-none"
-          >
-            {loading ? (
-              <div className="flex h-full min-h-[280px] items-center justify-center">
-                <p className="text-sm text-white/60">Loading image…</p>
-              </div>
-            ) : error ? (
-              <div className="flex h-full min-h-[280px] items-center justify-center p-4">
-                <p className="max-w-sm text-center text-sm text-red-300">{error}</p>
-              </div>
-            ) : (
-              <div
-                className={`flex items-center justify-center p-4 ${
-                  openAccordion === 'draw'
-                    ? 'cursor-crosshair'
-                    : isPanning
-                      ? 'cursor-grabbing'
-                      : 'cursor-grab'
-                }`}
-                style={{
-                  minWidth: '100%',
-                  minHeight: '100%',
-                  width: Math.max(stageSize.w, viewLayout.displayW + 48),
-                  height: Math.max(stageSize.h, viewLayout.displayH + 48),
-                }}
-                onPointerDown={onPointerDown}
-                onPointerMove={onPointerMove}
-                onPointerUp={onPointerUp}
-                onPointerCancel={onPointerUp}
-              >
-                <canvas
-                  ref={canvasRef}
-                  className="touch-none"
+          <div className="relative min-h-[280px] flex-1 lg:min-h-0">
+            <div
+              ref={stageRef}
+              className="absolute inset-0 overflow-auto overscroll-contain bg-[length:18px_18px] bg-[linear-gradient(45deg,#1a1a1a_25%,transparent_25%),linear-gradient(-45deg,#1a1a1a_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#1a1a1a_75%),linear-gradient(-45deg,transparent_75%,#1a1a1a_75%)] bg-[position:0_0,0_9px,9px_-9px,-9px_0] select-none"
+            >
+              {loading ? (
+                <div className="flex h-full min-h-[280px] items-center justify-center">
+                  <p className="text-sm text-white/60">Loading image…</p>
+                </div>
+              ) : error ? (
+                <div className="flex h-full min-h-[280px] items-center justify-center p-4">
+                  <p className="max-w-sm text-center text-sm text-red-300">{error}</p>
+                </div>
+              ) : (
+                <div
+                  className={`flex items-center justify-center p-4 ${
+                    openAccordion === 'draw'
+                      ? 'cursor-crosshair'
+                      : isMovingCrop
+                        ? 'cursor-move'
+                        : isPanning
+                          ? 'cursor-grabbing'
+                          : 'cursor-grab'
+                  }`}
                   style={{
-                    width: viewLayout.displayW,
-                    height: viewLayout.displayH,
+                    minWidth: '100%',
+                    minHeight: '100%',
+                    width: Math.max(stageSize.w, viewLayout.displayW + 48),
+                    height: Math.max(stageSize.h, viewLayout.displayH + 48),
                   }}
-                />
-              </div>
-            )}
+                  onPointerDown={onPointerDown}
+                  onPointerMove={onPointerMove}
+                  onPointerUp={onPointerUp}
+                  onPointerCancel={onPointerUp}
+                >
+                  <canvas
+                    ref={canvasRef}
+                    className="touch-none"
+                    style={{
+                      width: viewLayout.displayW,
+                      height: viewLayout.displayH,
+                    }}
+                  />
+                </div>
+              )}
+            </div>
 
-            <div className="pointer-events-none sticky bottom-4 z-10 flex justify-center px-4 pb-1">
-              <div className="pointer-events-auto flex items-center gap-3 rounded-full border border-white/15 bg-black/70 px-4 py-2 backdrop-blur">
-              <span className="w-10 text-center text-[11px] text-white/70">{Math.round(zoom * 100)}%</span>
-              <input
-                type="range"
-                min={0.4}
-                max={2.5}
-                step={0.05}
-                value={zoom}
-                onChange={(e) => setZoom(Number(e.target.value))}
-                className="h-1 w-36 accent-white"
-                aria-label="Zoom"
-              />
-              <button
-                type="button"
-                title="Fit (100%)"
-                onClick={() => setZoom(1)}
-                className="rounded p-1 text-white/70 hover:bg-white/10"
-              >
-                <ArrowsPointingOutIcon className="h-4 w-4" />
-              </button>
+            <div className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center px-4">
+              <div className="pointer-events-auto flex items-center gap-3 rounded-full border border-white/15 bg-black/70 px-4 py-2 shadow-lg backdrop-blur">
+                <span className="w-10 text-center text-[11px] text-white/70">{Math.round(zoom * 100)}%</span>
+                <input
+                  type="range"
+                  min={0.4}
+                  max={2.5}
+                  step={0.05}
+                  value={zoom}
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="h-1 w-36 accent-white"
+                  aria-label="Zoom"
+                />
+                <button
+                  type="button"
+                  title="Fit (100%)"
+                  onClick={() => setZoom(1)}
+                  className="rounded p-1 text-white/70 hover:bg-white/10"
+                >
+                  <ArrowsPointingOutIcon className="h-4 w-4" />
+                </button>
               </div>
             </div>
           </div>
@@ -1199,11 +1522,11 @@ export function ThemeEditorImageEditorSheet({
 
                 <button
                   type="button"
-                  disabled={!dirtyCrop}
-                  onClick={handleApplyCrop}
+                  disabled={!dirtyCrop || applyingCrop || busy}
+                  onClick={() => void handleApplyCrop()}
                   className="mt-3 w-full rounded-lg bg-white/15 px-3 py-2.5 text-[13px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 hover:bg-white/20"
                 >
-                  Apply
+                  {applyingCrop ? 'Applying…' : 'Apply'}
                 </button>
 
                 <div className="mt-3 grid grid-cols-4 gap-2">
@@ -1355,19 +1678,47 @@ export function ThemeEditorImageEditorSheet({
                 <p className="mb-3 text-[12px] text-white/50">
                   Open Draw, then sketch on the image. Strokes export with your crop.
                 </p>
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {DRAW_COLORS.map((c) => (
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                  {[...DRAW_COLORS, ...customDrawColors].map((c) => (
                     <button
                       key={c}
                       type="button"
                       title={c}
                       onClick={() => setDrawColor(c)}
                       className={`h-7 w-7 rounded-full border-2 ${
-                        drawColor === c ? 'border-white' : 'border-transparent'
+                        drawColor.toLowerCase() === c.toLowerCase()
+                          ? 'border-white'
+                          : 'border-transparent'
                       }`}
                       style={{ backgroundColor: c }}
                     />
                   ))}
+                  <button
+                    type="button"
+                    title="Add color"
+                    aria-label="Add color"
+                    onClick={() => customColorInputRef.current?.click()}
+                    className="flex h-7 w-7 items-center justify-center rounded-full border border-dashed border-white/35 text-white/70 hover:border-white/60 hover:bg-white/10 hover:text-white"
+                  >
+                    <PlusIcon className="h-4 w-4" />
+                  </button>
+                  <input
+                    ref={customColorInputRef}
+                    type="color"
+                    value={drawColor}
+                    className="sr-only"
+                    aria-hidden
+                    tabIndex={-1}
+                    onChange={(e) => {
+                      const next = e.target.value.toLowerCase();
+                      setDrawColor(next);
+                      setCustomDrawColors((prev) => {
+                        const all = [...DRAW_COLORS, ...prev].map((c) => c.toLowerCase());
+                        if (all.includes(next)) return prev;
+                        return [...prev, next];
+                      });
+                    }}
+                  />
                 </div>
                 <label className="block space-y-1 text-[12px] text-white/60">
                   Brush size ({drawSize}px)
@@ -1416,7 +1767,8 @@ export function ThemeEditorImageEditorSheet({
           </aside>
         </div>
       </div>
-    </div>,
+    </div>
+    </ImageEditorErrorBoundary>,
     document.body
   );
 }

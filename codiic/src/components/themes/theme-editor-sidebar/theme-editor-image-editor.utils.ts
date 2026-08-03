@@ -15,6 +15,38 @@ export type DrawStroke = {
   points: Array<{ x: number; y: number }>;
 };
 
+/** Working bitmap in the editor — canvas is used for local Apply when blob export is blocked. */
+export type EditableBitmap = HTMLImageElement | HTMLCanvasElement;
+
+export function bitmapDimensions(source: EditableBitmap): { width: number; height: number } {
+  if (source instanceof HTMLCanvasElement) {
+    return { width: Math.max(1, source.width), height: Math.max(1, source.height) };
+  }
+  return {
+    width: Math.max(1, source.naturalWidth || source.width),
+    height: Math.max(1, source.naturalHeight || source.height),
+  };
+}
+
+export function bitmapCacheKey(source: EditableBitmap): string {
+  if (source instanceof HTMLCanvasElement) {
+    return `canvas:${source.width}x${source.height}`;
+  }
+  return `${source.src}|${source.naturalWidth}x${source.naturalHeight}`;
+}
+
+export function cloneCanvasBitmap(source: HTMLCanvasElement): HTMLCanvasElement {
+  const clone = document.createElement('canvas');
+  clone.width = Math.max(1, source.width);
+  clone.height = Math.max(1, source.height);
+  const ctx = clone.getContext('2d');
+  if (ctx) {
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(source, 0, 0);
+  }
+  return clone;
+}
+
 export const ASPECT_RATIO_OPTIONS: Array<{ key: AspectRatioKey; label: string; ratio: number | null }> = [
   { key: 'original', label: 'Original', ratio: null },
   { key: '1:1', label: 'Square', ratio: 1 },
@@ -202,13 +234,12 @@ export function cropForAspect(
 
 /** Draw source image with rotation + flips into an offscreen canvas (full frame). */
 export function renderTransformedImage(
-  source: HTMLImageElement,
+  source: EditableBitmap,
   rotation: number,
   flipH: boolean,
   flipV: boolean
 ): HTMLCanvasElement {
-  const srcW = source.naturalWidth || source.width;
-  const srcH = source.naturalHeight || source.height;
+  const { width: srcW, height: srcH } = bitmapDimensions(source);
   const bounds = rotatedBounds(srcW, srcH, rotation);
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.round(bounds.width));
@@ -226,7 +257,7 @@ export function renderTransformedImage(
 }
 
 export function exportEditedImage(options: {
-  source: HTMLImageElement;
+  source: EditableBitmap;
   rotation: number;
   flipH: boolean;
   flipV: boolean;
@@ -342,6 +373,38 @@ export function canvasToImageElement(canvas: HTMLCanvasElement): Promise<{
   });
 }
 
+/**
+ * Adopt an edited canvas as the next working bitmap — fully local, never fetches.
+ * Prefer a blob-backed Image when the canvas is exportable; otherwise keep a canvas clone
+ * (drawImage works even when toBlob is blocked by CORS taint).
+ */
+export async function adoptEditedCanvas(canvas: HTMLCanvasElement): Promise<{
+  image: EditableBitmap;
+  objectUrl: string | null;
+}> {
+  try {
+    const baked = await canvasToImageElement(canvas);
+    return { image: baked.image, objectUrl: baked.objectUrl };
+  } catch {
+    return { image: cloneCanvasBitmap(canvas), objectUrl: null };
+  }
+}
+
+export function isBitmapExportable(source: EditableBitmap): boolean {
+  const probe = document.createElement('canvas');
+  probe.width = 1;
+  probe.height = 1;
+  const probeCtx = probe.getContext('2d');
+  if (!probeCtx) return false;
+  try {
+    probeCtx.drawImage(source, 0, 0, 1, 1);
+    probe.toDataURL('image/png');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function fetchImageAsObjectUrl(url: string): Promise<{
   image: HTMLImageElement;
   objectUrl: string;
@@ -409,29 +472,28 @@ async function fetchImageAsObjectUrl(url: string): Promise<{
   );
 }
 
-/** Returns an image that can be drawn to canvas and exported (re-fetches if current source is CORS-tainted). */
+/**
+ * Returns an image that can be drawn to canvas and exported.
+ * Only used at Save — never call this from Apply (crop/resize stay browser-local).
+ * Re-fetches only when the current bitmap is CORS-tainted.
+ */
 export async function ensureExportableImage(
-  source: HTMLImageElement,
+  source: EditableBitmap,
   sourceUrl: string
-): Promise<{ image: HTMLImageElement; objectUrl: string | null }> {
-  const probe = document.createElement('canvas');
-  probe.width = 1;
-  probe.height = 1;
-  const probeCtx = probe.getContext('2d');
-  if (probeCtx) {
-    try {
-      probeCtx.drawImage(source, 0, 0, 1, 1);
-      probe.toDataURL('image/png');
-      return { image: source, objectUrl: null };
-    } catch {
-      /* tainted — reload via fetch */
-    }
+): Promise<{ image: EditableBitmap; objectUrl: string | null }> {
+  if (isBitmapExportable(source)) {
+    return { image: source, objectUrl: null };
   }
 
   // Prefer same-origin blob/data already on the element before hitting the network.
-  const src = (source.src || '').trim();
+  const src =
+    source instanceof HTMLImageElement ? (source.src || '').trim() : '';
   const urls = Array.from(
-    new Set([src, sourceUrl.trim()].filter(Boolean))
+    new Set(
+      [src, sourceUrl.trim()].filter(
+        (u) => Boolean(u) && (u.startsWith('blob:') || u.startsWith('data:') || /^https?:\/\//i.test(u) || u.startsWith('/'))
+      )
+    )
   );
 
   let lastError: Error | null = null;
@@ -441,6 +503,13 @@ export async function ensureExportableImage(
     } catch (err) {
       lastError = err instanceof Error ? err : new Error('Could not download image');
     }
+  }
+
+  const raw = lastError?.message || '';
+  if (/failed to fetch|cors|networkerror/i.test(raw)) {
+    throw new Error(
+      'Could not export this image for upload (CORS). Re-upload it to store Files first, then edit that copy.'
+    );
   }
 
   throw (
