@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import OnlineStoreThemesExplore from '../components/OnlineStoreThemesExplore';
 import { useInstalledThemes } from '../contexts/installed-themes.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreCustomThemes } from '../contexts/store-custom-themes.context';
@@ -336,6 +337,8 @@ export default function OnlineStorePage() {
             </section>
           </aside>
         </div>
+
+        <OnlineStoreThemesExplore />
       </div>
     </div>
   );
