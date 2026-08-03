@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 import { buildDuplicateProductPayload } from '../utils/product-duplicate.util';
 
 // Product interface (matches API shape at creation and list)
@@ -264,15 +265,10 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [transferProductSearchPagination, setTransferProductSearchPagination] = useState<ProductSearchPagination | null>(null);
   const activeProductFetchRef = useRef(0);
 
-  const extractApiErrorMessage = useCallback((err: any, fallback: string) => {
-    const apiMessage =
-      err?.response?.data?.message ||
-      err?.response?.data?.error ||
-      err?.response?.data?.details?.message;
-    if (typeof apiMessage === 'string' && apiMessage.trim()) return apiMessage;
-    if (typeof err?.message === 'string' && err.message.trim()) return err.message;
-    return fallback;
-  }, []);
+  const extractApiErrorMessage = useCallback(
+    (err: unknown, fallback: string) => getProductApiErrorMessage(err, fallback),
+    []
+  );
 
   const createProduct = useCallback(async (payload: CreateProductPayload) => {
     try {
@@ -284,7 +280,7 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // prepend to list
       setProducts(prev => [data, ...prev]);
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       const msg = extractApiErrorMessage(err, 'Failed to create product');
       setError(msg);
       throw new Error(msg);

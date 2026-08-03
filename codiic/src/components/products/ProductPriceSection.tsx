@@ -16,6 +16,8 @@ interface ProductPriceSectionProps {
   selectedBaseMeasureUnit: string;
   chargeTaxOnProduct: boolean;
   cost: string;
+  sku?: string;
+  barcode?: string;
   onPriceChange: (value: string) => void;
   onCompareAtPriceChange: (value: string) => void;
   onUnitPriceTotalAmountChange: (value: string) => void;
@@ -24,6 +26,8 @@ interface ProductPriceSectionProps {
   onSelectedBaseMeasureUnitChange: (value: string) => void;
   onChargeTaxOnProductChange: (checked: boolean) => void;
   onCostChange: (value: string) => void;
+  onSkuChange?: (value: string) => void;
+  onBarcodeChange?: (value: string) => void;
   appearance?: ProductFormAppearance;
 }
 
@@ -36,6 +40,8 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
   selectedBaseMeasureUnit,
   chargeTaxOnProduct,
   cost,
+  sku,
+  barcode,
   onPriceChange,
   onCompareAtPriceChange,
   onUnitPriceTotalAmountChange,
@@ -44,6 +50,8 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
   onSelectedBaseMeasureUnitChange,
   onChargeTaxOnProductChange,
   onCostChange,
+  onSkuChange,
+  onBarcodeChange,
   appearance = 'default',
 }) => {
   const handlePriceChange = useCallback(
@@ -52,6 +60,8 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
     },
     [onPriceChange]
   );
+
+  const showIdentifiers = typeof onSkuChange === 'function' && typeof onBarcodeChange === 'function';
 
   return (
     <div className={productFormCardClass(appearance)}>
@@ -82,6 +92,35 @@ const ProductPriceSection: React.FC<ProductPriceSectionProps> = ({
           <p className="mt-1.5 text-[12px] text-gray-400">Required — what customers pay</p>
         ) : null}
       </div>
+
+      {showIdentifiers ? (
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className={productFormLabelClass(appearance)}>
+              SKU (Stock Keeping Unit)
+            </label>
+            <input
+              type="text"
+              value={sku ?? ''}
+              onChange={(e) => onSkuChange?.(e.target.value)}
+              placeholder="Enter SKU"
+              className={productFormInputClass(appearance)}
+            />
+          </div>
+          <div>
+            <label className={productFormLabelClass(appearance)}>
+              Barcode (ISBN, UPC, GTIN, etc.)
+            </label>
+            <input
+              type="text"
+              value={barcode ?? ''}
+              onChange={(e) => onBarcodeChange?.(e.target.value)}
+              placeholder="Enter barcode"
+              className={productFormInputClass(appearance)}
+            />
+          </div>
+        </div>
+      ) : null}
 
       <ProductAdditionalDisplayPrices
         price={price}

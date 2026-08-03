@@ -5,7 +5,6 @@ import ProductBasicInformationSection from './ProductBasicInformationSection';
 import ProductCategorySection from './ProductCategorySection';
 import { ProductFormStage } from './ProductFormStage';
 import ProductFormHeader from './ProductFormHeader';
-import ProductInventorySection from './ProductInventorySection';
 import ProductLocationQuantitiesSection from './ProductLocationQuantitiesSection';
 import ProductOrganizationSection from './ProductOrganizationSection';
 import ProductPriceSection from './ProductPriceSection';
@@ -19,7 +18,6 @@ import {
   productFormGridClass,
   productFormMainStackClass,
   productFormPageClass,
-  productFormStickyBarInnerClass,
 } from './product-form-appearance';
 
 export type NewProductFormProps = {
@@ -77,8 +75,8 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
       <div
         className={
           isSheet
-            ? 'px-4 py-4 pb-24 sm:px-6'
-            : `${productFormFlowMaxWidthClass(FORM_APPEARANCE)} pb-24`
+            ? 'px-4 py-4 sm:px-6'
+            : productFormFlowMaxWidthClass(FORM_APPEARANCE)
         }
       >
         <ProductFormHeader
@@ -91,7 +89,6 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
           onCancel={isSheet ? onCancel : undefined}
           onSubmit={runSubmit}
           appearance={FORM_APPEARANCE}
-          hideSubmit
         />
 
         <p className="mb-6 max-w-xl text-[13px] leading-relaxed text-gray-500">
@@ -104,7 +101,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
             <ProductFormStage
               step={1}
               title="Product details"
-              description="What customers see first — name, photos, and story."
+              description="What customers see first — name, story, and photos."
             >
               <ProductBasicInformationSection
                 title={formData.title}
@@ -123,7 +120,7 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
             <ProductFormStage
               step={2}
               title="Pricing"
-              description="Set the selling price. Extra options like compare-at and cost are optional."
+              description="Set the selling price, SKU, and barcode. Extra options like compare-at and cost are optional."
             >
               <ProductPriceSection
                 price={formData.price}
@@ -134,6 +131,8 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
                 selectedBaseMeasureUnit={formData.selectedBaseMeasureUnit}
                 chargeTaxOnProduct={formData.chargeTaxOnProduct}
                 cost={formData.cost}
+                sku={formData.sku}
+                barcode={formData.barcode}
                 onPriceChange={(value) => handleInputChange('price', value)}
                 onCompareAtPriceChange={(value) => handleInputChange('compareAtPrice', value)}
                 onUnitPriceTotalAmountChange={(value) =>
@@ -150,6 +149,8 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
                   handleInputChange('chargeTaxOnProduct', checked)
                 }
                 onCostChange={(value) => handleInputChange('cost', value)}
+                onSkuChange={(value) => handleInputChange('sku', value)}
+                onBarcodeChange={(value) => handleInputChange('barcode', value)}
                 appearance={FORM_APPEARANCE}
               />
             </ProductFormStage>
@@ -189,14 +190,6 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               title="Inventory & shipping"
               description="Set starting stock at each location, then shipping details."
             >
-              <ProductInventorySection
-                sku={formData.sku}
-                barcode={formData.barcode}
-                onSkuChange={(value) => handleInputChange('sku', value)}
-                onBarcodeChange={(value) => handleInputChange('barcode', value)}
-                appearance={FORM_APPEARANCE}
-                hideTitle
-              />
               <ProductLocationQuantitiesSection
                 activeStoreId={activeStoreId}
                 quantities={formData.locationQuantities}
@@ -262,39 +255,6 @@ export const NewProductForm: React.FC<NewProductFormProps> = ({
               appearance={FORM_APPEARANCE}
             />
           </aside>
-        </div>
-      </div>
-
-      <div className="sticky bottom-0 z-20 border-t border-gray-200/80 bg-white/95 backdrop-blur-sm">
-        <div
-          className={
-            isSheet
-              ? 'flex items-center justify-between gap-3 px-4 py-3 sm:px-6'
-              : productFormStickyBarInnerClass(FORM_APPEARANCE)
-          }
-        >
-          <p className="hidden text-[13px] text-gray-400 sm:block">
-            You can edit everything again after saving.
-          </p>
-          <div className="ml-auto flex items-center gap-2">
-            {isSheet && onCancel ? (
-              <button
-                type="button"
-                onClick={onCancel}
-                className="rounded-md border border-gray-200/60 bg-white px-3 py-2 text-sm font-normal text-gray-600 transition-colors hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            ) : null}
-            <button
-              type="button"
-              onClick={runSubmit}
-              disabled={submitDisabled}
-              className="inline-flex items-center gap-2 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {submitLabel}
-            </button>
-          </div>
         </div>
       </div>
     </div>

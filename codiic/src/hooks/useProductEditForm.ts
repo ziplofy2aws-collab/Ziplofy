@@ -8,10 +8,12 @@ import {
   isDescriptionWithinMaxLength,
   sanitizeProductDescriptionHtml,
 } from '../utils/product-description-html.util';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 import {
   buildProductFormSnapshot,
   productFormSnapshotsEqual,
 } from '../utils/product-form-snapshot.util';
+import { plainTextFromHtml } from '../seo/seo-text.util';
 import { type NewProductFormData } from './useNewProductForm';
 import { uploadDescriptionImagesToCloudStorage, useProductMediaUrls } from './useProductMediaUrls';
 
@@ -108,13 +110,52 @@ export function useProductEditForm(product: Product) {
   );
 
   const handleSave = useCallback(async () => {
-    if (!formData.title.trim()) {
-      toast.error('Title is required');
+    const title = formData.title.trim();
+    if (!title) {
+      toast.error('Product title is required');
+      return;
+    }
+    if (title.length < 2) {
+      toast.error('Product title must be at least 2 characters');
+      return;
+    }
+
+    if (!plainTextFromHtml(formData.description)) {
+      toast.error('Product description is required');
       return;
     }
 
     if (!mediaUrls.length) {
       toast.error('Add at least one product image');
+      return;
+    }
+
+    if (formData.price.trim() === '') {
+      toast.error('Product price is required');
+      return;
+    }
+    const parsedPrice = parseFloat(formData.price);
+    if (Number.isNaN(parsedPrice)) {
+      toast.error('Enter a valid product price');
+      return;
+    }
+    if (parsedPrice < 0) {
+      toast.error('Price cannot be negative');
+      return;
+    }
+
+    if (!formData.category.trim()) {
+      toast.error('Product category is required');
+      return;
+    }
+
+    if (!formData.productType.trim()) {
+      toast.error('Product type is required');
+      return;
+    }
+
+    if (!formData.vendor.trim()) {
+      toast.error('Vendor is required');
       return;
     }
 
@@ -188,8 +229,7 @@ export function useProductEditForm(product: Product) {
       initialSnapshotRef.current = buildProductFormSnapshot(nextForm, nextUrls);
       toast.success('Product saved');
     } catch (error: unknown) {
-      const err = error as { message?: string; response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || err?.message || 'Failed to save product');
+      toast.error(getProductApiErrorMessage(error, 'Failed to save product'));
     } finally {
       setIsSaving(false);
     }

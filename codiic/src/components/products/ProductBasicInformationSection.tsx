@@ -54,6 +54,13 @@ const ProductBasicInformationSection: React.FC<
       </div>
 
       <div className={productFormDividerClass(appearance)}>
+        <ProductDescriptionInput
+          value={description}
+          onChange={onDescriptionChange}
+        />
+      </div>
+
+      <div className={productFormDividerClass(appearance)}>
         <ProductImagesSection
           embedded
           images={images}
@@ -61,13 +68,6 @@ const ProductBasicInformationSection: React.FC<
           onRemoveImage={onRemoveImage}
           disabled={mediaDisabled}
           appearance={appearance}
-        />
-      </div>
-
-      <div className={productFormDividerClass(appearance)}>
-        <ProductDescriptionInput
-          value={description}
-          onChange={onDescriptionChange}
         />
       </div>
     </div>

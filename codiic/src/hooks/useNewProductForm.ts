@@ -6,11 +6,13 @@ import { useCategories } from '../contexts/category.context';
 import { type Product, useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { uploadDescriptionImagesToCloudStorage, useProductMediaUrls } from './useProductMediaUrls';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 import {
   descriptionHasPendingLocalImages,
   isDescriptionWithinMaxLength,
   sanitizeProductDescriptionHtml,
 } from '../utils/product-description-html.util';
+import { plainTextFromHtml } from '../seo/seo-text.util';
 
 export type NewProductFormData = {
   title: string;
@@ -112,39 +114,6 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     }));
   }, []);
 
-  const getErrorMessage = useCallback((error: unknown): string => {
-    const err = error as {
-      response?: { data?: { message?: string; error?: string; details?: { message?: string }; errors?: unknown[]; data?: { message?: string } } };
-      message?: string;
-    };
-    const apiMessage =
-      err?.response?.data?.message ||
-      err?.response?.data?.error ||
-      err?.response?.data?.details?.message ||
-      err?.response?.data?.data?.message;
-
-    if (typeof apiMessage === 'string' && apiMessage.trim()) return apiMessage;
-
-    const errors = err?.response?.data?.errors;
-    if (Array.isArray(errors) && errors.length > 0) {
-      const firstError = errors[0];
-      if (typeof firstError === 'string') return firstError;
-      if (typeof (firstError as { message?: string })?.message === 'string') {
-        return (firstError as { message: string }).message;
-      }
-    }
-
-    if (typeof err?.message === 'string' && err.message.trim()) return err.message;
-    return 'Failed to create product';
-  }, []);
-
-  const stripHtml = useCallback((html: string): string => {
-    if (!html) return '';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
-  }, []);
-
   const slugify = useCallback((input: string): string => {
     return input
       .toLowerCase()
@@ -180,18 +149,53 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
       return;
     }
 
-    if (!formData.title.trim()) {
-      toast.error('Title is required');
+    const title = formData.title.trim();
+    if (!title) {
+      toast.error('Product title is required');
+      return;
+    }
+    if (title.length < 2) {
+      toast.error('Product title must be at least 2 characters');
       return;
     }
 
-    if (formData.price.trim() === '' || Number.isNaN(parseFloat(formData.price))) {
-      toast.error('Price is required');
+    const descriptionPlain = plainTextFromHtml(formData.description);
+    if (!descriptionPlain) {
+      toast.error('Product description is required');
       return;
     }
 
     if (!mediaUrls.length) {
       toast.error('Add at least one product image');
+      return;
+    }
+
+    if (formData.price.trim() === '') {
+      toast.error('Product price is required');
+      return;
+    }
+    const parsedPrice = parseFloat(formData.price);
+    if (Number.isNaN(parsedPrice)) {
+      toast.error('Enter a valid product price');
+      return;
+    }
+    if (parsedPrice < 0) {
+      toast.error('Price cannot be negative');
+      return;
+    }
+
+    if (!formData.category.trim()) {
+      toast.error('Product category is required');
+      return;
+    }
+
+    if (!formData.productType.trim()) {
+      toast.error('Product type is required');
+      return;
+    }
+
+    if (!formData.vendor.trim()) {
+      toast.error('Vendor is required');
       return;
     }
 
@@ -222,13 +226,18 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
       const profit = Math.max(0, price - cost);
       const marginPercent = price > 0 ? Math.min(100, Math.max(0, (profit / price) * 100)) : 0;
 
-      const descriptionPlainText = stripHtml(descriptionWithUploadedImages);
-      const safePageTitle = (effectiveFormData.pageTitle || '').trim() || (effectiveFormData.title || '').trim();
+      const descriptionPlainText = plainTextFromHtml(descriptionWithUploadedImages);
+      const trimmedTitle = (effectiveFormData.title || '').trim();
+      const safePageTitle = (effectiveFormData.pageTitle || '').trim() || trimmedTitle;
+      const derivedMeta = descriptionPlainText.slice(0, 240);
       const safeMetaDescription =
-        (effectiveFormData.metaDescription || '').trim() || descriptionPlainText.slice(0, 240);
+        (effectiveFormData.metaDescription || '').trim() ||
+        (derivedMeta.length >= 10
+          ? derivedMeta
+          : `${derivedMeta}${derivedMeta ? ' ' : ''}${trimmedTitle} product`.trim().slice(0, 500));
       const safeUrlHandle =
         (effectiveFormData.urlHandle || '').trim() ||
-        slugify((effectiveFormData.title || '').trim()) ||
+        slugify(trimmedTitle) ||
         `product-${Date.now()}`;
 
       const locationQuantities = Object.entries(effectiveFormData.locationQuantities || {}).map(
@@ -299,7 +308,7 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
       }
     } catch (error: unknown) {
       console.error('Error creating product:', error);
-      toast.error(getErrorMessage(error));
+      toast.error(getProductApiErrorMessage(error, 'Failed to create product'));
     } finally {
       setIsSubmitting(false);
     }
@@ -307,14 +316,12 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
     activeStoreId,
     createProduct,
     formData,
-    getErrorMessage,
     navigate,
     navigateOnSuccess,
     onSuccess,
     resetForm,
     mediaUrls,
     slugify,
-    stripHtml,
     transformBeforeSubmit,
     uploadDescriptionImages,
   ]);

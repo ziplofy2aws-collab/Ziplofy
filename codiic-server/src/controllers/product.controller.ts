@@ -82,9 +82,75 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
   // Parse and type the incoming payload; allow extra fields but prefer strong typing for known ones
   const body = req.body as Partial<IProduct> & Record<string, any>;
 
-  // Guard against missing critical product attributes; database schema will also enforce constraints
-  if (!body.title || !body.description || !body.category || !body.storeId || body.price === undefined) {
-    throw new CustomError("Missing required fields: title, description, category, storeId, price", 400);
+  const asTrimmedString = (value: unknown): string =>
+    typeof value === "string" ? value.trim() : "";
+
+  const plainTextFromHtml = (value: string): string =>
+    value
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const requireObjectId = (value: unknown, message: string): string => {
+    const id = asTrimmedString(value);
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      throw new CustomError(message, 400);
+    }
+    return id;
+  };
+
+  const storeId = requireObjectId(body.storeId, "Please select a store first");
+
+  const title = asTrimmedString(body.title);
+  if (!title) throw new CustomError("Product title is required", 400);
+  if (title.length < 2) throw new CustomError("Product title must be at least 2 characters", 400);
+
+  const descriptionRaw = typeof body.description === "string" ? body.description : "";
+  if (!plainTextFromHtml(descriptionRaw)) {
+    throw new CustomError("Product description is required", 400);
+  }
+
+  const category = requireObjectId(body.category, "Product category is required");
+
+  if (body.price === undefined || body.price === null || body.price === "") {
+    throw new CustomError("Product price is required", 400);
+  }
+  const price = typeof body.price === "number" ? body.price : Number(body.price);
+  if (Number.isNaN(price)) throw new CustomError("Enter a valid product price", 400);
+  if (price < 0) throw new CustomError("Price cannot be negative", 400);
+
+  const productType = requireObjectId(body.productType, "Product type is required");
+  const vendor = requireObjectId(body.vendor, "Vendor is required");
+
+  body.imageUrls = body.imageUrls ?? body.images ?? [];
+  const imageUrls = Array.isArray(body.imageUrls)
+    ? body.imageUrls.filter((url: unknown) => typeof url === "string" && url.trim().length > 0)
+    : [];
+  if (imageUrls.length === 0) {
+    throw new CustomError("Add at least one product image", 400);
+  }
+
+  const pageTitle = asTrimmedString(body.pageTitle) || title;
+  if (pageTitle.length < 2) {
+    throw new CustomError("Page title must be at least 2 characters", 400);
+  }
+
+  const descriptionPlain = plainTextFromHtml(descriptionRaw);
+  const metaDescription =
+    asTrimmedString(body.metaDescription) ||
+    (descriptionPlain.length >= 10
+      ? descriptionPlain.slice(0, 500)
+      : `${descriptionPlain}${descriptionPlain ? " " : ""}${title} product`.trim().slice(0, 500));
+  if (metaDescription.length < 10) {
+    throw new CustomError("Meta description must be at least 10 characters", 400);
+  }
+
+  const urlHandle = asTrimmedString(body.urlHandle).toLowerCase();
+  if (!urlHandle) throw new CustomError("URL handle is required", 400);
+  if (urlHandle.length < 2) throw new CustomError("URL handle must be at least 2 characters", 400);
+  if (!/^[a-z0-9-]+$/.test(urlHandle)) {
+    throw new CustomError("URL handle can only contain lowercase letters, numbers, and hyphens", 400);
   }
 
   // Normalize input variants/units to internal representation when needed
@@ -93,20 +159,17 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
     body.productWeightUnit = "g";
   }
 
-  // Normalize images if client sent "images" instead of "imageUrls"
-  body.imageUrls = body.imageUrls ?? body.images ?? [];
-
   // Shipping fields are optional; keep the controller lean and rely on schema defaults
 
   // 1) Create the base Product document first; variants (combinations) are created separately below
   let product: IProduct;
   try {
     product = await Product.create({
-      title: body.title,
-      storeId: body.storeId as any,
-      description: body.description,
-      category: body.category,
-      price: body.price,
+      title,
+      storeId: storeId as any,
+      description: descriptionRaw,
+      category,
+      price,
       compareAtPrice: body.compareAtPrice,
       chargeTax: body.chargeTax ?? true,
       cost: body.cost ?? 0,
@@ -118,8 +181,8 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
       unitPriceBaseMeasureMetric: body.unitPriceBaseMeasureMetric,
       inventoryTrackingEnabled: body.inventoryTrackingEnabled ?? true,
       continueSellingWhenOutOfStock: body.continueSellingWhenOutOfStock ?? false,
-      sku: body.sku,
-      barcode: body.barcode,
+      sku: body.sku ?? "",
+      barcode: body.barcode ?? "",
       isPhysicalProduct: body.isPhysicalProduct ?? true,
       package: body.package,
       productWeight: body.productWeight,
@@ -127,16 +190,16 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
       countryOfOrigin: body.countryOfOrigin,
       harmonizedSystemCode: body.harmonizedSystemCode,
       variants: body.variants ?? [], // [{ optionName, values }]
-      pageTitle: body.pageTitle,
-      metaDescription: body.metaDescription,
-      urlHandle: body.urlHandle,
+      pageTitle,
+      metaDescription,
+      urlHandle,
       status: body.status ?? 'draft',
       onlineStorePublishing: body.onlineStorePublishing ?? true,
       pointOfSalePublishing: body.pointOfSalePublishing ?? false,
-      productType: body.productType,
-      vendor: body.vendor,
+      productType,
+      vendor,
       tagIds: body.tagIds ?? [],
-      imageUrls: body.imageUrls ?? [],
+      imageUrls,
       themeTemplate: isValidProductThemeTemplate(body.themeTemplate)
         ? normalizeProductThemeTemplate(body.themeTemplate)
         : "default",
