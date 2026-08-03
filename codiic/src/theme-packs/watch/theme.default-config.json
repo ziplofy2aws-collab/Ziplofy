@@ -109,6 +109,8 @@
       "type": "header",
       "enabled": true,
       "settings": {
+        "backgroundColor": "#ffffff",
+        "textColor": "#111111",
         "customerAccountMenu": "customer-account",
         "searchIcon": true,
         "searchPosition": "right",

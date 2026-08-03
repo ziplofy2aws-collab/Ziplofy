@@ -29,6 +29,95 @@ const COLLECTION_UPDATE_FIELDS = [
 
 const ALLOWED_SORTS = ["manual", "title-asc", "title-desc", "price-high", "price-low", "newest", "oldest"] as const;
 
+function asTrimmedString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function plainTextFromHtml(value: string): string {
+  return value
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function requireCollectionCreateFields(input: {
+  storeId: unknown;
+  title: unknown;
+  description: unknown;
+  pageTitle: unknown;
+  metaDescription: unknown;
+  urlHandle: unknown;
+}): {
+  storeId: string;
+  title: string;
+  description: string;
+  pageTitle: string;
+  metaDescription: string;
+  urlHandle: string;
+} {
+  if (!input.storeId || (typeof input.storeId === "string" && !input.storeId.trim())) {
+    throw new CustomError("Store is required to create a collection", 400);
+  }
+
+  const title = asTrimmedString(input.title);
+  if (!title) throw new CustomError("Collection title is required", 400);
+  if (title.length < 2) throw new CustomError("Collection title must be at least 2 characters", 400);
+
+  const descriptionRaw = typeof input.description === "string" ? input.description : "";
+  const descriptionPlain = plainTextFromHtml(descriptionRaw);
+  if (!descriptionPlain) {
+    throw new CustomError("Collection description is required", 400);
+  }
+
+  const pageTitle = asTrimmedString(input.pageTitle) || title;
+  if (pageTitle.length < 2) {
+    throw new CustomError("Page title must be at least 2 characters", 400);
+  }
+
+  const metaDescription = asTrimmedString(input.metaDescription) || descriptionPlain || title;
+  if (metaDescription.length < 10) {
+    throw new CustomError("Meta description must be at least 10 characters", 400);
+  }
+
+  const urlHandle = asTrimmedString(input.urlHandle).toLowerCase();
+  if (!urlHandle) throw new CustomError("URL handle is required", 400);
+  if (urlHandle.length < 2) throw new CustomError("URL handle must be at least 2 characters", 400);
+  if (!/^[a-z0-9-]+$/.test(urlHandle)) {
+    throw new CustomError("URL handle can only contain lowercase letters, numbers, and hyphens", 400);
+  }
+
+  return {
+    storeId: String(input.storeId),
+    title,
+    description: descriptionRaw,
+    pageTitle,
+    metaDescription,
+    urlHandle,
+  };
+}
+
+async function assertCollectionUrlHandleAvailable(
+  storeId: string,
+  urlHandle: string,
+  excludeId?: string
+): Promise<void> {
+  const existing = await Collections.findOne({
+    storeId,
+    urlHandle,
+    ...(excludeId ? { _id: { $ne: excludeId } } : {}),
+  })
+    .select({ _id: 1 })
+    .lean();
+
+  if (existing) {
+    throw new CustomError(
+      `A collection with the URL handle "${urlHandle}" already exists for this store. Choose a different URL handle.`,
+      409
+    );
+  }
+}
+
 function buildCollectionUpdatePayload(body: Record<string, unknown>): Partial<ICollection> {
   const updatePayload: Partial<ICollection> = {};
 
@@ -68,25 +157,37 @@ function validateProductSort(productSort: unknown): void {
 // Create a new collection
 export const createCollection = asyncErrorHandler(async (req: Request, res: Response) => {
   const {
-    storeId,
-    title,
+    storeId: rawStoreId,
+    title: rawTitle,
     imageUrl,
     imageAltText,
-    description,
-    pageTitle,
-    metaDescription,
-    urlHandle,
+    description: rawDescription,
+    pageTitle: rawPageTitle,
+    metaDescription: rawMetaDescription,
+    urlHandle: rawUrlHandle,
     productIds,
     productSort,
     status,
     themeTemplate,
   } = req.body as Partial<ICollection> & Record<string, any>;
 
-  if (!storeId || !title || !description || !pageTitle || !metaDescription || !urlHandle) {
-    throw new CustomError("Missing required fields", 400);
-  }
+  const {
+    storeId,
+    title,
+    description,
+    pageTitle,
+    metaDescription,
+    urlHandle,
+  } = requireCollectionCreateFields({
+    storeId: rawStoreId,
+    title: rawTitle,
+    description: rawDescription,
+    pageTitle: rawPageTitle,
+    metaDescription: rawMetaDescription,
+    urlHandle: rawUrlHandle,
+  });
 
-  await assertStoreAccess(storeId.toString(), req.user as SecureUserInfo | undefined);
+  await assertStoreAccess(storeId, req.user as SecureUserInfo | undefined);
   validateCollectionStatus(status);
   validateProductSort(productSort);
 
@@ -94,15 +195,21 @@ export const createCollection = asyncErrorHandler(async (req: Request, res: Resp
     throw new CustomError("Invalid theme template value", 400);
   }
 
+  await assertCollectionUrlHandleAvailable(storeId, urlHandle);
+
   const sanitizedDescription = sanitizeRichTextHtml(String(description));
-  await assertOptionalStoreCloudImageUrl(storeId.toString(), imageUrl);
+  if (!plainTextFromHtml(sanitizedDescription)) {
+    throw new CustomError("Collection description is required", 400);
+  }
+
+  await assertOptionalStoreCloudImageUrl(storeId, imageUrl);
 
   const normalizedProductIds = Array.isArray(productIds)
     ? [...new Set(productIds.filter((id: unknown) => typeof id === "string" && mongoose.isValidObjectId(id)))]
     : [];
 
   if (Array.isArray(productIds) && normalizedProductIds.length !== productIds.length) {
-    throw new CustomError("One or more productIds are invalid", 400);
+    throw new CustomError("One or more selected products are invalid", 400);
   }
 
   if (normalizedProductIds.length > 0) {
@@ -266,6 +373,43 @@ export const updateCollection = asyncErrorHandler(async (req: Request, res: Resp
 
   if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
     updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));
+    if (!plainTextFromHtml(String(updatePayload.description))) {
+      throw new CustomError("Collection description is required", 400);
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "title")) {
+    const title = asTrimmedString(updatePayload.title);
+    if (!title) throw new CustomError("Collection title is required", 400);
+    if (title.length < 2) throw new CustomError("Collection title must be at least 2 characters", 400);
+    updatePayload.title = title;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "pageTitle")) {
+    const pageTitle = asTrimmedString(updatePayload.pageTitle);
+    if (!pageTitle) throw new CustomError("Page title is required", 400);
+    if (pageTitle.length < 2) throw new CustomError("Page title must be at least 2 characters", 400);
+    updatePayload.pageTitle = pageTitle;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "metaDescription")) {
+    const metaDescription = asTrimmedString(updatePayload.metaDescription);
+    if (!metaDescription) throw new CustomError("Meta description is required", 400);
+    if (metaDescription.length < 10) {
+      throw new CustomError("Meta description must be at least 10 characters", 400);
+    }
+    updatePayload.metaDescription = metaDescription;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "urlHandle")) {
+    const urlHandle = asTrimmedString(updatePayload.urlHandle).toLowerCase();
+    if (!urlHandle) throw new CustomError("URL handle is required", 400);
+    if (urlHandle.length < 2) throw new CustomError("URL handle must be at least 2 characters", 400);
+    if (!/^[a-z0-9-]+$/.test(urlHandle)) {
+      throw new CustomError("URL handle can only contain lowercase letters, numbers, and hyphens", 400);
+    }
+    await assertCollectionUrlHandleAvailable(storeId, urlHandle, id);
+    updatePayload.urlHandle = urlHandle;
   }
 
   if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrl")) {

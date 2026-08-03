@@ -159,12 +159,12 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const { success, data } = res.data;
       if (!success) throw new Error('Failed to fetch collections');
       setCollections(data);
-    } catch (err: any) {
-      setError(err?.response?.data?.message || err?.message || 'Failed to fetch collections');
+    } catch (err: unknown) {
+      setError(extractApiErrorMessage(err, 'Failed to fetch collections'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [extractApiErrorMessage]);
 
   const fetchCollectionById = useCallback(async (collectionId: string): Promise<Collection> => {
     const fetchId = ++activeCollectionFetchRef.current;
@@ -185,12 +185,12 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       });
       return data;
     } catch (err: unknown) {
+      const msg = extractApiErrorMessage(err, 'Failed to fetch collection details');
       if (fetchId === activeCollectionFetchRef.current) {
-        const msg = extractApiErrorMessage(err, 'Failed to fetch collection details');
         setError(msg);
         setActiveCollection(null);
       }
-      throw new Error(extractApiErrorMessage(err, 'Failed to fetch collection details'));
+      throw new Error(msg);
     } finally {
       if (fetchId === activeCollectionFetchRef.current) {
         setActiveCollectionLoading(false);
@@ -207,14 +207,14 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (!success) throw new Error('Failed to search collections');
       setCollections(data);
       return { success, data, pagination };
-    } catch (err: any) {
-      const errorMsg = err?.response?.data?.message || err?.message || 'Failed to search collections';
+    } catch (err: unknown) {
+      const errorMsg = extractApiErrorMessage(err, 'Failed to search collections');
       setError(errorMsg);
       throw new Error(errorMsg);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [extractApiErrorMessage]);
 
   const searchProductsInCollection = useCallback(async (collectionId: string, query: string, page: number = 1, limit: number = 10) => {
     try {
@@ -223,16 +223,15 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       const res = await axiosi.get<SearchProductsInCollectionResponse>(`/collections/${collectionId}/products/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
       const { success, data, pagination } = res.data;
       if (!success) throw new Error('Failed to search products in collection');
-      // Do not mutate collections state; return the results to caller
       return { success, data, pagination };
-    } catch (err: any) {
-      const errorMsg = err?.response?.data?.message || err?.message || 'Failed to search products in collection';
+    } catch (err: unknown) {
+      const errorMsg = extractApiErrorMessage(err, 'Failed to search products in collection');
       setError(errorMsg);
       throw new Error(errorMsg);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [extractApiErrorMessage]);
 
   const createCollection = useCallback(async (payload: CreateCollectionPayload) => {
     try {
@@ -243,14 +242,14 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (!success) throw new Error('Failed to create collection');
       setCollections(prev => [data, ...prev]);
       return data;
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to create collection';
+    } catch (err: unknown) {
+      const msg = extractApiErrorMessage(err, 'Failed to create collection');
       setError(msg);
-      throw err;
+      throw new Error(msg);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [extractApiErrorMessage]);
 
   const updateCollection = useCallback(async (id: string, payload: UpdateCollectionPayload) => {
     try {
@@ -262,14 +261,14 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCollections(prev => prev.map(c => (c._id === id ? data : c)));
       setActiveCollection(prev => (prev && prev._id === id ? data : prev));
       return data;
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to update collection';
+    } catch (err: unknown) {
+      const msg = extractApiErrorMessage(err, 'Failed to update collection');
       setError(msg);
-      throw err;
+      throw new Error(msg);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [extractApiErrorMessage]);
 
   const deleteCollection = useCallback(async (id: string) => {
     try {
@@ -281,14 +280,14 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCollections(prev => prev.filter(c => c._id !== id));
       setActiveCollection(prev => (prev && prev._id === id ? null : prev));
       return data.deletedId;
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to delete collection';
+    } catch (err: unknown) {
+      const msg = extractApiErrorMessage(err, 'Failed to delete collection');
       setError(msg);
-      throw err;
+      throw new Error(msg);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [extractApiErrorMessage]);
 
   const clearCollections = useCallback(() => {
     setCollections([]);

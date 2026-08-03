@@ -143,7 +143,6 @@ const ProductCollectionDetailsPage: React.FC = () => {
   );
 
   const [form, setForm] = useState<CollectionFormState>(initialForm);
-  const [isSeoExpanded, setIsSeoExpanded] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [isImageAltModalOpen, setIsImageAltModalOpen] = useState(false);
   const [imageAltTextDraft, setImageAltTextDraft] = useState('');
@@ -608,11 +607,11 @@ const ProductCollectionDetailsPage: React.FC = () => {
             </section>
 
             <CollectionSeoSection
+              collectionTitle={form.title}
+              collectionDescription={form.description}
               pageTitle={form.pageTitle}
               metaDescription={form.metaDescription}
               urlHandle={form.urlHandle}
-              expanded={isSeoExpanded}
-              onToggleExpanded={() => setIsSeoExpanded((prev) => !prev)}
               onPageTitleChange={(value) => handleChange('pageTitle', value)}
               onMetaDescriptionChange={(value) => handleChange('metaDescription', value)}
               onUrlHandleChange={(value) => handleChange('urlHandle', value)}

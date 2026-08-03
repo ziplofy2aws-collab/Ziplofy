@@ -27,6 +27,11 @@ import {
   type CollectionProductSort,
 } from '../components/collections/collection-form.types';
 import {
+  META_DESCRIPTION_MAX,
+  plainTextFromHtml,
+  slugFromTitle,
+} from '../seo/seo-text.util';
+import {
   productFormAsideStackClass,
   productFormCardClass,
   productFormGridClass,
@@ -41,6 +46,28 @@ import { useDescriptionCloudStorageSave } from '../hooks/useDescriptionCloudStor
 import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
 
 const FORM_APPEARANCE = 'minimal' as const;
+
+function resolveCollectionSeoFields(
+  title: string,
+  descriptionHtml: string,
+  overrides: { pageTitle: string; metaDescription: string; urlHandle: string }
+) {
+  const trimmedTitle = title.trim();
+  const plainDescription = plainTextFromHtml(descriptionHtml);
+  const derivedMeta = (plainDescription || trimmedTitle).slice(0, META_DESCRIPTION_MAX);
+  const metaDescription =
+    overrides.metaDescription.trim() ||
+    (derivedMeta.length >= 10
+      ? derivedMeta
+      : `${derivedMeta}${derivedMeta ? ' ' : ''}Collection page`.trim().slice(0, META_DESCRIPTION_MAX));
+
+  return {
+    pageTitle: overrides.pageTitle.trim() || trimmedTitle,
+    metaDescription,
+    urlHandle:
+      overrides.urlHandle.trim() || slugFromTitle(trimmedTitle, 'collection') || `collection-${Date.now()}`,
+  };
+}
 
 interface SelectedCollectionProduct {
   _id: string;
@@ -79,7 +106,6 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     urlHandle: '',
     status: 'published' as 'draft' | 'published',
   });
-  const [isSeoExpanded, setIsSeoExpanded] = useState(false);
   const [isProductsModalOpen, setIsProductsModalOpen] = useState(false);
   const [productSearchQuery, setProductSearchQuery] = useState('');
   const [searchBy, setSearchBy] = useState<'all' | 'title' | 'sku'>('all');
@@ -99,10 +125,44 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
   const [imageAltText, setImageAltText] = useState('');
   const [imageAltTextDraft, setImageAltTextDraft] = useState('');
   const modalSearchInputRef = useRef<HTMLInputElement | null>(null);
+  const seoTouchedRef = useRef({ pageTitle: false, metaDescription: false, urlHandle: false });
 
   const handleChange = useCallback((field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   }, []);
+
+  const handleSeoFieldChange = useCallback(
+    (field: 'pageTitle' | 'metaDescription' | 'urlHandle', value: string) => {
+      seoTouchedRef.current[field] = true;
+      handleChange(field, value);
+    },
+    [handleChange]
+  );
+
+  useEffect(() => {
+    const derived = resolveCollectionSeoFields(form.title, form.description, {
+      pageTitle: '',
+      metaDescription: '',
+      urlHandle: '',
+    });
+    setForm((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      if (!seoTouchedRef.current.pageTitle && prev.pageTitle !== derived.pageTitle) {
+        next.pageTitle = derived.pageTitle;
+        changed = true;
+      }
+      if (!seoTouchedRef.current.metaDescription && prev.metaDescription !== derived.metaDescription) {
+        next.metaDescription = derived.metaDescription;
+        changed = true;
+      }
+      if (!seoTouchedRef.current.urlHandle && prev.urlHandle !== derived.urlHandle) {
+        next.urlHandle = derived.urlHandle;
+        changed = true;
+      }
+      return changed ? next : prev;
+    });
+  }, [form.title, form.description]);
 
   const handleBack = useCallback(() => {
     if (isSheet && onCancel) {
@@ -125,17 +185,27 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
       toast.error('Collection title is required');
       return;
     }
+    const descriptionPlain = plainTextFromHtml(form.description);
+    if (!descriptionPlain) {
+      toast.error('Collection description is required');
+      return;
+    }
     try {
       const descriptionWithUploadedImages = await prepareDescriptionForSave(form.description);
+      const seo = resolveCollectionSeoFields(form.title, descriptionWithUploadedImages, {
+        pageTitle: form.pageTitle,
+        metaDescription: form.metaDescription,
+        urlHandle: form.urlHandle,
+      });
       const created = await createCollection({
         storeId,
         title: form.title,
         imageUrl: form.imageUrl || undefined,
         imageAltText: imageAltText.trim() || undefined,
         description: descriptionWithUploadedImages,
-        pageTitle: form.pageTitle,
-        metaDescription: form.metaDescription,
-        urlHandle: form.urlHandle,
+        pageTitle: seo.pageTitle,
+        metaDescription: seo.metaDescription,
+        urlHandle: seo.urlHandle,
         productSort,
         productIds: selectedProducts.map((product) => product._id),
         status: form.status,
@@ -550,14 +620,14 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
             </section>
 
             <CollectionSeoSection
+              collectionTitle={form.title}
+              collectionDescription={form.description}
               pageTitle={form.pageTitle}
               metaDescription={form.metaDescription}
               urlHandle={form.urlHandle}
-              expanded={isSeoExpanded}
-              onToggleExpanded={() => setIsSeoExpanded((prev) => !prev)}
-              onPageTitleChange={(value) => handleChange('pageTitle', value)}
-              onMetaDescriptionChange={(value) => handleChange('metaDescription', value)}
-              onUrlHandleChange={(value) => handleChange('urlHandle', value)}
+              onPageTitleChange={(value) => handleSeoFieldChange('pageTitle', value)}
+              onMetaDescriptionChange={(value) => handleSeoFieldChange('metaDescription', value)}
+              onUrlHandleChange={(value) => handleSeoFieldChange('urlHandle', value)}
             />
           </div>
 

@@ -26,6 +26,7 @@ describe('errorMiddleware', () => {
     expect(statusMock).toHaveBeenCalledWith(400);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
+      message: 'Bad request',
       error: 'Bad request',
     });
   });
@@ -39,20 +40,26 @@ describe('errorMiddleware', () => {
     expect(statusMock).toHaveBeenCalledWith(404);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
+      message: 'Resource not found',
       error: 'Resource not found',
     });
   });
 
-  it('handles Mongoose duplicate key (11000) and returns 400', () => {
-    const err = Object.assign(new Error('Duplicate'), { code: 11000 });
+  it('handles Mongoose duplicate key (11000) and returns 409 with friendly message', () => {
+    const err = Object.assign(new Error('Duplicate'), {
+      code: 11000,
+      keyPattern: { storeId: 1, urlHandle: 1 },
+      keyValue: { urlHandle: 'summer' },
+    });
     const next = vi.fn();
 
     errorMiddleware(err, mockReq as Request, mockRes as Response, next);
 
-    expect(statusMock).toHaveBeenCalledWith(400);
+    expect(statusMock).toHaveBeenCalledWith(409);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
-      error: 'Duplicate field value entered',
+      message: 'The URL handle "summer" is already in use. Choose a different URL handle.',
+      error: 'The URL handle "summer" is already in use. Choose a different URL handle.',
     });
   });
 
@@ -71,6 +78,7 @@ describe('errorMiddleware', () => {
     expect(statusMock).toHaveBeenCalledWith(400);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
+      message: 'Field1 is required, Field2 is invalid',
       error: 'Field1 is required, Field2 is invalid',
     });
   });
@@ -84,6 +92,7 @@ describe('errorMiddleware', () => {
     expect(statusMock).toHaveBeenCalledWith(500);
     expect(jsonMock).toHaveBeenCalledWith({
       success: false,
+      message: 'Unknown server error',
       error: 'Unknown server error',
     });
   });

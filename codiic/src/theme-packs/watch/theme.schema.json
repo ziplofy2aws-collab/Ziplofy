@@ -103,7 +103,24 @@
     "header": {
       "label": "Header",
       "description": "Store logo, menu, and actions",
-      "settingsFields": [],
+      "settingsFields": [
+        {
+          "path": "sections.header.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.header.settings.textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        }
+      ],
       "blocks": [
         {
           "id": "logo",

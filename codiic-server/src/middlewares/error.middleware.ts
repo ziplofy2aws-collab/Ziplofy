@@ -1,41 +1,68 @@
 import { NextFunction, Request, Response } from 'express';
 import { CustomError } from '../utils/error.utils';
 
+function humanizeDuplicateKey(err: any): string {
+  const keyPattern = err?.keyPattern && typeof err.keyPattern === 'object' ? err.keyPattern : null;
+  const keyValue = err?.keyValue && typeof err.keyValue === 'object' ? err.keyValue : null;
+  const fields = keyPattern ? Object.keys(keyPattern) : keyValue ? Object.keys(keyValue) : [];
+
+  if (fields.includes('urlHandle')) {
+    const handle = keyValue?.urlHandle;
+    return typeof handle === 'string' && handle.trim()
+      ? `The URL handle "${handle}" is already in use. Choose a different URL handle.`
+      : 'This URL handle is already in use. Choose a different URL handle.';
+  }
+
+  if (fields.length === 1) {
+    const field = fields[0];
+    const value = keyValue?.[field];
+    if (typeof value === 'string' && value.trim()) {
+      return `A record with ${field} "${value}" already exists.`;
+    }
+    return `A record with this ${field} already exists.`;
+  }
+
+  if (fields.length > 1) {
+    return `A record with these values already exists (${fields.join(', ')}).`;
+  }
+
+  return 'This value is already in use. Please choose a different one.';
+}
+
+function sendError(
+  res: Response,
+  statusCode: number,
+  message: string
+): Response {
+  return res.status(statusCode).json({
+    success: false,
+    message,
+    error: message,
+  });
+}
+
 export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction): void | Response => {
   console.error(err.stack);
 
-  // Default error
-  let error = { ...err };
-  error.message = err.message;
-
-  // Handle custom CustomError
   if (err instanceof CustomError) {
-    return res.status(err.statusCode).json({
-      success: false,
-      error: err.message
-    });
+    return sendError(res, err.statusCode, err.message);
   }
 
-  // Mongoose bad ObjectId
   if (err.name === 'CastError') {
-    const message = 'Resource not found';
-    error = { message, statusCode: 404 };
+    return sendError(res, 404, 'Resource not found');
   }
 
-  // Mongoose duplicate key
   if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
-    error = { message, statusCode: 400 };
+    return sendError(res, 409, humanizeDuplicateKey(err));
   }
 
-  // Mongoose validation error
   if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map((val: any) => val.message).join(', ');
-    error = { message, statusCode: 400 };
+    const message = Object.values(err.errors || {})
+      .map((val: any) => val?.message)
+      .filter(Boolean)
+      .join(', ');
+    return sendError(res, 400, message || 'Validation failed');
   }
 
-  res.status(error.statusCode || 500).json({
-    success: false,
-    error: error.message || 'Server Error'
-  });
+  return sendError(res, err.statusCode || 500, err.message || 'Server Error');
 };
