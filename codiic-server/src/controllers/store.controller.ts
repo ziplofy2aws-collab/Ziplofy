@@ -6,6 +6,7 @@ import { LocationModel } from "../models/location/location.model";
 import { StoreCustomTheme } from "../models/store-custom-theme/store-custom-theme.model";
 import { IStore, Store } from "../models/store/store.model";
 import { Subdomain } from "../models/subdomain.model";
+import { assignDefaultCatalogThemeToStore } from "../utils/assign-default-catalog-theme.util";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 
 // Create a new store
@@ -93,6 +94,17 @@ export const createStore = asyncErrorHandler(async (req: Request, res: Response)
   });
   store.defaultLocation = defaultLocation._id as any;
   await store.save();
+
+  // Install + apply a default catalog theme (random active theme, or DEFAULT_CATALOG_THEME_ID)
+  try {
+    const assignment = await assignDefaultCatalogThemeToStore(store._id);
+    if (assignment) {
+      store.appliedTheme = new mongoose.Types.ObjectId(assignment.themeId) as any;
+      store.appliedCustomThemeId = null;
+    }
+  } catch (themeErr) {
+    console.error('[createStore] Failed to assign default catalog theme:', themeErr);
+  }
 
   res.status(201).json({
     success: true,
