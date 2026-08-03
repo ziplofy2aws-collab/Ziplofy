@@ -107,8 +107,8 @@ const FlatThemeConfigEditor: React.FC<FlatThemeConfigEditorProps> = ({ themeId }
     }));
   };
 
-  const handleSave = async () => {
-    if (!activeStoreId || !themeId) return;
+  const handleSave = useCallback(async () => {
+    if (!activeStoreId || !themeId || saving || loading) return;
     setSaving(true);
     const toastId = toast.loading('Saving theme settings…');
     try {
@@ -126,7 +126,18 @@ const FlatThemeConfigEditor: React.FC<FlatThemeConfigEditorProps> = ({ themeId }
     } finally {
       setSaving(false);
     }
-  };
+  }, [activeStoreId, loading, saving, schema, themeId, values]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
+      if (event.key.toLowerCase() !== 's') return;
+      event.preventDefault();
+      void handleSave();
+    };
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
+  }, [handleSave]);
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col bg-gray-50">
@@ -145,7 +156,8 @@ const FlatThemeConfigEditor: React.FC<FlatThemeConfigEditorProps> = ({ themeId }
           <button
             type="button"
             disabled={saving || loading}
-            onClick={handleSave}
+            onClick={() => void handleSave()}
+            title="Save (Ctrl/Cmd+S)"
             className="ml-auto rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-60"
           >
             {saving ? 'Saving…' : 'Save changes'}

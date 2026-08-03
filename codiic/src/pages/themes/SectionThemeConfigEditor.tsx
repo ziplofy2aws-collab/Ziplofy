@@ -35,7 +35,7 @@ import {
   THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
 } from '../../create-theme/settings/theme-typography.settings';
 import { InspectorToggleIcon } from '../../create-theme/chrome/InspectorToggleIcon';
-import { shiftShortcutLabel } from '../../utils/keyboard-shortcut-label';
+import { modShortcutLabel, shiftShortcutLabel } from '../../utils/keyboard-shortcut-label';
 import ThemeLivePreviewFrame, { type ThemePreviewPage } from '../../components/themes/ThemeLivePreviewFrame';
 import { AddBlockModal } from '../../components/themes/theme-editor-sidebar/AddBlockModal';
 import { AddSectionModal } from '../../components/themes/theme-editor-sidebar/AddSectionModal';
@@ -733,13 +733,12 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     [previewPage]
   );
 
-  const handleSave = async () => {
-    if (!themeId || !canPersist || !defaultConfig || !editorSchema) return;
+  const handleSave = useCallback(async () => {
+    if (!themeId || !canPersist || !defaultConfig || !editorSchema || saving || loading) return;
     const configToSave = applyValuesToThemeConfig(defaultConfig, values, editorSchema);
     const toastId = toast.loading(staticDevMode ? 'Saving locally…' : 'Saving theme…');
 
     if (staticDevMode) {
-      if (!defaultConfig || !editorSchema) return;
       try {
         const merged = mergedConfigFromFormValues(defaultConfig, values, editorSchema);
         saveStaticThemeConfigLocal(merged);
@@ -772,7 +771,30 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
         'Failed to save theme';
       toast.error(msg, { id: toastId });
     }
-  };
+  }, [
+    activeStoreId,
+    canPersist,
+    defaultConfig,
+    editorSchema,
+    hydrateEditor,
+    load,
+    loading,
+    saving,
+    staticDevMode,
+    themeId,
+    values,
+  ]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) return;
+      if (event.key.toLowerCase() !== 's') return;
+      event.preventDefault();
+      void handleSave();
+    };
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
+  }, [handleSave]);
 
   const settingsNode = useMemo(
     () => settingsNodeForSelection(selectedNode, activeTree, editorSchema),
@@ -1104,7 +1126,8 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           <button
             type="button"
             disabled={saving || loading || !canPersist}
-            onClick={handleSave}
+            onClick={() => void handleSave()}
+            title={`Save (${modShortcutLabel('S')})`}
             className="ml-1 rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
           >
             {saving ? 'Saving…' : 'Save'}
