@@ -26,7 +26,20 @@ export const createCollectionEntry = asyncErrorHandler(async (req: Request, res:
     resolvedPosition = (last?.position || 0) + 1;
   }
 
-  const entry = await CollectionEntry.create({ collectionId, productId, position: resolvedPosition });
+  const alreadyInCollection = await CollectionEntry.findOne({ collectionId, productId }).select({ _id: 1 }).lean();
+  if (alreadyInCollection) {
+    throw new CustomError('This product is already in the collection', 409);
+  }
+
+  let entry;
+  try {
+    entry = await CollectionEntry.create({ collectionId, productId, position: resolvedPosition });
+  } catch (err: any) {
+    if (err?.code === 11000) {
+      throw new CustomError('This product is already in the collection', 409);
+    }
+    throw err;
+  }
   
   // Populate the product data to match product controller response format
   const populatedEntry = await CollectionEntry.findById(entry._id)

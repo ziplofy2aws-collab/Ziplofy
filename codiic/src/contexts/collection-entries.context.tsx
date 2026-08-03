@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import { getCollectionApiErrorMessage } from '../utils/collection-seo.util';
 
 export interface CollectionEntryProductCategory {
   _id: string;
@@ -139,8 +140,8 @@ export const CollectionEntriesProvider: React.FC<{ children: React.ReactNode }> 
       const created = res.data.data;
       setCollectionEntries(prev => [created, ...prev]);
       return created;
-    } catch (e: any) {
-      const msg = e?.response?.data?.message || e?.message || 'Failed to create collection entry';
+    } catch (e: unknown) {
+      const msg = getCollectionApiErrorMessage(e, 'Failed to create collection entry');
       setError(msg);
       throw new Error(msg);
     } finally {
@@ -156,8 +157,8 @@ export const CollectionEntriesProvider: React.FC<{ children: React.ReactNode }> 
       const list = res.data?.data ?? [];
       setCollectionEntries(list);
       return list;
-    } catch (e: any) {
-      const msg = e?.response?.data?.message || e?.message || 'Failed to fetch collection entries';
+    } catch (e: unknown) {
+      const msg = getCollectionApiErrorMessage(e, 'Failed to fetch collection entries');
       setError(msg);
       throw new Error(msg);
     } finally {
@@ -171,8 +172,8 @@ export const CollectionEntriesProvider: React.FC<{ children: React.ReactNode }> 
     try {
       const res = await axiosi.delete<DeleteCollectionEntryResponse>(`/collection-entries/${entryId}`);
       setCollectionEntries(prev => prev.filter(e => e._id !== entryId));
-    } catch (e: any) {
-      const msg = e?.response?.data?.message || e?.message || 'Failed to delete collection entry';
+    } catch (e: unknown) {
+      const msg = getCollectionApiErrorMessage(e, 'Failed to delete collection entry');
       setError(msg);
       throw new Error(msg);
     } finally {

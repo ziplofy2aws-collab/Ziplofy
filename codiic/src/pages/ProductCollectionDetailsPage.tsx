@@ -42,7 +42,12 @@ import type { UpdateCollectionPayload } from '../contexts/collection.context';
 import { useCollections } from '../contexts/collection.context';
 import { useProducts } from '../contexts/product.context';
 import { useDescriptionCloudStorageSave } from '../hooks/useDescriptionCloudStorageSave';
+import { plainTextFromHtml } from '../seo/seo-text.util';
 import { readCollectionJustCreated } from '../utils/collection-navigation.util';
+import {
+  getCollectionApiErrorMessage,
+  resolveCollectionSeoFields,
+} from '../utils/collection-seo.util';
 
 const FORM_APPEARANCE = 'minimal' as const;
 
@@ -118,8 +123,8 @@ const ProductCollectionDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      fetchCollectionById(id).catch(() => {
-        // errors handled by context and not-found state
+      fetchCollectionById(id).catch((error: unknown) => {
+        toast.error(getCollectionApiErrorMessage(error, 'Failed to load collection'));
       });
     }
     return () => {
@@ -300,9 +305,44 @@ const ProductCollectionDetailsPage: React.FC = () => {
       toast.error('Collection title is required');
       return;
     }
+    if (form.title.trim().length < 2) {
+      toast.error('Collection title must be at least 2 characters');
+      return;
+    }
+    if (!plainTextFromHtml(form.description)) {
+      toast.error('Collection description is required');
+      return;
+    }
     if (!hasChanges) return;
 
     try {
+      const descriptionWithUploadedImages = Object.prototype.hasOwnProperty.call(changedPayload, 'description')
+        ? await prepareDescriptionForSave(form.description)
+        : form.description;
+
+      const seo = resolveCollectionSeoFields(form.title, descriptionWithUploadedImages, {
+        pageTitle: form.pageTitle,
+        metaDescription: form.metaDescription,
+        urlHandle: form.urlHandle,
+      });
+
+      if (seo.pageTitle.length < 2) {
+        toast.error('Page title must be at least 2 characters');
+        return;
+      }
+      if (seo.metaDescription.length < 10) {
+        toast.error('Meta description must be at least 10 characters');
+        return;
+      }
+      if (seo.urlHandle.length < 2) {
+        toast.error('URL handle must be at least 2 characters');
+        return;
+      }
+      if (!/^[a-z0-9-]+$/.test(seo.urlHandle)) {
+        toast.error('URL handle can only contain lowercase letters, numbers, and hyphens');
+        return;
+      }
+
       const patchPayload: UpdateCollectionPayload = { ...changedPayload };
       if (Object.prototype.hasOwnProperty.call(patchPayload, 'imageUrl')) {
         patchPayload.imageUrl = form.imageUrl || undefined;
@@ -311,13 +351,39 @@ const ProductCollectionDetailsPage: React.FC = () => {
         patchPayload.imageAltText = form.imageAltText || undefined;
       }
       if (Object.prototype.hasOwnProperty.call(patchPayload, 'description')) {
-        patchPayload.description = await prepareDescriptionForSave(form.description);
+        patchPayload.description = descriptionWithUploadedImages;
       }
+      if (Object.prototype.hasOwnProperty.call(patchPayload, 'title')) {
+        patchPayload.title = form.title.trim();
+      }
+
+      const seoFieldsTouched =
+        Object.prototype.hasOwnProperty.call(patchPayload, 'pageTitle') ||
+        Object.prototype.hasOwnProperty.call(patchPayload, 'metaDescription') ||
+        Object.prototype.hasOwnProperty.call(patchPayload, 'urlHandle') ||
+        Object.prototype.hasOwnProperty.call(patchPayload, 'title') ||
+        Object.prototype.hasOwnProperty.call(patchPayload, 'description');
+
+      if (seoFieldsTouched) {
+        if (Object.prototype.hasOwnProperty.call(patchPayload, 'pageTitle') || !form.pageTitle.trim()) {
+          patchPayload.pageTitle = seo.pageTitle;
+        }
+        if (
+          Object.prototype.hasOwnProperty.call(patchPayload, 'metaDescription') ||
+          !form.metaDescription.trim() ||
+          form.metaDescription.trim().length < 10
+        ) {
+          patchPayload.metaDescription = seo.metaDescription;
+        }
+        if (Object.prototype.hasOwnProperty.call(patchPayload, 'urlHandle') || !form.urlHandle.trim()) {
+          patchPayload.urlHandle = seo.urlHandle;
+        }
+      }
+
       await updateCollection(collection._id, patchPayload);
       toast.success('Collection saved');
     } catch (error: unknown) {
-      const message = (error as Error)?.message;
-      if (message) toast.error(message);
+      toast.error(getCollectionApiErrorMessage(error, 'Failed to save collection'));
     }
   }, [
     changedPayload,
@@ -325,7 +391,10 @@ const ProductCollectionDetailsPage: React.FC = () => {
     form.description,
     form.imageAltText,
     form.imageUrl,
+    form.metaDescription,
+    form.pageTitle,
     form.title,
+    form.urlHandle,
     hasChanges,
     prepareDescriptionForSave,
     updateCollection,
@@ -341,8 +410,7 @@ const ProductCollectionDetailsPage: React.FC = () => {
         setProductSearchQuery('');
         setProductSearchResults([]);
       } catch (error: unknown) {
-        const message = (error as Error)?.message;
-        if (message) toast.error(message);
+        toast.error(getCollectionApiErrorMessage(error, 'Failed to add product'));
       } finally {
         setAddingProductId(null);
       }
@@ -378,8 +446,7 @@ const ProductCollectionDetailsPage: React.FC = () => {
       setProductSearchQuery('');
       setProductSearchResults([]);
     } catch (error: unknown) {
-      const message = (error as Error)?.message;
-      if (message) toast.error(message);
+      toast.error(getCollectionApiErrorMessage(error, 'Failed to add products'));
     }
   }, [collection?._id, createCollectionEntry, existingProductIds, selectedProductIds]);
 
@@ -389,8 +456,7 @@ const ProductCollectionDetailsPage: React.FC = () => {
         await deleteCollectionEntry(entryId);
         toast.success('Product removed from collection');
       } catch (error: unknown) {
-        const message = (error as Error)?.message;
-        if (message) toast.error(message);
+        toast.error(getCollectionApiErrorMessage(error, 'Failed to remove product'));
       }
     },
     [deleteCollectionEntry]
@@ -403,8 +469,10 @@ const ProductCollectionDetailsPage: React.FC = () => {
     }
     try {
       await deleteCollection(collection._id);
+      toast.success('Collection deleted');
       navigate('/products/collections');
-    } catch {
+    } catch (error: unknown) {
+      toast.error(getCollectionApiErrorMessage(error, 'Failed to delete collection'));
       setConfirmOpen(false);
     }
   }, [collection?._id, deleteCollection, navigate]);

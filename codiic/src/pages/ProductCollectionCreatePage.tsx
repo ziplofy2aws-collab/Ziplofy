@@ -27,11 +27,6 @@ import {
   type CollectionProductSort,
 } from '../components/collections/collection-form.types';
 import {
-  META_DESCRIPTION_MAX,
-  plainTextFromHtml,
-  slugFromTitle,
-} from '../seo/seo-text.util';
-import {
   productFormAsideStackClass,
   productFormCardClass,
   productFormGridClass,
@@ -44,30 +39,13 @@ import { useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
 import { useDescriptionCloudStorageSave } from '../hooks/useDescriptionCloudStorageSave';
 import { THEME_EDITOR_STATIC_CONFIG } from '../config/theme-editor-static.config';
+import { plainTextFromHtml } from '../seo/seo-text.util';
+import {
+  getCollectionApiErrorMessage,
+  resolveCollectionSeoFields,
+} from '../utils/collection-seo.util';
 
 const FORM_APPEARANCE = 'minimal' as const;
-
-function resolveCollectionSeoFields(
-  title: string,
-  descriptionHtml: string,
-  overrides: { pageTitle: string; metaDescription: string; urlHandle: string }
-) {
-  const trimmedTitle = title.trim();
-  const plainDescription = plainTextFromHtml(descriptionHtml);
-  const derivedMeta = (plainDescription || trimmedTitle).slice(0, META_DESCRIPTION_MAX);
-  const metaDescription =
-    overrides.metaDescription.trim() ||
-    (derivedMeta.length >= 10
-      ? derivedMeta
-      : `${derivedMeta}${derivedMeta ? ' ' : ''}Collection page`.trim().slice(0, META_DESCRIPTION_MAX));
-
-  return {
-    pageTitle: overrides.pageTitle.trim() || trimmedTitle,
-    metaDescription,
-    urlHandle:
-      overrides.urlHandle.trim() || slugFromTitle(trimmedTitle, 'collection') || `collection-${Date.now()}`,
-  };
-}
 
 interface SelectedCollectionProduct {
   _id: string;
@@ -220,8 +198,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
         navigate('/products/collections');
       }
     } catch (error: unknown) {
-      const message = (error as Error)?.message;
-      if (message) toast.error(message);
+      toast.error(getCollectionApiErrorMessage(error, 'Failed to create collection'));
     }
   }, [
     storeId,

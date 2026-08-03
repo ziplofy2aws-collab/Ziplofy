@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import { getCollectionApiErrorMessage } from '../utils/collection-seo.util';
 
 export interface Collection {
   _id: string;
@@ -138,17 +139,7 @@ export const CollectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const activeCollectionFetchRef = useRef(0);
 
   const extractApiErrorMessage = useCallback((err: unknown, fallback: string) => {
-    const apiErr = err as {
-      response?: { data?: { message?: string; error?: string; details?: { message?: string } } };
-      message?: string;
-    };
-    const apiMessage =
-      apiErr?.response?.data?.message ||
-      apiErr?.response?.data?.error ||
-      apiErr?.response?.data?.details?.message;
-    if (typeof apiMessage === 'string' && apiMessage.trim()) return apiMessage;
-    if (typeof apiErr?.message === 'string' && apiErr.message.trim()) return apiErr.message;
-    return fallback;
+    return getCollectionApiErrorMessage(err, fallback);
   }, []);
 
   const fetchCollectionsByStoreId = useCallback(async (storeId: string) => {
