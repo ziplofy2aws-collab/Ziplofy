@@ -10,6 +10,7 @@ import TaxSettingsSection from '../components/customer/TaxSettingsSection';
 import AddCustomerAddressModal from '../components/customer/AddCustomerAddressModal';
 import CustomerAddedBanner from '../components/customers/CustomerAddedBanner';
 import CustomerFormHeader from '../components/customers/CustomerFormHeader';
+import CustomerFormPageSkeleton from '../components/customers/CustomerFormPageSkeleton';
 import { formatCustomerName } from '../components/customers/customer-ui.util';
 import type { CreateCustomerAddressRequest } from '../contexts/customer-address.context';
 import { useCustomerAddresses } from '../contexts/customer-address.context';
@@ -150,13 +151,7 @@ const CustomerDetailsPage: React.FC = () => {
   const displayError = saveError || customersError;
 
   if (activeCustomerLoading && !customer) {
-    return (
-      <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto flex min-h-[360px] max-w-[900px] items-center justify-center px-3 py-4 sm:px-4">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-        </div>
-      </div>
-    );
+    return <CustomerFormPageSkeleton />;
   }
 
   if (!customer || !formData) {
