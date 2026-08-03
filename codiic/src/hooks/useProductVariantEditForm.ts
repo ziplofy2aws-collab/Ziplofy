@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { type ProductVariant, useProductVariants } from '../contexts/product-variant.context';
 import { useStore } from '../contexts/store.context';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 import { buildVariantUpdatePayload } from '../utils/variant-update-payload.util';
 import { useProductMediaUrls } from './useProductMediaUrls';
 
@@ -130,12 +131,16 @@ export function useProductVariantEditForm(variant: ProductVariant) {
 
     const priceTrimmed = formData.price.trim();
     if (!priceTrimmed) {
-      toast.error('Price is required');
+      toast.error('Product price is required');
       return;
     }
     const parsedPrice = parseFloat(priceTrimmed);
-    if (!Number.isFinite(parsedPrice) || parsedPrice < 0) {
-      toast.error('Enter a valid price');
+    if (!Number.isFinite(parsedPrice)) {
+      toast.error('Enter a valid product price');
+      return;
+    }
+    if (parsedPrice < 0) {
+      toast.error('Price cannot be negative');
       return;
     }
 
@@ -161,8 +166,7 @@ export function useProductVariantEditForm(variant: ProductVariant) {
       initialSnapshotRef.current = buildSnapshot(nextForm, nextUrls);
       toast.success('Variant saved');
     } catch (error: unknown) {
-      const err = error as { message?: string; response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || err?.message || 'Failed to save variant');
+      toast.error(getProductApiErrorMessage(error, 'Failed to save variant'));
     } finally {
       setIsSaving(false);
     }

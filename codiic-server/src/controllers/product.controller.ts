@@ -113,7 +113,7 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
 
   const category = requireObjectId(body.category, "Product category is required");
 
-  if (body.price === undefined || body.price === null || body.price === "") {
+  if (body.price === undefined || body.price === null || (body.price as unknown) === "") {
     throw new CustomError("Product price is required", 400);
   }
   const price = typeof body.price === "number" ? body.price : Number(body.price);
@@ -462,34 +462,145 @@ export const updateProductById = asyncErrorHandler(async (req: Request, res: Res
     throw new CustomError("No valid fields provided to update", 400);
   }
 
-  const existingProduct = await Product.findOne({ _id: id, isDeleted: { $ne: true } }).select("storeId");
+  const asTrimmedString = (value: unknown): string =>
+    typeof value === "string" ? value.trim() : "";
+
+  const plainTextFromHtml = (value: string): string =>
+    value
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const requireObjectId = (value: unknown, message: string): string => {
+    const idValue = asTrimmedString(value);
+    if (!idValue || !mongoose.Types.ObjectId.isValid(idValue)) {
+      throw new CustomError(message, 400);
+    }
+    return idValue;
+  };
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "title")) {
+    const title = asTrimmedString(updatePayload.title);
+    if (!title) throw new CustomError("Product title is required", 400);
+    if (title.length < 2) throw new CustomError("Product title must be at least 2 characters", 400);
+    updatePayload.title = title;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
+    updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));
+    if (!plainTextFromHtml(String(updatePayload.description))) {
+      throw new CustomError("Product description is required", 400);
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "category")) {
+    updatePayload.category = requireObjectId(updatePayload.category, "Product category is required");
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "productType")) {
+    updatePayload.productType = requireObjectId(updatePayload.productType, "Product type is required");
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "vendor")) {
+    updatePayload.vendor = requireObjectId(updatePayload.vendor, "Vendor is required");
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "price")) {
+    if (
+      updatePayload.price === undefined ||
+      updatePayload.price === null ||
+      (updatePayload.price as unknown) === ""
+    ) {
+      throw new CustomError("Product price is required", 400);
+    }
+    const price =
+      typeof updatePayload.price === "number" ? updatePayload.price : Number(updatePayload.price);
+    if (Number.isNaN(price)) throw new CustomError("Enter a valid product price", 400);
+    if (price < 0) throw new CustomError("Price cannot be negative", 400);
+    updatePayload.price = price;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrls")) {
+    const imageUrls = Array.isArray(updatePayload.imageUrls)
+      ? updatePayload.imageUrls.filter((url: unknown) => typeof url === "string" && url.trim().length > 0)
+      : [];
+    if (imageUrls.length === 0) {
+      throw new CustomError("Add at least one product image", 400);
+    }
+    updatePayload.imageUrls = imageUrls;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "pageTitle")) {
+    const pageTitle = asTrimmedString(updatePayload.pageTitle);
+    if (!pageTitle) throw new CustomError("Page title is required", 400);
+    if (pageTitle.length < 2) throw new CustomError("Page title must be at least 2 characters", 400);
+    updatePayload.pageTitle = pageTitle;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "metaDescription")) {
+    const metaDescription = asTrimmedString(updatePayload.metaDescription);
+    if (!metaDescription) throw new CustomError("Meta description is required", 400);
+    if (metaDescription.length < 10) {
+      throw new CustomError("Meta description must be at least 10 characters", 400);
+    }
+    updatePayload.metaDescription = metaDescription;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "urlHandle")) {
+    const urlHandle = asTrimmedString(updatePayload.urlHandle).toLowerCase();
+    if (!urlHandle) throw new CustomError("URL handle is required", 400);
+    if (urlHandle.length < 2) throw new CustomError("URL handle must be at least 2 characters", 400);
+    if (!/^[a-z0-9-]+$/.test(urlHandle)) {
+      throw new CustomError("URL handle can only contain lowercase letters, numbers, and hyphens", 400);
+    }
+    updatePayload.urlHandle = urlHandle;
+  }
+
+  const existingProduct = await Product.findById(id).select("storeId isDeleted");
   if (!existingProduct) {
     throw new CustomError("Product not found", 404);
+  }
+
+  // Soft-deleted products can only be restored (isDeleted: false); other edits require an active product
+  if (existingProduct.isDeleted && updatePayload.isDeleted !== false) {
+    throw new CustomError("This product is deleted. Restore it before making other changes.", 400);
   }
 
   await assertStoreAccess(existingProduct.storeId.toString(), req.user as SecureUserInfo | undefined);
 
   const storeId = existingProduct.storeId.toString();
 
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "description")) {
-    updatePayload.description = sanitizeRichTextHtml(String(updatePayload.description ?? ""));
-  }
-
   if (Object.prototype.hasOwnProperty.call(updatePayload, "imageUrls")) {
-    const imageUrls = Array.isArray(updatePayload.imageUrls) ? updatePayload.imageUrls : [];
-    await assertStoreCloudImageUrls(storeId, imageUrls);
+    await assertStoreCloudImageUrls(storeId, updatePayload.imageUrls);
   }
 
-  const updatedProduct = await Product.findOneAndUpdate(
-    { _id: id },
-    { $set: updatePayload },
-    { new: true, runValidators: true }
-  )
-    .populate({ path: "category" })
-    .populate({ path: "package", model: "Packaging" })
-    .populate({ path: "tagIds", model: "ProductTags" })
-    .populate({ path: "vendor", model: "Vendor" })
-    .populate({ path: "productType", model: "ProductType" });
+  let updatedProduct;
+  try {
+    updatedProduct = await Product.findOneAndUpdate(
+      { _id: id },
+      { $set: updatePayload },
+      { new: true, runValidators: true }
+    )
+      .populate({ path: "category" })
+      .populate({ path: "package", model: "Packaging" })
+      .populate({ path: "tagIds", model: "ProductTags" })
+      .populate({ path: "vendor", model: "Vendor" })
+      .populate({ path: "productType", model: "ProductType" });
+  } catch (error: any) {
+    if (error?.name === "ValidationError") {
+      const message = Object.values(error.errors || {})
+        .map((val: any) => val?.message)
+        .filter(Boolean)
+        .join(", ");
+      throw new CustomError(message || "Please check the product details and try again.", 400);
+    }
+    if (error?.name === "CastError") {
+      const path = typeof error?.path === "string" ? error.path : "field";
+      throw new CustomError(`Invalid value for ${path}. Please check and try again.`, 400);
+    }
+    throw error;
+  }
 
   if (!updatedProduct) {
     throw new CustomError("Product not found", 404);

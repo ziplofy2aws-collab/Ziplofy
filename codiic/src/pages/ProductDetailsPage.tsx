@@ -10,6 +10,7 @@ import { ProductEditForm } from '../components/products/ProductEditForm';
 import { useProductVariants } from '../contexts/product-variant.context';
 import { useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 import { readProductJustCreated } from '../utils/product-navigation.util';
 
 const ProductDetailsPage: React.FC = () => {
@@ -37,8 +38,8 @@ const ProductDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      fetchProductById(id).catch(() => {
-        // errors handled by context and not-found state
+      fetchProductById(id).catch((error: unknown) => {
+        toast.error(getProductApiErrorMessage(error, 'Failed to load product'));
       });
     }
     return () => {
@@ -126,15 +127,19 @@ const ProductDetailsPage: React.FC = () => {
         values: v.values.map((val) => val.trim()).filter(Boolean),
       }))
       .filter((v) => v.optionName && v.values.length > 0);
-    if (payload.length === 0) return;
+    if (payload.length === 0) {
+      toast.error('Add at least one variant option with values');
+      return;
+    }
     try {
       setSubmittingVariants(true);
       await addVariantsToProduct(id, payload);
       handleCloseAddVariants();
       await fetchVariantsByProductId(id);
       await fetchProductById(id);
-    } catch {
-      // errors from context
+      toast.success('Variants added');
+    } catch (error: unknown) {
+      toast.error(getProductApiErrorMessage(error, 'Failed to add variants'));
     } finally {
       setSubmittingVariants(false);
     }
@@ -146,9 +151,10 @@ const ProductDetailsPage: React.FC = () => {
       setDeletingProduct(true);
       await deleteProduct(product._id);
       setDeleteProductOpen(false);
+      toast.success('Product deleted');
       navigate('/products');
-    } catch (error) {
-      console.error('Failed to delete product:', error);
+    } catch (error: unknown) {
+      toast.error(getProductApiErrorMessage(error, 'Failed to delete product'));
     } finally {
       setDeletingProduct(false);
     }
@@ -161,8 +167,8 @@ const ProductDetailsPage: React.FC = () => {
       await updateProduct(product._id, { isDeleted: false });
       toast.success('Product restored');
       setUndeleteProductOpen(false);
-    } catch (error) {
-      console.error('Failed to un-delete product:', error);
+    } catch (error: unknown) {
+      toast.error(getProductApiErrorMessage(error, 'Failed to restore product'));
     } finally {
       setUndeletingProduct(false);
     }
@@ -182,8 +188,7 @@ const ProductDetailsPage: React.FC = () => {
       toast.success('Product duplicated');
       navigate(`/products/${duplicated._id}`);
     } catch (error: unknown) {
-      const err = error as { message?: string };
-      toast.error(err?.message || 'Failed to duplicate product');
+      toast.error(getProductApiErrorMessage(error, 'Failed to duplicate product'));
     } finally {
       setIsDuplicating(false);
     }

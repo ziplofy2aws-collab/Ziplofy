@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
+import { toast } from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import ProductNotFound from '../components/ProductNotFound';
 import ProductFormPageSkeleton from '../components/products/ProductFormPageSkeleton';
@@ -6,6 +7,7 @@ import { ProductVariantEditForm } from '../components/products/ProductVariantEdi
 import VariantNotFound from '../components/VariantNotFound';
 import { useProductVariants } from '../contexts/product-variant.context';
 import { useProducts } from '../contexts/product.context';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 
 const ProductVariantDetailsPage: React.FC = () => {
   const { id, variantId } = useParams();
@@ -27,8 +29,8 @@ const ProductVariantDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
-    fetchProductById(id).catch(() => {
-      // handled by not-found state
+    fetchProductById(id).catch((error: unknown) => {
+      toast.error(getProductApiErrorMessage(error, 'Failed to load product'));
     });
     return () => {
       clearActiveProduct();
@@ -37,8 +39,8 @@ const ProductVariantDetailsPage: React.FC = () => {
 
   useEffect(() => {
     if (!variantId) return;
-    fetchProductVariantDetailsById(variantId, id).catch(() => {
-      // handled by not-found state
+    fetchProductVariantDetailsById(variantId, id).catch((error: unknown) => {
+      toast.error(getProductApiErrorMessage(error, 'Failed to load variant'));
     });
     return () => {
       clearActiveVariant();

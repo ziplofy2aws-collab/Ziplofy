@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import { getProductApiErrorMessage } from '../utils/product-api-error.util';
 
 export interface ProductVariantPackage {
   _id: string;
@@ -91,8 +92,8 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
       const { success, data } = res.data;
       if (!success) throw new Error('Failed to fetch variants');
       setVariants(data);
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to fetch variants';
+    } catch (err: unknown) {
+      const msg = getProductApiErrorMessage(err, 'Failed to fetch variants');
       setError(msg);
     } finally {
       setLoading(false);
@@ -118,11 +119,12 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
         return [data, ...prev];
       });
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (fetchId === activeVariantFetchRef.current) {
-        const msg = err?.response?.data?.message || err?.message || 'Failed to fetch variant details';
+        const msg = getProductApiErrorMessage(err, 'Failed to fetch variant details');
         setError(msg);
         setActiveVariant(null);
+        throw new Error(msg);
       }
       return null;
     } finally {
@@ -149,10 +151,10 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
       );
       setActiveVariant((prev) => (prev && prev._id === variantId ? data : prev));
       return data;
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to update variant';
+    } catch (err: unknown) {
+      const msg = getProductApiErrorMessage(err, 'Failed to update variant');
       setError(msg);
-      throw err;
+      throw new Error(msg);
     }
   }, []);
 

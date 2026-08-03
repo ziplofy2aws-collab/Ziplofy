@@ -19,7 +19,7 @@ export const createStore = asyncErrorHandler(async (req: Request, res: Response)
   }
 
   // Check duplicate by store name for this user (case-insensitive)
-  const existingStore = await Store.findOne({ 
+  const existingStore = await Store.findOne({
     userId, 
     storeName: { $regex: new RegExp(`^${storeName}$`, 'i') }
   });

@@ -13,7 +13,7 @@ import {
   buildProductFormSnapshot,
   productFormSnapshotsEqual,
 } from '../utils/product-form-snapshot.util';
-import { plainTextFromHtml } from '../seo/seo-text.util';
+import { plainTextFromHtml, sanitizeUrlHandle, slugFromTitle } from '../seo/seo-text.util';
 import { type NewProductFormData } from './useNewProductForm';
 import { uploadDescriptionImagesToCloudStorage, useProductMediaUrls } from './useProductMediaUrls';
 
@@ -184,8 +184,40 @@ export function useProductEditForm(product: Product) {
       const profit = Math.max(0, price - cost);
       const marginPercent = price > 0 ? Math.min(100, Math.max(0, (profit / price) * 100)) : 0;
 
+      const descriptionPlainText = plainTextFromHtml(descriptionWithUploadedImages);
+      const trimmedTitle = formData.title.trim();
+      const safePageTitle = formData.pageTitle.trim() || trimmedTitle;
+      if (safePageTitle.length < 2) {
+        toast.error('Page title must be at least 2 characters');
+        return;
+      }
+
+      const derivedMeta = descriptionPlainText.slice(0, 240);
+      const safeMetaDescription =
+        formData.metaDescription.trim() ||
+        (derivedMeta.length >= 10
+          ? derivedMeta
+          : `${derivedMeta}${derivedMeta ? ' ' : ''}${trimmedTitle} product`.trim().slice(0, 500));
+      if (safeMetaDescription.length < 10) {
+        toast.error('Meta description must be at least 10 characters');
+        return;
+      }
+
+      const safeUrlHandle =
+        sanitizeUrlHandle(formData.urlHandle.trim()) ||
+        slugFromTitle(trimmedTitle, 'product') ||
+        `product-${Date.now()}`;
+      if (safeUrlHandle.length < 2) {
+        toast.error('URL handle must be at least 2 characters');
+        return;
+      }
+      if (!/^[a-z0-9-]+$/.test(safeUrlHandle)) {
+        toast.error('URL handle can only contain lowercase letters, numbers, and hyphens');
+        return;
+      }
+
       const updated = await updateProduct(product._id, {
-        title: formData.title.trim(),
+        title: trimmedTitle,
         description: descriptionWithUploadedImages,
         category: formData.category,
         price,
@@ -212,9 +244,9 @@ export function useProductEditForm(product: Product) {
         productWeightUnit: formData.physicalProduct ? formData.weightUnit : undefined,
         countryOfOrigin: formData.physicalProduct ? formData.countryOfOrigin : undefined,
         harmonizedSystemCode: formData.physicalProduct ? formData.hsCode : undefined,
-        pageTitle: formData.pageTitle,
-        metaDescription: formData.metaDescription,
-        urlHandle: formData.urlHandle,
+        pageTitle: safePageTitle,
+        metaDescription: safeMetaDescription,
+        urlHandle: safeUrlHandle,
         status: formData.status,
         imageUrls: mediaUrls,
         productType: formData.productType,
