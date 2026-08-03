@@ -7,6 +7,7 @@ import { StoreCustomTheme } from "../models/store-custom-theme/store-custom-them
 import { IStore, Store } from "../models/store/store.model";
 import { Subdomain } from "../models/subdomain.model";
 import { assignDefaultCatalogThemeToStore } from "../utils/assign-default-catalog-theme.util";
+import { assignDefaultPackagingToStore } from "../utils/assign-default-packaging.util";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 
 // Create a new store
@@ -104,6 +105,13 @@ export const createStore = asyncErrorHandler(async (req: Request, res: Response)
     }
   } catch (themeErr) {
     console.error('[createStore] Failed to assign default catalog theme:', themeErr);
+  }
+
+  // Create a default shipping package so physical products can be added immediately
+  try {
+    await assignDefaultPackagingToStore(store._id);
+  } catch (packagingErr) {
+    console.error('[createStore] Failed to create default packaging:', packagingErr);
   }
 
   res.status(201).json({

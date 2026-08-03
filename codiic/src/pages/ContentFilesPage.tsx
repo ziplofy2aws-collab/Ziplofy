@@ -13,6 +13,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import ConfirmDeleteAllFilesModal from '../components/ConfirmDeleteAllFilesModal';
 import {
   fileNameFromStorageKey,
   isImageStorageKey,
@@ -58,6 +59,7 @@ export const ContentFilesPage = () => {
     fetchUploadsByStoreId,
     uploadFileForStoreQuiet,
     deleteUpload,
+    deleteAllUploadsForStore,
     resolveUploadPreviewUrl,
     clearUploads,
     clearError,
@@ -71,6 +73,8 @@ export const ContentFilesPage = () => {
   const [uploadQueueCollapsed, setUploadQueueCollapsed] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [viewerIndex, setViewerIndex] = useState<number | null>(null);
+  const [deleteAllOpen, setDeleteAllOpen] = useState(false);
+  const [deletingAll, setDeletingAll] = useState(false);
 
   const viewerUpload = viewerIndex != null ? uploads[viewerIndex] ?? null : null;
   const viewerPreviewUrl = viewerUpload ? resolveUploadPreviewUrl(viewerUpload) : null;
@@ -260,6 +264,31 @@ export const ContentFilesPage = () => {
       toast.error((err as Error)?.message || 'Failed to delete file', { id: deleteToastId });
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleConfirmDeleteAll = async () => {
+    if (!activeStoreId) {
+      toast.error('Please select a store first');
+      return;
+    }
+
+    const deleteToastId = toast.loading('Deleting all files…');
+    setDeletingAll(true);
+    try {
+      const result = await deleteAllUploadsForStore(activeStoreId);
+      setDeleteAllOpen(false);
+      setViewerIndex(null);
+      toast.success(
+        result.deletedFromDatabase > 0
+          ? `Deleted ${result.deletedFromDatabase} file${result.deletedFromDatabase === 1 ? '' : 's'}`
+          : 'No files to delete',
+        { id: deleteToastId }
+      );
+    } catch (err: unknown) {
+      toast.error((err as Error)?.message || 'Failed to delete all files', { id: deleteToastId });
+    } finally {
+      setDeletingAll(false);
     }
   };
 
@@ -561,15 +590,28 @@ export const ContentFilesPage = () => {
                 Upload and manage images, videos, documents, and more
               </p>
             </div>
-            <button
-              type="button"
-              onClick={openFilePicker}
-              disabled={deleteLoading || !activeStoreId}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors shadow-sm"
-            >
-              <DocumentArrowUpIcon className="w-4 h-4" />
-              {isProcessingQueue ? 'Uploading…' : 'Upload files'}
-            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              {uploads.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setDeleteAllOpen(true)}
+                  disabled={deleteLoading || deletingAll || !activeStoreId || isProcessingQueue}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors"
+                >
+                  <TrashIcon className="w-4 h-4" />
+                  Delete all
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={openFilePicker}
+                disabled={deleteLoading || deletingAll || !activeStoreId}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors shadow-sm"
+              >
+                <DocumentArrowUpIcon className="w-4 h-4" />
+                {isProcessingQueue ? 'Uploading…' : 'Upload files'}
+              </button>
+            </div>
           </div>
 
           {renderMainContent()}
@@ -578,6 +620,16 @@ export const ContentFilesPage = () => {
 
       {renderUploadQueuePanel()}
       {renderFullscreenViewer()}
+
+      <ConfirmDeleteAllFilesModal
+        isOpen={deleteAllOpen}
+        fileCount={uploads.length}
+        deleting={deletingAll}
+        onClose={() => {
+          if (!deletingAll) setDeleteAllOpen(false);
+        }}
+        onConfirm={() => void handleConfirmDeleteAll()}
+      />
     </>
   );
 };

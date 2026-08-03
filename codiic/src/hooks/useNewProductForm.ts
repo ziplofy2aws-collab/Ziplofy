@@ -199,6 +199,13 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
       return;
     }
 
+    if (formData.physicalProduct && !formData.selectedPackage.trim()) {
+      toast.error(
+        'Select a shipping package for this physical product. If none exist yet, add a package first.'
+      );
+      return;
+    }
+
     if (formData.physicalProduct && formData.hsCode.trim() !== '' && !/^\d{6}$/.test(formData.hsCode.trim())) {
       toast.error('HS code must be exactly 6 digits');
       return;
@@ -273,7 +280,10 @@ export function useNewProductForm(options: UseNewProductFormOptions = {}) {
         sku: effectiveFormData.sku,
         barcode: effectiveFormData.barcode,
         isPhysicalProduct: effectiveFormData.physicalProduct,
-        package: effectiveFormData.physicalProduct ? effectiveFormData.selectedPackage : undefined,
+        package:
+          effectiveFormData.physicalProduct && effectiveFormData.selectedPackage.trim()
+            ? effectiveFormData.selectedPackage.trim()
+            : undefined,
         productWeight: effectiveFormData.physicalProduct ? parseFloat(effectiveFormData.productWeight) : undefined,
         productWeightUnit: effectiveFormData.physicalProduct ? effectiveFormData.weightUnit : undefined,
         countryOfOrigin:

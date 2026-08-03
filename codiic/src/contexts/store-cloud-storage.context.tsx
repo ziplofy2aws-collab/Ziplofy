@@ -53,6 +53,11 @@ interface StoreCloudStorageContextType {
     uploadId: string,
     options?: { deleteFromS3?: boolean; key?: string }
   ) => Promise<void>;
+  /** Delete every registered file for a store from S3 and the database. */
+  deleteAllUploadsForStore: (storeId: string) => Promise<{
+    deletedFromS3: number;
+    deletedFromDatabase: number;
+  }>;
   /**
    * AwsUploadContext (presign + PUT) → register with backend. Updates local `uploads`.
    */
@@ -301,6 +306,35 @@ const StoreCloudStorageProviderInner: React.FC<{ children: ReactNode }> = ({ chi
     [uploads, deleteImagesFromS3]
   );
 
+  const deleteAllUploadsForStore = useCallback(async (storeId: string) => {
+    if (!storeId) throw new Error('storeId is required');
+    try {
+      setDeleteLoading(true);
+      setError(null);
+
+      const res = await axiosi.delete<
+        ApiResponse<{ storeId: string; deletedFromS3: number; deletedFromDatabase: number }>
+      >(`${CLOUD_STORAGE_BASE}/store/${storeId}`);
+      const { success, message, data } = res.data;
+      if (!success || !data) throw new Error(message || 'Failed to delete all files');
+
+      setUploads([]);
+      return {
+        deletedFromS3: data.deletedFromS3,
+        deletedFromDatabase: data.deletedFromDatabase,
+      };
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as Error)?.message ||
+        'Failed to delete all files';
+      setError(msg);
+      throw new Error(msg);
+    } finally {
+      setDeleteLoading(false);
+    }
+  }, []);
+
   const uploadFileForStoreCore = useCallback(
     async (storeId: string, file: File, options?: UploadFileForStoreOptions) => {
       if (!storeId) throw new Error('storeId is required');
@@ -395,6 +429,7 @@ const StoreCloudStorageProviderInner: React.FC<{ children: ReactNode }> = ({ chi
       fetchUploadsByStoreId,
       registerUpload,
       deleteUpload,
+      deleteAllUploadsForStore,
       uploadFileForStore,
       uploadFilesForStore,
       uploadFileForStoreQuiet,
@@ -414,6 +449,7 @@ const StoreCloudStorageProviderInner: React.FC<{ children: ReactNode }> = ({ chi
       fetchUploadsByStoreId,
       registerUpload,
       deleteUpload,
+      deleteAllUploadsForStore,
       uploadFileForStore,
       uploadFilesForStore,
       uploadFileForStoreQuiet,

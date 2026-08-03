@@ -284,7 +284,7 @@ const ProductShippingSection: React.FC<ProductShippingSectionProps> = ({
             <div>
               <div className="mb-2 flex items-center gap-1">
                 <label className="text-sm font-medium text-gray-700">
-                  Package
+                  Package <span className="text-red-500">*</span>
                 </label>
                 <span className="text-gray-400" title="Used to calculate shipping labels and rates.">
                   <InformationCircleIcon className="h-4 w-4" aria-hidden />

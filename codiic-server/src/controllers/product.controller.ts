@@ -123,6 +123,17 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
   const productType = requireObjectId(body.productType, "Product type is required");
   const vendor = requireObjectId(body.vendor, "Vendor is required");
 
+  const isPhysicalProduct = body.isPhysicalProduct !== false;
+  let packageId: string | undefined;
+  if (isPhysicalProduct) {
+    packageId = requireObjectId(
+      body.package,
+      "Select a shipping package for this physical product. If none exist yet, add a package first."
+    );
+  } else if (asTrimmedString(body.package)) {
+    packageId = requireObjectId(body.package, "Select a valid shipping package");
+  }
+
   body.imageUrls = body.imageUrls ?? body.images ?? [];
   const imageUrls = Array.isArray(body.imageUrls)
     ? body.imageUrls.filter((url: unknown) => typeof url === "string" && url.trim().length > 0)
@@ -183,8 +194,8 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
       continueSellingWhenOutOfStock: body.continueSellingWhenOutOfStock ?? false,
       sku: body.sku ?? "",
       barcode: body.barcode ?? "",
-      isPhysicalProduct: body.isPhysicalProduct ?? true,
-      package: body.package,
+      isPhysicalProduct,
+      package: packageId,
       productWeight: body.productWeight,
       productWeightUnit: body.productWeightUnit,
       countryOfOrigin: body.countryOfOrigin,
@@ -205,6 +216,17 @@ export const createProduct = asyncErrorHandler(async (req: Request, res: Respons
         : "default",
     });
   } catch (error: any) {
+    if (error instanceof CustomError) throw error;
+    if (error?.name === "CastError") {
+      const path = typeof error?.path === "string" ? error.path : "field";
+      if (path === "package") {
+        throw new CustomError(
+          "Select a shipping package for this physical product. If none exist yet, add a package first.",
+          400
+        );
+      }
+      throw new CustomError(`Invalid value for ${path}. Please check and try again.`, 400);
+    }
     const validationMessage =
       error?.errors && typeof error.errors === 'object'
         ? Object.values(error.errors)
@@ -504,6 +526,30 @@ export const updateProductById = asyncErrorHandler(async (req: Request, res: Res
 
   if (Object.prototype.hasOwnProperty.call(updatePayload, "vendor")) {
     updatePayload.vendor = requireObjectId(updatePayload.vendor, "Vendor is required");
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updatePayload, "package")) {
+    const packageValue = asTrimmedString(updatePayload.package);
+    const isPhysicalUpdate =
+      Object.prototype.hasOwnProperty.call(updatePayload, "isPhysicalProduct")
+        ? updatePayload.isPhysicalProduct !== false
+        : true;
+
+    if (!packageValue) {
+      if (isPhysicalUpdate && updatePayload.isPhysicalProduct === true) {
+        throw new CustomError(
+          "Select a shipping package for this physical product. If none exist yet, add a package first.",
+          400
+        );
+      }
+      // Clearing package when marking non-physical (or empty optional clear)
+      updatePayload.package = null;
+    } else {
+      updatePayload.package = requireObjectId(
+        packageValue,
+        "Select a valid shipping package"
+      );
+    }
   }
 
   if (Object.prototype.hasOwnProperty.call(updatePayload, "price")) {

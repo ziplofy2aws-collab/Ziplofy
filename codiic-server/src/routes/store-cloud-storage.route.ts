@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  deleteAllStoreCloudStorageUploads,
   deleteStoreCloudStorageUpload,
   listStoreCloudStorageUploadsByStoreId,
   registerStoreCloudStorageUpload,
@@ -15,6 +16,9 @@ storeCloudStorageRouter.post('/register', registerStoreCloudStorageUpload);
 
 /** All registered uploads for a store. */
 storeCloudStorageRouter.get('/store/:storeId', listStoreCloudStorageUploadsByStoreId);
+
+/** Delete every registered upload for a store (S3 + DB). */
+storeCloudStorageRouter.delete('/store/:storeId', deleteAllStoreCloudStorageUploads);
 
 /** Remove one registry row by Mongo _id. */
 storeCloudStorageRouter.delete('/:id', deleteStoreCloudStorageUpload);

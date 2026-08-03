@@ -8,6 +8,8 @@ import { NotificationSettings } from '../models/notification-settings/notificati
 import { Store } from '../models/store/store.model';
 import { Subdomain } from '../models/subdomain.model';
 import type { ICodiicUser } from '../models/codiic-user.model';
+import { assignDefaultCatalogThemeToStore } from './assign-default-catalog-theme.util';
+import { assignDefaultPackagingToStore } from './assign-default-packaging.util';
 
 type NewUser = Pick<ICodiicUser, '_id' | 'name' | 'email'>;
 
@@ -133,6 +135,18 @@ export const createDefaultResourcesForNewUser = async (user: NewUser): Promise<v
   });
 
   await createDefaultMarket(storeId);
+
+  try {
+    await assignDefaultCatalogThemeToStore(storeId);
+  } catch (e) {
+    console.warn('Failed to assign default catalog theme for new user store:', (e as Error)?.message);
+  }
+
+  try {
+    await assignDefaultPackagingToStore(storeId);
+  } catch (e) {
+    console.warn('Failed to create default packaging for new user store:', (e as Error)?.message);
+  }
 
   const slugBase = displayName
     .toLowerCase()
