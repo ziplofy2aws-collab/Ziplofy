@@ -658,6 +658,334 @@
           ]
         },
         {
+          "id": "legacy_collection",
+          "type": "legacy-collection",
+          "label": "Shop The Legacy Collection",
+          "category": "collections",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.legacy_collection.settings.titleBefore",
+              "type": "text",
+              "label": "Title \u2014 before",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.titleAccent",
+              "type": "text",
+              "label": "Title \u2014 accent",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.titleAfter",
+              "type": "text",
+              "label": "Title \u2014 after",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.tile1CollectionHandle",
+              "type": "text",
+              "label": "Sports \u2014 Select collection",
+              "widget": "collection",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.tile2CollectionHandle",
+              "type": "text",
+              "label": "Vintage \u2014 Select collection",
+              "widget": "collection",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.tile3CollectionHandle",
+              "type": "text",
+              "label": "Luxury \u2014 Select collection",
+              "widget": "collection",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.tile4CollectionHandle",
+              "type": "text",
+              "label": "Casual \u2014 Select collection",
+              "widget": "collection",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.tile5CollectionHandle",
+              "type": "text",
+              "label": "Minimalist \u2014 Select collection",
+              "widget": "collection",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.tile6CollectionHandle",
+              "type": "text",
+              "label": "Office Wear \u2014 Select collection",
+              "widget": "collection",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.himTitle",
+              "type": "textarea",
+              "label": "Him \u2014 title",
+              "widget": "styled-text",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.himImageUrl",
+              "type": "text",
+              "label": "Him \u2014 image",
+              "widget": "image",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.himLink",
+              "type": "text",
+              "label": "Him \u2014 link",
+              "widget": "url",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.herTitle",
+              "type": "textarea",
+              "label": "Her \u2014 title",
+              "widget": "styled-text",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.herImageUrl",
+              "type": "text",
+              "label": "Her \u2014 image",
+              "widget": "image",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.herLink",
+              "type": "text",
+              "label": "Her \u2014 link",
+              "widget": "url",
+              "group": "Promo images",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "icons",
+          "type": "icons",
+          "label": "Our Icons",
+          "category": "products",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.icons.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.backgroundImageUrl",
+              "type": "text",
+              "label": "Background image",
+              "widget": "image",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.ctaLabel",
+              "type": "text",
+              "label": "CTA label",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.ctaUrl",
+              "type": "text",
+              "label": "CTA link",
+              "widget": "url",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card1ProductId",
+              "type": "text",
+              "label": "Card 1 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card2ProductId",
+              "type": "text",
+              "label": "Card 2 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card3ProductId",
+              "type": "text",
+              "label": "Card 3 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card4ProductId",
+              "type": "text",
+              "label": "Card 4 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card5ProductId",
+              "type": "text",
+              "label": "Card 5 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card6ProductId",
+              "type": "text",
+              "label": "Card 6 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "signature",
+          "type": "signature",
+          "label": "Signature Collection",
+          "category": "collections",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.signature.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile1CollectionHandle",
+              "type": "text",
+              "label": "Tile 1 \u2014 Select collection",
+              "widget": "collection",
+              "group": "Tile 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile1LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 1 \u2014 Lifestyle image",
+              "widget": "image",
+              "group": "Tile 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile1ProductImageUrl",
+              "type": "text",
+              "label": "Tile 1 \u2014 Product image",
+              "widget": "image",
+              "group": "Tile 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile2CollectionHandle",
+              "type": "text",
+              "label": "Tile 2 \u2014 Select collection",
+              "widget": "collection",
+              "group": "Tile 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile2LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 2 \u2014 Lifestyle image",
+              "widget": "image",
+              "group": "Tile 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile2ProductImageUrl",
+              "type": "text",
+              "label": "Tile 2 \u2014 Product image",
+              "widget": "image",
+              "group": "Tile 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile3CollectionHandle",
+              "type": "text",
+              "label": "Tile 3 \u2014 Select collection",
+              "widget": "collection",
+              "group": "Tile 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile3LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 3 \u2014 Lifestyle image",
+              "widget": "image",
+              "group": "Tile 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile3ProductImageUrl",
+              "type": "text",
+              "label": "Tile 3 \u2014 Product image",
+              "widget": "image",
+              "group": "Tile 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile4CollectionHandle",
+              "type": "text",
+              "label": "Tile 4 \u2014 Select collection",
+              "widget": "collection",
+              "group": "Tile 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile4LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 4 \u2014 Lifestyle image",
+              "widget": "image",
+              "group": "Tile 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile4ProductImageUrl",
+              "type": "text",
+              "label": "Tile 4 \u2014 Product image",
+              "widget": "image",
+              "group": "Tile 4",
+              "sidebar": true
+            }
+          ]
+        },
+        {
           "id": "watch_collection",
           "type": "watch-collection",
           "label": "New Collection",
@@ -780,6 +1108,70 @@
               "type": "textarea",
               "label": "Feature 3 text",
               "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "new_launches",
+          "type": "new-launches",
+          "label": "New Launches",
+          "category": "products",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.new_launches.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.lead",
+              "type": "textarea",
+              "label": "Description",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card1ProductId",
+              "type": "text",
+              "label": "Card 1 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card2ProductId",
+              "type": "text",
+              "label": "Card 2 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card3ProductId",
+              "type": "text",
+              "label": "Card 3 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card4ProductId",
+              "type": "text",
+              "label": "Card 4 \u2014 Select product",
+              "widget": "product",
+              "group": "Product",
               "sidebar": true
             }
           ]

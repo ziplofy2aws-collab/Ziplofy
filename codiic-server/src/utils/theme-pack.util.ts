@@ -79,6 +79,23 @@ function normalizeThemeSlug(themePath: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * Drop in-memory schema/default/manifest cache so editor-pack reloads from S3 after re-upload.
+ * Without this, production keeps serving the previous pack until the Node process restarts.
+ */
+export function invalidateThemePackCache(themePath?: string | null): void {
+  if (!themePath) {
+    packCache.clear();
+    return;
+  }
+  const slug = normalizeThemeSlug(themePath);
+  for (const key of [...packCache.keys()]) {
+    if (key === `full:${slug}` || key === `disk:${slug}` || key.endsWith(`:${slug}`)) {
+      packCache.delete(key);
+    }
+  }
+}
+
 export function isSectionTheme(themePath: string | null | undefined): boolean {
   if (!themePath) return false;
   const slug = normalizeThemeSlug(themePath);

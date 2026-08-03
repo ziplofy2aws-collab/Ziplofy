@@ -407,6 +407,89 @@
             "slide4MobileImageUrl": ""
           }
         },
+        "legacy_collection": {
+          "type": "legacy-collection",
+          "enabled": true,
+          "settings": {
+            "titleBefore": "Shop",
+            "titleAccent": "The Legacy",
+            "titleAfter": "Collection",
+            "tile1CollectionHandle": "",
+            "tile2CollectionHandle": "",
+            "tile3CollectionHandle": "",
+            "tile4CollectionHandle": "",
+            "tile5CollectionHandle": "",
+            "tile6CollectionHandle": "",
+            "himTitle": "Watches\nFor Him",
+            "himImageUrl": "",
+            "himLink": "/collections",
+            "herTitle": "Watches\nFor Her",
+            "herImageUrl": "",
+            "herLink": "/collections"
+          }
+        },
+        "icons": {
+          "type": "icons",
+          "enabled": true,
+          "settings": {
+            "title": "Our Icons at Upto 25% Off",
+            "backgroundImageUrl": "",
+            "ctaLabel": "Shop All Icons",
+            "ctaUrl": "/collections/all",
+            "card1ProductId": "",
+            "card2ProductId": "",
+            "card3ProductId": "",
+            "card4ProductId": "",
+            "card5ProductId": "",
+            "card6ProductId": ""
+          }
+        },
+        "signature": {
+          "type": "signature",
+          "enabled": true,
+          "settings": {
+            "title": "Sylvi Signature Watch Collection",
+            "tile1CollectionHandle": "",
+            "tile1LifestyleImageUrl": "",
+            "tile1ProductImageUrl": "",
+            "tile2CollectionHandle": "",
+            "tile2LifestyleImageUrl": "",
+            "tile2ProductImageUrl": "",
+            "tile3CollectionHandle": "",
+            "tile3LifestyleImageUrl": "",
+            "tile3ProductImageUrl": "",
+            "tile4CollectionHandle": "",
+            "tile4LifestyleImageUrl": "",
+            "tile4ProductImageUrl": ""
+          }
+        },
+        "engineering": {
+          "type": "engineering",
+          "enabled": true,
+          "settings": {
+            "title": "Engineering Meets Elegance",
+            "mediaImageUrl": "",
+            "feature1Title": "K1 Sapphire Coated Crystal",
+            "feature1Text": "Clarity that lasts. Scratch-resistant sapphire coating ensures your watch looks as flawless on day 1000 as it did on day one.",
+            "feature2Title": "316L Stainless Steel Case",
+            "feature2Text": "The same grade trusted in luxury timepieces worldwide. Resistant to corrosion, built for strength, finished for elegance.",
+            "feature3Title": "Quick Release Strap",
+            "feature3Text": "Swap styles in seconds. The quick-release strap system lets you adapt your watch to any occasion with ease."
+          }
+        },
+        "new_launches": {
+          "type": "new-launches",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "New Launches",
+            "title": "Fresh Drops, Built to Last",
+            "lead": "Be first to wear the newest timepieces — precision engineering, just arrived.",
+            "card1ProductId": "",
+            "card2ProductId": "",
+            "card3ProductId": "",
+            "card4ProductId": ""
+          }
+        },
         "instagram": {
           "type": "instagram",
           "enabled": true,
@@ -441,26 +524,16 @@
             "card3ProductId": "",
             "card4ProductId": ""
           }
-        },
-        "engineering": {
-          "type": "engineering",
-          "enabled": true,
-          "settings": {
-            "title": "Engineering Meets Elegance",
-            "mediaImageUrl": "",
-            "feature1Title": "K1 Sapphire Coated Crystal",
-            "feature1Text": "Clarity that lasts. Scratch-resistant sapphire coating ensures your watch looks as flawless on day 1000 as it did on day one.",
-            "feature2Title": "316L Stainless Steel Case",
-            "feature2Text": "The same grade trusted in luxury timepieces worldwide. Resistant to corrosion, built for strength, finished for elegance.",
-            "feature3Title": "Quick Release Strap",
-            "feature3Text": "Swap styles in seconds. The quick-release strap system lets you adapt your watch to any occasion with ease."
-          }
         }
       },
       "section_order": [
         "hero_banner",
+        "legacy_collection",
+        "icons",
+        "signature",
         "watch_collection",
         "engineering",
+        "new_launches",
         "instagram"
       ]
     },

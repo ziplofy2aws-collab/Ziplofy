@@ -80,13 +80,14 @@ function normalizePack(pack: ThemePack | null): {
 }
 
 async function loadThemeAndPack(themeId: string): Promise<{
-  theme: { name?: string; themePath?: string };
+  theme: { name?: string; themePath?: string; updatedAt?: Date | string };
   themePath: string;
   s3: Record<string, unknown>;
   s3Refs: ThemePackS3Refs;
   pack: ThemePack | null;
   blockCatalog: ThemeBlockCatalog | null;
   packLoadedFromS3: boolean;
+  assetVersion: string | null;
 }> {
   let theme = await Theme.findById(themeId).lean();
   if (!theme) {
@@ -114,14 +115,18 @@ async function loadThemeAndPack(themeId: string): Promise<{
     );
   }
 
+  const updatedAt = (theme as { updatedAt?: Date | string }).updatedAt;
+  const assetVersion = updatedAt ? String(new Date(updatedAt).getTime()) : null;
+
   return {
-    theme: theme as { name?: string; themePath?: string },
+    theme: theme as { name?: string; themePath?: string; updatedAt?: Date | string },
     themePath,
     s3,
     s3Refs,
     pack,
     blockCatalog,
     packLoadedFromS3,
+    assetVersion,
   };
 }
 
@@ -168,10 +173,17 @@ export type CatalogThemeEditorPackPayload = {
   themeRuntime: { jsUrl: string | null; cssUrl: string | null };
 };
 
-function themeRuntimeFromS3(s3: Record<string, unknown>) {
+function withCacheBust(url: string | null | undefined, version: string | null): string | null {
+  if (!url) return null;
+  if (!version) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}v=${encodeURIComponent(version)}`;
+}
+
+function themeRuntimeFromS3(s3: Record<string, unknown>, version: string | null = null) {
   return {
-    jsUrl: (s3?.reactThemeJs as { url?: string })?.url ?? null,
-    cssUrl: (s3?.reactThemeCss as { url?: string })?.url ?? null,
+    jsUrl: withCacheBust((s3?.reactThemeJs as { url?: string })?.url ?? null, version),
+    cssUrl: withCacheBust((s3?.reactThemeCss as { url?: string })?.url ?? null, version),
   };
 }
 
@@ -210,7 +222,7 @@ function buildPayloadFromPack(
 export async function loadCatalogThemeEditorPack(
   themeId: string
 ): Promise<CatalogThemeEditorPackPayload> {
-  const { theme, themePath, s3, pack, blockCatalog, packLoadedFromS3 } =
+  const { theme, themePath, s3, pack, blockCatalog, packLoadedFromS3, assetVersion } =
     await loadThemeAndPack(themeId);
 
   const schema = pack ? flattenEditorSchema(pack.editorSchema) : REACT_THEME_CONFIG_SCHEMA;
@@ -229,7 +241,7 @@ export async function loadCatalogThemeEditorPack(
     blockCatalog,
     packLoadedFromS3,
     values,
-    themeRuntime: themeRuntimeFromS3(s3),
+    themeRuntime: themeRuntimeFromS3(s3, assetVersion),
   };
 }
 
@@ -239,7 +251,7 @@ export async function loadStoreThemeConfig(
 ): Promise<StoreThemeConfigPayload> {
   if (!storeId) throw new CustomError("storeId is required", 400);
 
-  const { theme, themePath, s3, pack, blockCatalog, packLoadedFromS3 } =
+  const { theme, themePath, s3, pack, blockCatalog, packLoadedFromS3, assetVersion } =
     await loadThemeAndPack(themeId);
   const installed = await isThemeInstalled(storeId, themeId);
   const rawSaved = installed ? await readSavedOverrides(storeId, themeId) : {};
@@ -257,7 +269,7 @@ export async function loadStoreThemeConfig(
       manifest: pack?.manifest ?? null,
       blockCatalog,
       packLoadedFromS3,
-      themeRuntime: themeRuntimeFromS3(s3),
+      themeRuntime: themeRuntimeFromS3(s3, assetVersion),
     },
     pack,
     storeOverrides,
@@ -282,7 +294,7 @@ export async function saveStoreThemeConfig(
 
   await assertThemeInstalled(storeId, themeId);
 
-  const { theme, themePath, s3, pack, blockCatalog, packLoadedFromS3 } =
+  const { theme, themePath, s3, pack, blockCatalog, packLoadedFromS3, assetVersion } =
     await loadThemeAndPack(themeId);
 
   let storeOverridesToSave: Record<string, unknown>;
@@ -337,7 +349,7 @@ export async function saveStoreThemeConfig(
       manifest: pack?.manifest ?? null,
       blockCatalog,
       packLoadedFromS3,
-      themeRuntime: themeRuntimeFromS3(s3),
+      themeRuntime: themeRuntimeFromS3(s3, assetVersion),
     },
     pack,
     storeOverridesToSave,

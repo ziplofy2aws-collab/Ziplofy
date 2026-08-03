@@ -42,6 +42,7 @@ import {
   computeStoreOverrides,
   flattenEditorSchema,
   formValuesFromPackConfig,
+  invalidateThemePackCache,
   loadThemePack,
   mergedConfigFromFormValues,
   mergeThemePackConfig,
@@ -720,6 +721,7 @@ export const updateThemeFromS3 = asyncErrorHandler(async (req: Request, res: Res
 
   if (assetsChanged) {
     invalidateCatalogThemeCache(id);
+    invalidateThemePackCache(theme.themePath);
   }
 
   const themeResponse = await Theme.findById(theme._id).populate("uploadBy", "name email");
@@ -1464,6 +1466,7 @@ export const saveUserFileEdit = asyncErrorHandler(async (req: Request, res: Resp
 export const getThemeEditorPack = asyncErrorHandler(async (req: Request, res: Response) => {
   const { themeId } = req.params as { themeId: string };
   const data = await loadCatalogThemeEditorPack(themeId);
+  res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
   res.status(200).json({ success: true, data });
 });
 
