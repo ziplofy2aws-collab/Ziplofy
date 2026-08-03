@@ -18,6 +18,11 @@ function computeProfitMetrics(price: number, cost: number | null): {
   return { profit, marginPercent };
 }
 
+function normalizeWeightUnit(unit: string): string {
+  const trimmed = unit.trim() || 'kg';
+  return trimmed === 'grams' ? 'g' : trimmed;
+}
+
 export type VariantUpdatePayload = {
   sku: string;
   barcode: string | null;
@@ -68,10 +73,10 @@ export function buildVariantUpdatePayload(
     unitPriceBaseMeasure: parseOptionalNumber(formData.unitPriceBaseMeasure),
     unitPriceBaseMeasureMetric: formData.selectedBaseMeasureUnit.trim() || null,
     package: isPhysical && formData.selectedPackage.trim() ? formData.selectedPackage.trim() : null,
-    weightValue: isPhysical ? parseFloat(formData.productWeight) || 0 : 0,
-    weightUnit: formData.weightUnit || 'kg',
+    weightValue: isPhysical ? Math.max(0, parseFloat(formData.productWeight) || 0) : 0,
+    weightUnit: normalizeWeightUnit(formData.weightUnit),
     countryOfOrigin: isPhysical ? formData.countryOfOrigin.trim() || null : null,
     hsCode: isPhysical ? formData.hsCode.trim() || null : null,
-    images: mediaUrls,
+    images: mediaUrls.filter((url) => typeof url === 'string' && url.trim().length > 0),
   };
 }

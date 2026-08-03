@@ -6,56 +6,7 @@ import { Product } from "../models/product/product.model";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { assertStoreAccess } from "../utils/store-access.util";
 import { assertStoreCloudImageUrls } from "../utils/cloud-storage-image.util";
-
-const VARIANT_UPDATE_FIELDS = [
-  "sku",
-  "barcode",
-  "price",
-  "compareAtPrice",
-  "cost",
-  "profit",
-  "marginPercent",
-  "unitPriceTotalAmount",
-  "unitPriceTotalAmountMetric",
-  "unitPriceBaseMeasure",
-  "unitPriceBaseMeasureMetric",
-  "chargeTax",
-  "weightValue",
-  "weightUnit",
-  "package",
-  "countryOfOrigin",
-  "hsCode",
-  "images",
-  "outOfStockContinueSelling",
-  "isInventoryTrackingEnabled",
-  "isPhysicalProduct",
-] as const;
-
-function buildVariantUpdatePayload(body: Record<string, unknown>): Record<string, unknown> {
-  const updatePayload: Record<string, unknown> = {};
-
-  for (const field of VARIANT_UPDATE_FIELDS) {
-    if (!Object.prototype.hasOwnProperty.call(body, field)) continue;
-    updatePayload[field] = body[field];
-  }
-
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "package")) {
-    const pkg = updatePayload.package;
-    if (pkg === null || pkg === "") {
-      updatePayload.package = null;
-    } else if (typeof pkg === "string" && !mongoose.isValidObjectId(pkg)) {
-      throw new CustomError("Invalid package id", 400);
-    }
-  }
-
-  if (Object.prototype.hasOwnProperty.call(updatePayload, "sku")) {
-    const sku = String(updatePayload.sku ?? "").trim();
-    if (!sku) throw new CustomError("SKU is required", 400);
-    updatePayload.sku = sku;
-  }
-
-  return updatePayload;
-}
+import { buildVariantUpdatePayload } from "../utils/variant-update-payload.util";
 
 // GET variants by product id
 export const getVariantsByProductId = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -135,18 +86,62 @@ export const updateVariantById = asyncErrorHandler(async (req: Request, res: Res
 
   await assertStoreAccess(product.storeId.toString(), req.user as SecureUserInfo | undefined);
 
-  if (Array.isArray(updateData.images)) {
-    await assertStoreCloudImageUrls(product.storeId.toString(), updateData.images as string[]);
+  // Require package when the resulting variant is physical
+  const willBePhysical =
+    Object.prototype.hasOwnProperty.call(updateData, "isPhysicalProduct")
+      ? updateData.isPhysicalProduct !== false
+      : existingVariant.isPhysicalProduct !== false;
+
+  if (willBePhysical) {
+    const nextPackage = Object.prototype.hasOwnProperty.call(updateData, "package")
+      ? updateData.package
+      : existingVariant.package;
+    if (!nextPackage) {
+      throw new CustomError(
+        "Select a shipping package for this physical product. If none exist yet, add a package first.",
+        400
+      );
+    }
   }
 
-  const updatedVariant = await ProductVariant.findByIdAndUpdate(
-    id,
-    updateData,
-    {
+  if (Array.isArray(updateData.images)) {
+    try {
+      await assertStoreCloudImageUrls(product.storeId.toString(), updateData.images as string[]);
+    } catch (err: unknown) {
+      if (err instanceof CustomError) throw err;
+      throw new CustomError(
+        "One or more images are invalid. Choose images from Content → Files.",
+        400
+      );
+    }
+  }
+
+  let updatedVariant;
+  try {
+    updatedVariant = await ProductVariant.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
+    }).populate({ path: "package", model: "Packaging" });
+  } catch (error: any) {
+    if (error?.name === "ValidationError") {
+      const message = Object.values(error.errors || {})
+        .map((val: any) => val?.message)
+        .filter(Boolean)
+        .join(", ");
+      throw new CustomError(message || "Please check the variant details and try again.", 400);
     }
-  ).populate({ path: "package", model: "Packaging" });
+    if (error?.name === "CastError") {
+      const path = typeof error?.path === "string" ? error.path : "field";
+      if (path === "package") {
+        throw new CustomError(
+          "Select a shipping package for this physical product. If none exist yet, add a package first.",
+          400
+        );
+      }
+      throw new CustomError(`Invalid value for ${path}. Please check and try again.`, 400);
+    }
+    throw error;
+  }
 
   if (!updatedVariant) {
     throw new CustomError("Variant not found", 404);

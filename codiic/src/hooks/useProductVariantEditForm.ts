@@ -58,7 +58,7 @@ function variantToFormData(variant: ProductVariant): ProductVariantFormData {
     cost: variant.cost != null ? String(variant.cost) : '',
     selectedPackage: packageId,
     productWeight: variant.weightValue != null ? String(variant.weightValue) : '',
-    weightUnit: variant.weightUnit || 'kg',
+    weightUnit: variant.weightUnit === 'g' ? 'grams' : variant.weightUnit || 'kg',
     countryOfOrigin: variant.countryOfOrigin || '',
     hsCode: variant.hsCode || '',
   };
@@ -128,20 +128,75 @@ export function useProductVariantEditForm(variant: ProductVariant) {
       toast.error('SKU is required');
       return;
     }
+    if (sku.length > 100) {
+      toast.error('SKU cannot exceed 100 characters');
+      return;
+    }
+
+    const barcode = formData.barcode.trim();
+    if (barcode.length > 100) {
+      toast.error('Barcode cannot exceed 100 characters');
+      return;
+    }
 
     const priceTrimmed = formData.price.trim();
     if (!priceTrimmed) {
-      toast.error('Product price is required');
+      toast.error('Variant price is required');
       return;
     }
     const parsedPrice = parseFloat(priceTrimmed);
     if (!Number.isFinite(parsedPrice)) {
-      toast.error('Enter a valid product price');
+      toast.error('Enter a valid variant price');
       return;
     }
     if (parsedPrice < 0) {
       toast.error('Price cannot be negative');
       return;
+    }
+
+    const compareAt = formData.compareAtPrice.trim();
+    if (compareAt !== '') {
+      const parsedCompareAt = parseFloat(compareAt);
+      if (!Number.isFinite(parsedCompareAt)) {
+        toast.error('Enter a valid compare-at price');
+        return;
+      }
+      if (parsedCompareAt < 0) {
+        toast.error('Compare-at price cannot be negative');
+        return;
+      }
+    }
+
+    const costTrimmed = formData.cost.trim();
+    if (costTrimmed !== '') {
+      const parsedCost = parseFloat(costTrimmed);
+      if (!Number.isFinite(parsedCost)) {
+        toast.error('Enter a valid cost');
+        return;
+      }
+      if (parsedCost < 0) {
+        toast.error('Cost cannot be negative');
+        return;
+      }
+    }
+
+    if (formData.isPhysicalProduct && !formData.selectedPackage.trim()) {
+      toast.error(
+        'Select a shipping package for this physical product. If none exist yet, add a package first.'
+      );
+      return;
+    }
+
+    if (formData.isPhysicalProduct && formData.productWeight.trim() !== '') {
+      const weight = parseFloat(formData.productWeight);
+      if (!Number.isFinite(weight)) {
+        toast.error('Enter a valid product weight');
+        return;
+      }
+      if (weight < 0) {
+        toast.error('Product weight cannot be negative');
+        return;
+      }
     }
 
     if (

@@ -5,6 +5,8 @@ import type { ProductFormAppearance } from './product-form-appearance';
 type ProductFormHeaderProps = {
   mode: 'create' | 'edit';
   title: string;
+  /** Optional line under the title (e.g. parent product on variant edit). */
+  subtitle?: React.ReactNode;
   status?: 'active' | 'draft';
   isDeleted?: boolean;
   submitLabel: string;
@@ -26,6 +28,7 @@ type ProductFormHeaderProps = {
 const ProductFormHeader: React.FC<ProductFormHeaderProps> = ({
   mode,
   title,
+  subtitle,
   status,
   isDeleted = false,
   submitLabel,
@@ -89,39 +92,52 @@ const ProductFormHeader: React.FC<ProductFormHeaderProps> = ({
               <CubeIcon className="h-4 w-4 text-gray-700" aria-hidden />
             </div>
           ) : null}
-          <h1
-            className={`truncate tracking-tight text-gray-800 ${
-              isMinimal
-                ? 'text-lg font-medium'
-                : 'text-xl font-semibold text-gray-900 sm:text-2xl'
-            }`}
-          >
-            {heading}
-          </h1>
-          {mode === 'edit' && status ? (
-            <span
-              className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                status === 'active'
-                  ? isMinimal
-                    ? 'bg-emerald-50 text-emerald-700'
-                    : 'bg-emerald-100 text-emerald-800'
-                  : isMinimal
-                    ? 'bg-gray-100 text-gray-500'
-                    : 'bg-gray-100 text-gray-600'
-              }`}
-            >
-              {status === 'active' ? 'Active' : 'Draft'}
-            </span>
-          ) : null}
-          {isDeleted ? (
-            <span
-              className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                isMinimal ? 'bg-red-50 text-red-600' : 'bg-red-100 text-red-700'
-              }`}
-            >
-              Deleted
-            </span>
-          ) : null}
+          <div className="min-w-0">
+            <div className="flex min-w-0 flex-wrap items-center gap-2.5">
+              <h1
+                className={`truncate tracking-tight text-gray-800 ${
+                  isMinimal
+                    ? 'text-lg font-medium'
+                    : 'text-xl font-semibold text-gray-900 sm:text-2xl'
+                }`}
+              >
+                {heading}
+              </h1>
+              {mode === 'edit' && status ? (
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    status === 'active'
+                      ? isMinimal
+                        ? 'bg-emerald-50 text-emerald-700'
+                        : 'bg-emerald-100 text-emerald-800'
+                      : isMinimal
+                        ? 'bg-gray-100 text-gray-500'
+                        : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {status === 'active' ? 'Active' : 'Draft'}
+                </span>
+              ) : null}
+              {isDeleted ? (
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                    isMinimal ? 'bg-red-50 text-red-600' : 'bg-red-100 text-red-700'
+                  }`}
+                >
+                  Deleted
+                </span>
+              ) : null}
+            </div>
+            {subtitle ? (
+              <div
+                className={`mt-0.5 truncate ${
+                  isMinimal ? 'text-[13px] text-gray-400' : 'text-sm text-gray-500'
+                }`}
+              >
+                {subtitle}
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

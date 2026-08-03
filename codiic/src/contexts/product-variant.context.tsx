@@ -69,7 +69,10 @@ interface ProductVariantContextType {
   error: string | null;
   fetchVariantsByProductId: (productId: string) => Promise<void>;
   fetchProductVariantDetailsById: (variantId: string, productId?: string) => Promise<ProductVariant | null>;
-  updateVariant: (variantId: string, update: Partial<ProductVariant>) => Promise<ProductVariant>;
+  updateVariant: (
+    variantId: string,
+    update: Record<string, unknown>
+  ) => Promise<ProductVariant>;
   clearActiveVariant: () => void;
   clearVariants: () => void;
 }
@@ -134,7 +137,7 @@ export const ProductVariantProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  const updateVariant = useCallback(async (variantId: string, update: Partial<ProductVariant>) => {
+  const updateVariant = useCallback(async (variantId: string, update: Record<string, unknown>) => {
     try {
       setError(null);
       const res = await axiosi.patch<{ success: boolean; data: ProductVariant; message?: string }>(
