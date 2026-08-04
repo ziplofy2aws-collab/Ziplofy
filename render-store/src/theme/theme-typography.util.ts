@@ -3,13 +3,23 @@ const THEME_FONT_LINK_PREFIX = 'codiic-theme-font-';
 function extractQuotedFontNames(family: unknown): string[] {
   if (typeof family !== 'string' || !family.trim()) return [];
   const names: string[] = [];
-  const re = /"([^"]+)"/g;
-  let match = re.exec(family);
+  const quoted = /["']([^"']+)["']/g;
+  let match = quoted.exec(family);
   while (match) {
     names.push(match[1]);
-    match = re.exec(family);
+    match = quoted.exec(family);
+  }
+  if (names.length) return names;
+  // Unquoted stacks: take the first token before a comma (e.g. Roboto, sans-serif).
+  const first = family.split(',')[0]?.trim().replace(/^["']|["']$/g, '');
+  if (first && !/^(system-ui|sans-serif|serif|monospace|cursive|fantasy|inherit|ui-monospace)$/i.test(first)) {
+    names.push(first);
   }
   return names;
+}
+
+function googleFontLinkId(fontName: string): string {
+  return `${THEME_FONT_LINK_PREFIX}${fontName.replace(/\s+/g, '-')}`;
 }
 
 export function readThemeTypographyGoogleFonts(
@@ -57,11 +67,12 @@ export function applyThemeTypographyFontsToDocument(
     .querySelectorAll(`link[id^="${THEME_FONT_LINK_PREFIX}"]`)
     .forEach((el) => {
       const id = el.id.replace(THEME_FONT_LINK_PREFIX, '');
-      if (!desired.has(id)) el.remove();
+      const matchName = fonts.find((name) => googleFontLinkId(name) === el.id);
+      if (!matchName || !desired.has(matchName)) el.remove();
     });
 
   for (const fontName of fonts) {
-    const id = `${THEME_FONT_LINK_PREFIX}${fontName}`;
+    const id = googleFontLinkId(fontName);
     if (document.getElementById(id)) continue;
     const link = document.createElement('link');
     link.id = id;

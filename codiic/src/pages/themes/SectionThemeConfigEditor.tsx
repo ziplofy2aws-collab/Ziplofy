@@ -15,7 +15,13 @@ import {
   applyStoreMenuSelectionToConfig,
   pruneStaleHeaderMenuItemValues,
 } from '../../create-theme/utils/store-menu-header.util';
-import { readThemeColorPalette, syncThemePaletteToFieldValues, ensureThemeColorPaletteDefaults, seedThemePaletteValues } from '../../create-theme/settings/theme-color-palette.settings';
+import {
+  readThemeColorPalette,
+  syncThemePaletteToFieldValues,
+  ensureThemeColorPaletteDefaults,
+  seedThemePaletteValues,
+  withThemeColorPaletteSchema,
+} from '../../create-theme/settings/theme-color-palette.settings';
 import {
   ensureThemeButtonsDefaults,
   seedThemeButtonsValues,
@@ -35,6 +41,7 @@ import {
   THEME_TYPOGRAPHY_FONT_BODY_KEY_PATH,
   THEME_TYPOGRAPHY_FONT_HEADING_KEY_PATH,
   THEME_TYPOGRAPHY_FONT_SUBHEADING_KEY_PATH,
+  withThemeTypographySchema,
 } from '../../create-theme/settings/theme-typography.settings';
 import { InspectorToggleIcon } from '../../create-theme/chrome/InspectorToggleIcon';
 import { modShortcutLabel, shiftShortcutLabel } from '../../utils/keyboard-shortcut-label';
@@ -295,8 +302,14 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       treeInitRef.current = false;
       setSelectedNodeId('');
       setThemeName(data.themeName);
+      // Typography (+ palette) fields must be on the schema or applyValuesToThemeConfig
+      // silently drops fontBodyKey / fontFamily* and production font picks never stick.
       const schema = data.editorSchema
-        ? withThemeLogoFaviconSchema(data.editorSchema as EditorSchemaDoc)
+        ? withThemeTypographySchema(
+            withThemeColorPaletteSchema(
+              withThemeLogoFaviconSchema(data.editorSchema as EditorSchemaDoc)
+            )
+          )
         : null;
       setEditorSchema(schema);
       const packDefault = JSON.parse(

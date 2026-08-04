@@ -119,11 +119,17 @@ export function ThemeTypographyFontPickerModal({
     const names = new Set<string>();
     const selected = THEME_TYPOGRAPHY_FONT_OPTIONS.find((font) => font.value === normalizedValue);
     if (selected?.googleFont) names.add(selected.googleFont);
-    for (const font of [...systemFonts, ...otherFonts].slice(0, 24)) {
+    // Also resolve from system picker entries that override shared keys.
+    const selectedSystem = THEME_SYSTEM_FONT_PICKER_OPTIONS.find(
+      (font) => font.value === normalizedValue
+    );
+    if (selectedSystem?.googleFont) names.add(selectedSystem.googleFont);
+    // Load fonts for the currently visible search results so every listed face can preview.
+    for (const font of otherFonts.slice(0, 80)) {
       if (font.googleFont) names.add(font.googleFont);
     }
     return [...names];
-  }, [normalizedValue, systemFonts, otherFonts]);
+  }, [normalizedValue, otherFonts]);
 
   useEffect(() => {
     if (!open) {

@@ -23,7 +23,40 @@ export const THEME_TYPOGRAPHY_FONT_OPTIONS: CheckoutTypographyFontOption[] = [
   ...CHECKOUT_TYPOGRAPHY_FONT_OPTIONS.filter((font) => font.value !== 'inter'),
 ];
 
-const FONT_BY_VALUE = new Map(THEME_TYPOGRAPHY_FONT_OPTIONS.map((font) => [font.value, font]));
+/** Shopify-style system font list shown in the typography font picker. */
+export const THEME_SYSTEM_FONT_PICKER_OPTIONS: CheckoutTypographyFontOption[] = [
+  {
+    value: 'mono',
+    label: 'SF Mono',
+    family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
+    googleFont: null,
+  },
+  {
+    value: 'arial',
+    label: 'Helvetica',
+    family: 'Helvetica, Arial, "Helvetica Neue", sans-serif',
+    googleFont: null,
+  },
+  {
+    value: 'serif',
+    label: 'New York',
+    family: '"New York", Georgia, "Times New Roman", serif',
+    googleFont: null,
+  },
+  {
+    value: 'system-ui',
+    label: 'system_ui',
+    family: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    googleFont: null,
+  },
+];
+
+const FONT_BY_VALUE = new Map(
+  [...THEME_TYPOGRAPHY_FONT_OPTIONS, ...THEME_SYSTEM_FONT_PICKER_OPTIONS].map((font) => [
+    font.value,
+    font,
+  ])
+);
 
 export type ThemeFontRole = 'body' | 'subheading' | 'heading' | 'accent';
 export type ThemeTextPresetId = 'paragraph' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -58,34 +91,6 @@ export const THEME_FONT_WEIGHT_OPTIONS = [
 ] as const;
 
 export type ThemeFontWeightKey = (typeof THEME_FONT_WEIGHT_OPTIONS)[number]['value'];
-
-/** Shopify-style system font list shown in the typography font picker. */
-export const THEME_SYSTEM_FONT_PICKER_OPTIONS: CheckoutTypographyFontOption[] = [
-  {
-    value: 'mono',
-    label: 'SF Mono',
-    family: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
-    googleFont: null,
-  },
-  {
-    value: 'arial',
-    label: 'Helvetica',
-    family: 'Helvetica, Arial, "Helvetica Neue", sans-serif',
-    googleFont: null,
-  },
-  {
-    value: 'serif',
-    label: 'New York',
-    family: '"New York", Georgia, "Times New Roman", serif',
-    googleFont: null,
-  },
-  {
-    value: 'system-ui',
-    label: 'system_ui',
-    family: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    googleFont: null,
-  },
-];
 
 export const THEME_OTHER_FONT_PICKER_OPTIONS = THEME_TYPOGRAPHY_FONT_OPTIONS.filter(
   (font) => font.googleFont && font.value !== 'default'

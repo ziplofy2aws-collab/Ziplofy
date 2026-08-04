@@ -2549,6 +2549,10 @@ export function applyValuesToThemeConfig(
         key === 'mobileHeight'
       ) {
         type = 'number';
+      } else if (path.startsWith('settings.typography.')) {
+        // Global typography (font keys, families, weights, presets) must never be skipped.
+        type =
+          key === 'size' || key.endsWith('Size') || key.endsWith('FontSize') ? 'number' : 'text';
       } else {
         continue;
       }
