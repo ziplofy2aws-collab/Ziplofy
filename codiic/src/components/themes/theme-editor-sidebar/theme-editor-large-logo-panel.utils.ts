@@ -127,7 +127,21 @@ export function groupLargeLogoPanelFields(
   return map;
 }
 
+/** Keys that actually identify Large logo (not shared bg/layout settings on other sections). */
+const LARGE_LOGO_DISTINCTIVE_KEYS = new Set([
+  'defaultLogoUrl',
+  'mediaOverlay',
+  'direction',
+  'sectionWidth',
+  'height',
+  'layoutAlignment',
+  'position',
+  'layoutGap',
+]);
+
 export function isLargeLogoSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
-  return fields.every(isLargeLogoPanelField);
+  if (!fields.every(isLargeLogoPanelField)) return false;
+  // Shared keys like backgroundImageUrl also appear on Watch Our Icons; don't steal that sheet.
+  return fields.some((f) => LARGE_LOGO_DISTINCTIVE_KEYS.has(f.path.split('.').pop() ?? ''));
 }

@@ -1562,6 +1562,8 @@ function LargeLogoAppearanceSettingsGroup({
   const bgMedia = bgMediaField
     ? fieldValueAsString(values, bgMediaField) || 'none'
     : 'none';
+  // When there is no backgroundMedia toggle (e.g. Watch Our Icons), always show the image picker.
+  const showBgImage = Boolean(bgImageField) && (bgMedia === 'image' || !bgMediaField);
 
   const ordered = [...fields].filter((f) => {
     const key = f.path.split('.').pop() ?? '';
@@ -1624,7 +1626,7 @@ function LargeLogoAppearanceSettingsGroup({
             <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
           );
         })}
-        {bgMedia === 'image' && bgImageField ? (
+        {showBgImage && bgImageField ? (
           <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
         ) : null}
       </div>
@@ -1851,6 +1853,7 @@ function ContactFormAppearanceSettingsGroup({
   const bgMediaField = fields.find((f) => f.path.endsWith('backgroundMedia'));
   const bgImageField = fields.find((f) => f.path.endsWith('backgroundImageUrl'));
   const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
+  const showBgImage = Boolean(bgImageField) && (bgMedia === 'image' || !bgMediaField);
 
   const ordered = [...fields].filter((f) => f.path.split('.').pop() !== 'backgroundImageUrl');
 
@@ -1909,7 +1912,7 @@ function ContactFormAppearanceSettingsGroup({
             <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
           );
         })}
-        {bgMedia === 'image' && bgImageField ? (
+        {showBgImage && bgImageField ? (
           <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
         ) : null}
       </div>
@@ -2533,6 +2536,7 @@ function FeaturedProductDetailsGroupedSettingsPanel({
           const bgMedia = bgMediaField
             ? fieldValueAsString(values, bgMediaField) || 'none'
             : 'none';
+          const showBgImage = Boolean(bgImageField) && (bgMedia === 'image' || !bgMediaField);
           const borderStyle = borderStyleField
             ? fieldValueAsString(values, borderStyleField) || 'none'
             : 'none';
@@ -2556,14 +2560,14 @@ function FeaturedProductDetailsGroupedSettingsPanel({
                     onFieldChange={onFieldChange}
                   />
                 ) : null}
-                {bgMedia === 'image' && bgImageField ? (
+                {showBgImage && bgImageField ? (
                   <ImagePickerFieldRow
                     field={bgImageField}
                     values={values}
                     onFieldChange={onFieldChange}
                   />
                 ) : null}
-                {bgMedia === 'image' && bgImagePosition ? (
+                {(bgMedia === 'image' || (!bgMediaField && bgImageField)) && bgImagePosition ? (
                   <SegmentedFieldRow
                     field={bgImagePosition}
                     values={values}
@@ -3011,6 +3015,7 @@ function FeaturedProductHeaderGroupedSettingsPanel({
           const bgMedia = bgMediaField
             ? fieldValueAsString(values, bgMediaField) || 'none'
             : 'none';
+          const showBgImage = Boolean(bgImageField) && (bgMedia === 'image' || !bgMediaField);
           const borderStyle = borderStyleField
             ? fieldValueAsString(values, borderStyleField) || 'none'
             : 'none';
@@ -3034,14 +3039,14 @@ function FeaturedProductHeaderGroupedSettingsPanel({
                     onFieldChange={onFieldChange}
                   />
                 ) : null}
-                {bgMedia === 'image' && bgImageField ? (
+                {showBgImage && bgImageField ? (
                   <ImagePickerFieldRow
                     field={bgImageField}
                     values={values}
                     onFieldChange={onFieldChange}
                   />
                 ) : null}
-                {bgMedia === 'image' && bgImagePosition ? (
+                {(bgMedia === 'image' || (!bgMediaField && bgImageField)) && bgImagePosition ? (
                   <SegmentedFieldRow
                     field={bgImagePosition}
                     values={values}
@@ -7007,6 +7012,7 @@ function FaqAppearanceSettingsGroup({
   const bgMediaField = fields.find((f) => f.path.endsWith('backgroundMedia'));
   const bgImageField = fields.find((f) => f.path.endsWith('backgroundImageUrl'));
   const bgMedia = bgMediaField ? fieldValueAsString(values, bgMediaField) || 'none' : 'none';
+  const showBgImage = Boolean(bgImageField) && (bgMedia === 'image' || !bgMediaField);
   const ordered = sortFaqGroupFields(
     fields.filter((f) => f.path.split('.').pop() !== 'backgroundImageUrl'),
     FAQ_APPEARANCE_FIELD_ORDER
@@ -7067,7 +7073,7 @@ function FaqAppearanceSettingsGroup({
             <SettingsFieldRow key={field.path} field={field} values={values} onFieldChange={onFieldChange} />
           );
         })}
-        {bgMedia === 'image' && bgImageField ? (
+        {showBgImage && bgImageField ? (
           <ImagePickerFieldRow field={bgImageField} values={values} onFieldChange={onFieldChange} />
         ) : null}
       </div>

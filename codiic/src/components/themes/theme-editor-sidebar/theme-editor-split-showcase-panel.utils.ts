@@ -141,7 +141,21 @@ export function groupSplitShowcasePanelFields(
   return map;
 }
 
+/** Keys that identify Split showcase (not shared bg settings on other sections). */
+const SPLIT_SHOWCASE_DISTINCTIVE_KEYS = new Set([
+  'direction',
+  'verticalOnMobile',
+  'layoutAlignment',
+  'position',
+  'layoutGap',
+  'sectionWidth',
+  'height',
+  'mediaOverlay',
+]);
+
 export function isSplitShowcaseSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
-  return fields.every(isSplitShowcasePanelField);
+  if (!fields.every(isSplitShowcasePanelField)) return false;
+  // Shared keys like backgroundImageUrl also appear on Watch Our Icons; don't steal that sheet.
+  return fields.some((f) => SPLIT_SHOWCASE_DISTINCTIVE_KEYS.has(f.path.split('.').pop() ?? ''));
 }
