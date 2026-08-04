@@ -125,6 +125,7 @@ const SECTION_BLOCK_ALLOWLIST_FALLBACK: Record<string, string[]> = {
   'layered-slideshow': ['slideshow-slide'],
   'slideshow-inset': ['slideshow-slide'],
   'slideshow-full-frame': ['slideshow-slide'],
+  'product-faq': ['faq-item'],
 };
 
 function normalizeCatalogBlockId(id: string): string {
@@ -177,6 +178,17 @@ export function filterBlocksForSection(
         category: 'basic',
         icon: 'product-card',
         keywords: ['product-hotspot', 'hotspot'],
+      },
+    ];
+  }
+  if (sectionKey === 'product-faq' && !filtered.some((b) => normalizeCatalogBlockId(b.id) === 'faq-item')) {
+    return [
+      {
+        id: 'faq-item',
+        label: 'Question',
+        category: 'basic',
+        icon: 'text',
+        keywords: ['faq-item', 'faq', 'question'],
       },
     ];
   }

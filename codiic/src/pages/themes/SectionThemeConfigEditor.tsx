@@ -1356,7 +1356,14 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
           );
           setAddBlockTarget(null);
           if (!result) {
-            toast.error(`Could not add ${block.label}`);
+            const isProductFaq =
+              addBlockTarget.nodeId.includes(':product_faq:') ||
+              addBlockTarget.nodeId.endsWith(':product_faq:add-block');
+            toast.error(
+              isProductFaq && block.id.includes('faq')
+                ? 'Maximum of 20 FAQ items'
+                : `Could not add ${block.label}`
+            );
             return;
           }
           const nextValues =

@@ -854,6 +854,72 @@ function mapAnnouncementBlockNodes(
   return reorderSidebarChildren([addBlock, ...blockNodes], childrenListKey, itemOrder);
 }
 
+function productFaqBlockPreview(
+  block: BlockDef,
+  values: Record<string, string | boolean>
+): string | undefined {
+  const questionPath = block.settingsFields?.find((f) => f.path.endsWith('.settings.question'))?.path;
+  if (questionPath) return fieldPreview({ path: questionPath, type: 'text', label: 'Question' }, values);
+  return undefined;
+}
+
+/** Product FAQ: Add block → Question rows expanded from config block_order. */
+function mapProductFaqBlockNodes(
+  blocks: BlockDef[],
+  prefix: string,
+  sectionAddBlockId: string,
+  values: Record<string, string | boolean>,
+  itemOrder: Record<string, string[]>,
+  childrenListKey: string,
+  config: Record<string, unknown> | null,
+  tplId: string,
+  secId: string
+): SidebarNode[] {
+  const order =
+    readConfigBlockOrder(config, ['templates', tplId, 'sections', secId, 'block_order']) ?? [
+      'faq_1',
+      'faq_2',
+      'faq_3',
+      'faq_4',
+      'faq_5',
+      'faq_6',
+      'faq_7',
+    ];
+  const template =
+    blocks.find((b) => b.id === 'faq_item' || b.id === 'faq-item') ?? blocks[0];
+  if (!template) {
+    const addBlock: SidebarNode = { id: sectionAddBlockId, label: 'Add block', kind: 'add-block' };
+    return [addBlock];
+  }
+
+  const visibleBlocks = order.map((blockInstanceId) => {
+    const settingsFields = (template.settingsFields ?? []).map((f) => ({
+      ...f,
+      path: f.path.replace(/\.blocks\.[^.]+\./, `.blocks.${blockInstanceId}.`),
+    }));
+    return { ...template, id: blockInstanceId, settingsFields };
+  });
+
+  const blockNodes: SidebarNode[] = visibleBlocks.map((block) => {
+    const blockId = block.id ?? block.label ?? 'block';
+    return {
+      id: `${prefix}:block:${blockId}`,
+      label: 'Question',
+      kind: 'block' as const,
+      icon: iconForBlockLabel('Question'),
+      fields: block.settingsFields?.length ? block.settingsFields : undefined,
+      preview: productFaqBlockPreview(block, values),
+      showVisibilityToggle: true,
+      showDeleteButton: true,
+      children: undefined,
+      childrenListKey: listKeyBlockChildren(`${prefix}:block:${blockId}`),
+    };
+  });
+
+  const addBlock: SidebarNode = { id: sectionAddBlockId, label: 'Add block', kind: 'add-block' };
+  return reorderSidebarChildren([...blockNodes, addBlock], childrenListKey, itemOrder);
+}
+
 /** Header: Logo → Menu — atomic rows only (no nested children, no Add block). */
 function mapHeaderBlockNodes(
   blocks: BlockDef[],
@@ -1533,6 +1599,7 @@ function sectionToNode(
   const isSlideshowInset = isSlideshowInsetSectionType(sec.type, catalogVariantEarly);
   const isStorytellingCarousel = isStorytellingCarouselSectionType(sec.type, catalogVariantEarly);
   const isDividerSection = isDivider || isDividerSectionType(sec.type, catalogVariantEarly);
+  const isProductFaq = sec.type === 'product-faq';
 
   if (isHero && isHeroBottomAlignedSectionConfig(config, settingsBase, blocksBase)) {
     const children = mapBottomAlignedHeroSidebarNodes(
@@ -1671,6 +1738,18 @@ function sectionToNode(
           tplId,
           secId
         )
+      : isProductFaq
+        ? mapProductFaqBlockNodes(
+            sectionBlocks,
+            prefix,
+            `${prefix}:add-block`,
+            values,
+            itemOrder,
+            childrenListKey,
+            config,
+            tplId,
+            secId
+          )
       : heroVisibleBlocks.length
       ? isHero
         ? mapHeroBlockNodes(heroVisibleBlocks, prefix, `${prefix}:add-block`, values, itemOrder, childrenListKey)

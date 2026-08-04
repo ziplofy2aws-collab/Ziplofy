@@ -2970,6 +2970,53 @@ function insertAnnouncementLayoutBlock(
   return { blockInstanceId };
 }
 
+const PRODUCT_FAQ_MAX_ITEMS = 20;
+
+function nextProductFaqBlockId(existingIds: string[]): string {
+  let n = 1;
+  while (existingIds.includes(`faq_${n}`)) n += 1;
+  return `faq_${n}`;
+}
+
+function insertProductFaqBlock(
+  sec: Record<string, unknown>,
+  catalogBlockId: string
+): { blockInstanceId: string } | null {
+  const normalized = normalizeCatalogBlockId(catalogBlockId);
+  if (normalized !== 'faq-item' && normalized !== 'faq_item') return null;
+
+  const blocks = { ...((sec.blocks ?? {}) as Record<string, Record<string, unknown>>) };
+  const order = Array.isArray(sec.block_order) ? [...(sec.block_order as string[])] : [];
+  if (order.length >= PRODUCT_FAQ_MAX_ITEMS) return null;
+
+  const blockInstanceId = nextProductFaqBlockId(order);
+  blocks[blockInstanceId] = {
+    type: 'faq-item',
+    enabled: true,
+    settings: {
+      question: 'New question',
+      answer: 'Add an answer for this question.',
+    },
+  };
+  order.push(blockInstanceId);
+  sec.blocks = blocks;
+  sec.block_order = order;
+  return { blockInstanceId };
+}
+
+function sectionIsProductFaq(
+  sec: Record<string, unknown>,
+  sectionInstanceId: string,
+  scope: AddBlockTarget['scope']
+): boolean {
+  if (sec.type === 'product-faq') return true;
+  const blueprint =
+    scope === 'layout'
+      ? layoutBlueprintKey(sectionInstanceId)
+      : templateBlueprintKey(sectionInstanceId);
+  return blueprint === 'product_faq';
+}
+
 function footerUtilitiesCatalogBlockSupported(catalogBlockId: string): boolean {
   const normalized = normalizeCatalogBlockId(catalogBlockId);
   return normalized === 'copyright' || normalized === 'policy-links' || normalized === 'social' || normalized === 'social-media-links';
@@ -3625,6 +3672,22 @@ export function insertBlockFromCatalog(
   }
   if (sectionIsFeaturedCollection(sec, target.sectionInstanceId, 'template')) {
     const inserted = insertFeaturedCollectionBlock(sec, catalogBlockId);
+    if (!inserted) return null;
+    sections[target.sectionInstanceId] = sec;
+    tpl.sections = sections;
+    templates[tplId] = tpl;
+    next.templates = templates;
+    return {
+      config: next,
+      blockInstanceId: inserted.blockInstanceId,
+      sectionInstanceId: target.sectionInstanceId,
+      scope: 'template',
+      templateId: tplId,
+      nodeId: `template:${tplId}:${target.sectionInstanceId}:block:${inserted.blockInstanceId}`,
+    };
+  }
+  if (sectionIsProductFaq(sec, target.sectionInstanceId, 'template')) {
+    const inserted = insertProductFaqBlock(sec, catalogBlockId);
     if (!inserted) return null;
     sections[target.sectionInstanceId] = sec;
     tpl.sections = sections;

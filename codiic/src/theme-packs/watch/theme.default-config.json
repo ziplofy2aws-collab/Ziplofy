@@ -561,10 +561,92 @@
             "qtyMin": 1,
             "qtyMax": 20
           }
+        },
+        "product_faq": {
+          "type": "product-faq",
+          "enabled": true,
+          "settings": {
+            "title": "FAQs",
+            "backgroundColor": "",
+            "textColor": ""
+          },
+          "settings_field_order": [
+            "templates.product.sections.product_faq.settings.title",
+            "templates.product.sections.product_faq.settings.backgroundColor",
+            "templates.product.sections.product_faq.settings.textColor"
+          ],
+          "blocks": {
+            "faq_1": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "How long does Starboard Rosegold battery last?",
+                "answer": "Under normal use, the quartz battery typically lasts around 2 years before needing replacement."
+              }
+            },
+            "faq_2": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "Can I wear my Starboard Rosegold watch while swimming or showering?",
+                "answer": "It is water resistant to 30M, suitable for splashes. Avoid swimming, diving, or hot showers."
+              }
+            },
+            "faq_3": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "How should I clean my Starboard Rosegold watch?",
+                "answer": "Wipe gently with a soft dry cloth. Avoid harsh chemicals, solvents, and abrasive cleaners."
+              }
+            },
+            "faq_4": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "What is your return policy for Starboard Rosegold?",
+                "answer": "Unused products can be returned within 10 days in original packaging for a refund or exchange."
+              }
+            },
+            "faq_5": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "Do you offer expedited delivery services for Starboard Rosegold?",
+                "answer": "Yes. Express shipping options are available at checkout depending on your pincode."
+              }
+            },
+            "faq_6": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "What is the warranty for Starboard Rosegold?",
+                "answer": "It includes a 1-year manufacturer warranty covering movement defects under normal use."
+              }
+            },
+            "faq_7": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "Where can I find user manual of Starboard Rosegold?",
+                "answer": "Open the User Manual accordion on this product page, or download it from your order confirmation email."
+              }
+            }
+          },
+          "block_order": [
+            "faq_1",
+            "faq_2",
+            "faq_3",
+            "faq_4",
+            "faq_5",
+            "faq_6",
+            "faq_7"
+          ]
         }
       },
       "section_order": [
-        "product_main"
+        "product_main",
+        "product_faq"
       ]
     },
     "search": {

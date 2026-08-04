@@ -221,12 +221,16 @@ export function readStructureOrderFromConfig(
     }
 
     const ids: string[] = [];
+    const isProductFaq = (sec as { type?: string }).type === 'product-faq';
     if (isHero) {
       ids.push(`template:${tplId}:${secId}:add-block`);
     } else if (sec.settings_field_order?.length) {
       for (const path of sec.settings_field_order) {
         ids.push(`field:${path}`);
       }
+    }
+    if (isProductFaq) {
+      ids.push(`template:${tplId}:${secId}:add-block`);
     }
     if (sec.block_order?.length) {
       for (const blockId of sec.block_order) {

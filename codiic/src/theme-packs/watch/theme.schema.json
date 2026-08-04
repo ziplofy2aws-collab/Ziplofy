@@ -1366,6 +1366,61 @@
               "sidebar": true
             }
           ]
+        },
+        {
+          "id": "product_faq",
+          "type": "product-faq",
+          "label": "FAQs",
+          "settingsFields": [
+            {
+              "path": "templates.product.sections.product_faq.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_faq.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "widget": "color",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_faq.settings.textColor",
+              "type": "color",
+              "label": "Text color",
+              "widget": "color",
+              "group": "Appearance",
+              "sidebar": true
+            }
+          ],
+          "blocks": [
+            {
+              "id": "faq_item",
+              "label": "Question",
+              "settingsFields": [
+                {
+                  "path": "templates.product.sections.product_faq.blocks.faq_item.settings.question",
+                  "type": "text",
+                  "label": "Question",
+                  "widget": "styled-text",
+                  "group": "Content",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.product.sections.product_faq.blocks.faq_item.settings.answer",
+                  "type": "textarea",
+                  "label": "Answer",
+                  "widget": "styled-text",
+                  "group": "Content",
+                  "sidebar": true
+                }
+              ]
+            }
+          ]
         }
       ]
     },
