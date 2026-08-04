@@ -62,6 +62,12 @@ export type ThemeLivePreviewFrameProps = {
   /** Bumped on sidebar / inline field edits — posts config immediately (keeps preview in sync). */
   valuesSyncKey?: number;
   className?: string;
+  /** Fired when the iframe shell is ready (before theme.js finishes). */
+  onPreviewReady?: () => void;
+  /** Fired when remote theme.js has mounted (`codiic_PREVIEW_LOADED`). */
+  onPreviewLoaded?: () => void;
+  /** Fired when the preview reports a hard failure. */
+  onPreviewError?: (message: string) => void;
 };
 
 const DEFAULT_RENDER_STORE_PORT = '5180';
@@ -159,6 +165,9 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   structureSyncKey = 0,
   valuesSyncKey = 0,
   className = '',
+  onPreviewReady,
+  onPreviewLoaded,
+  onPreviewError,
 }) => {
   const previewSrc = useMemo(() => buildThemePreviewSrc(storefrontOrigin), [storefrontOrigin]);
   const previewDisplayUrl = useMemo(
@@ -177,6 +186,12 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   previewRouteRef.current = previewRoute;
   const selectionHintsRef = useRef(selectionHints);
   selectionHintsRef.current = selectionHints;
+  const onPreviewReadyRef = useRef(onPreviewReady);
+  onPreviewReadyRef.current = onPreviewReady;
+  const onPreviewLoadedRef = useRef(onPreviewLoaded);
+  onPreviewLoadedRef.current = onPreviewLoaded;
+  const onPreviewErrorRef = useRef(onPreviewError);
+  onPreviewErrorRef.current = onPreviewError;
   const inspectorEnabledRef = useRef(inspectorEnabled);
   inspectorEnabledRef.current = inspectorEnabled;
   const onPreviewSelectRef = useRef(onPreviewSelect);
@@ -337,14 +352,18 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
       if (data.type === 'codiic_PREVIEW_READY') {
         setReady(true);
         setLoadError(null);
+        onPreviewReadyRef.current?.();
         postInit();
       }
       if (data.type === 'codiic_PREVIEW_LOADED') {
         setReady(true);
         setLoadError(null);
+        onPreviewLoadedRef.current?.();
       }
       if (data.type === 'codiic_PREVIEW_ERROR') {
-        setLoadError(data.payload?.message ?? 'Preview failed to load');
+        const message = data.payload?.message ?? 'Preview failed to load';
+        setLoadError(message);
+        onPreviewErrorRef.current?.(message);
       }
       if (data.type === 'codiic_PREVIEW_DESELECT') {
         onPreviewDeselectRef.current?.();
@@ -493,10 +512,13 @@ const ThemeLivePreviewFrameInner: React.FC<ThemeLivePreviewFrameProps> = ({
   useEffect(() => {
     if (ready) return;
     const timer = window.setTimeout(() => {
-      setLoadError((prev) =>
-        prev ??
-        `Preview did not load from ${previewDisplayUrl}. Ensure the preview host allows framing from this dashboard (CSP frame-ancestors).`
-      );
+      setLoadError((prev) => {
+        const message =
+          prev ??
+          `Preview did not load from ${previewDisplayUrl}. Ensure the preview host allows framing from this dashboard (CSP frame-ancestors).`;
+        onPreviewErrorRef.current?.(message);
+        return message;
+      });
     }, 12000);
     return () => window.clearTimeout(timer);
   }, [ready, previewDisplayUrl, previewSrc, storeId, jsUrl]);

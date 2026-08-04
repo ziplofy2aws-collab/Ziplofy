@@ -10,6 +10,7 @@ import {
   THEME_EDITOR_STATIC_CONFIG,
   THEME_EDITOR_DEV_ROUTE,
 } from '../../config/theme-editor-static.config';
+import { TesseraeThemeEditorLoader } from '../../components/themes/TesseraeThemeEditorLoader';
 
 const StoreThemeConfigEditorInner: React.FC = () => {
   const { themeId: routeThemeId = '' } = useParams();
@@ -65,15 +66,7 @@ const StoreThemeConfigEditorInner: React.FC = () => {
   }
 
   if (loading) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1e1e1e]">
-        <div className="rounded-lg bg-white px-8 py-6 shadow-lg">
-          <p className="text-sm text-gray-600">
-            {staticMode ? 'Loading static dev theme…' : 'Loading theme editor…'}
-          </p>
-        </div>
-      </div>
-    );
+    return <TesseraeThemeEditorLoader phase="detect" progress={0.18} />;
   }
 
   if (error && !configMode) {

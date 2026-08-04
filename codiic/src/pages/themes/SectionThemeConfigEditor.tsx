@@ -119,7 +119,10 @@ import {
   type DevStaticThemePackId,
 } from '../../config/theme-editor-static.config';
 import { DevThemePackSwitcher } from '../../components/themes/DevThemePackSwitcher';
-import { EditorBlockingOverlay } from '../../components/themes/EditorPreviewStatus';
+import {
+  TesseraeThemeEditorLoader,
+  type TesseraeBootPhase,
+} from '../../components/themes/TesseraeThemeEditorLoader';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useRafBatchedCounter } from '../../hooks/useRafBatchedState';
 import {
@@ -253,6 +256,10 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const [structureSyncKey, setStructureSyncKey] = useState(0);
   const [devPackId, setDevPackId] = useState<DevStaticThemePackId>(() => getStaticDevPackId());
   const [packSwitching, setPackSwitching] = useState(false);
+  /** One-shot boot: hide chrome until schema + live preview theme.js are ready. */
+  const [previewBoot, setPreviewBoot] = useState<'pending' | 'loaded' | 'error'>('pending');
+  const [bootUnlocked, setBootUnlocked] = useState(false);
+  const [bootExiting, setBootExiting] = useState(false);
   /** Bumps on field edits (batched per animation frame) for immediate preview config sync. */
   const [valuesSyncKey, bumpValuesSync] = useRafBatchedCounter();
 
@@ -399,10 +406,17 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     void reloadEditor();
   }, [reloadEditor]);
 
+  const beginBootGate = useCallback(() => {
+    setBootUnlocked(false);
+    setBootExiting(false);
+    setPreviewBoot('pending');
+  }, []);
+
   const handleDevPackChange = useCallback(
     async (packId: DevStaticThemePackId) => {
       if (packId === devPackId) return;
       setPackSwitching(true);
+      beginBootGate();
       setStaticDevPackId(packId);
       setDevPackId(packId);
       setSelectedNodeId('');
@@ -417,12 +431,13 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
         setPackSwitching(false);
       }
     },
-    [devPackId, reloadEditor]
+    [devPackId, reloadEditor, beginBootGate]
   );
 
   const handleClearDevEditorCache = useCallback(async () => {
     if (!staticDevMode) return;
     setPackSwitching(true);
+    beginBootGate();
     try {
       clearStaticThemeConfigLocal(devPackId);
       setSelectedNodeId('');
@@ -435,7 +450,51 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     } finally {
       setPackSwitching(false);
     }
-  }, [staticDevMode, devPackId, reloadEditor]);
+  }, [staticDevMode, devPackId, reloadEditor, beginBootGate]);
+
+  useEffect(() => {
+    beginBootGate();
+  }, [devPackId, themeRuntime.jsUrl, beginBootGate]);
+
+  const schemaReady = Boolean(editorSchema && defaultConfig) && !loading;
+  const needsLivePreview = Boolean(themeRuntime.jsUrl);
+  const previewSettled =
+    !needsLivePreview || previewBoot === 'loaded' || previewBoot === 'error';
+  const bootReady = schemaReady && !packSwitching && previewSettled;
+
+  useEffect(() => {
+    if (!bootReady || bootUnlocked || bootExiting) return;
+    setBootExiting(true);
+    const t = window.setTimeout(() => setBootUnlocked(true), 480);
+    return () => window.clearTimeout(t);
+  }, [bootReady, bootUnlocked, bootExiting]);
+
+  /** Don't hang forever if the iframe never signals LOADED. */
+  useEffect(() => {
+    if (bootUnlocked || !schemaReady || !needsLivePreview) return;
+    const t = window.setTimeout(() => {
+      setPreviewBoot((prev) => (prev === 'pending' ? 'error' : prev));
+    }, 28000);
+    return () => window.clearTimeout(t);
+  }, [bootUnlocked, schemaReady, needsLivePreview, themeRuntime.jsUrl]);
+
+  const bootPhase: TesseraeBootPhase = packSwitching
+    ? 'switching'
+    : !schemaReady
+      ? 'schema'
+      : previewBoot === 'pending'
+        ? 'preview'
+        : bootExiting || bootReady
+          ? 'ready'
+          : 'almost';
+
+  const bootProgress = !schemaReady
+    ? 0.34
+    : previewBoot === 'pending'
+      ? 0.72
+      : bootExiting || bootUnlocked
+        ? 1
+        : 0.9;
 
   useEffect(() => {
     if (loadError) setError(loadError);
@@ -1056,15 +1115,25 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     );
   }
 
-  const showBlockingOverlay = packSwitching || (loading && !editorSchema);
-
   return (
-    <div className="fixed inset-0 z-[1310] flex flex-col bg-[#1e1e1e]">
-      {showBlockingOverlay ? (
-        <EditorBlockingOverlay
-          label={packSwitching ? 'Switching theme…' : 'Loading theme editor…'}
+    <>
+      {!bootUnlocked ? (
+        <TesseraeThemeEditorLoader
+          phase={bootPhase}
+          progress={bootProgress}
+          className={
+            bootExiting
+              ? 'pointer-events-none opacity-0 transition-opacity duration-500 ease-out'
+              : 'opacity-100 transition-opacity duration-300'
+          }
         />
       ) : null}
+      <div
+        className={`fixed inset-0 z-[1310] flex flex-col bg-[#1e1e1e] transition-opacity duration-500 ease-out ${
+          bootUnlocked || bootExiting ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+        aria-hidden={!bootUnlocked}
+      >
       {/* Top bar — Shopify-style: theme name | page picker (center) | actions */}
       <header className="relative grid h-14 shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-b border-gray-200 bg-white px-3">
         <div className="flex min-w-0 items-center gap-2 justify-self-start">
@@ -1342,6 +1411,8 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
                 selectionHints={selectionHints}
                 highlightNodeId={inspectorEnabled ? selectedNodeId || null : null}
                 inspectorEnabled={inspectorEnabled}
+                onPreviewLoaded={() => setPreviewBoot('loaded')}
+                onPreviewError={() => setPreviewBoot('error')}
                 onPreviewSelect={({ nodeId }) => handlePreviewSelect(nodeId)}
                 onPreviewDeselect={() => {
                   setSelectedNodeId('');
@@ -1527,6 +1598,7 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       />
 
     </div>
+    </>
   );
 };
 

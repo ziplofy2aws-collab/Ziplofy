@@ -31,6 +31,7 @@ import { PurchaseOrderProvider } from "./contexts/purchase-order.context";
 import { StoreRolesProvider } from "./contexts/store-roles.context";
 import { StoreSecuritySettingsProvider } from "./contexts/store-security-settings.context";
 import { CreateThemePoweredByLoader } from "./create-theme/chrome/CreateThemePoweredByLoader";
+import { TesseraeThemeEditorLoader } from "./components/themes/TesseraeThemeEditorLoader";
 
 // Lazy-loaded page components (code splitting)
 const BasicElementor = lazy(() => import("./pages/themes/BasicElementor"));
@@ -570,8 +571,22 @@ const AdminApp: React.FC = () => {
             <Route path="/themes/builder" element={<CustomThemeBuilder />} />
             <Route path="/themes/basic-elementor" element={<BasicElementor />} />
             <Route path="/themes/edit/:themeId" element={<ThemeEditor />} />
-            <Route path="/themes/dev-editor" element={<StoreThemeConfigEditor />} />
-            <Route path="/themes/:themeId/editor" element={<StoreThemeConfigEditor />} />
+            <Route
+              path="/themes/dev-editor"
+              element={
+                <Suspense fallback={<TesseraeThemeEditorLoader phase="detect" />}>
+                  <StoreThemeConfigEditor />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/themes/:themeId/editor"
+              element={
+                <Suspense fallback={<TesseraeThemeEditorLoader phase="detect" />}>
+                  <StoreThemeConfigEditor />
+                </Suspense>
+              }
+            />
             <Route path="/themes/layout/:themeId" element={<ThemeLayoutEditor />} />
             <Route path="/themes/code/:themeId" element={<ThemeCodeEditor />} />
             <Route path="/themes/code-fullscreen/:themeId" element={<ThemeCodeEditorFullScreen />} />
