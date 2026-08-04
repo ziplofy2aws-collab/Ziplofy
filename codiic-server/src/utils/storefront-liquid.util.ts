@@ -22,24 +22,42 @@ export type ResolvedAppliedStoreTheme = {
   themeName: string | null;
   isCustomTheme: boolean;
   runtimeThemeKey: string;
+  themePath: string | null;
   s3Assets: ThemeS3AssetsShape | null;
   remoteThemeJsUrl: string | null;
   remoteThemeCssUrl: string | null;
+  /** Lean Theme / CustomTheme / InstalledThemes docs — reuse in theme-runtime to avoid re-queries. */
+  themeRecord: Record<string, unknown> | null;
+  customThemeRecord: Record<string, unknown> | null;
+  installedRecord: Record<string, unknown> | null;
 };
 
-export async function resolveAppliedStoreTheme(storeId: string): Promise<ResolvedAppliedStoreTheme | null> {
-  const storeDoc = await Store.findById(storeId).select('appliedTheme').lean();
+type StoreAppliedThemeLean = {
+  appliedTheme?: unknown;
+};
+
+export async function resolveAppliedStoreTheme(
+  storeId: string,
+  options?: { storeDoc?: StoreAppliedThemeLean | null }
+): Promise<ResolvedAppliedStoreTheme | null> {
+  const storeDoc =
+    options?.storeDoc !== undefined
+      ? options.storeDoc
+      : await Store.findById(storeId).select('appliedTheme').lean();
   const appliedThemeId = storeDoc?.appliedTheme ? String(storeDoc.appliedTheme) : null;
   if (!appliedThemeId) return null;
 
-  const installed = await InstalledThemes.findOne({
-    store: new Types.ObjectId(storeId),
-    theme: new Types.ObjectId(appliedThemeId),
-    uninstalledAt: null,
-  }).lean();
+  const themeOid = new Types.ObjectId(appliedThemeId);
+  const [installed, theme] = await Promise.all([
+    InstalledThemes.findOne({
+      store: new Types.ObjectId(storeId),
+      theme: themeOid,
+      uninstalledAt: null,
+    }).lean(),
+    Theme.findById(appliedThemeId).lean(),
+  ]);
   if (!installed) return null;
 
-  const theme = await Theme.findById(appliedThemeId).lean();
   const customTheme = !theme ? await CustomTheme.findById(appliedThemeId).lean() : null;
   if (!theme && !customTheme) return null;
 
@@ -61,9 +79,13 @@ export async function resolveAppliedStoreTheme(storeId: string): Promise<Resolve
       : (theme as { name?: string })?.name ?? null,
     isCustomTheme,
     runtimeThemeKey,
+    themePath: theme ? String((theme as { themePath?: string }).themePath ?? '') || null : null,
     s3Assets: s3,
     remoteThemeJsUrl: jsUrl,
     remoteThemeCssUrl: cssUrl,
+    themeRecord: theme ? (theme as unknown as Record<string, unknown>) : null,
+    customThemeRecord: customTheme ? (customTheme as unknown as Record<string, unknown>) : null,
+    installedRecord: installed as unknown as Record<string, unknown>,
   };
 }
 
@@ -104,13 +126,19 @@ export async function listCatalogThemeFilesFromS3(
 
 const LIQUID_TEMPLATE_NAME = /^[a-z][a-z0-9_-]{0,63}$/;
 
-export async function listLiquidTemplateNamesFromS3(s3Assets: ThemeS3AssetsShape): Promise<string[]> {
-  const files = await listCatalogThemeFilesFromS3(s3Assets);
+export function liquidTemplateNamesFromCatalogFiles(
+  files: Array<{ relativePath: string }>
+): string[] {
   return files
     .filter((f) => f.relativePath.startsWith('templates/') && f.relativePath.endsWith('.liquid'))
     .map((f) => path.basename(f.relativePath, '.liquid'))
     .filter((name) => LIQUID_TEMPLATE_NAME.test(name))
     .sort();
+}
+
+export async function listLiquidTemplateNamesFromS3(s3Assets: ThemeS3AssetsShape): Promise<string[]> {
+  const files = await listCatalogThemeFilesFromS3(s3Assets);
+  return liquidTemplateNamesFromCatalogFiles(files);
 }
 
 export function isSafeLiquidTemplateName(name: string): boolean {

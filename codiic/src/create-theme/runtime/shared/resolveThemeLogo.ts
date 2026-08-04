@@ -4,18 +4,38 @@ import { mobileMedia } from './responsive';
 export const THEME_LOGO_DESKTOP_HEIGHT_DEFAULT = 36;
 export const THEME_LOGO_MOBILE_HEIGHT_DEFAULT = 28;
 
+/** Editor-only asset paths — work under Vite locally, 404 on merchant storefront hosts. */
+function storefrontSafeMediaUrl(url: string): string {
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (trimmed.startsWith('/remote-themes/')) return '';
+  if (trimmed.startsWith('/static-editor-theme/')) return '';
+  return trimmed;
+}
+
 export function resolveThemeLogoUrls(config: Record<string, unknown> | null): {
   defaultUrl: string;
   inverseUrl: string;
   faviconUrl: string;
 } {
-  const themeDefault = cfgString(config, 'settings.logo.defaultUrl', '').trim();
-  const themeInverse = cfgString(config, 'settings.logo.inverseUrl', '').trim();
-  const headerDefault = cfgString(config, 'sections.header.settings.defaultLogoUrl', '').trim();
-  const faviconUrl = cfgString(config, 'settings.logo.faviconUrl', '').trim();
+  const themeDefault = storefrontSafeMediaUrl(
+    cfgString(config, 'settings.logo.defaultUrl', '')
+  );
+  const themeInverse = storefrontSafeMediaUrl(
+    cfgString(config, 'settings.logo.inverseUrl', '')
+  );
+  const headerDefault = storefrontSafeMediaUrl(
+    cfgString(config, 'sections.header.settings.defaultLogoUrl', '')
+  );
+  const blockLogo = storefrontSafeMediaUrl(
+    cfgString(config, 'sections.header.blocks.logo.settings.imageUrl', '')
+  );
+  const faviconUrl = storefrontSafeMediaUrl(
+    cfgString(config, 'settings.logo.faviconUrl', '')
+  );
 
   return {
-    defaultUrl: themeDefault || headerDefault,
+    defaultUrl: themeDefault || headerDefault || blockLogo,
     inverseUrl: themeInverse,
     faviconUrl,
   };

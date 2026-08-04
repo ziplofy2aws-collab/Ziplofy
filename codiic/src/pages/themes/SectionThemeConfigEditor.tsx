@@ -21,9 +21,11 @@ import {
   seedThemeButtonsValues,
 } from '../../create-theme/settings/theme-buttons.settings';
 import {
+  applyThemeLogoFaviconValuesToConfig,
   ensureThemeLogoFaviconDefaults,
   seedThemeLogoFaviconValues,
   THEME_LOGO_DEFAULT_PATH,
+  withThemeLogoFaviconSchema,
 } from '../../create-theme/settings/theme-logo-favicon.settings';
 import {
   ensureThemeTypographyDefaults,
@@ -293,7 +295,10 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       treeInitRef.current = false;
       setSelectedNodeId('');
       setThemeName(data.themeName);
-      setEditorSchema((data.editorSchema ?? null) as EditorSchemaDoc | null);
+      const schema = data.editorSchema
+        ? withThemeLogoFaviconSchema(data.editorSchema as EditorSchemaDoc)
+        : null;
+      setEditorSchema(schema);
       const packDefault = JSON.parse(
         JSON.stringify(data.defaultConfig ?? {})
       ) as Record<string, unknown>;
@@ -331,7 +336,6 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       ensureThemeColorPaletteDefaults(working);
       packDefaultRef.current = packDefault;
       setDefaultConfig(working);
-      const schema = (data.editorSchema ?? null) as EditorSchemaDoc | null;
       setValues(
         schema
           ? {
@@ -736,11 +740,14 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const handleSave = useCallback(async () => {
     if (!themeId || !canPersist || !defaultConfig || !editorSchema || saving || loading) return;
     const configToSave = applyValuesToThemeConfig(defaultConfig, values, editorSchema);
+    // Catalog pack schemas often omit settings.logo.*; force-merge so production gets them.
+    applyThemeLogoFaviconValuesToConfig(configToSave, values);
     const toastId = toast.loading(staticDevMode ? 'Saving locally…' : 'Saving theme…');
 
     if (staticDevMode) {
       try {
         const merged = mergedConfigFromFormValues(defaultConfig, values, editorSchema);
+        applyThemeLogoFaviconValuesToConfig(merged, values);
         saveStaticThemeConfigLocal(merged);
         const storeId = activeStoreId || THEME_EDITOR_STATIC_CONFIG.devStoreId;
         const refreshed = await load(storeId, themeId);

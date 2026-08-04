@@ -18,7 +18,12 @@ export function readThemeFaviconUrl(config: Record<string, unknown> | null | und
   const logo = (settings as Record<string, unknown>).logo;
   if (!logo || typeof logo !== 'object') return '';
   const faviconUrl = (logo as Record<string, unknown>).faviconUrl;
-  return typeof faviconUrl === 'string' ? faviconUrl.trim() : '';
+  const trimmed = typeof faviconUrl === 'string' ? faviconUrl.trim() : '';
+  // Pack defaults / editor paths are not available on merchant storefront hosts.
+  if (trimmed.startsWith('/remote-themes/') || trimmed.startsWith('/static-editor-theme/')) {
+    return '';
+  }
+  return trimmed;
 }
 
 export function applyThemeFaviconToDocument(faviconUrl: string): void {

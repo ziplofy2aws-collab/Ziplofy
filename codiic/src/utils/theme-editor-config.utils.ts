@@ -2526,7 +2526,11 @@ export function applyValuesToThemeConfig(
         key === 'title' ||
         key === 'body' ||
         key === 'buttonLabel' ||
-        key === 'buttonHref'
+        key === 'buttonHref' ||
+        key === 'defaultUrl' ||
+        key === 'faviconUrl' ||
+        key === 'inverseUrl' ||
+        key === 'defaultLogoUrl'
       ) {
         type = 'text';
       } else if (key === 'marqueeTransparentBg' || key === 'marqueeSpacerCustomMobile') {
@@ -2539,7 +2543,9 @@ export function applyValuesToThemeConfig(
         key === 'marqueeSpacerMobileHeight' ||
         key === 'positionX' ||
         key === 'positionY' ||
-        key === 'popoverGap'
+        key === 'popoverGap' ||
+        key === 'desktopHeight' ||
+        key === 'mobileHeight'
       ) {
         type = 'number';
       } else {

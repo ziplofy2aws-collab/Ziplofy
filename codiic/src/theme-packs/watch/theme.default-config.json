@@ -49,7 +49,7 @@
       }
     },
     "logo": {
-      "defaultUrl": "/remote-themes/watch/assets/img/logo.png",
+      "defaultUrl": "",
       "inverseUrl": "",
       "faviconUrl": "",
       "desktopHeight": 36,
@@ -134,7 +134,7 @@
         "homeTransparentBackground": false,
         "productTransparentBackground": false,
         "collectionTransparentBackground": false,
-        "defaultLogoUrl": "/remote-themes/watch/assets/img/logo.png",
+        "defaultLogoUrl": "",
         "cartType": "drawer",
         "productTitleCase": "default",
         "emptyCartLink": "/products",
@@ -152,7 +152,7 @@
             "hideLogoOnHomePage": false,
             "paddingTop": 0,
             "paddingBottom": 0,
-            "imageUrl": "/remote-themes/watch/assets/img/logo.png"
+            "imageUrl": ""
           }
         },
         "menu": {

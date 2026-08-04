@@ -4,13 +4,11 @@ import path from 'path';
 import { Types } from 'mongoose';
 import { asyncErrorHandler, CustomError } from '../utils/error.utils';
 import { InstalledThemes } from '../models/installed-themes.model';
-import { Theme } from '../models/theme.model';
-import { CustomTheme } from '../models/custom-theme.model';
 import { Store } from '../models/store/store.model';
 import { StoreCustomTheme } from '../models/store-custom-theme/store-custom-theme.model';
 import {
   listCatalogThemeFilesFromS3,
-  listLiquidTemplateNamesFromS3,
+  liquidTemplateNamesFromCatalogFiles,
   resolveAppliedStoreTheme,
 } from '../utils/storefront-liquid.util';
 import { resolveStorefrontThemeSource } from '../utils/storefront-theme-resolution.util';
@@ -19,6 +17,7 @@ import { readStoreThemeConfigFile } from '../utils/theme-config.util';
 import { resolveStoreThemeConfig } from '../utils/theme-pack.util';
 import { StoreThemeConfig } from '../models/store-theme-config.model';
 import { storeAndUserScopeOr } from '../utils/installed-themes-query.util';
+import { sanitizeStorefrontThemeMediaUrls } from '../utils/storefront-theme-media.util';
 // import { Product } from '../models/product.model';
 // import { Store } from '../models/store.model';
 
@@ -267,23 +266,36 @@ export const getStorefrontThemeRuntime = asyncErrorHandler(async (req: Request, 
 
   if (themeSource.kind === 'store-custom' && themeSource.storeCustomThemeId) {
     const customThemeId = themeSource.storeCustomThemeId;
-    const customDoc = await StoreCustomTheme.findOne({
-      _id: customThemeId,
-      storeId: new Types.ObjectId(storeId),
-    }).lean();
+    let themeName = themeSource.storeCustomThemeName ?? 'Custom theme';
+    let resolvedConfig =
+      themeSource.storeCustomThemeConfig && typeof themeSource.storeCustomThemeConfig === 'object'
+        ? themeSource.storeCustomThemeConfig
+        : null;
 
-    if (customDoc?.themeConfig && typeof customDoc.themeConfig === 'object') {
+    if (!resolvedConfig) {
+      const customDoc = await StoreCustomTheme.findOne({
+        _id: customThemeId,
+        storeId: new Types.ObjectId(storeId),
+      }).lean();
+      if (customDoc?.themeConfig && typeof customDoc.themeConfig === 'object') {
+        resolvedConfig = customDoc.themeConfig as Record<string, unknown>;
+        themeName = customDoc.themeName ?? themeName;
+      }
+    }
+
+    if (resolvedConfig) {
+      sanitizeStorefrontThemeMediaUrls(resolvedConfig);
       return res.status(200).json({
         success: true,
         data: {
           storeId,
           themeId: customThemeId,
-          themeName: customDoc.themeName ?? themeSource.storeCustomThemeName ?? 'Custom theme',
+          themeName,
           themeKind: 'store-custom',
           isStoreCustomTheme: true,
           remoteThemeJsUrl: null,
           remoteThemeCssUrl: null,
-          themeConfig: customDoc.themeConfig as Record<string, unknown>,
+          themeConfig: resolvedConfig,
           runtimeBaseUrl: null,
           entryHtml: null,
           allThemeFiles: [],
@@ -311,7 +323,8 @@ export const getStorefrontThemeRuntime = asyncErrorHandler(async (req: Request, 
     });
   }
 
-  const resolved = await resolveAppliedStoreTheme(storeId);
+  const resolved =
+    themeSource.catalogResolved ?? (await resolveAppliedStoreTheme(storeId));
   if (!resolved) {
     return res.status(200).json({
       success: true,
@@ -320,24 +333,40 @@ export const getStorefrontThemeRuntime = asyncErrorHandler(async (req: Request, 
     });
   }
 
-  const installedTheme = await InstalledThemes.findOne({
-    store: new Types.ObjectId(storeId),
-    theme: new Types.ObjectId(resolved.appliedThemeId),
-    uninstalledAt: null,
-  }).lean();
-
-  const theme = await Theme.findById(resolved.appliedThemeId).lean();
-  const customTheme = !theme ? await CustomTheme.findById(resolved.appliedThemeId).lean() : null;
+  const theme = resolved.themeRecord;
+  const customTheme = resolved.customThemeRecord;
+  const installedTheme = resolved.installedRecord;
 
   const remoteThemeJsUrl = resolved.remoteThemeJsUrl;
   const remoteThemeCssUrl = resolved.remoteThemeCssUrl;
 
-  let catalogFiles: Array<{ relativePath: string; url: string }> = [];
-  let liquidTemplates: string[] = [];
-  if (!resolved.isCustomTheme && resolved.s3Assets) {
-    catalogFiles = await listCatalogThemeFilesFromS3(resolved.s3Assets);
-    liquidTemplates = await listLiquidTemplateNamesFromS3(resolved.s3Assets);
-  }
+  // Remote React themes do not need a full S3 ListObjects of contentRoot (often the slowest step).
+  const needsCatalogFileListing =
+    !resolved.isCustomTheme && Boolean(resolved.s3Assets) && !remoteThemeJsUrl;
+
+  const configFromFile = readStoreThemeConfigFile(storeId, resolved.appliedThemeId);
+  const s3AssetsForPack = (theme?.s3Assets ?? resolved.s3Assets) as Parameters<
+    typeof resolveStoreThemeConfig
+  >[2];
+
+  const [catalogFiles, configRow] = await Promise.all([
+    needsCatalogFileListing && resolved.s3Assets
+      ? listCatalogThemeFilesFromS3(resolved.s3Assets)
+      : Promise.resolve([] as Array<{ relativePath: string; url: string }>),
+    StoreThemeConfig.findOne({
+      store: new Types.ObjectId(storeId),
+      theme: new Types.ObjectId(resolved.appliedThemeId),
+    }).lean(),
+  ]);
+
+  const themeConfig = await resolveStoreThemeConfig(
+    (configRow?.config as Record<string, unknown>) ?? configFromFile ?? undefined,
+    resolved.themePath,
+    s3AssetsForPack
+  );
+  sanitizeStorefrontThemeMediaUrls(themeConfig);
+
+  const liquidTemplates = liquidTemplateNamesFromCatalogFiles(catalogFiles);
 
   const byPath = new Map(catalogFiles.map((f) => [f.relativePath, f.url]));
   const urlFor = (rel: string) => byPath.get(rel) ?? null;
@@ -383,19 +412,6 @@ export const getStorefrontThemeRuntime = asyncErrorHandler(async (req: Request, 
         contentRootPrefix.endsWith("/") ? contentRootPrefix : `${contentRootPrefix}/`
       ).replace(/\/$/, "")
     : null;
-
-  const configRow = await StoreThemeConfig.findOne({
-    store: new Types.ObjectId(storeId),
-    theme: new Types.ObjectId(resolved.appliedThemeId),
-  }).lean();
-  const configFromFile = readStoreThemeConfigFile(storeId, resolved.appliedThemeId);
-  const themePath = theme ? String((theme as { themePath?: string }).themePath ?? '') : null;
-  const s3Assets = theme ? (theme as { s3Assets?: Record<string, unknown> }).s3Assets : null;
-  const themeConfig = await resolveStoreThemeConfig(
-    (configRow?.config as Record<string, unknown>) ?? configFromFile ?? undefined,
-    themePath,
-    s3Assets as Parameters<typeof resolveStoreThemeConfig>[2]
-  );
 
   return res.status(200).json({
     success: true,
