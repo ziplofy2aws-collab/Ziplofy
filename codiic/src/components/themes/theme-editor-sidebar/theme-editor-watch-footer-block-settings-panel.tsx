@@ -68,7 +68,7 @@ function isMenuField(field: EditorFieldDef): boolean {
   return field.widget === 'menu' || field.path.endsWith('.menu');
 }
 
-/** Catalog footer: plain text + store menu picker only (same depth as header). */
+/** Catalog footer: brand/contact text, social URLs, and store menu pickers. */
 export function WatchFooterSimpleSettingsPanel({
   fields,
   values,
@@ -85,27 +85,52 @@ export function WatchFooterSimpleSettingsPanel({
     return <p className="py-2 text-[13px] text-gray-500">Nothing to edit here.</p>;
   }
 
+  const socialKeys = new Set(['facebookUrl', 'instagramUrl', 'xUrl', 'youtubeUrl']);
+  const isSocialField = (field: EditorFieldDef) => {
+    const key = field.path.split('.').pop() ?? '';
+    return field.group === 'Social links' || socialKeys.has(key);
+  };
+
+  const contactFields = visible.filter((f) => !isMenuField(f) && !isSocialField(f));
+  const socialFields = visible.filter((f) => isSocialField(f));
+  const menuFields = visible.filter((f) => isMenuField(f));
+
   return (
     <div className="px-1 py-1">
-      {visible.map((field) =>
-        isMenuField(field) ? (
-          <div key={field.path} className="py-2">
-            <StoreMenuSelectFieldRow
+      {contactFields.map((field) => (
+        <TextFieldRow
+          key={field.path}
+          field={field}
+          values={values}
+          onFieldChange={onFieldChange}
+        />
+      ))}
+      {socialFields.length ? (
+        <div className="border-t border-[#e1e1e1] pt-2 mt-1">
+          <h3 className="mb-1 text-[13px] font-semibold text-gray-900">Social links</h3>
+          <p className="mb-1 text-[12px] text-gray-500">
+            Paste profile URLs. Leave blank to hide that icon.
+          </p>
+          {socialFields.map((field) => (
+            <TextFieldRow
+              key={field.path}
               field={field}
               values={values}
               onFieldChange={onFieldChange}
-              onStoreMenuSelect={onStoreMenuSelect}
             />
-          </div>
-        ) : (
-          <TextFieldRow
-            key={field.path}
+          ))}
+        </div>
+      ) : null}
+      {menuFields.map((field) => (
+        <div key={field.path} className="py-2">
+          <StoreMenuSelectFieldRow
             field={field}
             values={values}
             onFieldChange={onFieldChange}
+            onStoreMenuSelect={onStoreMenuSelect}
           />
-        )
-      )}
+        </div>
+      ))}
     </div>
   );
 }

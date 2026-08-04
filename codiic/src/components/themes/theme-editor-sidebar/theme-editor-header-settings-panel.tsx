@@ -222,6 +222,48 @@ function ColorSchemeRow({
   );
 }
 
+function ColorPickerRow({
+  field,
+  values,
+  onFieldChange,
+}: {
+  field: EditorFieldDef;
+  values: Record<string, string | boolean>;
+  onFieldChange: PanelProps['onFieldChange'];
+}) {
+  const id = fieldInputId(field.path);
+  const raw = fieldValueAsString(values, field) || '#ffffff';
+  const swatch = /^#[0-9a-fA-F]{6,8}$/.test(raw) ? raw.slice(0, 7) : '#ffffff';
+
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-center gap-3 py-1">
+      <span className="text-[13px] text-gray-800">{field.label}</span>
+      <div className="flex items-center gap-1.5">
+        <label
+          htmlFor={`${id}-picker`}
+          className="h-8 w-8 shrink-0 cursor-pointer overflow-hidden rounded-full border border-[#c9cccf] shadow-sm"
+          style={{ background: swatch }}
+        >
+          <input
+            id={`${id}-picker`}
+            type="color"
+            value={swatch}
+            className="sr-only"
+            onChange={(e) => onFieldChange(field.path, 'color', e.target.value)}
+          />
+        </label>
+        <input
+          id={id}
+          type="text"
+          value={raw}
+          onChange={(e) => onFieldChange(field.path, 'color', e.target.value)}
+          className="w-[108px] rounded-lg border border-[#c9cccf] bg-white px-2 py-1.5 text-[12px] text-gray-900 shadow-sm focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]"
+        />
+      </div>
+    </div>
+  );
+}
+
 function ManageLink({ label, href }: { label: string; href: string }) {
   return (
     <button
@@ -443,12 +485,26 @@ export function HeaderSettingsPanel({ fields, values, onFieldChange }: PanelProp
           );
         }
         if (key === 'Colors') {
-          const scheme = groupFields.find((f) => f.path.endsWith('colorScheme'));
-          if (!scheme) return null;
+          const scheme = groupFields.find(
+            (f) => f.path.endsWith('colorScheme') || f.widget === 'color-scheme'
+          );
+          const background = groupFields.find((f) => f.path.endsWith('backgroundColor'));
+          const text = groupFields.find((f) => f.path.endsWith('textColor'));
+          if (!scheme && !background && !text) return null;
           return (
             <div key={key} className="px-1 py-3">
               <h3 className="mb-2 text-[13px] font-semibold text-gray-900">Colors</h3>
-              <ColorSchemeRow field={scheme} values={values} onFieldChange={onFieldChange} />
+              <div className="space-y-0.5">
+                {scheme ? (
+                  <ColorSchemeRow field={scheme} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {background ? (
+                  <ColorPickerRow field={background} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+                {text ? (
+                  <ColorPickerRow field={text} values={values} onFieldChange={onFieldChange} />
+                ) : null}
+              </div>
             </div>
           );
         }

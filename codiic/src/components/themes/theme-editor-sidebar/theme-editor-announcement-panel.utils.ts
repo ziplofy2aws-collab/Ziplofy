@@ -10,11 +10,14 @@ export const ANNOUNCEMENT_PANEL_GROUP_ORDER = [
 
 const PANEL_GROUPS = new Set<string>(ANNOUNCEMENT_PANEL_GROUP_ORDER);
 
-const HIDDEN_ANNOUNCEMENT_PANEL_KEYS = new Set(['colorScheme', 'customCss', 'enabled']);
+const HIDDEN_ANNOUNCEMENT_PANEL_KEYS = new Set(['customCss', 'enabled']);
 
 const FIELD_SORT_KEYS: Record<string, number> = {
   timeToNext: 0,
+  backgroundColor: 1,
+  textColor: 2,
   sectionWidth: 10,
+  colorScheme: 11,
   dividerThickness: 12,
   paddingTop: 20,
   paddingBottom: 21,
@@ -28,9 +31,12 @@ function fieldSortKey(path: string): number {
 export function isAnnouncementSettingsPanelFields(fields: EditorFieldDef[]): boolean {
   if (!fields.length) return false;
   const keys = new Set(fields.map((f) => f.path.split('.').pop() ?? ''));
+  const isAnnouncementPath = fields.some((f) =>
+    /(?:^|\.)sections\.announcement_bar(?:_\d+)?\.settings\./.test(f.path)
+  );
   return (
-    fields.some((f) => /\.sections\.announcement_bar(?:_\d+)?\.settings\./.test(f.path)) &&
-    keys.has('timeToNext')
+    isAnnouncementPath &&
+    (keys.has('timeToNext') || keys.has('backgroundColor') || keys.has('textColor') || keys.has('enabled'))
   );
 }
 

@@ -65,6 +65,22 @@
           "type": "boolean",
           "label": "Show announcement",
           "sidebar": true
+        },
+        {
+          "path": "sections.announcement_bar.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.announcement_bar.settings.textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
         }
       ],
       "blocks": [
@@ -278,26 +294,38 @@
             {
               "path": "sections.footer.blocks.brand.settings.facebookUrl",
               "type": "text",
-              "label": "Facebook URL",
-              "sidebar": false
+              "label": "Facebook",
+              "widget": "url",
+              "placeholder": "https://facebook.com/your-page",
+              "group": "Social links",
+              "sidebar": true
             },
             {
               "path": "sections.footer.blocks.brand.settings.instagramUrl",
               "type": "text",
-              "label": "Instagram URL",
-              "sidebar": false
+              "label": "Instagram",
+              "widget": "url",
+              "placeholder": "https://instagram.com/your-handle",
+              "group": "Social links",
+              "sidebar": true
             },
             {
               "path": "sections.footer.blocks.brand.settings.xUrl",
               "type": "text",
-              "label": "X URL",
-              "sidebar": false
+              "label": "X",
+              "widget": "url",
+              "placeholder": "https://x.com/your-handle",
+              "group": "Social links",
+              "sidebar": true
             },
             {
               "path": "sections.footer.blocks.brand.settings.youtubeUrl",
               "type": "text",
-              "label": "YouTube URL",
-              "sidebar": false
+              "label": "YouTube",
+              "widget": "url",
+              "placeholder": "https://youtube.com/@your-channel",
+              "group": "Social links",
+              "sidebar": true
             }
           ]
         },

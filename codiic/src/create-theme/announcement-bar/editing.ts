@@ -5,6 +5,7 @@ export const editing: CreateThemeEditing = {
   sectionSettingsOrder: [
     { key: 'timeToNext', label: 'Time to next announcement', type: 'number' },
     { key: 'sectionWidth', label: 'Section width', type: 'select' },
+    { key: 'colorScheme', label: 'Color scheme' },
     { key: 'backgroundColor', label: 'Background color', type: 'text' },
     { key: 'dividerThickness', label: 'Divider thickness', type: 'number' },
     { key: 'dividerColor', label: 'Divider color', type: 'text' },

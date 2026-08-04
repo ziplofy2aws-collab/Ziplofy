@@ -4912,6 +4912,7 @@ function DividerStylingSettingsGroup({
 
 const ANNOUNCEMENT_APPEARANCE_FIELD_ORDER = [
   'sectionWidth',
+  'colorScheme',
   'backgroundColor',
   'dividerThickness',
   'dividerColor',

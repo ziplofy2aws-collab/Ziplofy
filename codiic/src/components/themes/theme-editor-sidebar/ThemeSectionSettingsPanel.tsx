@@ -2041,7 +2041,13 @@ function DividerStylingSettingsGroup({
   );
 }
 
-const ANNOUNCEMENT_APPEARANCE_FIELD_ORDER = ['sectionWidth', 'colorScheme', 'dividerThickness'] as const;
+const ANNOUNCEMENT_APPEARANCE_FIELD_ORDER = [
+  'sectionWidth',
+  'colorScheme',
+  'backgroundColor',
+  'textColor',
+  'dividerThickness',
+] as const;
 
 function AnnouncementAppearanceSettingsGroup({
   fields,
@@ -2068,6 +2074,16 @@ function AnnouncementAppearanceSettingsGroup({
         if (field.widget === 'color-scheme' || key === 'colorScheme') {
           return (
             <ColorSchemeFieldRow
+              key={field.path}
+              field={field}
+              values={values}
+              onFieldChange={onFieldChange}
+            />
+          );
+        }
+        if (field.widget === 'color' || key === 'backgroundColor' || key === 'textColor') {
+          return (
+            <ColorPickerFieldRow
               key={field.path}
               field={field}
               values={values}
@@ -2119,14 +2135,27 @@ function AnnouncementBarGroupedSettingsPanel({
         if (label === 'General') {
           return (
             <div key={label} className="space-y-1 px-1 py-3">
-              {groupFields.map((field) => (
-                <SliderFieldRow
-                  key={field.path}
-                  field={field}
-                  values={values}
-                  onFieldChange={onFieldChange}
-                />
-              ))}
+              {groupFields.map((field) => {
+                const key = field.path.split('.').pop() ?? '';
+                if (field.widget === 'color' || key === 'backgroundColor' || key === 'textColor') {
+                  return (
+                    <ColorPickerFieldRow
+                      key={field.path}
+                      field={field}
+                      values={values}
+                      onFieldChange={onFieldChange}
+                    />
+                  );
+                }
+                return (
+                  <SliderFieldRow
+                    key={field.path}
+                    field={field}
+                    values={values}
+                    onFieldChange={onFieldChange}
+                  />
+                );
+              })}
             </div>
           );
         }

@@ -11,6 +11,8 @@ const HEADER_PANEL_GROUPS = new Set([
   'Appearance',
   'Utilities',
   'Colors',
+  /** Watch pack header container colors use this group. */
+  'General',
   'Page backgrounds',
 ]);
 
@@ -48,6 +50,8 @@ const FIELD_SORT: Record<string, number> = {
   borderThickness: 43,
   menuStyle: 50,
   colorScheme: 60,
+  backgroundColor: 61,
+  textColor: 62,
   homeTransparentBackground: 70,
   productTransparentBackground: 71,
   collectionTransparentBackground: 72,
@@ -120,6 +124,11 @@ export const HEADER_ELEMENT_GROUP_ORDER = [
 
 export function headerPanelGroupKey(field: EditorFieldDef): string {
   if (field.group === 'Appearance') return '__appearance__';
+  // Watch container colors (Background / Text) live under General — show in Colors.
+  if (field.group === 'General') {
+    const key = field.path.split('.').pop() ?? '';
+    if (key === 'backgroundColor' || key === 'textColor') return 'Colors';
+  }
   if (field.group === 'Page backgrounds') {
     const key = field.path.split('.').pop() ?? '';
     if (key === 'homeTransparentBackground') return '__page_home__';

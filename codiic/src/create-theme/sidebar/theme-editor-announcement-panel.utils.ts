@@ -12,14 +12,15 @@ export const ANNOUNCEMENT_PANEL_GROUP_ORDER = [
 
 const PANEL_GROUPS = new Set<string>(ANNOUNCEMENT_PANEL_GROUP_ORDER);
 
-const HIDDEN_ANNOUNCEMENT_PANEL_KEYS = new Set(['colorScheme', 'customCss', 'enabled']);
+const HIDDEN_ANNOUNCEMENT_PANEL_KEYS = new Set(['customCss', 'enabled']);
 
 const FIELD_SORT_KEYS: Record<string, number> = {
   timeToNext: 0,
   sectionWidth: 10,
-  backgroundColor: 11,
-  dividerThickness: 12,
-  dividerColor: 13,
+  colorScheme: 11,
+  backgroundColor: 12,
+  dividerThickness: 13,
+  dividerColor: 14,
   paddingTop: 20,
   paddingBottom: 21,
 };
@@ -65,6 +66,7 @@ function inferredAnnouncementGroup(field: EditorFieldDef): string | undefined {
   if (key === 'timeToNext') return 'General';
   if (
     key === 'sectionWidth' ||
+    key === 'colorScheme' ||
     key === 'backgroundColor' ||
     key === 'dividerThickness' ||
     key === 'dividerColor'
