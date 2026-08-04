@@ -26,6 +26,10 @@ import { useCollections } from '../../../contexts/collection.context';
 import { useStore } from '../../../contexts/store.context';
 import type { Collection } from '../../../contexts/collection.context';
 import { CollectionsPickerFieldRow } from '../../../create-theme/sidebar/CollectionsPickerFieldRow';
+import {
+  ProductsPickerFieldRow,
+  serializeProductsPicker,
+} from '../../../create-theme/sidebar/ProductsPickerFieldRow';
 import { ThemeEditorCreateCollectionSheet } from '../../../create-theme/sidebar/ThemeEditorCreateCollectionSheet';
 import {
   serializeCollectionLinksPicker,
@@ -6305,6 +6309,14 @@ function applyCollectionsPickerToValues(
   );
 }
 
+function applyProductsPickerToValues(
+  onFieldChange: (path: string, type: ThemeEditorFieldType, value: string | boolean) => void,
+  settingsPath: string,
+  productIds: string[]
+) {
+  onFieldChange(settingsPath, 'text', serializeProductsPicker(productIds.filter(Boolean)));
+}
+
 function CollectionSelectFieldRow({
   field,
   values,
@@ -8056,6 +8068,16 @@ function SettingsFieldRow({
           }
         />
       );
+    case 'products':
+      return (
+        <ProductsPickerFieldRow
+          field={field as any}
+          values={values}
+          onProductsApply={(settingsPath, productIds) =>
+            applyProductsPickerToValues(onFieldChange, settingsPath, productIds)
+          }
+        />
+      );
     case 'collection':
       return <CollectionSelectFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     case 'product':
@@ -8074,6 +8096,17 @@ function SettingsFieldRow({
             values={values}
             onCollectionsApply={(settingsPath, collections) =>
               applyCollectionsPickerToValues(onFieldChange, settingsPath, collections)
+            }
+          />
+        );
+      }
+      if (field.path.endsWith('.productsPicker') || field.widget === 'products') {
+        return (
+          <ProductsPickerFieldRow
+            field={field as any}
+            values={values}
+            onProductsApply={(settingsPath, productIds) =>
+              applyProductsPickerToValues(onFieldChange, settingsPath, productIds)
             }
           />
         );
@@ -8119,7 +8152,12 @@ function GroupedSettingsFields({
   const hasProductPicker = useMemo(
     () =>
       visibleFields.some(
-        (f) => f.widget === 'product' || /ProductId$/i.test(f.path) || f.path.endsWith('.productId')
+        (f) =>
+          f.widget === 'product' ||
+          f.widget === 'products' ||
+          /ProductId$/i.test(f.path) ||
+          f.path.endsWith('.productId') ||
+          f.path.endsWith('.productsPicker')
       ),
     [visibleFields]
   );

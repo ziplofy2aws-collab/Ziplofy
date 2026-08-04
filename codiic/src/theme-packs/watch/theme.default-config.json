@@ -518,10 +518,7 @@
             "eyebrow": "New Collection",
             "title": "Timeless Elegance, Crafted for You",
             "lead": "Discover our most loved timepieces, where precision meets sophistication.",
-            "card1ProductId": "",
-            "card2ProductId": "",
-            "card3ProductId": "",
-            "card4ProductId": ""
+            "productsPicker": ""
           }
         }
       },

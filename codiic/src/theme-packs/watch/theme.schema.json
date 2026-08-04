@@ -1021,34 +1021,10 @@
               "sidebar": true
             },
             {
-              "path": "templates.index.sections.watch_collection.settings.card1ProductId",
+              "path": "templates.index.sections.watch_collection.settings.productsPicker",
               "type": "text",
-              "label": "Card 1 \u2014 Select product",
-              "widget": "product",
-              "group": "Product",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.watch_collection.settings.card2ProductId",
-              "type": "text",
-              "label": "Card 2 \u2014 Select product",
-              "widget": "product",
-              "group": "Product",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.watch_collection.settings.card3ProductId",
-              "type": "text",
-              "label": "Card 3 \u2014 Select product",
-              "widget": "product",
-              "group": "Product",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.watch_collection.settings.card4ProductId",
-              "type": "text",
-              "label": "Card 4 \u2014 Select product",
-              "widget": "product",
+              "label": "Products",
+              "widget": "products",
               "group": "Product",
               "sidebar": true
             }

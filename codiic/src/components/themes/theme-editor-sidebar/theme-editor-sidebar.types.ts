@@ -37,6 +37,7 @@ export type EditorFieldWidget =
   | 'color'
   | 'styled-text'
   | 'product'
+  | 'products'
   | 'collection'
   | 'collections';
 

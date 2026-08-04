@@ -47,7 +47,7 @@ export function collectSidebarProductFields(node: SidebarNode): EditorFieldDef[]
   const out: EditorFieldDef[] = [];
   const visit = (fields?: EditorFieldDef[]) => {
     for (const field of fields || []) {
-      if (field.widget === 'product' || /ProductId$/i.test(field.path) || field.path.endsWith('.productId')) {
+      if (field.widget === 'product' || field.widget === 'products' || /ProductId$/i.test(field.path) || field.path.endsWith('.productId') || field.path.endsWith('.productsPicker')) {
         out.push(field);
       }
     }
