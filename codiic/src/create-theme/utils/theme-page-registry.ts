@@ -405,7 +405,9 @@ export function isAuthChromeHiddenPreviewPage(page: string): boolean {
 
 /** Pages that must use create-theme composer preview (not remote theme.js). */
 export function usesCreateThemeComposerPreview(page: string): boolean {
-  return isPasswordPreviewPage(page) || isPageTemplatePreviewPage(page);
+  // Password has no remote theme page. Custom Online Store pages use
+  // ThemePreviewRuntime (`/pages/:urlHandle`) when a catalog theme.js is loaded.
+  return isPasswordPreviewPage(page);
 }
 
 export function previewPageToTemplateId(page: string): string {

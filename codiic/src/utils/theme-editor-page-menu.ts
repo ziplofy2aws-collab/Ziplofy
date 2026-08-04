@@ -36,6 +36,7 @@ const DEFAULT_LABELS: Record<string, string> = {
   all_blogs: 'All blogs',
   blogs: 'Blog',
   blog_posts: 'Blog post',
+  pages: 'Pages',
   '404': '404 page',
   cart: 'Cart',
   login: 'Login',
@@ -59,6 +60,7 @@ const PAGE_ORDER: string[] = [
   'all_blogs',
   'blogs',
   'blog_posts',
+  'pages',
   'cart',
   'login',
   'signup',
@@ -117,8 +119,17 @@ export function buildThemeEditorPageMenu(
 
   const pageIds = sortPageIds([...new Set(rawIds.length ? rawIds : ['index'])]);
 
+  // Always offer Pages so merchants can preview Online Store custom pages.
+  if (!pageIds.includes('pages')) {
+    const insertAt = pageIds.findIndex((id) => id === 'cart');
+    if (insertAt >= 0) pageIds.splice(insertAt, 0, 'pages');
+    else pageIds.push('pages');
+  }
+
   const labelFor = (id: string) =>
-    schemaTemplates.find((t) => t.id === id)?.label ?? formatLabel(id);
+    id === 'pages'
+      ? 'Pages'
+      : (schemaTemplates.find((t) => t.id === id)?.label ?? formatLabel(id));
 
   return pageIds.map((id) => ({
     menuId: `page:${id}`,

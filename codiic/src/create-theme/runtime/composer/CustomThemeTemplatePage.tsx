@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useThemeConfig } from '@render-store/sdk';
 import { isPasswordTemplateId } from '../../utils/theme-page-registry';
 import { templateSectionOrder } from '../shared/structureOrder';
@@ -8,15 +9,22 @@ import { SectionRuntimeNode } from './SectionRuntimeNode';
 type Props = {
   templateId: string;
   fallbackSectionIds?: string[];
+  /** Rendered inside the page shell before template sections (e.g. Online Store page body). */
+  leadIn?: ReactNode;
 };
 
-export function CustomThemeTemplatePage({ templateId, fallbackSectionIds = [] }: Props) {
+export function CustomThemeTemplatePage({
+  templateId,
+  fallbackSectionIds = [],
+  leadIn,
+}: Props) {
   const config = useThemeConfig();
   const order = templateSectionOrder(config, templateId, fallbackSectionIds);
   const hideChrome = isPasswordTemplateId(templateId);
 
   return (
     <CustomThemePageShell hideChrome={hideChrome}>
+      {leadIn}
       {order.map((sectionId) =>
         isTemplateSectionEnabled(config, templateId, sectionId) ? (
           <SectionRuntimeNode

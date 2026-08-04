@@ -5,6 +5,8 @@ import { CheckoutPage } from '@/pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from '@/pages/checkout/CheckoutThankYouPage';
 import { CheckoutPaymentConfirmationPage } from '@/pages/checkout/CheckoutPaymentConfirmationPage';
 import { CheckoutOrderStatusPage } from '@/pages/checkout-profile/CheckoutOrderStatusPage';
+import { StorefrontPageByUrlHandleLoader } from '@/components/StorefrontPageByUrlHandleLoader';
+import { StorefrontPagePage } from '@/pages/StorefrontPagePage';
 import type { ThemeContract } from '@/themes/contract';
 import { loadRemoteTheme } from '@/themes/loadRemoteTheme';
 import { rewriteRemoteThemeImports } from '@/themes/rewriteRemoteThemeImports';
@@ -156,6 +158,27 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
   const AllBlogs = contract.AllBlogsPage;
   const Blog = contract.BlogPage;
   const BlogPost = contract.BlogPostPage;
+  const PagePage = contract.PagePage;
+  const Header = contract.Header;
+  const Footer = contract.Footer;
+
+  // ThemePreviewRuntime owns the contract (no RemoteThemeProvider). Do not use
+  // StorefrontBlogContentShell — it calls useLoadedThemeContract and crashes here.
+  const customPageElement = PagePage ? (
+    <>
+      <StorefrontPageByUrlHandleLoader />
+      <PagePage />
+    </>
+  ) : (
+    <>
+      <Header />
+      <main>
+        <StorefrontPageByUrlHandleLoader />
+        <StorefrontPagePage />
+      </main>
+      <Footer />
+    </>
+  );
 
   return (
     <MemoryRouter key={routeKey} initialEntries={[initialEntry]}>
@@ -174,6 +197,7 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/signup" element={<Signup />} />
         <Route path="/auth/forgot" element={<Forgot />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/my-orders" element={<Orders />} />
         <Route
@@ -194,6 +218,8 @@ export function ThemePreviewRuntime({ jsUrl, cssUrl, page, previewRoute, pageRev
           path="/blogs/:blogHandle/:articleHandle"
           element={BlogPost ? <BlogPost /> : <Home />}
         />
+        <Route path="/pages/preview" element={customPageElement} />
+        <Route path="/pages/:urlHandle" element={customPageElement} />
         <Route
           path="/search"
           element={

@@ -13,8 +13,8 @@ type PageTemplateRouteProps = {
 };
 
 /**
- * Custom page route: load Online Store page content by url handle, then render
- * assigned theme template sections (`page_template_assignments` → `templates.pages`).
+ * Custom page route: load Online Store page content by url handle inside one page shell,
+ * then optional theme `templates.pages` sections (no second header/footer stack).
  */
 export function PageTemplateRoute({
   activeTemplateId,
@@ -36,10 +36,10 @@ export function PageTemplateRoute({
   return (
     <>
       <StorefrontPageByUrlHandleLoader />
-      <StorefrontPagePage />
       <CustomThemeTemplatePage
         templateId={assignedTemplateId}
         fallbackSectionIds={fallbackSectionIds}
+        leadIn={<StorefrontPagePage />}
       />
     </>
   );

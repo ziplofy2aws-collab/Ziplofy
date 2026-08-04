@@ -59,6 +59,7 @@ import { ProductTemplatePreviewCard } from '../../create-theme/sidebar/ProductTe
 import { CollectionTemplatePreviewCard } from '../../create-theme/sidebar/CollectionTemplatePreviewCard';
 import { BlogTemplatePreviewCard } from '../../create-theme/sidebar/BlogTemplatePreviewCard';
 import { BlogPostTemplatePreviewCard } from '../../create-theme/sidebar/BlogPostTemplatePreviewCard';
+import { PageTemplatePreviewCard } from '../../create-theme/sidebar/PageTemplatePreviewCard';
 import { resolveProductTemplatePreviewRoute } from '../../create-theme/utils/product-page-preview.util';
 import { resolveCollectionTemplatePreviewRoute } from '../../create-theme/utils/collection-page-preview.util';
 import {
@@ -66,12 +67,15 @@ import {
   resolveBlogsTemplatePreviewRoute,
   type BlogPostPreviewSelection,
 } from '../../create-theme/utils/blog-page-preview.util';
+import { resolvePageTemplatePreviewRoute } from '../../create-theme/utils/page-page-preview.util';
 import { isProductTemplatePreviewPage } from '../../create-theme/utils/product-templates.util';
 import { isCollectionTemplatePreviewPage } from '../../create-theme/utils/collection-templates.util';
 import {
   isBlogPostsTemplatePreviewPage,
   isBlogsTemplatePreviewPage,
 } from '../../create-theme/utils/blog-templates.util';
+import { isPageTemplatePreviewPage } from '../../create-theme/utils/page-templates.util';
+import { withPagesPageSchema } from '../../utils/pages-page-schema.util';
 import type { BlockCatalogItem } from '../../components/themes/theme-editor-sidebar/add-block-catalog';
 import {
   getAddBlockCatalogItems,
@@ -213,6 +217,7 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
   const [previewBlogHandle, setPreviewBlogHandle] = useState<string | null>(null);
   const [previewBlogPostSelection, setPreviewBlogPostSelection] =
     useState<BlogPostPreviewSelection | null>(null);
+  const [previewStorePageHandle, setPreviewStorePageHandle] = useState<string | null>(null);
   const [canPersist, setCanPersist] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<ThemeEditorSidebarTab>('sections');
   const [device, setDevice] = useState<'desktop' | 'mobile'>('desktop');
@@ -305,9 +310,11 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       // Typography (+ palette) fields must be on the schema or applyValuesToThemeConfig
       // silently drops fontBodyKey / fontFamily* and production font picks never stick.
       const schema = data.editorSchema
-        ? withThemeTypographySchema(
-            withThemeColorPaletteSchema(
-              withThemeLogoFaviconSchema(data.editorSchema as EditorSchemaDoc)
+        ? withPagesPageSchema(
+            withThemeTypographySchema(
+              withThemeColorPaletteSchema(
+                withThemeLogoFaviconSchema(data.editorSchema as EditorSchemaDoc)
+              )
             )
           )
         : null;
@@ -485,8 +492,16 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     () => resolveBlogPostsTemplatePreviewRoute(previewPage, previewBlogPostSelection),
     [previewPage, previewBlogPostSelection]
   );
+  const pagesPreviewRoute = useMemo(
+    () => resolvePageTemplatePreviewRoute(previewPage, previewStorePageHandle),
+    [previewPage, previewStorePageHandle]
+  );
   const entityPreviewRoute =
-    productPreviewRoute ?? collectionPreviewRoute ?? blogsPreviewRoute ?? blogPostsPreviewRoute;
+    productPreviewRoute ??
+    collectionPreviewRoute ??
+    blogsPreviewRoute ??
+    blogPostsPreviewRoute ??
+    pagesPreviewRoute;
 
   const previewStoreId = useMemo(
     () =>
@@ -1181,6 +1196,12 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
               <BlogPostTemplatePreviewCard
                 previewSelection={previewBlogPostSelection}
                 onPreviewSelectionChange={setPreviewBlogPostSelection}
+                storefrontOrigin={storeSubdomain?.url ?? null}
+              />
+            ) : isPageTemplatePreviewPage(previewPage) ? (
+              <PageTemplatePreviewCard
+                previewPageHandle={previewStorePageHandle}
+                onPreviewPageHandleChange={setPreviewStorePageHandle}
                 storefrontOrigin={storeSubdomain?.url ?? null}
               />
             ) : null
