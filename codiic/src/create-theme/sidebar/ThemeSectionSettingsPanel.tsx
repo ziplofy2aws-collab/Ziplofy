@@ -28,6 +28,7 @@ import toast from 'react-hot-toast';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { ThemeEditorRichTextField } from '../../components/theme-editor/ThemeEditorRichTextField';
 import { ThemeEditorLinkField } from '../../components/theme-editor/ThemeEditorLinkField';
+import SocialLinksBlockSettingsPanel from './SocialLinksBlockSettingsPanel';
 import { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
 import { ThemeEditorImageEditorSheet } from '../../components/themes/theme-editor-sidebar/ThemeEditorImageEditorSheet';
 import { ThemeEditorCreateCollectionSheet } from './ThemeEditorCreateCollectionSheet';
@@ -20028,37 +20029,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             })()}
           </div>
         ) : isSocialLinksBlockPanel ? (
-          <div className="divide-y divide-[#e1e1e1]">
-            <div className="px-1 py-2">
-              <div className="space-y-1">
-                {[
-                  'facebookUrl',
-                  'instagramUrl',
-                  'youtubeUrl',
-                  'tiktokUrl',
-                  'twitterUrl',
-                  'threadsUrl',
-                  'linkedinUrl',
-                  'blueskyUrl',
-                  'snapchatUrl',
-                  'pinterestUrl',
-                  'tumblrUrl',
-                  'vimeoUrl',
-                  'customUrl',
-                ]
-                  .map((key) => fields.find((f) => f.path.endsWith(key)))
-                  .filter((f): f is EditorFieldDef => Boolean(f))
-                  .map((field) => (
-                    <LinkFieldRow
-                      key={field.path}
-                      field={field}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  ))}
-              </div>
-            </div>
-          </div>
+          <SocialLinksBlockSettingsPanel
+            nodeId={node.id}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : isEmailSignupHeadingBlockPanel ? (
           <EmailSignupHeadingBlockSettingsPanel
             fields={fields}

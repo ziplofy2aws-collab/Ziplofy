@@ -2530,7 +2530,8 @@ export function applyValuesToThemeConfig(
         key === 'defaultUrl' ||
         key === 'faviconUrl' ||
         key === 'inverseUrl' ||
-        key === 'defaultLogoUrl'
+        key === 'defaultLogoUrl' ||
+        key === 'platformOrder'
       ) {
         type = 'text';
       } else if (key === 'marqueeTransparentBg' || key === 'marqueeSpacerCustomMobile') {

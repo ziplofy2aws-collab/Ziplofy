@@ -21,7 +21,7 @@ import {
   readCopyrightStyle,
   readFooterBlockTypography,
   scopedFooterUtilitiesCss,
-  SOCIAL_PLATFORMS,
+  orderedSocialPlatforms,
   socialUrl,
 } from './footerUtilitiesStyles';
 
@@ -119,7 +119,7 @@ export function FooterUtilities({
         label="Social media links"
         style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}
       >
-        {SOCIAL_PLATFORMS.map((platform) => {
+        {orderedSocialPlatforms(config, socialBase).map((platform) => {
           const url = socialUrl(
             config,
             socialBase,

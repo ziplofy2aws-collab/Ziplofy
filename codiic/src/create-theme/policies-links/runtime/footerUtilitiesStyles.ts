@@ -139,3 +139,58 @@ export function socialUrl(
   if (legacyKey) return cfgString(config, `${settingsBase}.${legacyKey}`, '').trim();
   return '';
 }
+
+function parsePlatformOrder(raw: string): string[] {
+  if (!raw.trim()) return [];
+  const known = new Set(SOCIAL_PLATFORMS.map((p) => p.id));
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const part of raw.split(',')) {
+    const id = part.trim();
+    if (!id || !known.has(id) || seen.has(id)) continue;
+    seen.add(id);
+    out.push(id);
+  }
+  return out;
+}
+
+/** Ordered platforms for footer social block (respects platformOrder; falls back to filled URLs). */
+export function orderedSocialPlatforms(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): SocialPlatform[] {
+  const explicit = parsePlatformOrder(cfgString(config, `${settingsBase}.platformOrder`, ''));
+  if (explicit.length) {
+    return explicit
+      .map((id) => SOCIAL_PLATFORMS.find((p) => p.id === id))
+      .filter((p): p is SocialPlatform => Boolean(p));
+  }
+
+  return SOCIAL_PLATFORMS.filter((platform) =>
+    Boolean(
+      socialUrl(
+        config,
+        settingsBase,
+        platform.settingKey,
+        platform.id === 'instagram' || platform.id === 'facebook' ? platform.id : undefined
+      )
+    )
+  );
+}
+
+export function activeSocialLinks(
+  config: Record<string, unknown> | null,
+  settingsBase: string
+): Array<SocialPlatform & { url: string }> {
+  return orderedSocialPlatforms(config, settingsBase)
+    .map((platform) => ({
+      ...platform,
+      url: socialUrl(
+        config,
+        settingsBase,
+        platform.settingKey,
+        platform.id === 'instagram' || platform.id === 'facebook' ? platform.id : undefined
+      ),
+    }))
+    .filter((platform) => platform.url.length > 0);
+}

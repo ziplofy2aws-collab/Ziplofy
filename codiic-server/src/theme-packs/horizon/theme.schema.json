@@ -1486,6 +1486,12 @@
           "label": "Social media links",
           "settingsFields": [
             {
+              "path": "sections.footer_utilities.blocks.social.settings.platformOrder",
+              "type": "text",
+              "label": "Platform order",
+              "sidebar": false
+            },
+            {
               "path": "sections.footer_utilities.blocks.social.settings.facebookUrl",
               "type": "text",
               "label": "Facebook",

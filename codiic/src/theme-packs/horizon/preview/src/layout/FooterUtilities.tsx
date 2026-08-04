@@ -17,7 +17,7 @@ import {
   footerUtilitiesShowPaymentIcons,
   scopedFooterUtilitiesCss,
 } from '../lib/footerUtilitiesStyles';
-import { SOCIAL_PLATFORMS, socialUrl } from '../lib/socialLinks';
+import { orderedSocialPlatforms, socialUrl } from '../lib/socialLinks';
 import { layoutBlockOrder } from '../lib/structureOrder';
 import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
 import { layout, useThemeColors } from '../tokens';
@@ -122,7 +122,7 @@ export function FooterUtilities({ sectionId = 'footer_utilities' }: Props) {
         label="Social media links"
         style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}
       >
-        {SOCIAL_PLATFORMS.map((platform) => {
+        {orderedSocialPlatforms(config, socialBase).map((platform) => {
           const url = socialUrl(
             config,
             socialBase,

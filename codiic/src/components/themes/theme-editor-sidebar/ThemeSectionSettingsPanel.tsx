@@ -19,6 +19,7 @@ import {
   type ThemeEditorFieldType,
 } from './theme-editor-field.utils';
 import { ThemeEditorLinkField } from '../../theme-editor/ThemeEditorLinkField';
+import SocialLinksBlockSettingsPanel from '../../../create-theme/sidebar/SocialLinksBlockSettingsPanel';
 import { ThemeEditorImagePickerModal } from './ThemeEditorImagePickerModal';
 import { ThemeEditorImageEditorSheet } from './ThemeEditorImageEditorSheet';
 import { useCollections } from '../../../contexts/collection.context';
@@ -8670,37 +8671,11 @@ const ThemeSectionSettingsPanelInner: React.FC<ThemeSectionSettingsPanelProps> =
             })()}
           </div>
         ) : isSocialLinksBlockPanel ? (
-          <div className="divide-y divide-[#e1e1e1]">
-            <div className="px-1 py-2">
-              <div className="space-y-1">
-                {[
-                  'facebookUrl',
-                  'instagramUrl',
-                  'youtubeUrl',
-                  'tiktokUrl',
-                  'twitterUrl',
-                  'threadsUrl',
-                  'linkedinUrl',
-                  'blueskyUrl',
-                  'snapchatUrl',
-                  'pinterestUrl',
-                  'tumblrUrl',
-                  'vimeoUrl',
-                  'customUrl',
-                ]
-                  .map((key) => fields.find((f) => f.path.endsWith(key)))
-                  .filter((f): f is EditorFieldDef => Boolean(f))
-                  .map((field) => (
-                    <LinkFieldRow
-                      key={field.path}
-                      field={field}
-                      values={values}
-                      onFieldChange={onFieldChange}
-                    />
-                  ))}
-              </div>
-            </div>
-          </div>
+          <SocialLinksBlockSettingsPanel
+            nodeId={node.id}
+            values={values}
+            onFieldChange={onFieldChange}
+          />
         ) : isEmailSignupBlockPanel ? (
           <EmailSignupBlockSettingsPanel
             fields={fields}

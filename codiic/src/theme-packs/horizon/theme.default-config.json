@@ -240,6 +240,7 @@
         "social": {
           "type": "social",
           "settings": {
+            "platformOrder": "",
             "facebookUrl": "",
             "instagramUrl": "",
             "youtubeUrl": "",
