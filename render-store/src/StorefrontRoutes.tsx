@@ -10,6 +10,7 @@ import { CheckoutPaymentConfirmationPage } from './pages/checkout/CheckoutPaymen
 import { StorefrontBlogContentShell } from './components/StorefrontBlogContentShell.tsx';
 import { StorefrontBlogByUrlHandleLoader } from './components/StorefrontBlogByUrlHandleLoader.tsx';
 import { StorefrontBlogPostByUrlHandleLoader } from './components/StorefrontBlogPostByUrlHandleLoader.tsx';
+import { StorefrontPageByUrlHandleLoader } from './components/StorefrontPageByUrlHandleLoader.tsx';
 import { StorefrontCollectionByUrlHandleLoader } from './components/StorefrontCollectionByUrlHandleLoader.tsx';
 import { StorefrontCollectionsListLoader } from './components/StorefrontCollectionsListLoader.tsx';
 import {
@@ -19,6 +20,7 @@ import {
 import { StorefrontProductSeoLoader } from './components/StorefrontProductSeoLoader.tsx';
 import { StorefrontBlogPage } from './pages/StorefrontBlogPage.tsx';
 import { StorefrontBlogPostPage } from './pages/StorefrontBlogPostPage.tsx';
+import { StorefrontPagePage } from './pages/StorefrontPagePage.tsx';
 import { StorefrontSeoManager } from './seo/StorefrontSeoManager.tsx';
 import { StorefrontNotFoundPage } from './components/StorefrontNotFoundPage';
 import { useStorefront } from './contexts/store.context';
@@ -211,6 +213,24 @@ const StorefrontBlogPostRoute = () => {
   );
 };
 
+const StorefrontCustomPageRoute = () => {
+  const theme = useLoadedThemeContract();
+  if (theme.PagePage) {
+    const Page = theme.PagePage;
+    return (
+      <>
+        <StorefrontPageByUrlHandleLoader />
+        <Page />
+      </>
+    );
+  }
+  return (
+    <StorefrontBlogContentShell>
+      <StorefrontPageByUrlHandleLoader />
+      <StorefrontPagePage />
+    </StorefrontBlogContentShell>
+  );
+};
 
 const StorefrontCollectionDetailRoute = () => {
   const theme = useLoadedThemeContract();
@@ -271,6 +291,7 @@ export const StorefrontRoutes = () => (
       <Route path="/blogs/all" element={<StorefrontAllBlogsRoute />} />
       <Route path="/blogs/:blogHandle/:articleHandle" element={<StorefrontBlogPostRoute />} />
       <Route path="/blogs/:blogHandle" element={<StorefrontBlogListRoute />} />
+      <Route path="/pages/:urlHandle" element={<StorefrontCustomPageRoute />} />
       <Route path="/404" element={<StorefrontCatchAllRoute />} />
       <Route path="*" element={<StorefrontCatchAllRoute />} />
     </Routes>

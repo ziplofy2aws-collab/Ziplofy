@@ -140,6 +140,7 @@ import { storeFrontCollectionRouter } from './routes/storefront/storefront-colle
 import { storeFrontProductsRouter } from './routes/storefront/storefront-products.route';
 import { storeFrontBlogRouter } from './routes/storefront/storefront-blog.route';
 import { storeFrontBlogCommentRouter } from './routes/storefront/storefront-blog-comment.route';
+import { storeFrontPageRouter } from './routes/storefront/storefront-page.route';
 import { storeFrontContactFormSubmissionRouter } from './routes/storefront/storefront-contact-form-submission.route';
 import { storeFrontNewsletterSubscriptionRouter } from './routes/storefront/storefront-newsletter-subscription.route';
 import { storeFrontPoliciesRouter } from './routes/storefront/storefront-policies.route';
@@ -238,6 +239,7 @@ app.use("/api/storefront/collections", storeFrontCollectionRouter);
 app.use("/api/storefront/products", storeFrontProductsRouter);
 app.use("/api/storefront/blogs", storeFrontBlogRouter);
 app.use("/api/storefront/blog-comments", storeFrontBlogCommentRouter);
+app.use("/api/storefront/pages", storeFrontPageRouter);
 app.use("/api/storefront/contact-form-submissions", storeFrontContactFormSubmissionRouter);
 app.use("/api/storefront/newsletter-subscriptions", storeFrontNewsletterSubscriptionRouter);
 app.use("/api/storefront/policies", storeFrontPoliciesRouter);

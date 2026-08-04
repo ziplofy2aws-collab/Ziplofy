@@ -53,3 +53,11 @@ export type StorefrontSeoBlogPost = {
   urlHandle?: string;
   featuredImageUrl?: string;
 };
+
+export type StorefrontSeoPage = {
+  title: string;
+  content?: string;
+  pageTitle?: string;
+  metaDescription?: string;
+  urlHandle?: string;
+};

@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { CustomThemeTemplatePage } from '@codiic/create-theme/runtime';
 import { resolvePageTemplateIdFromThemeConfig } from '@codiic/create-theme/utils/page-templates.util';
+import { StorefrontPageByUrlHandleLoader } from '@/components/StorefrontPageByUrlHandleLoader';
+import { StorefrontPagePage } from '@/pages/StorefrontPagePage';
 import { useStorefront } from '@/contexts/store.context';
 
 type PageTemplateRouteProps = {
@@ -11,9 +13,8 @@ type PageTemplateRouteProps = {
 };
 
 /**
- * Custom page route: resolve template from the already-loaded theme JSON
- * (`page_template_assignments[urlHandle]` → `templates.pages` / `templates.pages.*`).
- * No extra storefront API call.
+ * Custom page route: load Online Store page content by url handle, then render
+ * assigned theme template sections (`page_template_assignments` → `templates.pages`).
  */
 export function PageTemplateRoute({
   activeTemplateId,
@@ -33,9 +34,13 @@ export function PageTemplateRoute({
   }, [activeTemplateId, themeConfig, urlHandle]);
 
   return (
-    <CustomThemeTemplatePage
-      templateId={assignedTemplateId}
-      fallbackSectionIds={fallbackSectionIds}
-    />
+    <>
+      <StorefrontPageByUrlHandleLoader />
+      <StorefrontPagePage />
+      <CustomThemeTemplatePage
+        templateId={assignedTemplateId}
+        fallbackSectionIds={fallbackSectionIds}
+      />
+    </>
   );
 }

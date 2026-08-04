@@ -11,6 +11,7 @@ import { StorefrontAccessProvider } from './contexts/store-access.context';
 import { StorefrontAuthProvider } from './contexts/storefront-auth.context';
 import { StorefrontCartProvider } from './contexts/storefront-cart.context';
 import { StorefrontBlogsProvider } from './contexts/storefront-blogs.context';
+import { StorefrontPagesProvider } from './contexts/storefront-pages.context';
 import { StorefrontPoliciesProvider } from './contexts/storefront-policies.context';
 import { StorefrontCheckoutConfigurationProvider } from './contexts/storefront-checkout-configuration.context';
 import { StorefrontPaymentMethodsProvider } from './contexts/storefront-payment-methods.context';
@@ -45,6 +46,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
                 <StorefrontCountryProvider>
                   <StorefrontCollectionsProvider>
                     <StorefrontBlogsProvider>
+                    <StorefrontPagesProvider>
                     <StorefrontPoliciesProvider>
                     <StorefrontCheckoutConfigurationProvider>
                     <StorefrontPaymentMethodsProvider>
@@ -66,6 +68,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
                     </StorefrontPaymentMethodsProvider>
                     </StorefrontCheckoutConfigurationProvider>
                     </StorefrontPoliciesProvider>
+                    </StorefrontPagesProvider>
                     </StorefrontBlogsProvider>
                   </StorefrontCollectionsProvider>
                 </StorefrontCountryProvider>

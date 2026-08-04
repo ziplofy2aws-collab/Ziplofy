@@ -93,6 +93,8 @@ export type {
   StorefrontBlog,
   StorefrontBlogPost,
 } from '@/contexts/storefront-blogs.context';
+export { useStorefrontPages } from '@/contexts/storefront-pages.context';
+export type { StorefrontPage } from '@/contexts/storefront-pages.context';
 export {
   useStorefrontBlogComments,
   type StorefrontBlogComment,

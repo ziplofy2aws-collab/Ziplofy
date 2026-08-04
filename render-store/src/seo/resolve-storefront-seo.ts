@@ -8,6 +8,7 @@ import type {
   StorefrontSeoBlog,
   StorefrontSeoBlogPost,
   StorefrontSeoCollection,
+  StorefrontSeoPage,
   StorefrontSeoPayload,
   StorefrontSeoProduct,
   StorefrontSeoStore,
@@ -21,6 +22,7 @@ type ResolveStorefrontSeoInput = {
   collection?: StorefrontSeoCollection | null;
   blog?: StorefrontSeoBlog | null;
   blogPost?: StorefrontSeoBlogPost | null;
+  page?: StorefrontSeoPage | null;
   currencyCode?: string;
 };
 
@@ -65,7 +67,17 @@ function routeSuffixTitle(pathname: string, storeName: string): StorefrontSeoPay
 }
 
 export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): StorefrontSeoPayload {
-  const { pathname, origin, store, product, collection, blog, blogPost, currencyCode = 'USD' } = input;
+  const {
+    pathname,
+    origin,
+    store,
+    product,
+    collection,
+    blog,
+    blogPost,
+    page,
+    currencyCode = 'USD',
+  } = input;
   const storeName = store.name.trim() || 'Store';
   const canonicalUrl = canonicalFromPath(origin, pathname);
   const storeDescription =
@@ -207,6 +219,33 @@ export function resolveStorefrontSeo(input: ResolveStorefrontSeoInput): Storefro
       title,
       description,
       canonicalUrl: canonicalFromPath(origin, `/blogs/${blogHandle}`),
+      ogType: 'website',
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  const pageMatch = pathname.match(/^\/pages\/([^/]+)$/);
+  if (pageMatch && !page) {
+    return {
+      title: joinTitle(['Page', storeName]),
+      description: storeDescription,
+      canonicalUrl,
+      ogType: 'website',
+      jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
+    };
+  }
+
+  if (pageMatch && page) {
+    const pageHandle = page.urlHandle?.trim() || pageMatch[1];
+    const title = joinTitle([page.pageTitle?.trim() || page.title, storeName]);
+    const description =
+      page.metaDescription?.trim() ||
+      truncateSeoText(plainTextFromHtml(page.content ?? '')) ||
+      storeDescription;
+    return {
+      title,
+      description,
+      canonicalUrl: canonicalFromPath(origin, `/pages/${pageHandle}`),
       ogType: 'website',
       jsonLd: buildOrganizationJsonLd(store, canonicalFromPath(origin, '/')),
     };

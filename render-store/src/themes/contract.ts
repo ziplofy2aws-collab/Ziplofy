@@ -36,4 +36,6 @@ export interface ThemeContract {
   BlogPage?: ThemeComponent;
   /** `/blogs/:blogHandle/:articleHandle` - blog post details */
   BlogPostPage?: ThemeComponent;
+  /** `/pages/:urlHandle` - Online Store custom page (title + content) */
+  PagePage?: ThemeComponent;
 }
