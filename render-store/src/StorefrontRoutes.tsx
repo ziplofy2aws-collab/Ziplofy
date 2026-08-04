@@ -1,9 +1,7 @@
 import { Navigate, Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom';
 import { useStorefrontAuth } from './contexts/storefront-auth.context';
 import { CheckoutAuthRequiredRoute } from './components/auth/CheckoutAuthRequiredRoute';
-import { CheckoutOrdersPage } from './pages/checkout-profile/CheckoutOrdersPage';
 import { CheckoutOrderStatusPage } from './pages/checkout-profile/CheckoutOrderStatusPage';
-import { CheckoutProfilePage } from './pages/checkout-profile/CheckoutProfilePage';
 import { CheckoutPage } from './pages/checkout/CheckoutPage';
 import { CheckoutThankYouPage } from './pages/checkout/CheckoutThankYouPage';
 import { CheckoutPaymentConfirmationPage } from './pages/checkout/CheckoutPaymentConfirmationPage';
@@ -57,17 +55,25 @@ const StorefrontForgotRoute = () => {
   return <Page />;
 };
 
-const StorefrontProfileRoute = () => (
-  <CheckoutAuthRequiredRoute>
-    <CheckoutProfilePage />
-  </CheckoutAuthRequiredRoute>
-);
+const StorefrontProfileRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.ProfilePage;
+  return (
+    <CheckoutAuthRequiredRoute>
+      <Page />
+    </CheckoutAuthRequiredRoute>
+  );
+};
 
-const StorefrontOrdersRoute = () => (
-  <CheckoutAuthRequiredRoute>
-    <CheckoutOrdersPage />
-  </CheckoutAuthRequiredRoute>
-);
+const StorefrontOrdersRoute = () => {
+  const theme = useLoadedThemeContract();
+  const Page = theme.OrdersPage;
+  return (
+    <CheckoutAuthRequiredRoute>
+      <Page />
+    </CheckoutAuthRequiredRoute>
+  );
+};
 
 const StorefrontOrderStatusRoute = () => {
   const theme = useLoadedThemeContract();
@@ -280,6 +286,10 @@ export const StorefrontRoutes = () => (
       <Route path="/auth/login" element={<StorefrontAuthRoute />} />
       <Route path="/auth/signup" element={<StorefrontAuthRoute />} />
       <Route path="/auth/forgot" element={<StorefrontForgotRoute />} />
+      {/* Legacy auth paths — redirect to the real /auth/* routes */}
+      <Route path="/login" element={<Navigate to="/auth/login" replace />} />
+      <Route path="/signup" element={<Navigate to="/auth/signup" replace />} />
+      <Route path="/register" element={<Navigate to="/auth/signup" replace />} />
       <Route path="/profile" element={<StorefrontProfileRoute />} />
       <Route path="/my-orders" element={<StorefrontOrdersRoute />} />
       <Route path="/my-orders/:orderId" element={<StorefrontOrderStatusRoute />} />
