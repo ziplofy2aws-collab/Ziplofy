@@ -733,50 +733,10 @@
               "sidebar": true
             },
             {
-              "path": "templates.index.sections.legacy_collection.settings.tile1CollectionHandle",
+              "path": "templates.index.sections.legacy_collection.settings.collectionsPicker",
               "type": "text",
-              "label": "Sports \u2014 Select collection",
-              "widget": "collection",
-              "group": "Collections",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.legacy_collection.settings.tile2CollectionHandle",
-              "type": "text",
-              "label": "Vintage \u2014 Select collection",
-              "widget": "collection",
-              "group": "Collections",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.legacy_collection.settings.tile3CollectionHandle",
-              "type": "text",
-              "label": "Luxury \u2014 Select collection",
-              "widget": "collection",
-              "group": "Collections",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.legacy_collection.settings.tile4CollectionHandle",
-              "type": "text",
-              "label": "Casual \u2014 Select collection",
-              "widget": "collection",
-              "group": "Collections",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.legacy_collection.settings.tile5CollectionHandle",
-              "type": "text",
-              "label": "Minimalist \u2014 Select collection",
-              "widget": "collection",
-              "group": "Collections",
-              "sidebar": true
-            },
-            {
-              "path": "templates.index.sections.legacy_collection.settings.tile6CollectionHandle",
-              "type": "text",
-              "label": "Office Wear \u2014 Select collection",
-              "widget": "collection",
+              "label": "Collections",
+              "widget": "collections",
               "group": "Collections",
               "sidebar": true
             },
