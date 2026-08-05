@@ -13,6 +13,7 @@ import { assignDefaultPackagingToStore } from './assign-default-packaging.util';
 
 type NewUser = Pick<ICodiicUser, '_id' | 'name' | 'email'>;
 
+
 /**
  * Creates the default India market (+ includes and settings) for a newly created store.
  * Merged in from the former `server` service. Each step is defensive so a partial failure

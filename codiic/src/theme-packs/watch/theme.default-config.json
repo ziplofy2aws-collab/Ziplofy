@@ -72,7 +72,7 @@
       "enabled": true,
       "settings": {
         "enabled": true,
-        "message": "Free shipping on orders over \u20b9999 \u2014 Shop the new collection",
+        "message": "Free shipping on orders over ₹999 — Shop the new collection",
         "linkLabel": "Shop now",
         "linkHref": "/products",
         "timeToNext": 5,
@@ -91,7 +91,7 @@
         "announcement": {
           "type": "announcement",
           "settings": {
-            "text": "Just Launched: Dominator & Dominator Skeleton Watches \u2014",
+            "text": "Just Launched: Dominator & Dominator Skeleton Watches —",
             "link": "/collections/all",
             "font": "subheading",
             "fontSize": "12px",
@@ -119,7 +119,7 @@
         "searchRow": "top",
         "searchPlaceholder": "Timegrapher Watches",
         "countryRegionEnabled": false,
-        "countryRegionLabel": "IN \u00b7 USD",
+        "countryRegionLabel": "IN · USD",
         "showFlag": false,
         "languageSelectorEnabled": false,
         "languageLabel": "English",
@@ -480,13 +480,14 @@
           "type": "new-launches",
           "enabled": true,
           "settings": {
-            "eyebrow": "New Launches",
-            "title": "Fresh Drops, Built to Last",
-            "lead": "Be first to wear the newest timepieces — precision engineering, just arrived.",
+            "title": "New Launches",
+            "viewAllLabel": "View all",
+            "viewAllUrl": "/collections/all",
+            "featuredImageUrl": "",
+            "featuredLink": "/collections/all",
             "card1ProductId": "",
             "card2ProductId": "",
-            "card3ProductId": "",
-            "card4ProductId": ""
+            "card3ProductId": ""
           }
         },
         "instagram": {
@@ -520,6 +521,18 @@
             "lead": "Discover our most loved timepieces, where precision meets sophistication.",
             "productsPicker": ""
           }
+        },
+        "banner_showcase": {
+          "type": "banner-showcase",
+          "enabled": true,
+          "settings": {
+            "slide1ImageUrl": "",
+            "slide1MobileImageUrl": "",
+            "slide2ImageUrl": "",
+            "slide2MobileImageUrl": "",
+            "slide3ImageUrl": "",
+            "slide3MobileImageUrl": ""
+          }
         }
       },
       "section_order": [
@@ -527,6 +540,7 @@
         "legacy_collection",
         "icons",
         "signature",
+        "banner_showcase",
         "watch_collection",
         "engineering",
         "new_launches",
@@ -542,18 +556,18 @@
             "taxNote": "MRP (Inclusive of all taxes). Shipping calculated at checkout.",
             "addToCartLabel": "ADD TO CART",
             "buyNowLabel": "BUY NOW",
-            "addingLabel": "ADDING\u2026",
+            "addingLabel": "ADDING…",
             "warrantyText": "1-year manufacturer warranty covering movement defects under normal use.",
-            "shippingText": "Standard delivery in 2\u20135 business days. Express options available at checkout.",
+            "shippingText": "Standard delivery in 2–5 business days. Express options available at checkout.",
             "returnsText": "Easy 14-day returns on unused products in original packaging.",
-            "sizeChartText": "Case sizes typically run 40\u201344 mm. Choose based on wrist comfort and preference.",
+            "sizeChartText": "Case sizes typically run 40–44 mm. Choose based on wrist comfort and preference.",
             "trust1": "EXPRESS SHIPPING",
             "trust2": "10-DAY RETURN POLICY*",
             "trust3": "1-YEAR* WARRANTY",
             "trust4": "100% SECURE CHECKOUT",
             "specsTitle": "Product Specifications",
             "specsCase": "Case details are listed in the product description when provided by the merchant.",
-            "specsStrap": "Strap and clasp details vary by model \u2014 see description for materials and finish.",
+            "specsStrap": "Strap and clasp details vary by model — see description for materials and finish.",
             "specsDial": "Dial markers, hands, and complications are described on the product listing.",
             "specsMovement": "Movement type and accuracy details are included when available from the seller.",
             "specsOther": "Glass, water resistance, and warranty information appear in the listing details.",
@@ -681,7 +695,7 @@
             "subtitle": "Shop curated lines and signature series.",
             "emptyMessage": "No collections yet.",
             "allProductsLabel": "View all products",
-            "loadingLabel": "Loading collections\u2026"
+            "loadingLabel": "Loading collections…"
           }
         }
       },
@@ -713,7 +727,7 @@
             "emptyMessage": "No products in this collection.",
             "notFoundTitle": "Collection not found",
             "notFoundMessage": "This collection could not be found or is unavailable.",
-            "loadingLabel": "Loading collection\u2026",
+            "loadingLabel": "Loading collection…",
             "allCollectionsLabel": "All collections",
             "allProductsLabel": "View all products",
             "shopLabel": "Shop the collection"
@@ -734,7 +748,7 @@
             "title": "All blogs",
             "subtitle": "Stories, craft, and collections from the atelier.",
             "emptyTitle": "No blogs yet.",
-            "loadingLabel": "Loading blogs\u2026"
+            "loadingLabel": "Loading blogs…"
           }
         }
       },
@@ -751,7 +765,7 @@
             "emptyTitle": "No published articles yet.",
             "notFoundTitle": "Blog not found",
             "notFoundMessage": "This blog could not be found or is unavailable.",
-            "loadingLabel": "Loading blog\u2026"
+            "loadingLabel": "Loading blog…"
           }
         }
       },
@@ -765,7 +779,7 @@
           "type": "blog-post-main",
           "enabled": true,
           "settings": {
-            "loadingLabel": "Loading article\u2026",
+            "loadingLabel": "Loading article…",
             "notFoundTitle": "Article not found",
             "backLabel": "Back to blog"
           }
@@ -787,7 +801,7 @@
             "emptyTitle": "Your cart is empty.",
             "continueLabel": "Continue shopping",
             "removeLabel": "Remove",
-            "loadingLabel": "Loading cart\u2026",
+            "loadingLabel": "Loading cart…",
             "subtotalLabel": "Subtotal",
             "checkoutLabel": "Checkout",
             "shippingNote": "Shipping calculated at checkout",
@@ -807,11 +821,11 @@
           "settings": {
             "eyebrow": "Account",
             "title": "Sign in",
-            "subtitle": "Welcome back \u2014 enter your details to continue.",
+            "subtitle": "Welcome back — enter your details to continue.",
             "emailPlaceholder": "Email",
             "passwordPlaceholder": "Password",
             "submitLabel": "Sign in",
-            "loadingLabel": "Please wait\u2026",
+            "loadingLabel": "Please wait…",
             "forgotLabel": "Forgot password?",
             "signupPrompt": "New here?",
             "signupLabel": "Create an account"
@@ -836,7 +850,7 @@
             "emailPlaceholder": "Email",
             "passwordPlaceholder": "Password",
             "submitLabel": "Create account",
-            "loadingLabel": "Please wait\u2026",
+            "loadingLabel": "Please wait…",
             "loginPrompt": "Already have an account?",
             "loginLabel": "Sign in"
           }
@@ -854,10 +868,10 @@
           "settings": {
             "eyebrow": "Account",
             "title": "Reset password",
-            "subtitle": "Enter your email and we\u2019ll send reset instructions.",
+            "subtitle": "Enter your email and we’ll send reset instructions.",
             "emailPlaceholder": "Email",
             "submitLabel": "Send reset link",
-            "loadingLabel": "Sending\u2026",
+            "loadingLabel": "Sending…",
             "successMessage": "If an account exists for that email, reset instructions are on the way.",
             "backLabel": "Back to sign in"
           }
@@ -884,7 +898,7 @@
             "lastNamePlaceholder": "Last name",
             "phonePlaceholder": "Phone number",
             "saveLabel": "Save profile",
-            "savingLabel": "Saving\u2026",
+            "savingLabel": "Saving…",
             "preferencesTitle": "Preferences",
             "preferencesSubtitle": "Language and marketing choices for this store.",
             "languageLabel": "Language",
@@ -908,7 +922,7 @@
             "eyebrow": "Account",
             "title": "Your orders",
             "subtitle": "Track purchases and past deliveries.",
-            "loadingMessage": "Loading orders\u2026",
+            "loadingMessage": "Loading orders…",
             "emptyMessage": "No orders yet. When you place one, it will appear here.",
             "signedOutMessage": "Sign in to view your order history.",
             "signInLabel": "Sign in",
@@ -933,7 +947,7 @@
             "eyebrow": "Account",
             "title": "Order details",
             "subtitle": "Review items, totals, and shipping for this order.",
-            "loadingMessage": "Loading order\u2026",
+            "loadingMessage": "Loading order…",
             "notFoundMessage": "We could not find that order.",
             "signedOutMessage": "Sign in to view this order.",
             "signInLabel": "Sign in",
