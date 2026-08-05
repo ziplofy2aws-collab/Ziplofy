@@ -803,6 +803,56 @@ function newTemplateInstanceId(
   return `${blueprintId}_${n}`;
 }
 
+/**
+ * Keep merchant `section_order`, then insert pack-only section ids at pack-relative
+ * positions so theme pack upgrades (new homepage sections) appear in the sidebar
+ * without reshuffling the merchant's existing stack.
+ */
+export function mergeSectionOrderPreservingMerchant(
+  merchantOrder: string[],
+  packOrder: string[],
+  sectionKeys: Set<string>
+): string[] {
+  const result = merchantOrder.map(String).filter((id) => sectionKeys.has(id));
+  const present = new Set(result);
+  const pack = packOrder.map(String);
+
+  for (let i = 0; i < pack.length; i += 1) {
+    const id = pack[i]!;
+    if (!sectionKeys.has(id) || present.has(id)) continue;
+
+    let insertAt = result.length;
+    for (let j = i - 1; j >= 0; j -= 1) {
+      const idx = result.indexOf(pack[j]!);
+      if (idx !== -1) {
+        insertAt = idx + 1;
+        break;
+      }
+    }
+    if (insertAt === result.length) {
+      for (let j = i + 1; j < pack.length; j += 1) {
+        const idx = result.indexOf(pack[j]!);
+        if (idx !== -1) {
+          insertAt = idx;
+          break;
+        }
+      }
+    }
+
+    result.splice(insertAt, 0, id);
+    present.add(id);
+  }
+
+  for (const id of sectionKeys) {
+    if (!present.has(id)) {
+      result.push(id);
+      present.add(id);
+    }
+  }
+
+  return result;
+}
+
 /** Ensure every blueprint section from the pack default exists under `templates.{id}.sections`. */
 export function mergeTemplateSectionBlueprintsFromPack(
   config: Record<string, unknown>,
@@ -834,17 +884,26 @@ export function mergeTemplateSectionBlueprintsFromPack(
         ? defTemplates[templateId].order
         : null) ?? null;
 
-  const hasUsableOrder =
-    (Array.isArray(tpl.section_order) && tpl.section_order.length > 0) ||
-    (Array.isArray(tpl.order) && tpl.order.length > 0);
+  const merchantOrder = Array.isArray(tpl.section_order)
+    ? tpl.section_order.map(String)
+    : Array.isArray(tpl.order)
+      ? tpl.order.map(String)
+      : [];
 
-  if (!hasUsableOrder) {
-    tpl.section_order = packOrder
-      ? [...packOrder]
-      : Object.keys(tpl.sections ?? {});
-  } else if (!Array.isArray(tpl.section_order) || tpl.section_order.length === 0) {
-    tpl.section_order = Array.isArray(tpl.order) ? [...tpl.order] : packOrder ? [...packOrder] : [];
+  const sectionKeys = new Set(Object.keys(tpl.sections ?? {}));
+  const packOrderList = (packOrder ?? Object.keys(defTemplates[templateId].sections ?? {})).map(String);
+
+  if (merchantOrder.length === 0) {
+    tpl.section_order = packOrderList.filter((id) => sectionKeys.has(id));
+    if (tpl.section_order.length === 0) tpl.section_order = [...sectionKeys];
+  } else {
+    tpl.section_order = mergeSectionOrderPreservingMerchant(
+      merchantOrder,
+      packOrderList,
+      sectionKeys
+    );
   }
+
   if ('order' in tpl) delete tpl.order;
 }
 

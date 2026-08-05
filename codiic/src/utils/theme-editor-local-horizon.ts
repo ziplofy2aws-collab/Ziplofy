@@ -1,4 +1,5 @@
 import type { ThemeEditorLoadResult } from './theme-editor-load';
+import { mergeSectionOrderPreservingMerchant } from './theme-editor-insert-section';
 import localHorizonDefaults from '../theme-packs/horizon/theme.default-config.json';
 import localWatchDefaults from '../theme-packs/watch/theme.default-config.json';
 
@@ -172,12 +173,25 @@ function applyWatchLocalDefaults(result: ThemeEditorLoadResult): ThemeEditorLoad
   const localIndex = asRecord(localTemplates.index);
   const currentTemplates = asRecord(current.templates);
   const currentIndex = asRecord(currentTemplates.index);
+  const mergedSections = {
+    ...asRecord(localIndex.sections),
+    ...asRecord(currentIndex.sections),
+  };
+  const sectionKeys = new Set(Object.keys(mergedSections));
+  const packOrder = Array.isArray(localIndex.section_order)
+    ? localIndex.section_order.map(String)
+    : [];
+  const merchantOrder = Array.isArray(currentIndex.section_order)
+    ? currentIndex.section_order.map(String)
+    : [];
 
-  // Keep merchant section order when present; otherwise use Watch home stack.
+  // Keep merchant order, insert pack-only sections (e.g. banner_showcase) at pack positions.
   const sectionOrder =
-    (Array.isArray(currentIndex.section_order) && currentIndex.section_order.length
-      ? currentIndex.section_order
-      : localIndex.section_order) ?? [];
+    merchantOrder.length > 0
+      ? mergeSectionOrderPreservingMerchant(merchantOrder, packOrder, sectionKeys)
+      : packOrder.length > 0
+        ? packOrder.filter((id) => sectionKeys.has(id))
+        : [...sectionKeys];
 
   let nextConfig: Record<string, unknown> = {
     ...current,
@@ -192,10 +206,7 @@ function applyWatchLocalDefaults(result: ThemeEditorLoadResult): ThemeEditorLoad
         ...localIndex,
         ...currentIndex,
         section_order: sectionOrder,
-        sections: {
-          ...asRecord(localIndex.sections),
-          ...asRecord(currentIndex.sections),
-        },
+        sections: mergedSections,
       },
     },
     sections: {
