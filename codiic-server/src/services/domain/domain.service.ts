@@ -61,12 +61,17 @@ export function buildDnsInstructions(
   storeSubdomain: string
 ): IDnsInstruction[] {
   const { cnameTarget, aTargets } = platformDnsTarget(storeSubdomain);
+  const labels = hostname.split('.');
+  const isApex = labels.length === 2;
+
   const instructions: IDnsInstruction[] = [
     {
-      type: 'CNAME',
+      type: isApex ? 'ALIAS' : 'CNAME',
       host: hostname,
       value: cnameTarget,
-      purpose: 'Point this hostname at your Codiic storefront',
+      purpose: isApex
+        ? 'Point the apex (@) at your Codiic storefront — use ALIAS/ANAME if CNAME is not allowed'
+        : 'Point this hostname at your Codiic storefront',
     },
     {
       type: 'TXT',
@@ -81,7 +86,7 @@ export function buildDnsInstructions(
       type: 'A',
       host: hostname,
       value: aTargets.join(' or '),
-      purpose: 'Optional apex/A record if your DNS provider does not support CNAME on this host',
+      purpose: 'Optional A record if your DNS provider does not support CNAME/ALIAS on this host',
     });
   }
 
@@ -144,15 +149,23 @@ export async function verifyDomainDns(params: {
   const { hostname, verificationToken, storeSubdomain, requireTxt = true } = params;
   const { cnameTarget, aTargets } = platformDnsTarget(storeSubdomain);
 
-  const [cnames, aRecords, txtRecords] = await Promise.all([
+  const [cnames, aRecords, txtRecords, targetARecords] = await Promise.all([
     resolveCnames(hostname),
     resolveARecords(hostname),
     resolveTxtFlat(`_codiic-verify.${hostname}`),
+    // Apex ALIAS/ANAME flattens to A records — compare IPs to the storefront target.
+    resolveARecords(cnameTarget),
   ]);
 
   const cnameOk = cnames.some((c) => c === cnameTarget || c.endsWith(`.${cnameTarget}`));
-  const aOk =
+  const configuredIpOk =
     aTargets.length > 0 && aRecords.some((ip) => aTargets.includes(ip));
+  // Hostinger/Cloudflare ALIAS on @ has no CNAME at the apex; same IPs as the target is enough.
+  const aliasIpOk =
+    aRecords.length > 0 &&
+    targetARecords.length > 0 &&
+    aRecords.some((ip) => targetARecords.includes(ip));
+  const aOk = configuredIpOk || aliasIpOk;
   const pointsAtPlatform = cnameOk || aOk;
 
   const txtOk = txtRecords.some((t) => t === verificationToken);
@@ -165,9 +178,7 @@ export async function verifyDomainDns(params: {
     const parts: string[] = [];
     if (!pointsAtPlatform) {
       parts.push(
-        aTargets.length
-          ? `CNAME must point to ${cnameTarget} (or A to ${aTargets.join(', ')})`
-          : `CNAME must point to ${cnameTarget}`
+        `DNS must point to ${cnameTarget} (CNAME, or ALIAS/A resolving to the same IPs)`
       );
     }
     if (requireTxt && !txtOk) {
