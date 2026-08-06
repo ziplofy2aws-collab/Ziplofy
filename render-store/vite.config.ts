@@ -42,7 +42,7 @@ export default defineConfig({
   preview: {
     port: 5180,
     host: true,
-    allowedHosts: ['preview.codiic.com', '.codiic.com', 'localhost'],
+    allowedHosts: ['preview.codiic.com', '.codiic.com', 'localhost','www.ziplofy.com'],
     proxy: {
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),
