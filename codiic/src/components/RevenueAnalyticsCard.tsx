@@ -7,6 +7,17 @@ interface RevenueAnalyticsCardProps {
   data?: { day: string; value: number }[];
 }
 
+/** Hardcoded bar fills — keep out of admin-text tokens so the chart stays colorful. */
+const REVENUE_BAR_COLORS = [
+  '#2563eb',
+  '#3b82f6',
+  '#0d9488',
+  '#2563eb',
+  '#0284c7',
+  '#059669',
+  '#3b82f6',
+] as const;
+
 const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
   timeframe = 'This Week',
   data = [
@@ -135,6 +146,7 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
             const barHeight = getBarHeight(item.value);
             const x = getBarX(index);
             const y = startY + chartHeight - barHeight;
+            const fill = REVENUE_BAR_COLORS[index % REVENUE_BAR_COLORS.length];
 
             return (
               <g key={item.day}>
@@ -143,7 +155,7 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
                   y={y}
                   width={barWidth}
                   height={barHeight}
-                  fill="#303030"
+                  fill={fill}
                   rx="6"
                   className="transition-opacity hover:opacity-90"
                 />

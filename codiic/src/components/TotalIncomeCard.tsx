@@ -10,6 +10,10 @@ interface TotalIncomeCardProps {
   }[];
 }
 
+/** Hardcoded chart fills — do not swap these for admin-text tokens (bars go flat). */
+const PROFIT_BAR_COLOR = '#2563eb';
+const LOSS_BAR_COLOR = '#93c5fd';
+
 const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
   data = [
     { month: 'Jan', profit: 23, loss: 23 },
@@ -44,13 +48,31 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
           <h3 className="text-[13px] font-semibold text-admin-text">Total income</h3>
           <p className="mt-0.5 text-[12px] text-admin-text-secondary">Profit and loss over time</p>
         </div>
-        <button
-          type="button"
-          className="rounded-lg p-1.5 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
-          aria-label="Chart options"
-        >
-          <EllipsisHorizontalIcon className="h-5 w-5" />
-        </button>
+        <div className="flex shrink-0 items-center gap-3">
+          <div className="hidden items-center gap-3 sm:flex">
+            <span className="inline-flex items-center gap-1.5 text-[12px] text-admin-text-secondary">
+              <span
+                className="h-2.5 w-2.5 rounded-sm"
+                style={{ backgroundColor: PROFIT_BAR_COLOR }}
+              />
+              Profit
+            </span>
+            <span className="inline-flex items-center gap-1.5 text-[12px] text-admin-text-secondary">
+              <span
+                className="h-2.5 w-2.5 rounded-sm"
+                style={{ backgroundColor: LOSS_BAR_COLOR }}
+              />
+              Loss
+            </span>
+          </div>
+          <button
+            type="button"
+            className="rounded-lg p-1.5 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
+            aria-label="Chart options"
+          >
+            <EllipsisHorizontalIcon className="h-5 w-5" />
+          </button>
+        </div>
       </div>
 
       <div className="relative -mx-1 overflow-x-auto">
@@ -97,7 +119,7 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
                   y={profitY}
                   width={barWidth}
                   height={profitHeight}
-                  fill="#303030"
+                  fill={PROFIT_BAR_COLOR}
                   rx="6"
                   className="transition-opacity hover:opacity-90"
                 />
@@ -106,7 +128,7 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
                   y={lossY}
                   width={barWidth}
                   height={lossHeight}
-                  fill="#e3e3e3"
+                  fill={LOSS_BAR_COLOR}
                   rx="6"
                   className="transition-opacity hover:opacity-90"
                 />

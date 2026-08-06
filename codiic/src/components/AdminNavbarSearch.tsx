@@ -15,6 +15,7 @@ import {
   useState,
   type KeyboardEvent,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { useCollections } from '../contexts/collection.context';
 import { useProducts, type ProductSearchBasicItem } from '../contexts/product.context';
@@ -30,6 +31,14 @@ type FlatResult =
   | { kind: 'nav'; item: AdminNavSearchItem }
   | { kind: 'product'; item: ProductSearchBasicItem }
   | { kind: 'collection'; item: { _id: string; title: string; imageUrl?: string } };
+
+const resultRowClass = (active: boolean) =>
+  `flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${
+    active ? 'bg-admin-row-hover' : 'hover:bg-admin-row-hover'
+  }`;
+
+const sectionLabelClass =
+  'px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-admin-text-subdued';
 
 function useDebouncedValue<T>(value: T, delayMs: number): T {
   const [debounced, setDebounced] = useState(value);
@@ -116,6 +125,7 @@ export default function AdminNavbarSearch() {
   const close = useCallback(() => {
     setOpen(false);
     setActiveIndex(0);
+    inputRef.current?.blur();
   }, []);
 
   const goTo = useCallback(
@@ -190,212 +200,221 @@ export default function AdminNavbarSearch() {
   let runningIndex = -1;
 
   return (
-    <div ref={rootRef} className="relative w-full">
-      <div className="relative group">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
-          <MagnifyingGlassIcon className="h-4 w-4 text-[#b5b5b5] group-focus-within:text-white" />
+    <>
+      {open
+        ? createPortal(
+            <div
+              aria-hidden
+              className="fixed inset-0 z-[1200] bg-black/25 transition-opacity"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                close();
+              }}
+            />,
+            document.body
+          )
+        : null}
+
+      <div ref={rootRef} className="relative z-[1202] w-full">
+        <div className="relative group">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
+            <MagnifyingGlassIcon className="h-4 w-4 text-[#b5b5b5] group-focus-within:text-white" />
+          </div>
+          <input
+            ref={inputRef}
+            type="search"
+            role="combobox"
+            aria-expanded={showPanel}
+            aria-controls={listId}
+            aria-autocomplete="list"
+            placeholder="Search pages, products, collections…"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            onKeyDown={onInputKeyDown}
+            className="h-9 w-full rounded-full border-0 bg-admin-header-control py-0 pl-8 pr-14 text-sm text-white placeholder:text-[#b5b5b5] transition-colors focus:bg-admin-header-control-hover focus:outline-none focus:ring-1 focus:ring-white/20"
+          />
+          <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-admin-header-control-hover px-1.5 py-0.5 text-[10px] font-medium text-[#b5b5b5] sm:inline-block">
+            Ctrl K
+          </kbd>
         </div>
-        <input
-          ref={inputRef}
-          type="search"
-          role="combobox"
-          aria-expanded={showPanel}
-          aria-controls={listId}
-          aria-autocomplete="list"
-          placeholder="Search pages, products, collections…"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setOpen(true);
-          }}
-          onFocus={() => setOpen(true)}
-          onKeyDown={onInputKeyDown}
-          className="h-9 w-full rounded-full border-0 bg-admin-header-control py-0 pl-8 pr-14 text-sm text-white placeholder:text-[#b5b5b5] transition-colors focus:bg-admin-header-control-hover focus:outline-none focus:ring-1 focus:ring-white/20"
-        />
-        <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-admin-header-control-hover px-1.5 py-0.5 text-[10px] font-medium text-[#b5b5b5] sm:inline-block">
-          Ctrl K
-        </kbd>
-      </div>
 
-      {showPanel ? (
-        <div
-          id={listId}
-          role="listbox"
-          className="absolute left-0 right-0 top-full z-[1300] mt-1.5 max-h-[min(70vh,520px)] overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg"
-        >
-          {!hasAny && query.trim() ? (
-            <div className="px-4 py-8 text-center text-sm text-gray-500">
-              No results for “{query.trim()}”
-            </div>
-          ) : (
-            <div className="py-1.5">
-              {!query.trim() ? (
-                <p className="px-3 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-                  Suggested
-                </p>
-              ) : null}
+        {showPanel ? (
+          <div
+            id={listId}
+            role="listbox"
+            className="absolute left-0 right-0 top-full z-[1300] mt-1.5 max-h-[min(70vh,520px)] overflow-y-auto rounded-xl border border-admin-border bg-admin-surface shadow-[0_4px_16px_rgba(0,0,0,0.12)]"
+          >
+            {!hasAny && query.trim() ? (
+              <div className="px-4 py-8 text-center text-[13px] text-admin-text-subdued">
+                No results for “{query.trim()}”
+              </div>
+            ) : (
+              <div className="py-1.5">
+                {!query.trim() ? (
+                  <p className={`${sectionLabelClass} pb-1 pt-2`}>Suggested</p>
+                ) : null}
 
-              {navGroups.map(({ group, items }) => (
-                <div key={group} className="mb-1">
-                  <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-                    {group}
-                  </p>
-                  <ul className="m-0 list-none p-0">
-                    {items.map((item) => {
-                      runningIndex += 1;
-                      const idx = runningIndex;
-                      const active = idx === activeIndex;
-                      return (
-                        <li key={item.id} role="option" aria-selected={active}>
-                          <button
-                            type="button"
-                            className={`flex w-full items-start gap-3 px-3 py-2 text-left transition-colors ${
-                              active ? 'bg-blue-50' : 'hover:bg-gray-50'
-                            }`}
-                            onMouseEnter={() => setActiveIndex(idx)}
-                            onClick={() => goTo(item.path)}
-                          >
-                            <span
-                              className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-                                item.group === 'Actions'
-                                  ? 'bg-blue-100 text-blue-700'
-                                  : 'bg-gray-100 text-gray-600'
-                              }`}
+                {navGroups.map(({ group, items }) => (
+                  <div key={group} className="mb-1">
+                    <p className={sectionLabelClass}>{group}</p>
+                    <ul className="m-0 list-none p-0">
+                      {items.map((item) => {
+                        runningIndex += 1;
+                        const idx = runningIndex;
+                        const active = idx === activeIndex;
+                        return (
+                          <li key={item.id} role="option" aria-selected={active}>
+                            <button
+                              type="button"
+                              className={`${resultRowClass(active)} items-start`}
+                              onMouseEnter={() => setActiveIndex(idx)}
+                              onClick={() => goTo(item.path)}
                             >
-                              {item.group === 'Actions' ? (
-                                <SparklesIcon className="h-4 w-4" aria-hidden />
-                              ) : (
-                                <DocumentTextIcon className="h-4 w-4" aria-hidden />
-                              )}
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block truncate text-sm font-medium text-gray-900">
-                                {item.title}
+                              <span
+                                className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                                  item.group === 'Actions'
+                                    ? 'bg-admin-fill text-admin-text'
+                                    : 'bg-admin-secondary text-admin-text-secondary'
+                                }`}
+                              >
+                                {item.group === 'Actions' ? (
+                                  <SparklesIcon className="h-4 w-4" aria-hidden />
+                                ) : (
+                                  <DocumentTextIcon className="h-4 w-4" aria-hidden />
+                                )}
                               </span>
-                              <span className="mt-0.5 block truncate text-xs text-gray-500">
-                                {formatAdminNavBreadcrumb(item)}
-                                {item.description && !(item.navPath?.length)
-                                  ? ` · ${item.description}`
-                                  : ''}
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-[13px] font-medium text-admin-text">
+                                  {item.title}
+                                </span>
+                                <span className="mt-0.5 block truncate text-xs text-admin-text-subdued">
+                                  {formatAdminNavBreadcrumb(item)}
+                                  {item.description && !(item.navPath?.length)
+                                    ? ` · ${item.description}`
+                                    : ''}
+                                </span>
                               </span>
-                            </span>
-                            <ArrowRightIcon
-                              className={`mt-2 h-3.5 w-3.5 shrink-0 ${
-                                active ? 'text-blue-500' : 'text-gray-300'
-                              }`}
-                              aria-hidden
-                            />
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ))}
+                              <ArrowRightIcon
+                                className={`mt-2 h-3.5 w-3.5 shrink-0 ${
+                                  active ? 'text-admin-text-secondary' : 'text-admin-border'
+                                }`}
+                                aria-hidden
+                              />
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ))}
 
-              {(products.length > 0 || (liveLoading && debouncedQuery.trim().length >= 2)) && (
-                <div className="mb-1 border-t border-gray-100 pt-1">
-                  <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-                    Products
-                    {liveLoading ? (
-                      <span className="ml-1 font-normal normal-case text-gray-300">…</span>
-                    ) : null}
-                  </p>
-                  <ul className="m-0 list-none p-0">
-                    {products.map((p) => {
-                      runningIndex += 1;
-                      const idx = runningIndex;
-                      const active = idx === activeIndex;
-                      return (
-                        <li key={`p-${p._id}`} role="option" aria-selected={active}>
-                          <button
-                            type="button"
-                            className={`flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${
-                              active ? 'bg-blue-50' : 'hover:bg-gray-50'
-                            }`}
-                            onMouseEnter={() => setActiveIndex(idx)}
-                            onClick={() => goTo(`/products/${p._id}`)}
-                          >
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
-                              {p.imageUrl ? (
-                                <img
-                                  src={p.imageUrl}
-                                  alt=""
-                                  className="h-full w-full object-cover"
-                                />
-                              ) : (
-                                <CubeIcon className="h-4 w-4 text-gray-500" aria-hidden />
-                              )}
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block truncate text-sm font-medium text-gray-900">
-                                {p.title}
+                {(products.length > 0 || (liveLoading && debouncedQuery.trim().length >= 2)) && (
+                  <div className="mb-1 border-t border-admin-divider pt-1">
+                    <p className={sectionLabelClass}>
+                      Products
+                      {liveLoading ? (
+                        <span className="ml-1 font-normal normal-case text-admin-text-subdued">
+                          …
+                        </span>
+                      ) : null}
+                    </p>
+                    <ul className="m-0 list-none p-0">
+                      {products.map((p) => {
+                        runningIndex += 1;
+                        const idx = runningIndex;
+                        const active = idx === activeIndex;
+                        return (
+                          <li key={`p-${p._id}`} role="option" aria-selected={active}>
+                            <button
+                              type="button"
+                              className={resultRowClass(active)}
+                              onMouseEnter={() => setActiveIndex(idx)}
+                              onClick={() => goTo(`/products/${p._id}`)}
+                            >
+                              <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-admin-secondary">
+                                {p.imageUrl ? (
+                                  <img
+                                    src={p.imageUrl}
+                                    alt=""
+                                    className="h-full w-full object-cover"
+                                  />
+                                ) : (
+                                  <CubeIcon
+                                    className="h-4 w-4 text-admin-text-secondary"
+                                    aria-hidden
+                                  />
+                                )}
                               </span>
-                              <span className="mt-0.5 block truncate text-xs text-gray-500">
-                                Products › {p.title}
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-[13px] font-medium text-admin-text">
+                                  {p.title}
+                                </span>
+                                <span className="mt-0.5 block truncate text-xs text-admin-text-subdued">
+                                  Products › {p.title}
+                                </span>
                               </span>
-                            </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
 
-              {collections.length > 0 && (
-                <div className="mb-1 border-t border-gray-100 pt-1">
-                  <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
-                    Collections
-                  </p>
-                  <ul className="m-0 list-none p-0">
-                    {collections.map((c) => {
-                      runningIndex += 1;
-                      const idx = runningIndex;
-                      const active = idx === activeIndex;
-                      return (
-                        <li key={`c-${c._id}`} role="option" aria-selected={active}>
-                          <button
-                            type="button"
-                            className={`flex w-full items-center gap-3 px-3 py-2 text-left transition-colors ${
-                              active ? 'bg-blue-50' : 'hover:bg-gray-50'
-                            }`}
-                            onMouseEnter={() => setActiveIndex(idx)}
-                            onClick={() => goTo(`/products/collections/${c._id}`)}
-                          >
-                            <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100">
-                              {c.imageUrl ? (
-                                <img
-                                  src={c.imageUrl}
-                                  alt=""
-                                  className="h-full w-full object-cover"
-                                />
-                              ) : (
-                                <RectangleStackIcon
-                                  className="h-4 w-4 text-gray-500"
-                                  aria-hidden
-                                />
-                              )}
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block truncate text-sm font-medium text-gray-900">
-                                {c.title}
+                {collections.length > 0 && (
+                  <div className="mb-1 border-t border-admin-divider pt-1">
+                    <p className={sectionLabelClass}>Collections</p>
+                    <ul className="m-0 list-none p-0">
+                      {collections.map((c) => {
+                        runningIndex += 1;
+                        const idx = runningIndex;
+                        const active = idx === activeIndex;
+                        return (
+                          <li key={`c-${c._id}`} role="option" aria-selected={active}>
+                            <button
+                              type="button"
+                              className={resultRowClass(active)}
+                              onMouseEnter={() => setActiveIndex(idx)}
+                              onClick={() => goTo(`/products/collections/${c._id}`)}
+                            >
+                              <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-admin-secondary">
+                                {c.imageUrl ? (
+                                  <img
+                                    src={c.imageUrl}
+                                    alt=""
+                                    className="h-full w-full object-cover"
+                                  />
+                                ) : (
+                                  <RectangleStackIcon
+                                    className="h-4 w-4 text-admin-text-secondary"
+                                    aria-hidden
+                                  />
+                                )}
                               </span>
-                              <span className="mt-0.5 block truncate text-xs text-gray-500">
-                                Products › Collections › {c.title}
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate text-[13px] font-medium text-admin-text">
+                                  {c.title}
+                                </span>
+                                <span className="mt-0.5 block truncate text-xs text-admin-text-subdued">
+                                  Products › Collections › {c.title}
+                                </span>
                               </span>
-                            </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ) : null}
-    </div>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : null}
+      </div>
+    </>
   );
 }

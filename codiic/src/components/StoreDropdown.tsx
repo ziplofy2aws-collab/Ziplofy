@@ -7,11 +7,31 @@ import {
 } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useStore } from '../contexts/store.context';
-import toast from 'react-hot-toast';
+import {
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from './admin-list-ui';
 
 interface StoreDropdownProps {
   onStoreChange?: (storeId: string) => void;
 }
+
+const storeAvatarClass =
+  'flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black';
+
+const menuItemClass =
+  'flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-admin-text transition-colors hover:bg-admin-row-hover';
+
+const modalOverlayClass =
+  'fixed inset-0 z-[1400] flex items-center justify-center bg-black/20 p-4';
+
+const modalPanelClass =
+  'flex max-h-[85vh] w-full flex-col rounded-xl border border-admin-border bg-admin-surface shadow-lg';
+
+const modalInputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued transition-colors focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
 
 const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
   const { stores, activeStoreId, loading, error, createStore } = useStore();
@@ -159,10 +179,8 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 rounded-full bg-admin-header-control px-2.5 py-1.5">
-        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
-          ...
-        </div>
+      <div className="flex items-center gap-2 rounded-lg bg-admin-header-control px-2.5 py-1.5">
+        <div className={storeAvatarClass}>...</div>
         <span className="text-sm text-white">Loading...</span>
       </div>
     );
@@ -170,10 +188,8 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
 
   if (error || !activeStore) {
     return (
-      <div className="flex items-center gap-2 rounded-full bg-admin-header-control px-2.5 py-1.5">
-        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
-          ?
-        </div>
+      <div className="flex items-center gap-2 rounded-lg bg-admin-header-control px-2.5 py-1.5">
+        <div className={storeAvatarClass}>?</div>
         <span className="text-sm text-white">No Store</span>
       </div>
     );
@@ -181,13 +197,14 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
 
   return (
     <>
-      <div className="flex items-center gap-2 relative">
+      <div className="relative flex items-center gap-2">
         <button
           ref={buttonRef}
+          type="button"
           onClick={handleClick}
-          className="flex items-center gap-2 rounded-full bg-admin-header-control px-2.5 py-1.5 transition-colors hover:bg-admin-header-control-hover"
+          className="flex items-center gap-2 rounded-lg bg-admin-header-control px-2.5 py-1.5 transition-colors hover:bg-admin-header-control-hover"
         >
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
+          <div className={storeAvatarClass}>
             {getStoreInitials(activeStore.storeName)}
           </div>
           <span className="max-w-[100px] truncate text-sm font-medium text-white">
@@ -196,25 +213,23 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
           <ChevronDownIcon className="h-4 w-4 text-[#b5b5b5]" />
         </button>
 
-        {/* Dropdown Menu */}
         {isOpen && (
           <div
             ref={dropdownRef}
-            className="absolute right-0 top-full mt-1 min-w-[220px] bg-white border border-gray-200 rounded shadow-md py-1.5 z-50"
+            className="absolute right-0 top-full z-50 mt-1.5 min-w-[240px] overflow-hidden rounded-xl border border-admin-border bg-admin-surface py-1.5 shadow-lg"
           >
-            {/* Show current store */}
             {activeStore && (
-              <div className="px-3 py-2 bg-gray-50 border-b border-gray-100">
+              <div className="border-b border-admin-border bg-admin-table-header px-3 py-2.5">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-medium shrink-0">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
                     {getStoreInitials(activeStore.storeName)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-[13px] font-semibold text-admin-text">
                       {activeStore.storeName}
                     </div>
                     {activeStore.storeDescription && (
-                      <div className="text-xs text-gray-500 truncate mt-0.5">
+                      <div className="mt-0.5 truncate text-xs text-admin-text-subdued">
                         {activeStore.storeDescription}
                       </div>
                     )}
@@ -222,158 +237,146 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
                 </div>
               </div>
             )}
-            
-            {/* Show all stores */}
+
             <div className="max-h-[280px] overflow-y-auto py-1">
-              {stores.map((store) => (
-                <button
-                  key={store._id}
-                  onClick={() => handleStoreSelect(store._id)}
-                  className={`w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 transition-colors text-left ${
-                    store._id === activeStoreId ? 'bg-blue-50/50' : ''
-                  }`}
-                >
-                  <div
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium shrink-0 ${
-                      store._id === activeStoreId ? 'bg-blue-600' : 'bg-gray-400'
+              {stores.map((store) => {
+                const isActive = store._id === activeStoreId;
+                return (
+                  <button
+                    key={store._id}
+                    type="button"
+                    onClick={() => handleStoreSelect(store._id)}
+                    className={`${menuItemClass} ${
+                      isActive ? 'bg-admin-secondary' : ''
                     }`}
                   >
-                    {getStoreInitials(store.storeName)}
-                  </div>
-                  <div className="flex-1 min-w-0 text-left">
                     <div
-                      className={`text-sm truncate ${
-                        store._id === activeStoreId
-                          ? 'font-medium text-gray-900'
-                          : 'text-gray-700'
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-semibold ${
+                        isActive
+                          ? 'bg-[#aeea00] text-black'
+                          : 'bg-admin-fill text-admin-text'
                       }`}
                     >
-                      {store.storeName}
+                      {getStoreInitials(store.storeName)}
                     </div>
-                    {store.storeDescription && (
-                      <div className="text-xs text-gray-500 truncate mt-0.5">
-                        {store.storeDescription}
+                    <div className="min-w-0 flex-1 text-left">
+                      <div
+                        className={`truncate text-[13px] ${
+                          isActive
+                            ? 'font-semibold text-admin-text'
+                            : 'font-medium text-admin-text'
+                        }`}
+                      >
+                        {store.storeName}
                       </div>
+                      {store.storeDescription && (
+                        <div className="mt-0.5 truncate text-xs text-admin-text-subdued">
+                          {store.storeDescription}
+                        </div>
+                      )}
+                    </div>
+                    {isActive && (
+                      <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-admin-text" />
                     )}
-                  </div>
-                  {store._id === activeStoreId && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
-                  )}
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
-            
-            {/* Divider */}
-            <div className="border-t border-gray-100 my-1" />
-            
-            {/* Manage Stores */}
-            <button
-              onClick={handleManageStoresClick}
-              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 transition-colors text-left"
-            >
-              <BuildingStorefrontIcon className="w-4 h-4 text-gray-500 shrink-0" />
-              <span className="text-sm text-gray-700">Manage Stores</span>
+
+            <div className="my-1 border-t border-admin-divider" />
+
+            <button type="button" onClick={handleManageStoresClick} className={menuItemClass}>
+              <BuildingStorefrontIcon className="h-4 w-4 shrink-0 text-admin-text-secondary" />
+              <span>Manage Stores</span>
             </button>
-            
-            {/* Logout */}
+
             <button
+              type="button"
               onClick={handleLogoutClick}
-              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-red-50 transition-colors text-left"
+              className="flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-red-600 transition-colors hover:bg-red-50"
             >
-              <ArrowRightOnRectangleIcon className="w-4 h-4 text-red-500 shrink-0" />
-              <span className="text-sm text-red-600">Logout</span>
+              <ArrowRightOnRectangleIcon className="h-4 w-4 shrink-0 text-red-500" />
+              <span>Logout</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* Manage Stores Modal */}
       {isManageStoresOpen && (
-        <div
-          className="fixed inset-0 bg-gray-500/20 z-[1400] flex items-center justify-center p-4"
-          onClick={handleCloseManageStores}
-        >
+        <div className={modalOverlayClass} onClick={handleCloseManageStores}>
           <div
             ref={manageStoresModalRef}
-            className="bg-white rounded-lg w-full max-w-3xl max-h-[85vh] flex flex-col shadow-lg border border-gray-200"
+            className={`${modalPanelClass} max-w-3xl`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-              <h2 className="text-base font-medium text-gray-900">Manage Stores</h2>
+            <div className="flex items-center justify-between border-b border-admin-border px-4 py-3">
+              <h2 className="text-[15px] font-semibold text-admin-text">Manage Stores</h2>
               <button
+                type="button"
                 onClick={handleCloseManageStores}
-                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                className="rounded-lg p-1 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               >
-                <XMarkIcon className="w-5 h-5 text-gray-500" />
+                <XMarkIcon className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-4 overflow-y-auto flex-1">
-              {/* Create Store Button */}
+            <div className="flex-1 overflow-y-auto p-4">
               <div className="mb-4">
                 <button
+                  type="button"
                   onClick={handleCreateStoreClick}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-900 text-white text-sm font-medium rounded hover:bg-gray-800 transition-colors"
+                  className={`${adminListPrimaryButtonClass} gap-1.5`}
                 >
-                  <PlusIcon className="w-4 h-4" />
+                  <PlusIcon className="h-4 w-4" />
                   Create New Store
                 </button>
               </div>
 
-              {/* Stores Table */}
-              <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <div className="overflow-hidden rounded-xl border border-admin-border">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-3 py-2 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
-                          Store Name
-                        </th>
-                        <th className="px-3 py-2 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
-                          Description
-                        </th>
-                        <th className="px-3 py-2 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
-                          Status
-                        </th>
-                        <th className="px-3 py-2 text-left text-sm font-medium text-gray-600 uppercase tracking-wider">
-                          Created
-                        </th>
+                    <thead>
+                      <tr className={adminListTableHeadRowClass}>
+                        <th className={adminListTableHeadClass}>Store Name</th>
+                        <th className={adminListTableHeadClass}>Description</th>
+                        <th className={adminListTableHeadClass}>Status</th>
+                        <th className={adminListTableHeadClass}>Created</th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody>
                       {stores.map((store) => (
                         <tr
                           key={store._id}
-                          className="hover:bg-gray-50 transition-colors"
+                          className="border-b border-admin-divider bg-admin-surface transition-colors last:border-b-0 hover:bg-admin-row-hover"
                         >
                           <td className="px-3 py-2.5">
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-gray-600 flex items-center justify-center text-white text-xs font-medium shrink-0">
+                              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
                                 {getStoreInitials(store.storeName)}
                               </div>
-                              <span className="text-sm font-medium text-gray-900">{store.storeName}</span>
+                              <span className="text-[13px] font-medium text-admin-text">
+                                {store.storeName}
+                              </span>
                             </div>
                           </td>
                           <td className="px-3 py-2.5">
-                            <span className="text-sm text-gray-600 max-w-[200px] truncate block">
+                            <span className="block max-w-[200px] truncate text-[13px] text-admin-text-secondary">
                               {store.storeDescription || '—'}
                             </span>
                           </td>
                           <td className="px-3 py-2.5">
                             <span
-                              className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${
                                 store._id === activeStoreId
-                                  ? 'bg-gray-100 text-gray-700'
-                                  : 'bg-gray-50 text-gray-600'
+                                  ? 'bg-admin-fill text-admin-text'
+                                  : 'bg-admin-secondary text-admin-text-secondary'
                               }`}
                             >
                               {store._id === activeStoreId ? 'Active' : 'Inactive'}
                             </span>
                           </td>
                           <td className="px-3 py-2.5">
-                            <span className="text-sm text-gray-600">
+                            <span className="text-[13px] text-admin-text-secondary">
                               {new Date(store.createdAt).toLocaleDateString()}
                             </span>
                           </td>
@@ -385,11 +388,11 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="px-4 py-3 border-t border-gray-200 flex justify-end">
+            <div className="flex justify-end border-t border-admin-border px-4 py-3">
               <button
+                type="button"
                 onClick={handleCloseManageStores}
-                className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                className={adminListSecondaryButtonClass}
               >
                 Close
               </button>
@@ -398,75 +401,69 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
         </div>
       )}
 
-      {/* Create Store Form Modal */}
       {isCreateStoreOpen && (
-        <div
-          className="fixed inset-0 bg-gray-500/20 z-[1400] flex items-center justify-center p-4"
-          onClick={handleCloseCreateStore}
-        >
+        <div className={modalOverlayClass} onClick={handleCloseCreateStore}>
           <div
             ref={createStoreModalRef}
-            className="bg-white rounded-lg w-full max-w-md max-h-[85vh] flex flex-col shadow-lg border border-gray-200"
+            className={`${modalPanelClass} max-w-md`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
-              <h2 className="text-base font-medium text-gray-900">Create New Store</h2>
+            <div className="flex items-center justify-between border-b border-admin-border px-4 py-3">
+              <h2 className="text-[15px] font-semibold text-admin-text">Create New Store</h2>
               <button
+                type="button"
                 onClick={handleCloseCreateStore}
-                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                className="rounded-lg p-1 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               >
-                <XMarkIcon className="w-5 h-5 text-gray-500" />
+                <XMarkIcon className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Content */}
-            <div className="p-4 overflow-y-auto flex-1">
+            <div className="flex-1 overflow-y-auto p-4">
               <div className="space-y-4">
-                {/* Store Name Input */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="mb-1.5 block text-[13px] font-medium text-admin-text">
                     Store Name
-                    <span className="text-red-500 ml-1">*</span>
+                    <span className="ml-1 text-red-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={storeName}
                     onChange={(e) => setStoreName(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-300 transition-all"
+                    className={modalInputClass}
                     placeholder="Enter store name"
                   />
                 </div>
 
-                {/* Store Description Input */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="mb-1.5 block text-[13px] font-medium text-admin-text">
                     Store Description
-                    <span className="text-red-500 ml-1">*</span>
+                    <span className="ml-1 text-red-500">*</span>
                   </label>
                   <textarea
                     value={storeDescription}
                     onChange={(e) => setStoreDescription(e.target.value)}
                     rows={4}
-                    className="w-full px-3 py-2 border border-gray-200 rounded text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-300 transition-all resize-none"
+                    className={`${modalInputClass} resize-none`}
                     placeholder="Enter store description"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
+            <div className="flex justify-end gap-2 border-t border-admin-border px-4 py-3">
               <button
+                type="button"
                 onClick={handleCloseCreateStore}
-                className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                className={adminListSecondaryButtonClass}
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={handleSubmitCreateStore}
                 disabled={!storeName.trim() || !storeDescription.trim() || isSubmitting}
-                className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 rounded hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                className={adminListPrimaryButtonClass}
               >
                 {isSubmitting ? 'Creating...' : 'Create Store'}
               </button>
@@ -475,40 +472,35 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
         </div>
       )}
 
-      {/* Logout Confirmation Modal */}
       {isLogoutConfirmOpen && (
-        <div
-          className="fixed inset-0 bg-gray-500/20 z-[1400] flex items-center justify-center p-4"
-          onClick={handleCloseLogoutConfirm}
-        >
+        <div className={modalOverlayClass} onClick={handleCloseLogoutConfirm}>
           <div
             ref={logoutConfirmModalRef}
-            className="bg-white rounded-lg w-full max-w-md shadow-lg border border-gray-200"
+            className={`${modalPanelClass} max-w-md`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="px-4 py-3 border-b border-gray-200">
-              <h2 className="text-base font-medium text-gray-900">Confirm Logout</h2>
+            <div className="border-b border-admin-border px-4 py-3">
+              <h2 className="text-[15px] font-semibold text-admin-text">Confirm Logout</h2>
             </div>
 
-            {/* Content */}
             <div className="px-4 py-4">
-              <p className="text-sm text-gray-700">
+              <p className="text-[13px] text-admin-text-secondary">
                 Are you sure you want to logout?
               </p>
             </div>
 
-            {/* Footer */}
-            <div className="px-4 py-3 border-t border-gray-200 flex justify-end gap-2">
+            <div className="flex justify-end gap-2 border-t border-admin-border px-4 py-3">
               <button
+                type="button"
                 onClick={handleCloseLogoutConfirm}
-                className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                className={adminListSecondaryButtonClass}
               >
                 No
               </button>
               <button
+                type="button"
                 onClick={handleConfirmLogout}
-                className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700 transition-colors"
+                className="inline-flex items-center rounded-lg bg-red-600 px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-red-700"
               >
                 Yes, Logout
               </button>
