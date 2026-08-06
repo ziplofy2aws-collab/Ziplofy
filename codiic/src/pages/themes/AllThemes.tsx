@@ -22,6 +22,14 @@ import {
   useStoreCustomThemes,
   type StoreCustomTheme,
 } from "../../contexts/store-custom-themes.context";
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSearchInputClass,
+} from "../../components/admin-list-ui";
 import ThemePreviewModal from "../../components/ThemePreviewModal";
 import ThemeEditChoiceModal from "../../components/ThemeEditChoiceModal";
 import { DeleteThemeConfirmModal } from "../../components/DeleteThemeConfirmModal";
@@ -546,20 +554,21 @@ const AllThemes: React.FC = () => {
   };
 
   return (
-    <div className="w-full space-y-5 pb-8">
+    <div className={`${adminListPageShellClass} pb-8`}>
+      <div className={`${adminListPageInnerClass} space-y-5`}>
       {isStaticCatalogThemeEditorMode() ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3">
+        <div className="mb-0 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-admin-border bg-admin-secondary px-4 py-3">
           <div>
-            <p className="text-sm font-semibold text-sky-950">Static catalog theme editor</p>
-            <p className="mt-0.5 text-xs text-sky-900/80">
-              Local Watch pack from <code className="rounded bg-sky-100 px-1">remote-themes/watch</code> — no S3
-              re-upload. Rebuild with <code className="rounded bg-sky-100 px-1">npm run build</code> in that folder.
+            <p className="text-sm font-semibold text-admin-text">Static catalog theme editor</p>
+            <p className="mt-0.5 text-xs text-admin-text-secondary">
+              Local Watch pack from <code className="rounded bg-admin-fill px-1">remote-themes/watch</code> — no S3
+              re-upload. Rebuild with <code className="rounded bg-admin-fill px-1">npm run build</code> in that folder.
             </p>
           </div>
           <Link
             to={THEME_EDITOR_DEV_ROUTE}
             onClick={() => setStaticDevPackId('watch')}
-            className="shrink-0 rounded-lg bg-sky-800 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700"
+            className={`shrink-0 ${adminListPrimaryButtonClass}`}
           >
             Open catalog editor
           </Link>
@@ -568,28 +577,28 @@ const AllThemes: React.FC = () => {
 
       <header className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Themes</h1>
-          <p className="mt-0.5 text-sm text-gray-500">Manage your storefront look and feel.</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-admin-text">Themes</h1>
+          <p className="mt-0.5 text-sm text-admin-text-secondary">Manage your storefront look and feel.</p>
             </div>
         <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2 sm:max-w-xl sm:justify-end lg:max-w-2xl">
           <div className="relative min-w-[160px] flex-1 sm:max-w-xs">
             <MagnifyingGlassIcon
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-text-subdued"
               aria-hidden
             />
             <input
               type="search"
               placeholder="Search themes…"
-              className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className={`${adminListSearchInputClass} py-2 pl-9`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex overflow-hidden rounded-lg border border-gray-200 bg-white p-0.5">
+          <div className="flex overflow-hidden rounded-lg border border-admin-border bg-admin-surface p-0.5">
           <button
             type="button"
               className={`rounded-md px-2.5 py-1.5 transition-colors ${
-                viewMode === 'grid' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-800'
+                viewMode === 'grid' ? 'bg-admin-text text-white' : 'text-admin-text-secondary hover:text-admin-text'
               }`}
               onClick={() => setViewMode('grid')}
               aria-pressed={viewMode === 'grid'}
@@ -600,7 +609,7 @@ const AllThemes: React.FC = () => {
             <button
               type="button"
               className={`rounded-md px-2.5 py-1.5 transition-colors ${
-                viewMode === 'list' ? 'bg-gray-900 text-white' : 'text-gray-500 hover:text-gray-800'
+                viewMode === 'list' ? 'bg-admin-text text-white' : 'text-admin-text-secondary hover:text-admin-text'
               }`}
               onClick={() => setViewMode('list')}
               aria-pressed={viewMode === 'list'}
@@ -611,7 +620,7 @@ const AllThemes: React.FC = () => {
           </div>
           <Link
             to="/themes/create"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+            className={`inline-flex shrink-0 items-center gap-1.5 ${adminListPrimaryButtonClass}`}
           >
             <PlusIcon className="h-4 w-4" aria-hidden />
             Create theme
@@ -619,8 +628,8 @@ const AllThemes: React.FC = () => {
         </div>
       </header>
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-        <div className="flex gap-1 overflow-x-auto border-b border-gray-100 px-2 pt-2 sm:px-3">
+      <div className={adminListCardClass}>
+        <div className="flex gap-1 overflow-x-auto border-b border-admin-border px-2 pt-2 sm:px-3">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -628,14 +637,14 @@ const AllThemes: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`shrink-0 rounded-t-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 activeTab === tab.id
-                  ? 'border-b-2 border-blue-600 text-blue-700'
-                  : 'text-gray-500 hover:text-gray-800'
+                  ? 'border-b-2 border-admin-text text-admin-text'
+                  : 'text-admin-text-secondary hover:text-admin-text'
               }`}
             >
               {tab.label}
               <span
                 className={`ml-1.5 tabular-nums ${
-                  activeTab === tab.id ? 'text-blue-600' : 'text-gray-400'
+                  activeTab === tab.id ? 'text-admin-text' : 'text-admin-text-subdued'
                 }`}
               >
                 {tab.count}
@@ -644,7 +653,7 @@ const AllThemes: React.FC = () => {
           ))}
       </div>
 
-        <div className="p-4 sm:p-5">
+        <div className="bg-admin-surface p-4 sm:p-5">
           {activeTab === 'installed' && (
             <>
           {installedTabCount > 0 ? (
@@ -781,9 +790,9 @@ const AllThemes: React.FC = () => {
               return (
                 <div key={`store-custom-${theme._id}`} className="theme-card">
                   <div className="theme-thumbnail">
-                    <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-linear-to-br from-violet-50 to-blue-50 px-4 text-center">
-                      <SwatchIcon className="h-10 w-10 text-violet-500/80" aria-hidden />
-                      <span className="text-xs font-medium text-violet-900/70">Custom theme</span>
+                    <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-admin-fill/40 px-4 text-center">
+                      <SwatchIcon className="h-10 w-10 text-admin-text-secondary" aria-hidden />
+                      <span className="text-xs font-medium text-admin-text-secondary">Custom theme</span>
                     </div>
                   </div>
                   <div className="theme-info">
@@ -821,7 +830,7 @@ const AllThemes: React.FC = () => {
             })}
           </div>
           ) : (
-                <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-gray-200 px-4 py-8 text-sm text-gray-500">
+                <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-admin-border px-4 py-8 text-sm text-admin-text-secondary">
                   No themes installed yet. Browse Public themes or install a Custom theme.
             </div>
           )}
@@ -832,23 +841,23 @@ const AllThemes: React.FC = () => {
           {activeTab === 'custom' && (
             <>
             {!activeStoreId ? (
-                <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-gray-200 px-4 py-8 text-sm text-gray-500">
+                <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-admin-border px-4 py-8 text-sm text-admin-text-secondary">
                   Select a store to see your custom themes.
               </div>
             ) : storeCustomThemesLoading ? (
                 <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 py-10">
                 <div
-                    className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
+                    className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text"
                   aria-hidden
                 />
-                  <p className="text-sm text-gray-500">Loading…</p>
+                  <p className="text-sm text-admin-text-secondary">Loading…</p>
               </div>
               ) : filteredCustomThemes.length === 0 ? (
-                <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-gray-200 px-4 py-8 text-center">
-                  <p className="text-sm text-gray-500">No custom themes yet.</p>
+                <div className="flex min-h-[120px] flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-admin-border px-4 py-8 text-center">
+                  <p className="text-sm text-admin-text-secondary">No custom themes yet.</p>
                 <Link
                   to="/themes/create"
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                    className={`text-sm font-semibold ${adminListFooterLinkClass}`}
                 >
                     Create a theme
                 </Link>
@@ -864,9 +873,9 @@ const AllThemes: React.FC = () => {
                   return (
                   <div key={theme._id} className="theme-card">
                     <div className="theme-thumbnail">
-                      <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-linear-to-br from-violet-50 to-blue-50 px-4 text-center">
-                        <SwatchIcon className="h-10 w-10 text-violet-500/80" aria-hidden />
-                            <span className="text-xs font-medium text-violet-900/70">
+                      <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-admin-fill/40 px-4 text-center">
+                        <SwatchIcon className="h-10 w-10 text-admin-text-secondary" aria-hidden />
+                            <span className="text-xs font-medium text-admin-text-secondary">
                               Custom theme
                             </span>
                       </div>
@@ -879,7 +888,7 @@ const AllThemes: React.FC = () => {
                                 Live
                               </span>
                             ) : formatThemeDate(theme.updatedAt || theme.createdAt) ? (
-                          <span className="text-[11px] font-medium text-gray-500">
+                          <span className="text-[11px] font-medium text-admin-text-secondary">
                                 {formatThemeDate(theme.updatedAt || theme.createdAt)}
                           </span>
                         ) : null}
@@ -933,10 +942,10 @@ const AllThemes: React.FC = () => {
         {themesLoading && (
                   <div className="col-span-full flex min-h-[160px] flex-col items-center justify-center gap-3 py-12">
             <div
-                      className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
+                      className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text"
               aria-hidden
             />
-                    <p className="text-sm text-gray-500">Loading public themes…</p>
+                    <p className="text-sm text-admin-text-secondary">Loading public themes…</p>
           </div>
         )}
         {themesError && (
@@ -1012,13 +1021,13 @@ const AllThemes: React.FC = () => {
       </div>
 
       {!themesLoading && !themesError && filteredThemes.length === 0 && (
-                <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-200 px-4 py-8 text-center">
-                  <p className="text-sm text-gray-500">No public themes match your search.</p>
+                <div className="flex min-h-[120px] flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-admin-border px-4 py-8 text-center">
+                  <p className="text-sm text-admin-text-secondary">No public themes match your search.</p>
           {searchTerm ? (
             <button
               type="button"
               onClick={() => setSearchTerm('')}
-                      className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                      className={`text-sm font-semibold ${adminListFooterLinkClass}`}
             >
               Clear search
             </button>
@@ -1028,6 +1037,7 @@ const AllThemes: React.FC = () => {
             </>
       )}
           </div>
+      </div>
       </div>
 
       <ThemePreviewModal

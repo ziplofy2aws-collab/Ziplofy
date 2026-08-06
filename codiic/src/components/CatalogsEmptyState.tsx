@@ -1,4 +1,5 @@
 import { DocumentTextIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { adminListPrimaryButtonClass } from './admin-list-ui';
 
 interface CatalogsEmptyStateProps {
   onCreate: () => void;
@@ -6,25 +7,20 @@ interface CatalogsEmptyStateProps {
 
 export default function CatalogsEmptyState({ onCreate }: CatalogsEmptyStateProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-12 flex flex-col justify-center items-center gap-6">
-      <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
-        <DocumentTextIcon className="w-7 h-7 text-blue-600" />
+    <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-admin-fill">
+        <DocumentTextIcon className="h-7 w-7 text-admin-text-subdued" aria-hidden />
       </div>
-      <div className="flex flex-col justify-center items-center text-center max-w-md">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1.5">Personalize buying with catalogs</h2>
-        <p className="text-sm text-gray-500">
-          Create custom product and pricing offerings for your customers with catalogs.
-        </p>
+      <p className="text-[15px] font-semibold text-admin-text">Personalize buying with catalogs</p>
+      <p className="mt-1.5 max-w-md text-[13px] text-admin-text-secondary">
+        Create custom product and pricing offerings for your customers with catalogs.
+      </p>
+      <div className="mt-6">
+        <button type="button" onClick={onCreate} className={adminListPrimaryButtonClass}>
+          <PlusIcon className="mr-1.5 h-4 w-4" />
+          <span>Create catalog</span>
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onCreate}
-        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-sm font-semibold transition-colors shadow-sm"
-      >
-        <PlusIcon className="w-4 h-4" />
-        <span>Create catalog</span>
-      </button>
     </div>
   );
 }
-

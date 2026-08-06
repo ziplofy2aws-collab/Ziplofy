@@ -167,7 +167,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-12 z-50 flex h-[calc(100vh-48px)] w-[240px] shrink-0 flex-col border-r border-admin-border bg-admin-sidebar"
+      className="fixed left-0 top-14 z-50 flex h-[calc(100vh-56px)] w-[240px] shrink-0 flex-col border-r border-admin-border bg-admin-sidebar"
       style={{
         width: `${drawerWidth}px`,
       }}

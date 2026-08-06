@@ -1,4 +1,5 @@
 import { GlobeAltIcon } from '@heroicons/react/24/outline';
+import { adminListRowClass, adminListTableCellClass } from './admin-list-ui';
 
 interface MarketsListItemProps {
   id: string;
@@ -14,19 +15,19 @@ export default function MarketsListItem({ id, name, status, onSelect }: MarketsL
     <button
       type="button"
       onClick={() => onSelect(id)}
-      className="cursor-pointer w-full text-left px-4 py-3 grid grid-cols-[2fr_1fr] hover:bg-blue-50/50 transition-colors border-b border-gray-100 last:border-b-0"
+      className={`${adminListRowClass} w-full grid grid-cols-[2fr_1fr] text-left`}
     >
-      <div className="flex items-center gap-2">
-        <GlobeAltIcon className="w-4 h-4 text-blue-500/70" />
-        <span className="text-sm font-medium text-gray-900">{name}</span>
+      <div className={`${adminListTableCellClass} flex items-center gap-2 font-medium text-admin-text`}>
+        <GlobeAltIcon className="h-4 w-4 text-admin-text-secondary" />
+        <span>{name}</span>
       </div>
-      <div className="flex items-center">
+      <div className={`${adminListTableCellClass} flex items-center`}>
         {isActive ? (
-          <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-lg bg-green-50 text-green-700 border border-green-200/80">
+          <span className="inline-flex items-center rounded-md bg-admin-secondary px-2 py-0.5 text-[11px] font-medium text-admin-text">
             Active
           </span>
         ) : (
-          <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-100 text-gray-600 border border-gray-200/80">
+          <span className="inline-flex items-center rounded-md bg-admin-fill px-2 py-0.5 text-[11px] font-medium text-admin-text-secondary">
             Draft
           </span>
         )}
@@ -34,4 +35,3 @@ export default function MarketsListItem({ id, name, status, onSelect }: MarketsL
     </button>
   );
 }
-

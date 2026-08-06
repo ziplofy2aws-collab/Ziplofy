@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+} from '../../components/admin-list-ui';
 import MarketsHeader from '../../components/MarketsHeader';
 import MarketsList from '../../components/MarketsList';
 import MarketsToolbar from '../../components/MarketsToolbar';
@@ -18,9 +24,9 @@ const MarketsPage: React.FC = () => {
     }
   }, [activeStoreId, getByStoreId]);
 
-  const onCreateMarket = useCallback(()=>{
-    navigate("/markets/new")
-  },[])
+  const onCreateMarket = useCallback(() => {
+    navigate('/markets/new');
+  }, [navigate]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearch(value);
@@ -28,18 +34,24 @@ const MarketsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <MarketsHeader onCreateMarket={onCreateMarket} />
-        <MarketsToolbar
-          searchValue={search}
-          onSearchChange={handleSearchChange}
-        />
-        <MarketsList
-          markets={markets}
-          loading={loading}
-          onSelect={(id) => navigate(`/markets/${id}`)}
-        />
+        <div className={adminListCardClass}>
+          <MarketsToolbar searchValue={search} onSearchChange={handleSearchChange} />
+          <MarketsList
+            markets={markets}
+            loading={loading}
+            onSelect={(id) => navigate(`/markets/${id}`)}
+          />
+        </div>
+        <div className="py-5 text-center">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
+              Learn more about markets
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

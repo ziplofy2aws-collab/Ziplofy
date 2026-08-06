@@ -13,6 +13,12 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
+import {
+  adminListCardClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+} from '../components/admin-list-ui';
 import ConfirmDeleteAllFilesModal from '../components/ConfirmDeleteAllFilesModal';
 import {
   fileNameFromStorageKey,
@@ -376,23 +382,23 @@ export const ContentFilesPage = () => {
   };
 
   const renderEmptyState = (title: string, description: string, showUploadButton: boolean) => (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[400px] flex justify-center items-center p-12">
-      <div className="flex flex-col justify-center items-center text-center gap-4 max-w-md">
-        <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center">
-          <FolderIcon className="w-7 h-7 text-blue-600" />
+    <div className={`${adminListCardClass} flex min-h-[400px] items-center justify-center p-12`}>
+      <div className="flex max-w-md flex-col items-center justify-center gap-4 text-center">
+        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-admin-secondary">
+          <FolderIcon className="h-7 w-7 text-admin-text-secondary" />
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-lg font-semibold text-gray-900">{title}</span>
-          <span className="text-sm text-gray-500">{description}</span>
+          <span className="text-[15px] font-semibold text-admin-text">{title}</span>
+          <span className="text-[13px] text-admin-text-secondary">{description}</span>
         </div>
         {showUploadButton && (
           <button
             type="button"
             onClick={openFilePicker}
             disabled={deleteLoading}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors mt-2"
+            className={`${adminListPrimaryButtonClass} mt-2 gap-1.5`}
           >
-            <DocumentArrowUpIcon className="w-4 h-4" />
+            <DocumentArrowUpIcon className="h-4 w-4" />
             Upload files
           </button>
         )}
@@ -401,11 +407,11 @@ export const ContentFilesPage = () => {
   );
 
   const renderLibraryGrid = () => (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-4 sm:p-6">
-      <p className="text-sm text-gray-500 mb-4">
+    <div className={`${adminListCardClass} p-4 sm:p-6`}>
+      <p className="mb-4 text-[13px] text-admin-text-secondary">
         {uploads.length} file{uploads.length === 1 ? '' : 's'} in your library
       </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {uploads.map((upload, index) => {
           const previewUrl = resolveUploadPreviewUrl(upload);
           const name = fileNameFromStorageKey(upload.key);
@@ -414,12 +420,12 @@ export const ContentFilesPage = () => {
           return (
             <div
               key={upload._id}
-              className="group relative flex flex-col rounded-lg border border-gray-200 overflow-hidden bg-gray-50"
+              className="group relative flex cursor-pointer flex-col overflow-hidden rounded-lg border border-admin-border bg-admin-secondary transition-colors hover:bg-admin-row-hover"
             >
               <button
                 type="button"
                 onClick={() => openViewer(index)}
-                className="aspect-square flex items-center justify-center bg-gray-100 relative text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
+                className="relative flex aspect-square items-center justify-center bg-admin-secondary text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005bd3] focus-visible:ring-inset"
                 aria-label={`View ${name}`}
               >
                 {previewUrl ? (
@@ -430,13 +436,13 @@ export const ContentFilesPage = () => {
                     loading="lazy"
                   />
                 ) : (
-                  <div className="flex flex-col items-center gap-1 text-gray-400 p-3">
+                  <div className="flex flex-col items-center gap-1 p-3 text-admin-text-subdued">
                     {isImageStorageKey(upload.key) ? (
-                      <PhotoIcon className="w-10 h-10" />
+                      <PhotoIcon className="h-10 w-10" />
                     ) : (
-                      <DocumentIcon className="w-10 h-10" />
+                      <DocumentIcon className="h-10 w-10" />
                     )}
-                    <span className="text-[10px] text-center line-clamp-2">{name}</span>
+                    <span className="line-clamp-2 text-center text-[10px]">{name}</span>
                   </div>
                 )}
               </button>
@@ -447,16 +453,18 @@ export const ContentFilesPage = () => {
                   void handleDelete(upload);
                 }}
                 disabled={isDeleting || isProcessingQueue || deleteLoading}
-                className="absolute top-2 right-2 z-10 rounded-md bg-white/90 p-1.5 text-gray-600 shadow-sm opacity-0 group-hover:opacity-100 focus:opacity-100 hover:text-red-600 hover:bg-white disabled:opacity-50 transition-opacity"
+                className="absolute top-2 right-2 z-10 rounded-md bg-admin-surface/90 p-1.5 text-admin-text-secondary opacity-0 shadow-sm transition-opacity hover:bg-admin-surface hover:text-red-600 focus:opacity-100 group-hover:opacity-100 disabled:opacity-50"
                 aria-label={`Delete ${name}`}
               >
-                <TrashIcon className="w-4 h-4" />
+                <TrashIcon className="h-4 w-4" />
               </button>
-              <div className="p-2 border-t border-gray-200 bg-white">
-                <p className="text-xs font-medium text-gray-900 truncate" title={name}>
+              <div className="border-t border-admin-divider bg-admin-surface p-2">
+                <p className="truncate text-xs font-medium text-admin-text" title={name}>
                   {name}
                 </p>
-                <p className="text-[10px] text-gray-500 mt-0.5">{formatUploadedAt(upload.createdAt)}</p>
+                <p className="mt-0.5 text-[10px] text-admin-text-subdued">
+                  {formatUploadedAt(upload.createdAt)}
+                </p>
               </div>
             </div>
           );
@@ -553,8 +561,11 @@ export const ContentFilesPage = () => {
 
     if (fetchLoading && !hasLibrary && !hasQueue) {
       return (
-        <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm min-h-[400px] flex justify-center items-center p-12">
-          <p className="text-sm text-gray-500">Loading files…</p>
+        <div className={`${adminListCardClass} flex min-h-[400px] items-center justify-center p-12`}>
+          <p className="inline-flex items-center gap-2 text-[13px] text-admin-text-secondary">
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+            Loading files…
+          </p>
         </div>
       );
     }
@@ -572,7 +583,7 @@ export const ContentFilesPage = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-page-background-color">
+      <div className={adminListPageShellClass}>
         <input
           ref={fileInputRef}
           type="file"
@@ -582,23 +593,26 @@ export const ContentFilesPage = () => {
           onChange={handleFilesSelected}
         />
 
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-            <div className="pl-3 border-l-4 border-blue-500/60">
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Files</h1>
-              <p className="text-sm text-gray-500 mt-0.5">
+        <div className={adminListPageInnerClass}>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <FolderIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+                <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Files</h1>
+              </div>
+              <p className="mt-1 text-[13px] text-admin-text-secondary">
                 Upload and manage images, videos, documents, and more
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex flex-wrap items-center gap-2">
               {uploads.length > 0 ? (
                 <button
                   type="button"
                   onClick={() => setDeleteAllOpen(true)}
                   disabled={deleteLoading || deletingAll || !activeStoreId || isProcessingQueue}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-red-200 bg-white text-red-600 hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-admin-surface px-3 py-1.5 text-[13px] font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  <TrashIcon className="w-4 h-4" />
+                  <TrashIcon className="h-4 w-4" />
                   Delete all
                 </button>
               ) : null}
@@ -606,9 +620,9 @@ export const ContentFilesPage = () => {
                 type="button"
                 onClick={openFilePicker}
                 disabled={deleteLoading || deletingAll || !activeStoreId}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-colors shadow-sm"
+                className={`${adminListPrimaryButtonClass} gap-1.5`}
               >
-                <DocumentArrowUpIcon className="w-4 h-4" />
+                <DocumentArrowUpIcon className="h-4 w-4" />
                 {isProcessingQueue ? 'Uploading…' : 'Upload files'}
               </button>
             </div>

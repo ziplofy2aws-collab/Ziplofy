@@ -1,6 +1,7 @@
 import { InformationCircleIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { adminListCardClass, adminListFooterLinkClass, adminListSecondaryButtonClass } from '../components/admin-list-ui';
 import { SelectImageModal, type SelectedImageAsset } from '../components/SelectImageModal';
 import { useStore } from '../contexts/store.context';
 import { META_DESCRIPTION_MAX, PAGE_TITLE_MAX } from './seo-text.util';
@@ -25,7 +26,7 @@ function InfoTooltip() {
   return (
     <button
       type="button"
-      className="inline-flex shrink-0 text-gray-400 transition-colors hover:text-gray-600"
+      className="inline-flex shrink-0 text-admin-text-subdued transition-colors hover:text-admin-text-secondary"
       aria-label="More information"
     >
       <InformationCircleIcon className="h-4 w-4" aria-hidden />
@@ -143,17 +144,17 @@ export function StoreSeoSettingsPanel({
 
   if (variant === 'preferences') {
     return (
-      <section className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-        <div className="border-b border-gray-100 px-4 py-3.5 sm:px-5">
+      <section className={adminListCardClass}>
+        <div className="border-b border-admin-divider px-4 py-3.5 sm:px-5">
           <div className="flex items-center gap-1.5">
-            <h2 className="text-[13px] font-semibold text-gray-900">Social sharing image and SEO</h2>
+            <h2 className="text-[13px] font-semibold text-admin-text">Social sharing image and SEO</h2>
             <InfoTooltip />
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-6 p-4 sm:p-5 lg:grid-cols-2">
           <div className="space-y-4">
-            <div className="flex min-h-[160px] flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50/80 px-6 py-8 text-center">
+            <div className="flex min-h-[160px] flex-col items-center justify-center rounded-lg border border-admin-border bg-admin-secondary/60 px-6 py-8 text-center">
               {resolvedSocialImageUrl.trim() ? (
                 <div className="w-full space-y-3">
                   <img
@@ -165,14 +166,14 @@ export function StoreSeoSettingsPanel({
                     <button
                       type="button"
                       onClick={() => setImagePickerOpen(true)}
-                      className="text-[12px] font-medium text-blue-600 hover:text-blue-700"
+                      className={`text-[12px] font-medium ${adminListFooterLinkClass}`}
                     >
                       Change image
                     </button>
                     <button
                       type="button"
                       onClick={() => updateSeoField('socialImageUrl', '')}
-                      className="text-[12px] font-medium text-gray-500 hover:text-gray-700"
+                      className="text-[12px] font-medium text-admin-text-secondary hover:text-admin-text"
                     >
                       Remove
                     </button>
@@ -183,21 +184,21 @@ export function StoreSeoSettingsPanel({
                   <button
                     type="button"
                     onClick={() => setImagePickerOpen(true)}
-                    className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-[13px] font-medium text-gray-800 shadow-sm transition-colors hover:bg-gray-50"
+                    className={adminListSecondaryButtonClass}
                   >
                     Add image
                   </button>
-                  <p className="mt-2 text-[12px] text-gray-500">Recommended: 1200 x 628 px</p>
+                  <p className="mt-2 text-[12px] text-admin-text-secondary">Recommended: 1200 x 628 px</p>
                 </>
               )}
             </div>
 
-            <div className="rounded-lg border border-gray-200 bg-white px-3 py-3">
-              <p className="truncate text-[11px] font-normal uppercase tracking-wide text-gray-500">
+            <div className="rounded-lg border border-admin-border bg-admin-surface px-3 py-3">
+              <p className="truncate text-[11px] font-normal uppercase tracking-wide text-admin-text-secondary">
                 {previewHost}
               </p>
-              <p className="mt-1 truncate text-[13px] font-semibold text-gray-900">{previewTitle}</p>
-              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-gray-500">
+              <p className="mt-1 truncate text-[13px] font-semibold text-admin-text">{previewTitle}</p>
+              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-admin-text-secondary">
                 {previewDescription}
               </p>
             </div>
@@ -206,7 +207,7 @@ export function StoreSeoSettingsPanel({
 
           <div className="space-y-5">
             <div>
-              <label className="mb-1.5 block text-[13px] font-medium text-gray-700" htmlFor="seo-home-title">
+              <label className="mb-1.5 block text-[13px] font-medium text-admin-text" htmlFor="seo-home-title">
                 Home page title
               </label>
               <input
@@ -217,16 +218,16 @@ export function StoreSeoSettingsPanel({
                   updateSeoField('homePageTitle', e.target.value.slice(0, PAGE_TITLE_MAX))
                 }
                 placeholder={activeStore.storeName}
-                className={inputClass}
+                className="w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-2 text-[13px] text-admin-text outline-none placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3]"
               />
-              <p className="mt-1.5 text-[12px] text-gray-500">
+              <p className="mt-1.5 text-[12px] text-admin-text-secondary">
                 {resolvedHomePageTitle.length} of {PAGE_TITLE_MAX} characters used
               </p>
             </div>
 
             <div>
               <label
-                className="mb-1.5 block text-[13px] font-medium text-gray-700"
+                className="mb-1.5 block text-[13px] font-medium text-admin-text"
                 htmlFor="seo-meta-description"
               >
                 Meta description
@@ -239,9 +240,9 @@ export function StoreSeoSettingsPanel({
                   updateSeoField('metaDescription', e.target.value.slice(0, META_DESCRIPTION_MAX))
                 }
                 placeholder="Enter a description to be shown on search engines like Google"
-                className={`${inputClass} resize-none`}
+                className="w-full resize-none rounded-lg border border-admin-border bg-admin-surface px-3 py-2 text-[13px] text-admin-text outline-none placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3]"
               />
-              <p className="mt-1.5 text-[12px] text-gray-500">
+              <p className="mt-1.5 text-[12px] text-admin-text-secondary">
                 {resolvedMetaDescription.length} of {META_DESCRIPTION_MAX} characters used
               </p>
             </div>

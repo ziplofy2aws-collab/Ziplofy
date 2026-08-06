@@ -7,6 +7,14 @@ import {
 } from '@heroicons/react/24/outline';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from '../components/admin-list-ui';
 import OnlineStoreThemesExplore from '../components/OnlineStoreThemesExplore';
 import { useInstalledThemes } from '../contexts/installed-themes.context';
 import { useStore } from '../contexts/store.context';
@@ -56,20 +64,20 @@ function StorefrontPreviewFrame({ url }: { url: string }) {
   return (
     <div
       ref={shellRef}
-      className="relative w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-inner"
+      className="relative w-full overflow-hidden rounded-lg border border-admin-border bg-admin-surface"
       style={{ height: CHROME_H + PREVIEW_HEIGHT * scale }}
     >
-      <div className="absolute inset-x-0 top-0 z-10 flex h-7 items-center gap-1.5 border-b border-gray-200 bg-gray-100 px-2.5">
-        <span className="h-2 w-2 rounded-full bg-gray-300" aria-hidden />
-        <span className="h-2 w-2 rounded-full bg-gray-300" aria-hidden />
-        <span className="h-2 w-2 rounded-full bg-gray-300" aria-hidden />
-        <span className="ml-2 truncate rounded bg-white px-2 py-0.5 text-[10px] text-gray-500 ring-1 ring-gray-200">
+      <div className="absolute inset-x-0 top-0 z-10 flex h-7 items-center gap-1.5 border-b border-admin-border bg-admin-secondary px-2.5">
+        <span className="h-2 w-2 rounded-full bg-admin-fill" aria-hidden />
+        <span className="h-2 w-2 rounded-full bg-admin-fill" aria-hidden />
+        <span className="h-2 w-2 rounded-full bg-admin-fill" aria-hidden />
+        <span className="ml-2 truncate rounded bg-admin-surface px-2 py-0.5 text-[10px] text-admin-text-subdued ring-1 ring-admin-border">
           {host}
         </span>
       </div>
 
       {!loaded ? (
-        <div className="absolute inset-0 z-1 flex items-center justify-center bg-white pt-7 text-sm text-gray-400">
+        <div className="absolute inset-0 z-1 flex items-center justify-center bg-admin-surface pt-7 text-sm text-admin-text-subdued">
           Loading store…
         </div>
       ) : null}
@@ -78,7 +86,7 @@ function StorefrontPreviewFrame({ url }: { url: string }) {
         <iframe
           title="Live storefront preview"
           src={url}
-          className="pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-white"
+          className="pointer-events-none absolute left-0 top-0 origin-top-left border-0 bg-admin-surface"
           style={{
             width: PREVIEW_WIDTH,
             height: PREVIEW_HEIGHT,
@@ -182,12 +190,12 @@ export default function OnlineStorePage() {
   ] as const;
 
   return (
-    <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color">
-      <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+    <div className={`${adminListPageShellClass} min-h-[calc(100vh-48px)]`}>
+      <div className={adminListPageInnerClass}>
         <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Online store</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-2xl font-semibold tracking-tight text-admin-text">Online store</h1>
+            <p className="mt-1 text-sm text-admin-text-secondary">
               {store?.storeName ? `${store.storeName} storefront` : 'Your storefront overview'}
             </p>
           </div>
@@ -196,20 +204,20 @@ export default function OnlineStorePage() {
               href={storefrontUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50"
+              className={adminListSecondaryButtonClass}
             >
               <span className="max-w-[220px] truncate">{hostLabel}</span>
-              <ArrowTopRightOnSquareIcon className="h-4 w-4 shrink-0 text-gray-400" aria-hidden />
+              <ArrowTopRightOnSquareIcon className="ml-1.5 h-4 w-4 shrink-0 text-admin-text-subdued" aria-hidden />
             </a>
           ) : null}
         </header>
 
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)]">
-          <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
+          <section className={adminListCardClass}>
+            <div className="flex items-center justify-between gap-3 border-b border-admin-divider px-4 py-3">
               <div className="min-w-0">
-                <h2 className="text-sm font-semibold text-gray-900">Live preview</h2>
-                <p className="truncate text-xs text-gray-500">
+                <h2 className="text-sm font-semibold text-admin-text">Live preview</h2>
+                <p className="truncate text-xs text-admin-text-secondary">
                   {hostLabel || 'How your store looks right now'}
                 </p>
               </div>
@@ -218,28 +226,28 @@ export default function OnlineStorePage() {
                   href={storefrontUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-700"
+                  className={`shrink-0 text-xs font-semibold ${adminListFooterLinkClass}`}
                 >
                   Open store
                 </a>
               ) : null}
             </div>
 
-            <div className="bg-gray-50 p-3 sm:p-4">
+            <div className="bg-admin-secondary p-3 sm:p-4">
               {loading && !storefrontUrl ? (
-                <div className="flex h-56 items-center justify-center rounded-lg border border-dashed border-gray-200 bg-white text-sm text-gray-400">
+                <div className="flex h-56 items-center justify-center rounded-lg border border-dashed border-admin-border bg-admin-surface text-sm text-admin-text-subdued">
                   Loading preview…
                 </div>
               ) : storefrontUrl ? (
                 <StorefrontPreviewFrame url={storefrontUrl} />
               ) : (
-                <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-gray-200 bg-white px-6 text-center">
-                  <p className="text-sm text-gray-500">
+                <div className="flex h-56 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-admin-border bg-admin-surface px-6 text-center">
+                  <p className="text-sm text-admin-text-secondary">
                     No storefront URL yet. Set up your subdomain to preview the live store.
                   </p>
                   <Link
                     to="/settings/domains"
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                    className={`text-sm font-semibold ${adminListFooterLinkClass}`}
                   >
                     Manage domains
                   </Link>
@@ -249,13 +257,13 @@ export default function OnlineStorePage() {
           </section>
 
           <aside className="flex flex-col gap-5">
-            <section className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-              <h2 className="text-sm font-semibold text-gray-900">Current theme</h2>
+            <section className={`${adminListCardClass} p-4`}>
+              <h2 className="text-sm font-semibold text-admin-text">Current theme</h2>
               {loading && !currentTheme ? (
-                <p className="mt-3 text-sm text-gray-400">Loading…</p>
+                <p className="mt-3 text-sm text-admin-text-subdued">Loading…</p>
               ) : currentTheme ? (
                 <div className="mt-3">
-                  <div className="overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                  <div className="overflow-hidden rounded-lg border border-admin-divider bg-admin-secondary">
                     {currentTheme.thumbnailUrl ? (
                       <img
                         src={currentTheme.thumbnailUrl}
@@ -263,9 +271,9 @@ export default function OnlineStorePage() {
                         className="h-36 w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-36 flex-col items-center justify-center gap-2 bg-linear-to-br from-slate-50 to-blue-50">
-                        <PaintBrushIcon className="h-8 w-8 text-blue-500/70" aria-hidden />
-                        <span className="text-xs font-medium text-gray-500">
+                      <div className="flex h-36 flex-col items-center justify-center gap-2 bg-admin-fill/40">
+                        <PaintBrushIcon className="h-8 w-8 text-admin-text-secondary" aria-hidden />
+                        <span className="text-xs font-medium text-admin-text-secondary">
                           {currentTheme.kind === 'custom' ? 'Custom theme' : 'Theme'}
                         </span>
                       </div>
@@ -273,9 +281,9 @@ export default function OnlineStorePage() {
                   </div>
                   <div className="mt-3 flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="truncate font-medium text-gray-900">{currentTheme.name}</p>
+                      <p className="truncate font-medium text-admin-text">{currentTheme.name}</p>
                       {currentTheme.description ? (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-gray-500">
+                        <p className="mt-0.5 line-clamp-2 text-xs text-admin-text-secondary">
                           {currentTheme.description}
                         </p>
                       ) : null}
@@ -287,13 +295,13 @@ export default function OnlineStorePage() {
                   <div className="mt-3 flex flex-wrap gap-2">
                     <Link
                       to={currentTheme.editPath}
-                      className="inline-flex flex-1 items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                      className={`inline-flex flex-1 items-center justify-center ${adminListPrimaryButtonClass}`}
                     >
                       Customize
                     </Link>
                     <Link
                       to="/online-store/themes"
-                      className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                      className={`inline-flex items-center justify-center ${adminListSecondaryButtonClass}`}
                     >
                       Change
                     </Link>
@@ -301,10 +309,10 @@ export default function OnlineStorePage() {
                 </div>
               ) : (
                 <div className="mt-3">
-                  <p className="text-sm text-gray-500">No theme is live on this store yet.</p>
+                  <p className="text-sm text-admin-text-secondary">No theme is live on this store yet.</p>
                   <Link
                     to="/online-store/themes"
-                    className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    className={`mt-3 inline-flex w-full items-center justify-center ${adminListPrimaryButtonClass}`}
                   >
                     Choose a theme
                   </Link>
@@ -312,23 +320,23 @@ export default function OnlineStorePage() {
               )}
             </section>
 
-            <section className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-              <div className="border-b border-gray-100 px-4 py-3">
-                <h2 className="text-sm font-semibold text-gray-900">Manage</h2>
+            <section className={adminListCardClass}>
+              <div className="border-b border-admin-divider px-4 py-3">
+                <h2 className="text-sm font-semibold text-admin-text">Manage</h2>
               </div>
-              <ul className="divide-y divide-gray-100">
+              <ul className="divide-y divide-admin-divider">
                 {quickLinks.map(({ to, label, hint, icon: Icon }) => (
                   <li key={to}>
                     <Link
                       to={to}
-                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
+                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-admin-row-hover"
                     >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-admin-fill text-admin-text-secondary">
                         <Icon className="h-4 w-4" aria-hidden />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-medium text-gray-900">{label}</span>
-                        <span className="block text-xs text-gray-500">{hint}</span>
+                        <span className="block text-sm font-medium text-admin-text">{label}</span>
+                        <span className="block text-xs text-admin-text-secondary">{hint}</span>
                       </span>
                     </Link>
                   </li>

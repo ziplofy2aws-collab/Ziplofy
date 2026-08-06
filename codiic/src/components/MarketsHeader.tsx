@@ -1,4 +1,8 @@
-import { ChartBarIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon, GlobeAltIcon, PlusIcon } from '@heroicons/react/24/outline';
+import {
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from './admin-list-ui';
 
 interface MarketsHeaderProps {
   onCreateMarket: () => void;
@@ -7,32 +11,23 @@ interface MarketsHeaderProps {
 
 export default function MarketsHeader({ onCreateMarket, onGraphView }: MarketsHeaderProps) {
   return (
-    <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-      <div className="pl-3 border-l-4 border-blue-500/60">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Markets</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Manage your markets and catalogs</p>
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2">
+        <GlobeAltIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+        <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Markets</h1>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {onGraphView && (
-          <button
-            type="button"
-            onClick={onGraphView}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200/80 text-gray-700 hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700 transition-colors text-sm font-medium"
-          >
-            <ChartBarIcon className="w-4 h-4" />
+          <button type="button" onClick={onGraphView} className={adminListSecondaryButtonClass}>
+            <ChartBarIcon className="mr-1.5 h-4 w-4 text-admin-text-secondary" />
             <span>Graph view</span>
           </button>
         )}
-        <button
-          type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm font-semibold shadow-sm"
-          onClick={onCreateMarket}
-        >
-          <PlusIcon className="w-4 h-4" />
+        <button type="button" className={adminListPrimaryButtonClass} onClick={onCreateMarket}>
+          <PlusIcon className="mr-1.5 h-4 w-4" />
           <span>Create market</span>
         </button>
       </div>
     </div>
   );
 }
-

@@ -9,6 +9,18 @@ import {
 } from '@heroicons/react/24/outline';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFilterBarClass,
+  adminListFilterChipClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSearchInputClass,
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from '../components/admin-list-ui';
 import StoreAccessRestrictedBanner from '../components/StoreAccessRestrictedBanner';
 import { useStorePages } from '../contexts/store-page.context';
 import { useStore } from '../contexts/store.context';
@@ -64,7 +76,7 @@ function VisibilityBadge({ visibility }: { visibility: 'visible' | 'hidden' }) {
   }
 
   return (
-    <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[12px] font-medium text-sky-700">
+    <span className="inline-flex items-center rounded-full bg-admin-secondary px-2 py-0.5 text-[12px] font-medium text-admin-text-secondary">
       Hidden
     </span>
   );
@@ -88,8 +100,8 @@ function SortableColumnHeader({
     <button
       type="button"
       onClick={() => onColumnSort(field)}
-      className={`group inline-flex items-center gap-1 text-xs font-normal transition-colors ${
-        active ? 'text-gray-800' : 'text-gray-500 hover:text-gray-700'
+      className={`group inline-flex items-center gap-1 text-[12px] font-medium leading-5 transition-colors hover:text-admin-text ${
+        active ? 'text-admin-text' : 'text-admin-text-secondary'
       }`}
     >
       {label}
@@ -118,42 +130,42 @@ function SortMenu({
   onSortOrderChange: (order: SortOrder) => void;
 }) {
   return (
-    <div className="w-48 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
-      <p className="px-3 pb-1.5 text-[12px] font-medium text-gray-500">Sort by</p>
+    <div className="w-48 rounded-lg border border-admin-border bg-admin-surface py-2 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+      <p className="px-3 pb-1.5 text-[12px] font-medium text-admin-text-secondary">Sort by</p>
       {(Object.keys(SORT_FIELD_LABELS) as SortField[]).map((field) => (
         <label
           key={field}
-          className="flex cursor-pointer items-center gap-2 px-3 py-1 text-[13px] text-gray-700 hover:bg-gray-50"
+          className="flex cursor-pointer items-center gap-2 px-3 py-1 text-[13px] text-admin-text hover:bg-admin-row-hover"
         >
           <input
             type="radio"
             name="pages-sort-field"
             checked={sortField === field}
             onChange={() => onSortFieldChange(field)}
-            className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
+            className="h-3.5 w-3.5 border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
           />
           {SORT_FIELD_LABELS[field]}
         </label>
       ))}
-      <div className="my-1.5 border-t border-gray-100" />
+      <div className="my-1.5 border-t border-admin-divider" />
       <button
         type="button"
         onClick={() => onSortOrderChange('asc')}
-        className={`flex w-full items-center gap-2 px-3 py-1 text-left text-[13px] hover:bg-gray-50 ${
-          sortOrder === 'asc' ? 'text-blue-600' : 'text-gray-700'
+        className={`flex w-full items-center gap-2 px-3 py-1 text-left text-[13px] hover:bg-admin-row-hover ${
+          sortOrder === 'asc' ? 'bg-admin-row-hover text-admin-text' : 'text-admin-text'
         }`}
       >
-        <ArrowUpIcon className="h-3.5 w-3.5" />
+        <ArrowUpIcon className="h-3.5 w-3.5 text-admin-text-secondary" />
         Ascending
       </button>
       <button
         type="button"
         onClick={() => onSortOrderChange('desc')}
-        className={`flex w-full items-center gap-2 px-3 py-1 text-left text-[13px] hover:bg-gray-50 ${
-          sortOrder === 'desc' ? 'text-blue-600' : 'text-gray-700'
+        className={`flex w-full items-center gap-2 px-3 py-1 text-left text-[13px] hover:bg-admin-row-hover ${
+          sortOrder === 'desc' ? 'bg-admin-row-hover text-admin-text' : 'text-admin-text'
         }`}
       >
-        <ArrowDownIcon className="h-3.5 w-3.5" />
+        <ArrowDownIcon className="h-3.5 w-3.5 text-admin-text-secondary" />
         Descending
       </button>
     </div>
@@ -255,8 +267,8 @@ export default function OnlineStorePagesPage() {
         type="button"
         title="Sort"
         onClick={() => setSortOpen((v) => !v)}
-        className={`inline-flex h-7 w-7 items-center justify-center rounded-md border bg-white text-gray-500 transition-colors hover:bg-gray-50 ${
-          sortOpen ? 'border-gray-300 bg-gray-50' : 'border-gray-200'
+        className={`inline-flex h-7 w-7 items-center justify-center rounded-lg border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover ${
+          sortOpen ? 'border-admin-border bg-admin-row-hover' : 'border-admin-border'
         }`}
       >
         <ArrowsUpDownIcon className="h-3.5 w-3.5" />
@@ -275,38 +287,35 @@ export default function OnlineStorePagesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <DocumentTextIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
-            <h1 className="text-lg font-medium text-gray-900">Pages</h1>
+            <DocumentTextIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+            <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Pages</h1>
           </div>
 
-          <Link
-            to="/online-store/pages/new"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700"
-          >
-            <PlusIcon className="h-3.5 w-3.5" />
+          <Link to="/online-store/pages/new" className={adminListPrimaryButtonClass}>
+            <PlusIcon className="mr-1.5 h-3.5 w-3.5" />
             Add page
           </Link>
         </div>
 
         <StoreAccessRestrictedBanner />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-          <div className="border-b border-gray-100 px-3 py-2">
+        <div className={adminListCardClass}>
+          <div className={adminListFilterBarClass}>
             {searchOpen ? (
-              <div className="flex items-center gap-2">
+              <div className="flex w-full items-center gap-2">
                 <div className="relative min-w-0 flex-1">
-                  <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+                  <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-admin-text-subdued" />
                   <input
                     type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Searching all pages"
                     autoFocus
-                    className="w-full rounded-md border border-blue-500 py-1.5 pl-8 pr-3 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
+                    className={adminListSearchInputClass}
                   />
                 </div>
                 <button
@@ -315,25 +324,22 @@ export default function OnlineStorePagesPage() {
                     setSearchOpen(false);
                     setSearchQuery('');
                   }}
-                  className="shrink-0 text-[13px] font-normal text-gray-800 transition-colors hover:text-gray-600"
+                  className="shrink-0 text-[13px] font-normal text-admin-text transition-colors hover:text-admin-text-secondary"
                 >
                   Cancel
                 </button>
                 {renderSortButton()}
               </div>
             ) : (
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex w-full items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-[13px] font-normal text-gray-700"
-                  >
+                  <button type="button" className={adminListFilterChipClass}>
                     All
                   </button>
                   <button
                     type="button"
                     title="Create view"
-                    className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50"
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
                   >
                     <PlusIcon className="h-3.5 w-3.5" />
                   </button>
@@ -344,7 +350,7 @@ export default function OnlineStorePagesPage() {
                     type="button"
                     title="Search and filter"
                     onClick={() => setSearchOpen(true)}
-                    className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
+                    className="inline-flex h-7 items-center gap-1 rounded-lg border border-admin-border bg-admin-surface px-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
                   >
                     <MagnifyingGlassIcon className="h-3.5 w-3.5" />
                     <Bars3BottomLeftIcon className="h-3.5 w-3.5" />
@@ -358,7 +364,7 @@ export default function OnlineStorePagesPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[720px] text-left">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/50">
+                <tr className={adminListTableHeadRowClass}>
                   <th className="w-10 px-3 py-2 text-center">
                     <input
                       ref={selectAllRef}
@@ -366,10 +372,10 @@ export default function OnlineStorePagesPage() {
                       checked={allVisibleSelected}
                       onChange={(e) => handleSelectAllVisible(e.target.checked)}
                       aria-label="Select all pages"
-                      className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                      className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
                     />
                   </th>
-                  <th className="px-3 py-2">
+                  <th className={adminListTableHeadClass}>
                     <SortableColumnHeader
                       label="Title"
                       field="title"
@@ -378,9 +384,9 @@ export default function OnlineStorePagesPage() {
                       onColumnSort={handleColumnSort}
                     />
                   </th>
-                  <th className="px-3 py-2 text-xs font-normal text-gray-500">Visibility</th>
-                  <th className="px-3 py-2 text-xs font-normal text-gray-500">Content</th>
-                  <th className="px-3 py-2 text-right">
+                  <th className={adminListTableHeadClass}>Visibility</th>
+                  <th className={adminListTableHeadClass}>Content</th>
+                  <th className={`${adminListTableHeadClass} text-right`}>
                     <SortableColumnHeader
                       label="Updated"
                       field="updated"
@@ -391,24 +397,24 @@ export default function OnlineStorePagesPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody>
                 {loading && pages.length === 0 ? (
                   Array.from({ length: 4 }).map((_, index) => (
-                    <tr key={index} className="animate-pulse" aria-hidden>
+                    <tr key={index} className="animate-pulse border-b border-admin-divider" aria-hidden>
                       <td className="w-10 px-3 py-2.5 text-center">
-                        <div className="mx-auto h-3.5 w-3.5 rounded bg-gray-100" />
+                        <div className="mx-auto h-3.5 w-3.5 rounded bg-admin-fill" />
                       </td>
                       <td className="px-3 py-2.5">
-                        <div className="h-4 w-32 rounded bg-gray-200" />
+                        <div className="h-4 w-32 rounded bg-admin-fill" />
                       </td>
                       <td className="px-3 py-2.5">
-                        <div className="h-5 w-16 rounded-full bg-gray-100" />
+                        <div className="h-5 w-16 rounded-full bg-admin-fill" />
                       </td>
                       <td className="px-3 py-2.5">
-                        <div className="h-3.5 w-56 max-w-full rounded bg-gray-100" />
+                        <div className="h-3.5 w-56 max-w-full rounded bg-admin-fill" />
                       </td>
                       <td className="px-3 py-2.5">
-                        <div className="ml-auto h-3.5 w-24 rounded bg-gray-100" />
+                        <div className="ml-auto h-3.5 w-24 rounded bg-admin-fill" />
                       </td>
                     </tr>
                   ))
@@ -425,7 +431,7 @@ export default function OnlineStorePagesPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="px-3 py-8 text-center text-[13px] font-normal text-gray-500"
+                      className="px-3 py-8 text-center text-[13px] font-normal text-admin-text-secondary"
                     >
                       {searchQuery.trim() ? 'No pages match your search' : 'No pages yet'}
                     </td>
@@ -435,8 +441,8 @@ export default function OnlineStorePagesPage() {
                     <tr
                       key={page._id}
                       onClick={() => navigate(`/online-store/pages/${page._id}`)}
-                      className={`cursor-pointer transition-colors ${
-                        selectedIds.has(page._id) ? 'bg-gray-50' : 'hover:bg-gray-50/80'
+                      className={`cursor-pointer border-b border-admin-divider bg-admin-surface transition-colors last:border-b-0 hover:bg-admin-row-hover ${
+                        selectedIds.has(page._id) ? 'bg-admin-row-hover' : ''
                       }`}
                     >
                       <td className="w-10 px-3 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -445,11 +451,11 @@ export default function OnlineStorePagesPage() {
                           checked={selectedIds.has(page._id)}
                           onChange={(e) => handleSelectRow(page._id, e.target.checked)}
                           aria-label={`Select page ${page.title}`}
-                          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                          className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
                         />
                       </td>
                       <td className="px-3 py-2.5">
-                        <span className="truncate text-[13px] font-semibold text-gray-800 hover:text-blue-600">
+                        <span className="truncate text-[13px] font-semibold text-admin-text hover:text-[#005bd3]">
                           {page.title}
                         </span>
                       </td>
@@ -457,11 +463,11 @@ export default function OnlineStorePagesPage() {
                         <VisibilityBadge visibility={page.visibility} />
                       </td>
                       <td className="max-w-[360px] px-3 py-2.5">
-                        <span className="line-clamp-1 text-[13px] font-normal text-gray-500">
+                        <span className="line-clamp-1 text-[13px] font-normal text-admin-text-secondary">
                           {page.content || ''}
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-[13px] font-normal text-gray-600">
+                      <td className="whitespace-nowrap px-3 py-2.5 text-right text-[13px] font-normal text-admin-text-secondary">
                         {formatRelativeUpdatedAt(page.updatedAt)}
                       </td>
                     </tr>
@@ -473,9 +479,9 @@ export default function OnlineStorePagesPage() {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-admin-text-secondary">
             Learn more about{' '}
-            <a href="#" className="text-gray-700 underline hover:text-blue-700">
+            <a href="#" className={adminListFooterLinkClass}>
               pages
             </a>
           </p>

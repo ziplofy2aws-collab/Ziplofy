@@ -210,7 +210,7 @@ export default function AdminNavbarSearch() {
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onInputKeyDown}
-          className="h-8 w-full rounded-full border-0 bg-admin-header-control py-0 pl-8 pr-14 text-sm text-white placeholder:text-[#b5b5b5] transition-colors focus:bg-admin-header-control-hover focus:outline-none focus:ring-1 focus:ring-white/20"
+          className="h-9 w-full rounded-full border-0 bg-admin-header-control py-0 pl-8 pr-14 text-sm text-white placeholder:text-[#b5b5b5] transition-colors focus:bg-admin-header-control-hover focus:outline-none focus:ring-1 focus:ring-white/20"
         />
         <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-admin-header-control-hover px-1.5 py-0.5 text-[10px] font-medium text-[#b5b5b5] sm:inline-block">
           Ctrl K

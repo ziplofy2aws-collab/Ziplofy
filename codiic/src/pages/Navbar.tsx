@@ -367,7 +367,7 @@ const codiicNavbar: React.FC = () => {
   }, [resolveAppliedTheme]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[1201] h-12 border-b border-white/10 bg-admin-header">
+    <header className="fixed top-0 left-0 right-0 z-[1201] h-14 border-b border-white/10 bg-admin-header">
       <div className="flex h-full items-center justify-between px-3">
         <div className="flex items-center gap-3">
           <Link

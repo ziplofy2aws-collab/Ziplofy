@@ -301,7 +301,7 @@ import { VendorProvider } from "./contexts/vendor.context";
 
 /** Marketing children */
 
-const NAVBAR_HEIGHT = 48; // keep consistent with Sidebar offset (h-12 = 48px)
+const NAVBAR_HEIGHT = 56; // keep consistent with Sidebar offset (h-14 = 56px)
 const SIDEBAR_WIDTH = 240; // keep consistent with Sidebar width
 
 const PageLoader: React.FC = () => (

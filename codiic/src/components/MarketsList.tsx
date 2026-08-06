@@ -1,3 +1,7 @@
+import {
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from './admin-list-ui';
 import MarketsListItems from './MarketsListItems';
 
 type MarketItem = {
@@ -14,17 +18,24 @@ interface MarketsListProps {
 
 export default function MarketsList({ markets, loading, onSelect }: MarketsListProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
-      <div className="grid grid-cols-[2fr_1fr] px-4 py-3 text-xs font-semibold text-gray-600 bg-gray-50/80 border-b border-gray-200/80">
-        <div>Market Name</div>
-        <div>Status</div>
+    <div className="overflow-x-auto bg-admin-surface">
+      <div className={`grid grid-cols-[2fr_1fr] ${adminListTableHeadRowClass}`}>
+        <div className={adminListTableHeadClass}>Market Name</div>
+        <div className={adminListTableHeadClass}>Status</div>
       </div>
       <div>
         {loading && (
-          <div className="px-4 py-8 text-sm text-gray-500 text-center">Loading markets...</div>
+          <div className="px-3 py-16 text-center text-[13px] text-admin-text-secondary">
+            Loading markets...
+          </div>
         )}
         {!loading && markets.length === 0 && (
-          <div className="px-4 py-12 text-sm text-gray-500 text-center">No markets yet. Create your first market to get started.</div>
+          <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+            <p className="text-[15px] font-semibold text-admin-text">No markets yet</p>
+            <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
+              Create your first market to get started.
+            </p>
+          </div>
         )}
         {!loading && markets.length > 0 && (
           <MarketsListItems markets={markets} onSelect={onSelect} />
@@ -33,4 +44,3 @@ export default function MarketsList({ markets, loading, onSelect }: MarketsListP
     </div>
   );
 }
-

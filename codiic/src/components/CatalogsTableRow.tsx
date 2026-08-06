@@ -1,3 +1,5 @@
+import { adminListRowClass, adminListTableCellClass } from './admin-list-ui';
+
 interface CatalogRowProps {
   id: string;
   title: string;
@@ -21,33 +23,29 @@ export default function CatalogsTableRow({
 }: CatalogRowProps) {
   const isActive = status === 'active';
   return (
-    <tr
-      className="hover:bg-blue-50/50 cursor-pointer transition-colors"
-      onClick={() => onSelect(id)}
-    >
-      <td className="px-4 py-3 text-sm font-medium text-gray-900">{title}</td>
-      <td className="px-4 py-3">
+    <tr className={adminListRowClass} onClick={() => onSelect(id)}>
+      <td className={`${adminListTableCellClass} font-medium text-admin-text`}>{title}</td>
+      <td className={adminListTableCellClass}>
         <span
-          className={`inline-flex items-center px-2.5 py-1 text-xs font-medium rounded-lg border ${
+          className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-medium ${
             isActive
-              ? 'bg-green-50 text-green-700 border-green-200/80'
-              : 'bg-gray-100 text-gray-600 border-gray-200/80'
+              ? 'bg-admin-secondary text-admin-text'
+              : 'bg-admin-fill text-admin-text-secondary'
           }`}
         >
           {isActive ? 'Active' : 'Draft'}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm text-gray-600">—</td>
-      <td className="px-4 py-3 text-sm text-gray-600">
+      <td className={adminListTableCellClass}>—</td>
+      <td className={adminListTableCellClass}>
         {includeCompareAtPrice ? 'Compare-at included' : '—'}
       </td>
-      <td className="px-4 py-3 text-sm text-gray-600">
+      <td className={adminListTableCellClass}>
         {`${priceAdjustment || 0}% ${priceAdjustmentSide === 'increase' ? '↑' : '↓'}`}
       </td>
-      <td className="px-4 py-3 text-sm text-gray-600">
+      <td className={adminListTableCellClass}>
         {autoIncludeNewProducts ? 'Auto include new' : 'Manual'}
       </td>
     </tr>
   );
 }
-

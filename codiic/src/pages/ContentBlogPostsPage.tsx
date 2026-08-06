@@ -11,6 +11,19 @@ import {
 } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFilterBarClass,
+  adminListFilterChipClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSearchInputClass,
+  adminListSecondaryButtonClass,
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from '../components/admin-list-ui';
 import StoreAccessRestrictedBanner from '../components/StoreAccessRestrictedBanner';
 import { useBlogPosts } from '../contexts/blog-post.context';
 import { useBlogTags } from '../contexts/blog-tags.context';
@@ -90,14 +103,14 @@ function formatPublishedAt(iso: string): string {
 function VisibilityBadge({ visibility }: { visibility: 'visible' | 'hidden' }) {
   if (visibility === 'visible') {
     return (
-      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[12px] font-medium text-emerald-700">
+      <span className="inline-flex items-center rounded-full bg-[#cdfee1] px-2 py-0.5 text-[12px] font-medium text-[#0c5132]">
         Visible
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[12px] font-medium text-sky-700">
+    <span className="inline-flex items-center rounded-full bg-admin-secondary px-2 py-0.5 text-[12px] font-medium text-admin-text-secondary">
       Hidden
     </span>
   );
@@ -106,24 +119,24 @@ function VisibilityBadge({ visibility }: { visibility: 'visible' | 'hidden' }) {
 function BlogPostsEmptyIllustration() {
   return (
     <div className="relative mx-auto mb-6 flex h-36 w-36 items-center justify-center">
-      <div className="absolute inset-0 rounded-full bg-gray-100" />
-      <div className="absolute -top-1 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 shadow-sm">
-        <span className="text-[10px] font-medium text-gray-600">B</span>
-        <span className="text-[10px] font-normal text-gray-400">I</span>
-        <span className="text-[10px] font-normal text-gray-400 underline">U</span>
+      <div className="absolute inset-0 rounded-full bg-admin-secondary" />
+      <div className="absolute -top-1 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-md border border-admin-border bg-admin-surface px-2 py-1 shadow-sm">
+        <span className="text-[10px] font-medium text-admin-text-secondary">B</span>
+        <span className="text-[10px] font-normal text-admin-text-subdued">I</span>
+        <span className="text-[10px] font-normal text-admin-text-subdued underline">U</span>
       </div>
-      <div className="relative z-1 mt-2 h-[88px] w-[72px] rounded-md border border-gray-200 bg-white shadow-sm">
+      <div className="relative z-1 mt-2 h-[88px] w-[72px] rounded-md border border-admin-border bg-admin-surface shadow-sm">
         <div className="absolute -left-1 top-2 flex h-[72px] w-2 flex-col justify-between py-1">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-1.5 w-1.5 rounded-full bg-gray-300" />
+            <div key={i} className="h-1.5 w-1.5 rounded-full bg-admin-fill" />
           ))}
         </div>
         <div className="p-2.5 pl-3">
-          <div className="mb-1.5 h-7 w-full rounded-sm bg-gray-100" />
+          <div className="mb-1.5 h-7 w-full rounded-sm bg-admin-secondary" />
           <div className="space-y-1">
-            <div className="h-1 w-full rounded bg-gray-100" />
-            <div className="h-1 w-[85%] rounded bg-gray-100" />
-            <div className="h-1 w-[70%] rounded bg-gray-100" />
+            <div className="h-1 w-full rounded bg-admin-secondary" />
+            <div className="h-1 w-[85%] rounded bg-admin-secondary" />
+            <div className="h-1 w-[70%] rounded bg-admin-secondary" />
           </div>
         </div>
       </div>
@@ -159,17 +172,17 @@ function FilterDropdown({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[13px] font-normal transition-colors ${
+        className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[13px] font-medium transition-colors ${
           active
-            ? 'border-gray-300 bg-gray-100 text-gray-800'
-            : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+            ? 'border-admin-border bg-admin-fill text-admin-text'
+            : 'border-admin-border bg-admin-surface text-admin-text hover:bg-admin-row-hover'
         }`}
       >
         {valueLabel || label}
-        <ChevronDownIcon className="h-3.5 w-3.5 text-gray-400" />
+        <ChevronDownIcon className="h-3.5 w-3.5 text-admin-text-subdued" />
       </button>
       {open ? (
-        <div className="absolute left-0 top-full z-30 mt-1 max-h-60 min-w-[180px] overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+        <div className="absolute left-0 top-full z-30 mt-1 max-h-60 min-w-[180px] overflow-y-auto rounded-lg border border-admin-border bg-admin-surface py-1 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
           {children(() => setOpen(false))}
         </div>
       ) : null}
@@ -191,7 +204,9 @@ function FilterOption({
       type="button"
       onClick={onClick}
       className={`block w-full px-3 py-2 text-left text-[13px] transition-colors ${
-        selected ? 'bg-gray-100 font-medium text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+        selected
+          ? 'bg-admin-row-hover font-medium text-admin-text'
+          : 'text-admin-text hover:bg-admin-row-hover'
       }`}
     >
       {children}
@@ -211,44 +226,48 @@ function SortMenu({
   onSortOrderChange: (order: SortOrder) => void;
 }) {
   return (
-    <div className="w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
-      <p className="px-3 py-1.5 text-[13px] font-medium text-gray-800">Sort by</p>
+    <div className="w-56 rounded-lg border border-admin-border bg-admin-surface py-2 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+      <p className="px-3 py-1.5 text-[13px] font-medium text-admin-text">Sort by</p>
       {(Object.keys(SORT_FIELD_LABELS) as SortField[]).map((field) => (
         <label
           key={field}
-          className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-gray-700 hover:bg-gray-50"
+          className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-admin-text hover:bg-admin-row-hover"
         >
           <input
             type="radio"
             name="blog-post-sort-field"
             checked={sortField === field}
             onChange={() => onSortFieldChange(field)}
-            className="h-3.5 w-3.5 border-gray-300 text-gray-900 focus:ring-gray-400"
+            className="h-3.5 w-3.5 border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
           />
           {SORT_FIELD_LABELS[field]}
         </label>
       ))}
 
-      <div className="my-2 border-t border-gray-100" />
+      <div className="my-2 border-t border-admin-divider" />
 
       <button
         type="button"
         onClick={() => onSortOrderChange('asc')}
         className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] transition-colors ${
-          sortOrder === 'asc' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+          sortOrder === 'asc'
+            ? 'bg-admin-row-hover text-admin-text'
+            : 'text-admin-text hover:bg-admin-row-hover'
         }`}
       >
-        <ArrowUpIcon className="h-3.5 w-3.5 text-gray-500" />
+        <ArrowUpIcon className="h-3.5 w-3.5 text-admin-text-secondary" />
         Oldest first
       </button>
       <button
         type="button"
         onClick={() => onSortOrderChange('desc')}
         className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] transition-colors ${
-          sortOrder === 'desc' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+          sortOrder === 'desc'
+            ? 'bg-admin-row-hover text-admin-text'
+            : 'text-admin-text hover:bg-admin-row-hover'
         }`}
       >
-        <ArrowDownIcon className="h-3.5 w-3.5 text-gray-500" />
+        <ArrowDownIcon className="h-3.5 w-3.5 text-admin-text-secondary" />
         Newest first
       </button>
     </div>
@@ -278,8 +297,8 @@ function SortableColumnHeader({
     <button
       type="button"
       onClick={() => onColumnSort(field)}
-      className={`inline-flex items-center gap-1 text-xs font-normal transition-colors hover:text-gray-700 ${
-        isActive ? 'text-gray-700' : 'text-gray-500'
+      className={`inline-flex items-center gap-1 text-[12px] font-medium leading-5 transition-colors hover:text-admin-text ${
+        isActive ? 'text-admin-text' : 'text-admin-text-secondary'
       }`}
     >
       {label}
@@ -417,8 +436,8 @@ function BlogPostsTable({
         type="button"
         title="Sort"
         onClick={() => onSortOpenChange(!sortOpen)}
-        className={`inline-flex h-7 w-7 items-center justify-center rounded-md border bg-white text-gray-500 transition-colors hover:bg-gray-50 ${
-          sortOpen ? 'border-gray-300 bg-gray-50' : 'border-gray-200'
+        className={`inline-flex h-7 w-7 items-center justify-center rounded-lg border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover ${
+          sortOpen ? 'border-admin-border bg-admin-row-hover' : 'border-admin-border'
         }`}
       >
         <ArrowsUpDownIcon className="h-3.5 w-3.5" />
@@ -437,40 +456,40 @@ function BlogPostsTable({
   );
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="border-b border-gray-100 px-3 py-2" ref={toolbarRef}>
+    <div className={adminListCardClass}>
+      <div className={adminListFilterBarClass} ref={toolbarRef}>
         {searchOpen ? (
-          <>
+          <div className="flex w-full flex-col gap-2">
             <div className="flex items-center gap-2">
               <div className="relative min-w-0 flex-1">
-                <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+                <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-admin-text-subdued" />
                 <input
                   type="search"
                   value={searchQuery}
                   onChange={(e) => onSearchQueryChange(e.target.value)}
                   placeholder="Searching all blog posts"
                   autoFocus
-                  className="w-full rounded-md border border-blue-500 py-1.5 pl-8 pr-3 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
+                  className={adminListSearchInputClass}
                 />
               </div>
               <button
                 type="button"
                 onClick={onClearSearchAndFilters}
-                className="shrink-0 text-[13px] font-normal text-gray-800 transition-colors hover:text-gray-600"
+                className="shrink-0 text-[13px] font-normal text-admin-text transition-colors hover:text-admin-text-secondary"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 disabled
-                className="shrink-0 cursor-not-allowed text-[13px] font-normal text-gray-300"
+                className="shrink-0 cursor-not-allowed text-[13px] font-normal text-admin-text-subdued"
               >
                 Save as
               </button>
               {renderSortButton()}
             </div>
 
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               <FilterDropdown
                 label="Visibility"
                 valueLabel={visibilityLabel}
@@ -593,20 +612,17 @@ function BlogPostsTable({
                 )}
               </FilterDropdown>
             </div>
-          </>
+          </div>
         ) : (
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex w-full items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-[13px] font-normal text-gray-700"
-              >
+              <button type="button" className={adminListFilterChipClass}>
                 All
               </button>
               <button
                 type="button"
                 title="Create view"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               >
                 <PlusIcon className="h-3.5 w-3.5" />
               </button>
@@ -617,7 +633,7 @@ function BlogPostsTable({
                 type="button"
                 title="Search and filter"
                 onClick={() => onSearchOpenChange(true)}
-                className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
+                className="inline-flex h-7 items-center gap-1 rounded-lg border border-admin-border bg-admin-surface px-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               >
                 <MagnifyingGlassIcon className="h-3.5 w-3.5" />
                 <Bars3BottomLeftIcon className="h-3.5 w-3.5" />
@@ -631,7 +647,7 @@ function BlogPostsTable({
       <div className="overflow-x-auto">
         <table className="w-full min-w-[860px] text-left">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50/50">
+            <tr className={adminListTableHeadRowClass}>
               <th className="w-10 px-3 py-2 text-center">
                 <input
                   ref={selectAllRef}
@@ -639,10 +655,10 @@ function BlogPostsTable({
                   checked={allVisibleSelected}
                   onChange={(e) => onSelectAllVisible(e.target.checked)}
                   aria-label="Select all blog posts"
-                  className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                  className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Title"
                   field="title"
@@ -651,8 +667,8 @@ function BlogPostsTable({
                   onColumnSort={onColumnSort}
                 />
               </th>
-              <th className="px-3 py-2 text-xs font-normal text-gray-500">Visibility</th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>Visibility</th>
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Author"
                   field="author"
@@ -661,7 +677,7 @@ function BlogPostsTable({
                   onColumnSort={onColumnSort}
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Blog"
                   field="blogTitle"
@@ -670,7 +686,7 @@ function BlogPostsTable({
                   onColumnSort={onColumnSort}
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Updated"
                   field="updated"
@@ -679,7 +695,7 @@ function BlogPostsTable({
                   onColumnSort={onColumnSort}
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Published"
                   field="published"
@@ -690,21 +706,24 @@ function BlogPostsTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {loading && posts.length === 0 ? (
               <tr>
                 <td
                   colSpan={7}
-                  className="px-3 py-8 text-center text-[13px] font-normal text-gray-500"
+                  className="px-3 py-8 text-center text-[13px] font-normal text-admin-text-secondary"
                 >
-                  Loading blog posts…
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+                    Loading blog posts…
+                  </span>
                 </td>
               </tr>
             ) : posts.length === 0 ? (
               <tr>
                 <td
                   colSpan={7}
-                  className="px-3 py-8 text-center text-[13px] font-normal text-gray-500"
+                  className="px-3 py-8 text-center text-[13px] font-normal text-admin-text-secondary"
                 >
                   No blog posts found
                 </td>
@@ -714,8 +733,10 @@ function BlogPostsTable({
                 <tr
                   key={post.id}
                   onClick={() => onPostClick(post.id)}
-                  className={`cursor-pointer transition-colors ${
-                    selectedIds.has(post.id) ? 'bg-gray-50' : 'hover:bg-gray-50/80'
+                  className={`cursor-pointer border-b border-admin-divider transition-colors last:border-b-0 ${
+                    selectedIds.has(post.id)
+                      ? 'bg-admin-row-hover'
+                      : 'bg-admin-surface hover:bg-admin-row-hover'
                   }`}
                 >
                   <td
@@ -727,12 +748,12 @@ function BlogPostsTable({
                       checked={selectedIds.has(post.id)}
                       onChange={(e) => onSelectRow(post.id, e.target.checked)}
                       aria-label={`Select blog post ${post.title}`}
-                      className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                      className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
                     />
                   </td>
                   <td className="px-3 py-2.5">
                     <div className="flex min-w-0 items-center gap-2.5">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-gray-50">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md border border-admin-border bg-admin-secondary">
                         {post.featuredImageUrl ? (
                           <img
                             src={post.featuredImageUrl}
@@ -740,10 +761,10 @@ function BlogPostsTable({
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <PhotoIcon className="h-4 w-4 text-gray-400" aria-hidden />
+                          <PhotoIcon className="h-4 w-4 text-admin-text-subdued" aria-hidden />
                         )}
                       </div>
-                      <span className="truncate text-[13px] font-semibold text-gray-800 hover:text-blue-600">
+                      <span className="truncate text-[13px] font-semibold text-admin-text">
                         {post.title}
                       </span>
                     </div>
@@ -751,15 +772,15 @@ function BlogPostsTable({
                   <td className="px-3 py-2.5">
                     <VisibilityBadge visibility={post.visibility} />
                   </td>
-                  <td className="px-3 py-2.5 text-[13px] font-normal text-gray-600">
+                  <td className="px-3 py-2.5 text-[13px] font-normal text-admin-text-secondary">
                     {post.author}
                   </td>
-                  <td className="px-3 py-2.5 text-[13px] font-normal text-gray-600">
+                  <td className="px-3 py-2.5 text-[13px] font-normal text-admin-text-secondary">
                     {post.blogId ? (
                       <Link
                         to={`/content/blogs/${post.blogId}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-gray-600 hover:text-blue-600"
+                        className={`${adminListFooterLinkClass}`}
                       >
                         {post.blogTitle}
                       </Link>
@@ -767,10 +788,10 @@ function BlogPostsTable({
                       post.blogTitle
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">
+                  <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-admin-text-secondary">
                     {formatRelativeUpdatedAt(post.updatedAt)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">
+                  <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-admin-text-secondary">
                     {post.visibility === 'visible' ? formatPublishedAt(post.createdAt) : ''}
                   </td>
                 </tr>
@@ -934,29 +955,26 @@ export const ContentBlogPostsPage = () => {
   const showEmptyState = !loading && allRows.length === 0;
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
-            <h1 className="text-lg font-medium text-gray-900">Blog posts</h1>
+            <PencilSquareIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+            <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Blog posts</h1>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <Link
-              to="/content/blogs"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-600 transition-colors hover:bg-gray-50"
-            >
-              <PencilSquareIcon className="h-3.5 w-3.5" />
+            <Link to="/content/blogs" className={adminListSecondaryButtonClass}>
+              <PencilSquareIcon className="mr-1.5 h-3.5 w-3.5" />
               Manage blogs
             </Link>
             {!showEmptyState ? (
               <button
                 type="button"
                 onClick={() => navigate('/content/articles/new')}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700"
+                className={adminListPrimaryButtonClass}
               >
-                <PlusIcon className="h-3.5 w-3.5" />
+                <PlusIcon className="mr-1.5 h-3.5 w-3.5" />
                 Create blog post
               </button>
             ) : null}
@@ -966,24 +984,21 @@ export const ContentBlogPostsPage = () => {
         <StoreAccessRestrictedBanner />
 
         {showEmptyState ? (
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-            <div className="flex min-h-[420px] flex-col items-center justify-center px-6 py-14 text-center">
+          <div className={adminListCardClass}>
+            <div className="flex min-h-[420px] flex-col items-center justify-center bg-admin-surface px-6 py-14 text-center">
               <BlogPostsEmptyIllustration />
-              <h2 className="text-[15px] font-medium text-gray-800">Write a blog post</h2>
-              <p className="mt-1.5 max-w-md text-[13px] font-normal leading-relaxed text-gray-500">
+              <h2 className="text-[15px] font-semibold text-admin-text">Write a blog post</h2>
+              <p className="mt-1.5 max-w-md text-[13px] font-normal leading-relaxed text-admin-text-secondary">
                 Blog posts are a great way to build a community around your products and your brand.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                <button
-                  type="button"
-                  className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
-                >
+                <button type="button" className={adminListSecondaryButtonClass}>
                   Learn more
                 </button>
                 <button
                   type="button"
                   onClick={() => navigate('/content/articles/new')}
-                  className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700"
+                  className={adminListPrimaryButtonClass}
                 >
                   Create blog post
                 </button>
@@ -1028,8 +1043,8 @@ export const ContentBlogPostsPage = () => {
 
         {!showEmptyState ? (
           <div className="py-5 text-center">
-            <p className="text-xs text-gray-500">
-              <a href="#" className="text-blue-600 hover:text-blue-700">
+            <p className="text-xs text-admin-text-secondary">
+              <a href="#" className={adminListFooterLinkClass}>
                 Learn more about blog posts
               </a>
             </p>
