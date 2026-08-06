@@ -434,10 +434,9 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
     [devPackId, reloadEditor, beginBootGate]
   );
 
+  /** Drop pack localStorage draft and rehydrate — keep the editor open (no boot loader). */
   const handleClearDevEditorCache = useCallback(async () => {
     if (!staticDevMode) return;
-    setPackSwitching(true);
-    beginBootGate();
     try {
       clearStaticThemeConfigLocal(devPackId);
       setSelectedNodeId('');
@@ -447,10 +446,8 @@ const SectionThemeConfigEditor: React.FC<SectionThemeConfigEditorProps> = ({
       toast.success('Local editor cache cleared');
     } catch (err: unknown) {
       toast.error((err as Error)?.message ?? 'Failed to clear local cache');
-    } finally {
-      setPackSwitching(false);
     }
-  }, [staticDevMode, devPackId, reloadEditor, beginBootGate]);
+  }, [staticDevMode, devPackId, reloadEditor]);
 
   useEffect(() => {
     beginBootGate();

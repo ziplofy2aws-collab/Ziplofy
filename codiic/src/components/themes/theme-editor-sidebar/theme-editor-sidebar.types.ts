@@ -36,6 +36,7 @@ export type EditorFieldWidget =
   | 'toggle'
   | 'color'
   | 'styled-text'
+  | 'button'
   | 'product'
   | 'products'
   | 'collection'

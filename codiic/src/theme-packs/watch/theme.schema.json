@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
   "themeId": "watch",
-  "description": "Watch — luxury watches storefront (nav-first rebuild).",
+  "description": "Watch - luxury watches storefront (nav-first rebuild).",
   "schemaVersion": "2.0.0",
   "globalSettings": {
     "label": "Theme settings",
@@ -415,7 +415,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1Eyebrow",
               "type": "text",
-              "label": "Slide 1 — Eyebrow",
+              "label": "Slide 1 - Eyebrow",
               "widget": "styled-text",
               "group": "Slide 1",
               "sidebar": true
@@ -423,7 +423,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1Title",
               "type": "text",
-              "label": "Slide 1 — Heading",
+              "label": "Slide 1 - Heading",
               "widget": "styled-text",
               "group": "Slide 1",
               "sidebar": true
@@ -431,7 +431,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1Tagline",
               "type": "text",
-              "label": "Slide 1 — Tagline",
+              "label": "Slide 1 - Tagline",
               "widget": "styled-text",
               "group": "Slide 1",
               "sidebar": true
@@ -439,7 +439,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1PrimaryLabel",
               "type": "text",
-              "label": "Slide 1 — Primary button",
+              "label": "Slide 1 - Primary label",
               "widget": "styled-text",
               "group": "Slide 1",
               "sidebar": true
@@ -447,15 +447,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1PrimaryUrl",
               "type": "text",
-              "label": "Slide 1 — Primary link",
+              "label": "Slide 1 - Primary link",
               "widget": "url",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1PrimaryCta",
+              "type": "text",
+              "label": "Slide 1 - Primary button",
+              "widget": "button",
               "group": "Slide 1",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide1SecondaryLabel",
               "type": "text",
-              "label": "Slide 1 — Secondary button",
+              "label": "Slide 1 - Secondary label",
               "widget": "styled-text",
               "group": "Slide 1",
               "sidebar": true
@@ -463,15 +471,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1SecondaryUrl",
               "type": "text",
-              "label": "Slide 1 — Secondary link",
+              "label": "Slide 1 - Secondary link",
               "widget": "url",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1SecondaryCta",
+              "type": "text",
+              "label": "Slide 1 - Secondary button",
+              "widget": "button",
               "group": "Slide 1",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide1ImageUrl",
               "type": "text",
-              "label": "Slide 1 — Desktop image",
+              "label": "Slide 1 - Desktop image",
               "widget": "image",
               "group": "Slide 1",
               "sidebar": true
@@ -479,7 +495,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide1MobileImageUrl",
               "type": "text",
-              "label": "Slide 1 — Mobile image",
+              "label": "Slide 1 - Mobile image",
               "widget": "image",
               "group": "Slide 1",
               "sidebar": true
@@ -487,7 +503,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2Eyebrow",
               "type": "text",
-              "label": "Slide 2 — Eyebrow",
+              "label": "Slide 2 - Eyebrow",
               "widget": "styled-text",
               "group": "Slide 2",
               "sidebar": true
@@ -495,7 +511,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2Title",
               "type": "text",
-              "label": "Slide 2 — Heading",
+              "label": "Slide 2 - Heading",
               "widget": "styled-text",
               "group": "Slide 2",
               "sidebar": true
@@ -503,7 +519,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2Tagline",
               "type": "text",
-              "label": "Slide 2 — Tagline",
+              "label": "Slide 2 - Tagline",
               "widget": "styled-text",
               "group": "Slide 2",
               "sidebar": true
@@ -511,7 +527,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2PrimaryLabel",
               "type": "text",
-              "label": "Slide 2 — Primary button",
+              "label": "Slide 2 - Primary label",
               "widget": "styled-text",
               "group": "Slide 2",
               "sidebar": true
@@ -519,15 +535,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2PrimaryUrl",
               "type": "text",
-              "label": "Slide 2 — Primary link",
+              "label": "Slide 2 - Primary link",
               "widget": "url",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2PrimaryCta",
+              "type": "text",
+              "label": "Slide 2 - Primary button",
+              "widget": "button",
               "group": "Slide 2",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide2SecondaryLabel",
               "type": "text",
-              "label": "Slide 2 — Secondary button",
+              "label": "Slide 2 - Secondary label",
               "widget": "styled-text",
               "group": "Slide 2",
               "sidebar": true
@@ -535,15 +559,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2SecondaryUrl",
               "type": "text",
-              "label": "Slide 2 — Secondary link",
+              "label": "Slide 2 - Secondary link",
               "widget": "url",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2SecondaryCta",
+              "type": "text",
+              "label": "Slide 2 - Secondary button",
+              "widget": "button",
               "group": "Slide 2",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide2ImageUrl",
               "type": "text",
-              "label": "Slide 2 — Desktop image",
+              "label": "Slide 2 - Desktop image",
               "widget": "image",
               "group": "Slide 2",
               "sidebar": true
@@ -551,7 +583,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide2MobileImageUrl",
               "type": "text",
-              "label": "Slide 2 — Mobile image",
+              "label": "Slide 2 - Mobile image",
               "widget": "image",
               "group": "Slide 2",
               "sidebar": true
@@ -559,7 +591,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3Eyebrow",
               "type": "text",
-              "label": "Slide 3 — Eyebrow",
+              "label": "Slide 3 - Eyebrow",
               "widget": "styled-text",
               "group": "Slide 3",
               "sidebar": true
@@ -567,7 +599,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3Title",
               "type": "text",
-              "label": "Slide 3 — Heading",
+              "label": "Slide 3 - Heading",
               "widget": "styled-text",
               "group": "Slide 3",
               "sidebar": true
@@ -575,7 +607,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3Tagline",
               "type": "text",
-              "label": "Slide 3 — Tagline",
+              "label": "Slide 3 - Tagline",
               "widget": "styled-text",
               "group": "Slide 3",
               "sidebar": true
@@ -583,7 +615,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3PrimaryLabel",
               "type": "text",
-              "label": "Slide 3 — Primary button",
+              "label": "Slide 3 - Primary label",
               "widget": "styled-text",
               "group": "Slide 3",
               "sidebar": true
@@ -591,15 +623,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3PrimaryUrl",
               "type": "text",
-              "label": "Slide 3 — Primary link",
+              "label": "Slide 3 - Primary link",
               "widget": "url",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3PrimaryCta",
+              "type": "text",
+              "label": "Slide 3 - Primary button",
+              "widget": "button",
               "group": "Slide 3",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide3SecondaryLabel",
               "type": "text",
-              "label": "Slide 3 — Secondary button",
+              "label": "Slide 3 - Secondary label",
               "widget": "styled-text",
               "group": "Slide 3",
               "sidebar": true
@@ -607,15 +647,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3SecondaryUrl",
               "type": "text",
-              "label": "Slide 3 — Secondary link",
+              "label": "Slide 3 - Secondary link",
               "widget": "url",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3SecondaryCta",
+              "type": "text",
+              "label": "Slide 3 - Secondary button",
+              "widget": "button",
               "group": "Slide 3",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide3ImageUrl",
               "type": "text",
-              "label": "Slide 3 — Desktop image",
+              "label": "Slide 3 - Desktop image",
               "widget": "image",
               "group": "Slide 3",
               "sidebar": true
@@ -623,7 +671,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide3MobileImageUrl",
               "type": "text",
-              "label": "Slide 3 — Mobile image",
+              "label": "Slide 3 - Mobile image",
               "widget": "image",
               "group": "Slide 3",
               "sidebar": true
@@ -631,7 +679,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4Eyebrow",
               "type": "text",
-              "label": "Slide 4 — Eyebrow",
+              "label": "Slide 4 - Eyebrow",
               "widget": "styled-text",
               "group": "Slide 4",
               "sidebar": true
@@ -639,7 +687,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4Title",
               "type": "text",
-              "label": "Slide 4 — Heading",
+              "label": "Slide 4 - Heading",
               "widget": "styled-text",
               "group": "Slide 4",
               "sidebar": true
@@ -647,7 +695,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4Tagline",
               "type": "text",
-              "label": "Slide 4 — Tagline",
+              "label": "Slide 4 - Tagline",
               "widget": "styled-text",
               "group": "Slide 4",
               "sidebar": true
@@ -655,7 +703,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4PrimaryLabel",
               "type": "text",
-              "label": "Slide 4 — Primary button",
+              "label": "Slide 4 - Primary label",
               "widget": "styled-text",
               "group": "Slide 4",
               "sidebar": true
@@ -663,15 +711,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4PrimaryUrl",
               "type": "text",
-              "label": "Slide 4 — Primary link",
+              "label": "Slide 4 - Primary link",
               "widget": "url",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4PrimaryCta",
+              "type": "text",
+              "label": "Slide 4 - Primary button",
+              "widget": "button",
               "group": "Slide 4",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide4SecondaryLabel",
               "type": "text",
-              "label": "Slide 4 — Secondary button",
+              "label": "Slide 4 - Secondary label",
               "widget": "styled-text",
               "group": "Slide 4",
               "sidebar": true
@@ -679,15 +735,23 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4SecondaryUrl",
               "type": "text",
-              "label": "Slide 4 — Secondary link",
+              "label": "Slide 4 - Secondary link",
               "widget": "url",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4SecondaryCta",
+              "type": "text",
+              "label": "Slide 4 - Secondary button",
+              "widget": "button",
               "group": "Slide 4",
               "sidebar": true
             },
             {
               "path": "templates.index.sections.hero_banner.settings.slide4ImageUrl",
               "type": "text",
-              "label": "Slide 4 — Desktop image",
+              "label": "Slide 4 - Desktop image",
               "widget": "image",
               "group": "Slide 4",
               "sidebar": true
@@ -695,7 +759,7 @@
             {
               "path": "templates.index.sections.hero_banner.settings.slide4MobileImageUrl",
               "type": "text",
-              "label": "Slide 4 — Mobile image",
+              "label": "Slide 4 - Mobile image",
               "widget": "image",
               "group": "Slide 4",
               "sidebar": true
@@ -711,7 +775,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.titleBefore",
               "type": "text",
-              "label": "Title — before",
+              "label": "Title - before",
               "widget": "styled-text",
               "group": "Content",
               "sidebar": true
@@ -719,7 +783,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.titleAccent",
               "type": "text",
-              "label": "Title — accent",
+              "label": "Title - accent",
               "widget": "styled-text",
               "group": "Content",
               "sidebar": true
@@ -727,7 +791,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.titleAfter",
               "type": "text",
-              "label": "Title — after",
+              "label": "Title - after",
               "widget": "styled-text",
               "group": "Content",
               "sidebar": true
@@ -743,7 +807,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.himTitle",
               "type": "textarea",
-              "label": "Him — title",
+              "label": "Him - title",
               "widget": "styled-text",
               "group": "Promo images",
               "sidebar": true
@@ -751,7 +815,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.himImageUrl",
               "type": "text",
-              "label": "Him — image",
+              "label": "Him - image",
               "widget": "image",
               "group": "Promo images",
               "sidebar": true
@@ -759,7 +823,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.himLink",
               "type": "text",
-              "label": "Him — link",
+              "label": "Him - link",
               "widget": "url",
               "group": "Promo images",
               "sidebar": true
@@ -767,7 +831,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.herTitle",
               "type": "textarea",
-              "label": "Her — title",
+              "label": "Her - title",
               "widget": "styled-text",
               "group": "Promo images",
               "sidebar": true
@@ -775,7 +839,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.herImageUrl",
               "type": "text",
-              "label": "Her — image",
+              "label": "Her - image",
               "widget": "image",
               "group": "Promo images",
               "sidebar": true
@@ -783,7 +847,7 @@
             {
               "path": "templates.index.sections.legacy_collection.settings.herLink",
               "type": "text",
-              "label": "Her — link",
+              "label": "Her - link",
               "widget": "url",
               "group": "Promo images",
               "sidebar": true
@@ -829,9 +893,17 @@
               "sidebar": true
             },
             {
+              "path": "templates.index.sections.icons.settings.ctaButton",
+              "type": "text",
+              "label": "CTA button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.icons.settings.card1ProductId",
               "type": "text",
-              "label": "Card 1 — Select product",
+              "label": "Card 1 - Select product",
               "widget": "product",
               "group": "Product",
               "sidebar": true
@@ -839,7 +911,7 @@
             {
               "path": "templates.index.sections.icons.settings.card2ProductId",
               "type": "text",
-              "label": "Card 2 — Select product",
+              "label": "Card 2 - Select product",
               "widget": "product",
               "group": "Product",
               "sidebar": true
@@ -847,7 +919,7 @@
             {
               "path": "templates.index.sections.icons.settings.card3ProductId",
               "type": "text",
-              "label": "Card 3 — Select product",
+              "label": "Card 3 - Select product",
               "widget": "product",
               "group": "Product",
               "sidebar": true
@@ -855,7 +927,7 @@
             {
               "path": "templates.index.sections.icons.settings.card4ProductId",
               "type": "text",
-              "label": "Card 4 — Select product",
+              "label": "Card 4 - Select product",
               "widget": "product",
               "group": "Product",
               "sidebar": true
@@ -863,7 +935,7 @@
             {
               "path": "templates.index.sections.icons.settings.card5ProductId",
               "type": "text",
-              "label": "Card 5 — Select product",
+              "label": "Card 5 - Select product",
               "widget": "product",
               "group": "Product",
               "sidebar": true
@@ -871,7 +943,7 @@
             {
               "path": "templates.index.sections.icons.settings.card6ProductId",
               "type": "text",
-              "label": "Card 6 — Select product",
+              "label": "Card 6 - Select product",
               "widget": "product",
               "group": "Product",
               "sidebar": true
@@ -895,7 +967,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile1CollectionHandle",
               "type": "text",
-              "label": "Tile 1 — Select collection",
+              "label": "Tile 1 - Select collection",
               "widget": "collection",
               "group": "Tile 1",
               "sidebar": true
@@ -903,7 +975,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile1LifestyleImageUrl",
               "type": "text",
-              "label": "Tile 1 — Lifestyle image",
+              "label": "Tile 1 - Lifestyle image",
               "widget": "image",
               "group": "Tile 1",
               "sidebar": true
@@ -911,7 +983,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile1ProductImageUrl",
               "type": "text",
-              "label": "Tile 1 — Product image",
+              "label": "Tile 1 - Product image",
               "widget": "image",
               "group": "Tile 1",
               "sidebar": true
@@ -919,7 +991,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile2CollectionHandle",
               "type": "text",
-              "label": "Tile 2 — Select collection",
+              "label": "Tile 2 - Select collection",
               "widget": "collection",
               "group": "Tile 2",
               "sidebar": true
@@ -927,7 +999,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile2LifestyleImageUrl",
               "type": "text",
-              "label": "Tile 2 — Lifestyle image",
+              "label": "Tile 2 - Lifestyle image",
               "widget": "image",
               "group": "Tile 2",
               "sidebar": true
@@ -935,7 +1007,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile2ProductImageUrl",
               "type": "text",
-              "label": "Tile 2 — Product image",
+              "label": "Tile 2 - Product image",
               "widget": "image",
               "group": "Tile 2",
               "sidebar": true
@@ -943,7 +1015,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile3CollectionHandle",
               "type": "text",
-              "label": "Tile 3 — Select collection",
+              "label": "Tile 3 - Select collection",
               "widget": "collection",
               "group": "Tile 3",
               "sidebar": true
@@ -951,7 +1023,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile3LifestyleImageUrl",
               "type": "text",
-              "label": "Tile 3 — Lifestyle image",
+              "label": "Tile 3 - Lifestyle image",
               "widget": "image",
               "group": "Tile 3",
               "sidebar": true
@@ -959,7 +1031,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile3ProductImageUrl",
               "type": "text",
-              "label": "Tile 3 — Product image",
+              "label": "Tile 3 - Product image",
               "widget": "image",
               "group": "Tile 3",
               "sidebar": true
@@ -967,7 +1039,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile4CollectionHandle",
               "type": "text",
-              "label": "Tile 4 — Select collection",
+              "label": "Tile 4 - Select collection",
               "widget": "collection",
               "group": "Tile 4",
               "sidebar": true
@@ -975,7 +1047,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile4LifestyleImageUrl",
               "type": "text",
-              "label": "Tile 4 — Lifestyle image",
+              "label": "Tile 4 - Lifestyle image",
               "widget": "image",
               "group": "Tile 4",
               "sidebar": true
@@ -983,7 +1055,7 @@
             {
               "path": "templates.index.sections.signature.settings.tile4ProductImageUrl",
               "type": "text",
-              "label": "Tile 4 — Product image",
+              "label": "Tile 4 - Product image",
               "widget": "image",
               "group": "Tile 4",
               "sidebar": true
@@ -999,7 +1071,7 @@
             {
               "path": "templates.index.sections.banner_showcase.settings.slide1ImageUrl",
               "type": "text",
-              "label": "Slide 1 — Desktop image",
+              "label": "Slide 1 - Desktop image",
               "widget": "image",
               "group": "Slide 1",
               "sidebar": true
@@ -1007,7 +1079,7 @@
             {
               "path": "templates.index.sections.banner_showcase.settings.slide1MobileImageUrl",
               "type": "text",
-              "label": "Slide 1 — Mobile image",
+              "label": "Slide 1 - Mobile image",
               "widget": "image",
               "group": "Slide 1",
               "sidebar": true
@@ -1015,7 +1087,7 @@
             {
               "path": "templates.index.sections.banner_showcase.settings.slide2ImageUrl",
               "type": "text",
-              "label": "Slide 2 — Desktop image",
+              "label": "Slide 2 - Desktop image",
               "widget": "image",
               "group": "Slide 2",
               "sidebar": true
@@ -1023,7 +1095,7 @@
             {
               "path": "templates.index.sections.banner_showcase.settings.slide2MobileImageUrl",
               "type": "text",
-              "label": "Slide 2 — Mobile image",
+              "label": "Slide 2 - Mobile image",
               "widget": "image",
               "group": "Slide 2",
               "sidebar": true
@@ -1031,7 +1103,7 @@
             {
               "path": "templates.index.sections.banner_showcase.settings.slide3ImageUrl",
               "type": "text",
-              "label": "Slide 3 — Desktop image",
+              "label": "Slide 3 - Desktop image",
               "widget": "image",
               "group": "Slide 3",
               "sidebar": true
@@ -1039,7 +1111,7 @@
             {
               "path": "templates.index.sections.banner_showcase.settings.slide3MobileImageUrl",
               "type": "text",
-              "label": "Slide 3 — Mobile image",
+              "label": "Slide 3 - Mobile image",
               "widget": "image",
               "group": "Slide 3",
               "sidebar": true
@@ -1081,6 +1153,22 @@
               "type": "text",
               "label": "Products",
               "widget": "products",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
               "group": "Product",
               "sidebar": true
             }
@@ -1178,6 +1266,14 @@
               "sidebar": true
             },
             {
+              "path": "templates.index.sections.new_launches.settings.viewAllButton",
+              "type": "text",
+              "label": "View all button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.index.sections.new_launches.settings.featuredImageUrl",
               "type": "text",
               "label": "Featured image",
@@ -1195,7 +1291,7 @@
             {
               "path": "templates.index.sections.new_launches.settings.card1ProductId",
               "type": "text",
-              "label": "Card 1 — Select product",
+              "label": "Card 1 - Select product",
               "widget": "product",
               "group": "Products",
               "sidebar": true
@@ -1203,7 +1299,7 @@
             {
               "path": "templates.index.sections.new_launches.settings.card2ProductId",
               "type": "text",
-              "label": "Card 2 — Select product",
+              "label": "Card 2 - Select product",
               "widget": "product",
               "group": "Products",
               "sidebar": true
@@ -1211,8 +1307,16 @@
             {
               "path": "templates.index.sections.new_launches.settings.card3ProductId",
               "type": "text",
-              "label": "Card 3 — Select product",
+              "label": "Card 3 - Select product",
               "widget": "product",
+              "group": "Products",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
               "group": "Products",
               "sidebar": true
             }
@@ -1249,6 +1353,14 @@
               "type": "text",
               "label": "CTA link",
               "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.ctaButton",
+              "type": "text",
+              "label": "CTA button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             },
             {
@@ -1354,9 +1466,33 @@
               "sidebar": true
             },
             {
+              "path": "templates.product.sections.product_main.settings.addToCartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.product.sections.product_main.settings.buyNowLabel",
               "type": "text",
               "label": "Buy now label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.buyNowButton",
+              "type": "text",
+              "label": "Buy now button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.checkPinButton",
+              "type": "text",
+              "label": "Check pincode button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             },
             {
@@ -1518,6 +1654,30 @@
               "sidebar": true
             },
             {
+              "path": "templates.search.sections.search_main.settings.submitButton",
+              "type": "text",
+              "label": "Search button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
               "path": "templates.search.sections.search_main.settings.emptyMessage",
               "type": "text",
               "label": "Empty message",
@@ -1564,6 +1724,22 @@
               "type": "text",
               "label": "All products link",
               "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.allProductsButton",
+              "type": "text",
+              "label": "All products button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.shopCollectionButton",
+              "type": "text",
+              "label": "Shop collection button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
             }
           ]
         }
@@ -1587,6 +1763,22 @@
               "path": "templates.all_products.sections.all_products_main.settings.emptyMessage",
               "type": "text",
               "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_products.sections.all_products_main.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_products.sections.all_products_main.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
               "sidebar": true
             }
           ]
@@ -1631,10 +1823,26 @@
               "sidebar": true
             },
             {
+              "path": "templates.404.sections.not_found_main.settings.homeButton",
+              "type": "text",
+              "label": "Home button style",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.404.sections.not_found_main.settings.shopLabel",
               "type": "text",
               "label": "Shop button",
               "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.shopButton",
+              "type": "text",
+              "label": "Shop button style",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             }
           ]
@@ -1662,9 +1870,41 @@
               "sidebar": true
             },
             {
+              "path": "templates.collection.sections.collection_main.settings.allCollectionsButton",
+              "type": "text",
+              "label": "All collections button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.collection.sections.collection_main.settings.allProductsLabel",
               "type": "text",
               "label": "All products link",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.allProductsButton",
+              "type": "text",
+              "label": "All products button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
               "sidebar": true
             },
             {
@@ -1812,9 +2052,25 @@
               "sidebar": true
             },
             {
+              "path": "templates.cart.sections.cart_main.settings.checkoutButton",
+              "type": "text",
+              "label": "Checkout button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.cart.sections.cart_main.settings.continueLabel",
               "type": "text",
               "label": "Continue shopping",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.continueButton",
+              "type": "text",
+              "label": "Continue shopping button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             }
           ]
@@ -1868,6 +2124,14 @@
               "type": "text",
               "label": "Button label",
               "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.submitButton",
+              "type": "text",
+              "label": "Submit button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             },
             {
@@ -1963,6 +2227,14 @@
               "sidebar": true
             },
             {
+              "path": "templates.signup.sections.signup_main.settings.submitButton",
+              "type": "text",
+              "label": "Submit button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.signup.sections.signup_main.settings.loadingLabel",
               "type": "text",
               "label": "Loading label",
@@ -2030,6 +2302,14 @@
               "sidebar": true
             },
             {
+              "path": "templates.forgot_password.sections.forgot_main.settings.submitButton",
+              "type": "text",
+              "label": "Submit button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.forgot_password.sections.forgot_main.settings.loadingLabel",
               "type": "text",
               "label": "Loading label",
@@ -2086,9 +2366,25 @@
               "sidebar": true
             },
             {
+              "path": "templates.profile.sections.profile_main.settings.signInButton",
+              "type": "text",
+              "label": "Sign in button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.profile.sections.profile_main.settings.saveLabel",
               "type": "text",
               "label": "Save button",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.saveButton",
+              "type": "text",
+              "label": "Save button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             },
             {
@@ -2107,6 +2403,14 @@
               "path": "templates.profile.sections.profile_main.settings.smsMarketingLabel",
               "type": "text",
               "label": "SMS marketing label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.preferencesSaveButton",
+              "type": "text",
+              "label": "Save preferences button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             }
           ]
@@ -2149,6 +2453,14 @@
               "path": "templates.orders.sections.orders_main.settings.signedOutMessage",
               "type": "text",
               "label": "Signed-out message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.signInButton",
+              "type": "text",
+              "label": "Sign in button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             },
             {
@@ -2200,6 +2512,14 @@
               "sidebar": true
             },
             {
+              "path": "templates.order_details.sections.order_details_main.settings.backButton",
+              "type": "text",
+              "label": "Back button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
               "path": "templates.order_details.sections.order_details_main.settings.itemsHeading",
               "type": "text",
               "label": "Items heading",
@@ -2227,6 +2547,14 @@
               "path": "templates.order_details.sections.order_details_main.settings.signedOutMessage",
               "type": "text",
               "label": "Signed-out message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.signInButton",
+              "type": "text",
+              "label": "Sign in button",
+              "widget": "button",
+              "group": "Content",
               "sidebar": true
             },
             {

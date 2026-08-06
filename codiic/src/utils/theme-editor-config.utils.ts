@@ -9,6 +9,11 @@ import {
   isCatalogImageWidgetField,
   resolveCatalogImageStyleCompanionType,
 } from '../components/themes/theme-editor-sidebar/catalog-image-style.utils';
+import {
+  catalogButtonStyleCompanionFieldPaths,
+  isCatalogButtonWidgetField,
+  resolveCatalogButtonStyleCompanionType,
+} from '../components/themes/theme-editor-sidebar/catalog-button-style.utils';
 import { schemaTemplateIdForConfigKey } from '../create-theme/utils/product-templates.util';
 import {
   findSectionSchemaByBlueprint,
@@ -50,6 +55,13 @@ function pushEditableSchemaField(
   }
   if (isCatalogImageWidgetField({ ...field, path })) {
     for (const companion of catalogImageStyleCompanionFieldPaths(path)) {
+      if (seen.has(companion.path)) continue;
+      seen.add(companion.path);
+      out.push(companion);
+    }
+  }
+  if (isCatalogButtonWidgetField({ ...field, path })) {
+    for (const companion of catalogButtonStyleCompanionFieldPaths(path)) {
       if (seen.has(companion.path)) continue;
       seen.add(companion.path);
       out.push(companion);
@@ -1774,6 +1786,9 @@ function resolveFieldTypeForPath(
 
   const catalogImageCompanion = resolveCatalogImageStyleCompanionType(path);
   if (catalogImageCompanion) return catalogImageCompanion;
+
+  const catalogButtonCompanion = resolveCatalogButtonStyleCompanionType(path);
+  if (catalogButtonCompanion) return catalogButtonCompanion;
 
   const sharedHeadingSection = resolveSharedHeadingSectionSettingType(path, typeByPath);
   if (sharedHeadingSection) return sharedHeadingSection;

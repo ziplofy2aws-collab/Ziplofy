@@ -35,6 +35,7 @@ import {
   serializeCollectionLinksPicker,
 } from '../../../create-theme/utils/collection-links-collections.util';
 import { StyledTextFieldRow } from './StyledTextFieldRow';
+import { CatalogButtonStyleFieldRow } from './CatalogButtonStyleFieldRow';
 import {
   filterCatalogSettingsFields,
 } from './catalog-text-style.utils';
@@ -8088,6 +8089,8 @@ function SettingsFieldRow({
       return <ColorPickerFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     case 'styled-text':
       return <StyledTextFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
+    case 'button':
+      return <CatalogButtonStyleFieldRow field={field} values={values} onFieldChange={onFieldChange} />;
     default:
       if (field.path.endsWith('.collectionsPicker') || field.widget === 'collections') {
         return (

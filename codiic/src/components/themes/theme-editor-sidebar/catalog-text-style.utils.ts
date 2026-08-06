@@ -1,6 +1,17 @@
 import type { EditorFieldDef } from './theme-editor-sidebar.types';
 import { isCatalogImageStyleCompanionPath } from './catalog-image-style.utils';
 
+/** Keep in sync with `catalog-button-style.utils` (avoid circular import). */
+const CATALOG_BUTTON_STYLE_COMPANION_SUFFIXES = [
+  'Background',
+  'Text',
+  'Border',
+  'BorderThickness',
+  'CornerRadius',
+  'Font',
+  'TextCase',
+] as const;
+
 /** Companion suffixes for catalog `styled-text` fields (remote themes). */
 export const CATALOG_TEXT_STYLE_SUFFIXES = [
   'FontSize',
@@ -108,6 +119,16 @@ export function filterCatalogSettingsFields(fields: EditorFieldDef[]): EditorFie
     if (field.group && CATALOG_HIDDEN_SETTINGS_GROUPS.has(field.group)) return false;
     if (isCatalogTextStyleCompanionPath(field.path)) return false;
     if (isCatalogImageStyleCompanionPath(field.path)) return false;
+    {
+      const leaf = fieldPathLeaf(field.path);
+      if (
+        CATALOG_BUTTON_STYLE_COMPANION_SUFFIXES.some(
+          (suffix) => leaf.endsWith(suffix) && leaf.length > suffix.length
+        )
+      ) {
+        return false;
+      }
+    }
     const leaf = fieldPathLeaf(field.path);
     if (CATALOG_HIDDEN_FIELD_LEAVES.has(leaf)) return false;
     if (field.widget === 'accordion' && leaf.toLowerCase().includes('css')) return false;
