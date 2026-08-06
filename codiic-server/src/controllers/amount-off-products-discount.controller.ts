@@ -31,9 +31,14 @@ export class AmountOffProductsDiscountController {
         
         // Discount value
         valueType,
-      percentage,
-          fixedAmount,
-        um purchase requirements
+        percentage,
+        fixedAmount,
+        appliesTo,
+        oncePerOrder,
+        eligibility,
+        applyOnPOSPro,
+        
+        // Purchase requirements
         minimumPurchase,
         minimumAmount,
         minimumQuantity,
