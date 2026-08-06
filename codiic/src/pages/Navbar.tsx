@@ -367,15 +367,15 @@ const codiicNavbar: React.FC = () => {
   }, [resolveAppliedTheme]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[1201] h-12 border-b-2 border-gray-200 bg-white">
+    <header className="fixed top-0 left-0 right-0 z-[1201] h-12 border-b border-white/10 bg-admin-header">
       <div className="flex h-full items-center justify-between px-3">
         <div className="flex items-center gap-3">
           <Link
             to="/"
-            className="inline-flex shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50"
+            className="inline-flex shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
             aria-label="Go to home"
           >
-            <img src={codiicLogo} alt="codiic Logo" className="h-8 w-auto object-contain" />
+            <img src={codiicLogo} alt="codiic Logo" className="h-8 w-auto object-contain brightness-0 invert" />
           </Link>
         </div>
 
@@ -387,7 +387,7 @@ const codiicNavbar: React.FC = () => {
           <button
             type="button"
             onClick={toggleCodiix}
-            className={`codiix-header-btn ${codiixOpen ? 'codiix-header-btn--active' : ''}`}
+            className={`codiix-header-btn codiix-header-btn--on-dark ${codiixOpen ? 'codiix-header-btn--active' : ''}`}
             title="Ask Codiix"
             aria-label="Ask Codiix"
             aria-pressed={codiixOpen}
@@ -395,7 +395,7 @@ const codiicNavbar: React.FC = () => {
           >
             <CodiixFaceIcon className="h-7 w-7" title="Codiix" />
           </button>
-          <div className="relative rounded border border-gray-200 bg-gray-50">
+          <div className="relative">
             <StoreDropdown onStoreChange={handleStoreChange} />
           </div>
         </div>

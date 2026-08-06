@@ -138,7 +138,7 @@ const OrderItemsCell: React.FC<OrderItemsCellProps> = ({
         ref={popoverRef}
         role="dialog"
         aria-label="Order items"
-        className="fixed z-[6000] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
+        className="fixed z-[6000] overflow-hidden rounded-xl border border-admin-border bg-admin-surface shadow-xl"
         style={{
           top: position.top,
           left: position.left,
@@ -147,11 +147,11 @@ const OrderItemsCell: React.FC<OrderItemsCellProps> = ({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="border-b border-gray-100 px-3 py-2.5">
+        <div className="border-b border-admin-divider px-3 py-2.5">
           <FulfillmentStatusBadge status={fulfillmentStatus} />
         </div>
 
-        <div className="border-b border-gray-100 bg-gray-50/80 px-3 py-2 text-[12px] font-medium text-gray-600">
+        <div className="border-b border-admin-divider bg-admin-table-header px-3 py-2 text-[12px] font-medium text-admin-text-secondary">
           {deliveryMethod}
         </div>
 
@@ -159,14 +159,14 @@ const OrderItemsCell: React.FC<OrderItemsCellProps> = ({
           {loading ? (
             <OrderItemsPopoverSkeleton />
           ) : resolvedItems.length > 0 ? (
-            <ul className="divide-y divide-gray-100">
+            <ul className="divide-y divide-admin-divider">
               {resolvedItems.map((item) => (
                 <li key={item.lineItemId} className="flex items-center gap-3 px-3 py-2.5">
-                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
+                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-admin-border bg-admin-secondary">
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center text-[10px] text-gray-400">
+                      <div className="flex h-full w-full items-center justify-center text-[10px] text-admin-text-subdued">
                         —
                       </div>
                     )}
@@ -175,23 +175,23 @@ const OrderItemsCell: React.FC<OrderItemsCellProps> = ({
                     {item.productId ? (
                       <Link
                         to={`/products/${item.productId}`}
-                        className="block truncate text-[13px] font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                        className="block truncate text-[13px] font-medium text-[#005bd3] hover:underline"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {item.title}
                       </Link>
                     ) : (
-                      <span className="block truncate text-[13px] font-medium text-gray-900">
+                      <span className="block truncate text-[13px] font-medium text-admin-text">
                         {item.title}
                       </span>
                     )}
                   </div>
-                  <span className="shrink-0 text-[13px] text-gray-600">× {item.quantity}</span>
+                  <span className="shrink-0 text-[13px] text-admin-text-secondary">× {item.quantity}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="px-3 py-4 text-center text-[13px] text-gray-500">No items found</div>
+            <div className="px-3 py-4 text-center text-[13px] text-admin-text-secondary">No items found</div>
           )}
         </div>
       </div>
@@ -205,13 +205,13 @@ const OrderItemsCell: React.FC<OrderItemsCellProps> = ({
         onClick={handleToggle}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
-        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[13px] text-gray-700 transition-colors ${
-          isOpen ? 'bg-gray-100' : 'hover:bg-gray-100'
+        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[13px] text-admin-text-secondary transition-colors ${
+          isOpen ? 'bg-admin-secondary' : 'hover:bg-admin-secondary'
         }`}
       >
         {label}
         <ChevronDownIcon
-          className={`h-3.5 w-3.5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3.5 w-3.5 text-admin-text-secondary transition-transform ${isOpen ? 'rotate-180' : ''}`}
           aria-hidden
         />
       </button>

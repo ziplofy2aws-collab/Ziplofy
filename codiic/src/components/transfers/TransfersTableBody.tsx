@@ -26,12 +26,12 @@ const TransfersTableBody: React.FC<TransfersTableBodyProps> = ({
   onRowClick,
 }) => {
   return (
-    <tbody className="bg-white">
+    <tbody className="bg-admin-surface">
       {transfers.length === 0 ? (
         <tr>
           <td colSpan={8} className="px-3 py-16 text-center">
-            <p className="text-[15px] font-semibold text-gray-900">No transfers found</p>
-            <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <p className="text-[15px] font-semibold text-admin-text">No transfers found</p>
+            <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
               Try changing the filters or search term
             </p>
           </td>

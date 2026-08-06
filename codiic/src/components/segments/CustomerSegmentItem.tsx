@@ -1,10 +1,11 @@
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import React, { useCallback } from 'react';
 import {
-  segmentSecondaryButtonClass,
-  segmentTableCellClass,
-  segmentTableCellRightClass,
-} from './customer-segment-ui.util';
+  adminListRowClass,
+  adminListSecondaryButtonClass,
+  adminListTableCellClass,
+  adminListTableCellRightClass,
+} from '../admin-list-ui';
 
 interface CustomerSegment {
   _id: string;
@@ -35,27 +36,24 @@ const CustomerSegmentItem: React.FC<CustomerSegmentItemProps> = ({
   );
 
   return (
-    <tr
-      className="group cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50/60"
-      onClick={handleClick}
-    >
-      <td className={`${segmentTableCellClass} font-medium text-gray-900`}>
+    <tr className={adminListRowClass} onClick={handleClick}>
+      <td className={`${adminListTableCellClass} font-medium text-admin-text`}>
         <div className="flex items-center gap-2">
           <span>{segment.name}</span>
           <ChevronRightIcon
-            className="h-4 w-4 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100"
+            className="h-4 w-4 text-admin-text-subdued opacity-0 transition-opacity group-hover:opacity-100"
             aria-hidden
           />
         </div>
       </td>
-      <td className={`${segmentTableCellClass} text-gray-500`}>
+      <td className={`${adminListTableCellClass} text-admin-text-subdued`}>
         {new Date(segment.createdAt).toLocaleDateString()}
       </td>
-      <td className={segmentTableCellRightClass}>
+      <td className={adminListTableCellRightClass}>
         <button
           type="button"
           onClick={handleEdit}
-          className={segmentSecondaryButtonClass}
+          className={adminListSecondaryButtonClass}
         >
           Edit
         </button>

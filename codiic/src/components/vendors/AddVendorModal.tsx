@@ -44,7 +44,7 @@ const AddVendorModal: React.FC<AddVendorModalProps> = ({
       }
     >
       <div>
-        <label htmlFor="vendor-name" className="mb-1.5 block text-[13px] font-medium text-gray-700">
+        <label htmlFor="vendor-name" className="mb-1.5 block text-[13px] font-medium text-admin-text">
           Vendor name
         </label>
         <input

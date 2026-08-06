@@ -1,6 +1,13 @@
 import { ShoppingBagIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+} from '../components/admin-list-ui';
 import ExportOrdersModal from '../components/orders/ExportOrdersModal';
 import OrdersAnalyticsBar from '../components/orders/OrdersAnalyticsBar';
 import { formatCustomerLocation } from '../components/orders/format-customer-location';
@@ -138,15 +145,15 @@ const OrdersPage: React.FC = () => {
   const hasOrders = orders.length > 0;
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <OrdersPageHeader
           onExport={handleExport}
           showAnalyticsBar={showAnalyticsBar}
           onToggleAnalyticsBar={handleToggleAnalyticsBar}
         />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className={adminListCardClass}>
           {showAnalyticsBar ? <OrdersAnalyticsBar /> : null}
           <OrdersPageFilters
             activeTab={activeTab}
@@ -156,43 +163,43 @@ const OrdersPage: React.FC = () => {
           />
 
           {loading ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
-              <p className="mt-4 text-[13px] text-gray-500">Loading orders...</p>
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+              <p className="mt-4 text-[13px] text-admin-text-secondary">Loading orders...</p>
             </div>
           ) : error ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
               <p className="text-[13px] text-red-600">{error}</p>
               {activeStoreId ? (
                 <button
                   type="button"
                   onClick={() => getOrdersByStoreId(activeStoreId)}
-                  className="mt-4 text-[13px] font-medium text-gray-900 hover:underline"
+                  className="mt-4 text-[13px] font-medium text-admin-text hover:underline"
                 >
                   Retry
                 </button>
               ) : null}
             </div>
           ) : !hasOrders ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                <ShoppingBagIcon className="h-7 w-7 text-gray-400" />
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-admin-secondary">
+                <ShoppingBagIcon className="h-7 w-7 text-admin-text-subdued" />
               </div>
-              <p className="text-[15px] font-semibold text-gray-900">No orders yet</p>
-              <p className="mt-1.5 text-[13px] text-gray-500">
+              <p className="text-[15px] font-semibold text-admin-text">No orders yet</p>
+              <p className="mt-1.5 text-[13px] text-admin-text-secondary">
                 Orders from your store will appear here.
               </p>
               <button
                 type="button"
                 onClick={handleCreateOrder}
-                className="mt-6 inline-flex items-center rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-gray-800"
+                className={`mt-6 ${adminListPrimaryButtonClass}`}
               >
                 Create order
               </button>
             </div>
           ) : visibleOrders.length === 0 ? (
-            <div className="flex min-h-[280px] flex-col items-center justify-center px-6 py-12 text-center">
-              <p className="text-[13px] text-gray-500">No orders match your search or filter.</p>
+            <div className="flex min-h-[280px] flex-col items-center justify-center bg-admin-surface px-6 py-12 text-center">
+              <p className="text-[13px] text-admin-text-secondary">No orders match your search or filter.</p>
             </div>
           ) : (
             <OrdersTable
@@ -205,8 +212,8 @@ const OrdersPage: React.FC = () => {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Learn more about orders
             </a>
           </p>

@@ -167,7 +167,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-12 z-50 flex h-[calc(100vh-48px)] w-[240px] shrink-0 flex-col border-r border-slate-200/80 bg-slate-50/90 backdrop-blur"
+      className="fixed left-0 top-12 z-50 flex h-[calc(100vh-48px)] w-[240px] shrink-0 flex-col border-r border-admin-border bg-admin-sidebar"
       style={{
         width: `${drawerWidth}px`,
       }}
@@ -192,6 +192,9 @@ export default function Sidebar() {
                     .sort((a, b) => b.path.length - a.path.length)[0]?.path
                 : undefined;
 
+            // White pill on the leaf only — parent stays plain when a child is selected
+            const parentHighlighted = hasKids ? active && !activeSubPath : active;
+
             const activeChildIndex =
               item.children
                 ? (() => {
@@ -212,7 +215,7 @@ export default function Sidebar() {
               <li key={item.text} className="relative">
                 {hasKids && openSection && lineHeight > 0 && (
                   <div
-                    className="absolute left-[10px] top-0 w-0.5 bg-blue-200 z-0"
+                    className="absolute left-[10px] top-0 z-0 w-0.5 bg-admin-border"
                     style={{ height: `${lineHeight}px` }}
                     aria-hidden
                   />
@@ -226,15 +229,15 @@ export default function Sidebar() {
                   }}
                   data-tour-id={`nav-${item.text.toLowerCase().replace(/\s+/g, '-')}`}
                   className={`relative z-10 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
-                    active
-                      ? 'bg-blue-50 text-blue-700 shadow-[inset_0_0_0_1px_rgba(59,130,246,0.25)]'
-                      : 'text-slate-700 hover:bg-slate-100'
+                    parentHighlighted
+                      ? 'bg-admin-surface font-medium text-admin-text shadow-[0_1px_0_rgba(0,0,0,0.05)]'
+                      : 'text-admin-text hover:bg-admin-fill'
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="flex-1 text-sm font-medium">{item.text}</span>
                   {hasKids && (
-                    <span className="shrink-0 text-slate-400">
+                    <span className="shrink-0 text-admin-text-subdued">
                       {openSection ? (
                         <ChevronUpIcon className="h-4 w-4" />
                       ) : (
@@ -258,10 +261,10 @@ export default function Sidebar() {
                             <li key={sub.text}>
                               <span
                                 aria-disabled="true"
-                                className="flex w-full cursor-not-allowed items-center justify-between gap-2 rounded-lg px-3 py-1.5 pl-10 text-left text-slate-400"
+                                className="flex w-full cursor-not-allowed items-center justify-between gap-2 rounded-lg px-3 py-1.5 pl-10 text-left text-admin-text-subdued"
                               >
                                 <span className="text-xs font-medium">{sub.text}</span>
-                                <span className="shrink-0 text-[10px] font-normal uppercase tracking-wide text-slate-400">
+                                <span className="shrink-0 text-[10px] font-normal uppercase tracking-wide text-admin-text-subdued">
                                   Coming soon
                                 </span>
                               </span>
@@ -274,8 +277,8 @@ export default function Sidebar() {
                               to={sub.path}
                               className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 pl-10 text-left transition-colors ${
                                 subActive
-                                  ? 'bg-blue-50 font-medium text-blue-700'
-                                  : 'text-slate-600 hover:bg-slate-100'
+                                  ? 'bg-admin-surface font-medium text-admin-text shadow-[0_1px_0_rgba(0,0,0,0.05)]'
+                                  : 'text-admin-text-secondary hover:bg-admin-fill'
                               }`}
                             >
                               <span className="text-xs font-medium">{sub.text}</span>
@@ -292,7 +295,7 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      <div className="mt-2 w-full border-t border-slate-200/80" />
+      <div className="mt-2 w-full border-t border-admin-border" />
       {/* settings option */}
       <nav className="pb-3">
         <ul className="m-0 list-none p-2 pt-2">
@@ -302,8 +305,8 @@ export default function Sidebar() {
               data-tour-id="nav-settings"
               className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
                 location.pathname.startsWith('/settings')
-                  ? 'bg-blue-50 text-blue-700 shadow-[inset_0_0_0_1px_rgba(59,130,246,0.25)]'
-                  : 'text-slate-700 hover:bg-slate-100'
+                  ? 'bg-admin-surface font-medium text-admin-text shadow-[0_1px_0_rgba(0,0,0,0.05)]'
+                  : 'text-admin-text hover:bg-admin-fill'
               }`}
             >
               <Cog6ToothIcon className="h-4 w-4 shrink-0" />

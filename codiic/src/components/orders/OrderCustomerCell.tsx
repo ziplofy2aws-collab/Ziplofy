@@ -103,7 +103,7 @@ const OrderCustomerCell: React.FC<OrderCustomerCellProps> = ({
   );
 
   if (!customer.customerId) {
-    return <span className="text-[13px] text-gray-700">{customer.name}</span>;
+    return <span className="text-[13px] text-admin-text-secondary">{customer.name}</span>;
   }
 
   const orderCountLabel = `${customer.orderCount} order${customer.orderCount === 1 ? '' : 's'}`;
@@ -114,7 +114,7 @@ const OrderCustomerCell: React.FC<OrderCustomerCellProps> = ({
         ref={popoverRef}
         role="dialog"
         aria-label="Customer details"
-        className="fixed z-[6000] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
+        className="fixed z-[6000] overflow-hidden rounded-xl border border-admin-border bg-admin-surface shadow-xl"
         style={{
           top: position.top,
           left: position.left,
@@ -123,26 +123,26 @@ const OrderCustomerCell: React.FC<OrderCustomerCellProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="space-y-1 px-4 py-3">
-          <p className="text-[14px] font-semibold text-gray-900">{customer.name}</p>
+          <p className="text-[14px] font-semibold text-admin-text">{customer.name}</p>
           {customer.location ? (
-            <p className="text-[13px] text-gray-600">{customer.location}</p>
+            <p className="text-[13px] text-admin-text-secondary">{customer.location}</p>
           ) : null}
-          <p className="text-[13px] text-gray-600">{orderCountLabel}</p>
+          <p className="text-[13px] text-admin-text-secondary">{orderCountLabel}</p>
           {customer.email ? (
             <a
               href={`mailto:${customer.email}`}
-              className="inline-block text-[13px] text-blue-600 hover:text-blue-700 hover:underline"
+              className="inline-block text-[13px] text-[#005bd3] hover:underline"
               onClick={(e) => e.stopPropagation()}
             >
               {customer.email}
             </a>
           ) : null}
         </div>
-        <div className="border-t border-gray-100 px-4 py-3">
+        <div className="border-t border-admin-divider px-4 py-3">
           <button
             type="button"
             onClick={handleViewCustomer}
-            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-[13px] font-medium text-gray-800 transition-colors hover:bg-gray-50"
+            className="w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-2 text-[13px] font-medium text-admin-text transition-colors hover:bg-admin-row-hover"
           >
             View customer
           </button>
@@ -158,13 +158,13 @@ const OrderCustomerCell: React.FC<OrderCustomerCellProps> = ({
         onClick={handleToggle}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
-        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[13px] text-gray-900 transition-colors ${
-          isOpen ? 'bg-gray-100' : 'hover:bg-gray-100'
+        className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[13px] text-admin-text transition-colors ${
+          isOpen ? 'bg-admin-secondary' : 'hover:bg-admin-secondary'
         }`}
       >
         {customer.name}
         <ChevronDownIcon
-          className={`h-3.5 w-3.5 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`h-3.5 w-3.5 text-admin-text-secondary transition-transform ${isOpen ? 'rotate-180' : ''}`}
           aria-hidden
         />
       </button>

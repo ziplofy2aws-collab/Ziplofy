@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { adminListRowClass, adminListSecondaryButtonClass, adminListTableCellClass } from '../admin-list-ui';
 import AbandonedCartCustomerCell from './AbandonedCartCustomerCell';
 
 interface CartItem {
@@ -80,11 +81,8 @@ const AbandonedCartCard: React.FC<AbandonedCartCardProps> = ({
   const customerName = `${cart.customer.firstName} ${cart.customer.lastName}`.trim();
 
   return (
-    <tr
-      className="cursor-pointer border-b border-gray-100 transition-colors last:border-b-0 hover:bg-gray-50/80"
-      onClick={() => handleViewDetails()}
-    >
-      <td className="whitespace-nowrap px-3 py-2.5">
+    <tr className={adminListRowClass} onClick={() => handleViewDetails()}>
+      <td className={adminListTableCellClass}>
         <AbandonedCartCustomerCell
           rowId={cart.customer._id}
           customer={{
@@ -100,20 +98,20 @@ const AbandonedCartCard: React.FC<AbandonedCartCardProps> = ({
         />
       </td>
 
-      <td className="px-3 py-2.5">
+      <td className="px-3 py-2.5 text-[13px] font-normal text-admin-text-secondary">
         <div className="flex items-center gap-3">
           <div className="min-w-0">
-            <p className="text-[13px] text-gray-700">
+            <p className="text-[13px] text-admin-text-secondary">
               {cart.totalItems} {cart.totalItems === 1 ? 'item' : 'items'}
             </p>
-            <p className="text-[13px] font-medium text-gray-900">{formatCurrency(calculateTotal)}</p>
+            <p className="text-[13px] font-medium text-admin-text">{formatCurrency(calculateTotal)}</p>
           </div>
           {previewImages.length > 0 ? (
             <div className="flex -space-x-1">
               {previewImages.map((src, i) => (
                 <div
                   key={`${src}-${i}`}
-                  className="h-7 w-7 overflow-hidden rounded border border-gray-200 bg-gray-50"
+                  className="h-7 w-7 overflow-hidden rounded border border-admin-border bg-admin-secondary"
                 >
                   <img src={src} alt="" className="h-full w-full object-cover" />
                 </div>
@@ -123,15 +121,13 @@ const AbandonedCartCard: React.FC<AbandonedCartCardProps> = ({
         </div>
       </td>
 
-      <td className="whitespace-nowrap px-3 py-2.5 text-[13px] text-gray-700">
-        {formatDate(cart.lastUpdated)}
-      </td>
+      <td className={adminListTableCellClass}>{formatDate(cart.lastUpdated)}</td>
 
-      <td className="whitespace-nowrap px-3 py-2.5 text-right">
+      <td className={`${adminListTableCellClass} text-right`}>
         <button
           type="button"
           onClick={handleSendEmail}
-          className="rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-[12px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+          className={`${adminListSecondaryButtonClass} px-2.5 py-1 text-[12px] font-normal`}
         >
           Send email
         </button>

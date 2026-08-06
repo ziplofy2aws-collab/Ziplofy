@@ -1,9 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+} from '../components/admin-list-ui';
 import AddVendorModal from '../components/vendors/AddVendorModal';
 import VendorsPageFilters from '../components/vendors/VendorsPageFilters';
 import VendorsPageHeader from '../components/vendors/VendorsPageHeader';
 import VendorsTable from '../components/vendors/VendorsTable';
-import { vendorPrimaryButtonClass } from '../components/vendors/vendor-ui.util';
 import { useStore } from '../contexts/store.context';
 import { useVendors } from '../contexts/vendor.context';
 
@@ -55,8 +61,8 @@ const VendorsPage: React.FC = () => {
   const hasVendors = vendors.length > 0;
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <VendorsPageHeader onAddVendor={handleOpenModal} />
 
         {error ? (
@@ -65,22 +71,22 @@ const VendorsPage: React.FC = () => {
           </div>
         ) : null}
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className={adminListCardClass}>
           {hasVendors ? (
             <VendorsPageFilters search={search} onSearchChange={setSearch} />
           ) : null}
 
           {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
+            <div className="flex min-h-[280px] items-center justify-center bg-admin-surface py-16">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
             </div>
           ) : !hasVendors ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Add your vendors</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <p className="text-[15px] font-semibold text-admin-text">Add your vendors</p>
+              <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                 Organize product suppliers and assign them when editing products or purchase orders
               </p>
-              <button type="button" onClick={handleOpenModal} className={`mt-4 ${vendorPrimaryButtonClass}`}>
+              <button type="button" onClick={handleOpenModal} className={`mt-4 ${adminListPrimaryButtonClass}`}>
                 Add vendor
               </button>
             </div>
@@ -90,8 +96,8 @@ const VendorsPage: React.FC = () => {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Learn more about vendors
             </a>
           </p>

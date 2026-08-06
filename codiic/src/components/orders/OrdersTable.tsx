@@ -1,5 +1,9 @@
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useMemo, useRef } from 'react';
+import {
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from '../admin-list-ui';
 import OrdersTableRow from './OrdersTableRow';
 import type { OrderTableRowData } from './orders-table.types';
 
@@ -79,26 +83,26 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[1320px] text-left">
+    <div className="overflow-x-auto bg-admin-surface">
+      <table className="w-full min-w-[1320px] border-collapse text-left">
         <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className="w-10 px-3 py-2.5 text-center">
+          <tr className={adminListTableHeadRowClass}>
+            <th scope="col" className="w-10 px-3 py-2 text-center align-middle">
               <input
                 ref={selectAllRef}
                 type="checkbox"
                 checked={allVisibleSelected}
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
                 aria-label="Select all orders"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
               />
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Order</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">
+            <th scope="col" className={adminListTableHeadClass}>Order</th>
+            <th scope="col" className={adminListTableHeadClass}>
               <button
                 type="button"
                 onClick={toggleDateSort}
-                className="inline-flex items-center gap-0.5 hover:text-gray-700"
+                className="inline-flex items-center gap-0.5 hover:text-admin-text"
               >
                 Date
                 <ChevronDownIcon
@@ -107,20 +111,20 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
                 />
               </button>
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Customer</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Fulfill by</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Channel</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Total</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Payment status</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Payment method</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Fulfillment status</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Items</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Delivery status</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Delivery method</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Tags</th>
+            <th scope="col" className={adminListTableHeadClass}>Customer</th>
+            <th scope="col" className={adminListTableHeadClass}>Fulfill by</th>
+            <th scope="col" className={adminListTableHeadClass}>Channel</th>
+            <th scope="col" className={adminListTableHeadClass}>Total</th>
+            <th scope="col" className={adminListTableHeadClass}>Payment status</th>
+            <th scope="col" className={adminListTableHeadClass}>Payment method</th>
+            <th scope="col" className={adminListTableHeadClass}>Fulfillment status</th>
+            <th scope="col" className={adminListTableHeadClass}>Items</th>
+            <th scope="col" className={adminListTableHeadClass}>Delivery status</th>
+            <th scope="col" className={adminListTableHeadClass}>Delivery method</th>
+            <th scope="col" className={adminListTableHeadClass}>Tags</th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-admin-surface">
           {sortedOrders.length > 0 ? (
             sortedOrders.map((order) => (
               <OrdersTableRow
@@ -137,7 +141,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({
             ))
           ) : (
             <tr>
-              <td colSpan={14} className="px-3 py-12 text-center text-[13px] text-gray-500">
+              <td colSpan={14} className="px-3 py-12 text-center text-[13px] text-admin-text-secondary">
                 No orders found
               </td>
             </tr>

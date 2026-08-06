@@ -195,7 +195,7 @@ const ProductsInventoryPage: React.FC = () => {
       <div className="mx-auto flex min-h-0 w-full max-w-[1200px] flex-1 flex-col">
         <InventoryPageHeader />
 
-        <div className="flex min-h-0 flex-1 flex-col rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
           <InventoryPageFilters
             locations={locations}
             selectedLocationId={selectedLocationId}
@@ -207,9 +207,9 @@ const ProductsInventoryPage: React.FC = () => {
           {showLocationsSkeleton || showInventorySkeleton ? (
             <InventoryTable levels={[]} loading {...tableEditProps} />
           ) : !selectedLocationId ? (
-            <div className="flex min-h-0 flex-1 flex-col items-center justify-center rounded-b-lg px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Add a location to view inventory</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <div className="flex min-h-0 flex-1 flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <p className="text-[15px] font-semibold text-admin-text">Add a location to view inventory</p>
+              <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                 Create a location in settings to start tracking inventory levels
               </p>
             </div>
@@ -219,8 +219,8 @@ const ProductsInventoryPage: React.FC = () => {
         </div>
 
         <div className="shrink-0 py-3 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className="text-[#005bd3] hover:underline">
               Learn more about managing inventory
             </a>
           </p>

@@ -69,49 +69,55 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
   const sku = level.variantId.sku?.trim() || 'No SKU';
 
   return (
-    <tr className="group transition-colors hover:bg-gray-50">
-      <td className={`${inventoryStickyCheckboxCellClass} border-b border-gray-100`}>
+    <tr
+      className={`group border-b border-admin-divider transition-colors last:border-b-0 ${
+        isSelected ? 'bg-admin-row-hover' : 'bg-admin-surface hover:bg-admin-row-hover'
+      }`}
+    >
+      <td className={`${inventoryStickyCheckboxCellClass}${isSelected ? ' !bg-admin-row-hover' : ''}`}>
         <input
           type="checkbox"
           checked={isSelected}
           onChange={(e) => onSelect(level._id, e.target.checked)}
           aria-label={`Select ${level.variantId.productId.title}`}
-          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+          className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
         />
       </td>
-      <td className={`${inventoryStickyProductCellClass} border-b border-gray-100`}>
+      <td className={`${inventoryStickyProductCellClass}${isSelected ? ' !bg-admin-row-hover' : ''}`}>
         <div className="flex min-w-[220px] items-center gap-3">
-          <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md border border-gray-200 bg-gray-50">
+          <div className="h-9 w-9 shrink-0 overflow-hidden rounded-md border border-admin-border bg-admin-secondary">
             {imageUrl ? (
               <img src={imageUrl} alt="" className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gray-100">
-                <RectangleStackIcon className="h-4 w-4 text-gray-400" />
+              <div className="flex h-full w-full items-center justify-center bg-admin-secondary">
+                <RectangleStackIcon className="h-4 w-4 text-admin-text-subdued" />
               </div>
             )}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-[13px] font-medium text-gray-900">{level.variantId.productId.title}</p>
-            {optionSummary ? <p className="truncate text-[12px] text-gray-500">{optionSummary}</p> : null}
+            <p className="truncate text-[13px] font-medium text-admin-text">{level.variantId.productId.title}</p>
+            {optionSummary ? (
+              <p className="truncate text-[12px] text-admin-text-secondary">{optionSummary}</p>
+            ) : null}
           </div>
         </div>
       </td>
-      <td className="border-b border-gray-100 px-3 py-2.5">
-        <span className="text-[13px] text-gray-700">{sku}</span>
+      <td className="whitespace-nowrap px-3 py-2.5">
+        <span className="text-[13px] font-normal text-admin-text-secondary">{sku}</span>
       </td>
-      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
+      <td className="whitespace-nowrap px-3 py-2.5 text-right">
         <button
           type="button"
           onClick={(e) => onOpenUnavailable(e, level._id)}
-          className="text-[13px] text-gray-700 underline decoration-dotted underline-offset-2 transition-colors hover:text-gray-900"
+          className="text-[13px] font-normal text-admin-text-secondary underline decoration-dotted decoration-admin-text-subdued underline-offset-2 transition-colors hover:text-admin-text"
         >
           {unavailableTotal}
         </button>
       </td>
-      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
-        <span className="text-[13px] text-gray-700">{level.committed}</span>
+      <td className="whitespace-nowrap px-3 py-2.5 text-right">
+        <span className="text-[13px] font-normal text-admin-text-secondary">{level.committed}</span>
       </td>
-      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
+      <td className="whitespace-nowrap px-3 py-2.5 text-right">
         {editingAvailableId === level._id ? (
           <div className="inline-flex items-center justify-end gap-1.5">
             <input
@@ -132,13 +138,13 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           <button
             type="button"
             onClick={() => onStartEditAvailable(level._id, level.available)}
-            className="text-[13px] text-gray-700 transition-colors hover:text-gray-900"
+            className="text-[13px] font-normal text-admin-text-secondary transition-colors hover:text-admin-text"
           >
             {level.available}
           </button>
         )}
       </td>
-      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
+      <td className="whitespace-nowrap px-3 py-2.5 text-right">
         {editingOnHandId === level._id ? (
           <div className="inline-flex items-center justify-end gap-1.5">
             <input
@@ -159,14 +165,14 @@ const InventoryTableRow: React.FC<InventoryTableRowProps> = ({
           <button
             type="button"
             onClick={() => onStartEditOnHand(level._id, level.onHand)}
-            className="text-[13px] text-gray-700 transition-colors hover:text-gray-900"
+            className="text-[13px] font-normal text-admin-text-secondary transition-colors hover:text-admin-text"
           >
             {level.onHand}
           </button>
         )}
       </td>
-      <td className="border-b border-gray-100 px-3 py-2.5 text-right">
-        <span className="text-[13px] text-gray-700">{level.incoming ?? 0}</span>
+      <td className="whitespace-nowrap px-3 py-2.5 text-right">
+        <span className="text-[13px] font-normal text-admin-text-secondary">{level.incoming ?? 0}</span>
       </td>
     </tr>
   );

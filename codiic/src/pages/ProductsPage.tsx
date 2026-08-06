@@ -76,11 +76,12 @@ const ProductsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className="w-full">
+      <div className="mx-auto max-w-[1200px]">
         <ProductsPageHeader />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        {/* White surface on #f1f1f1 canvas — same pop hierarchy as Shopify */}
+        <div className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
           <ProductsPageFilters
             activeTab={activeTab}
             onTabChange={setActiveTab}
@@ -91,9 +92,9 @@ const ProductsPage: React.FC = () => {
           {showInitialSkeleton ? (
             <ProductsTable products={[]} loading />
           ) : !hasProducts ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Add your products</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <p className="text-[15px] font-semibold text-admin-text">Add your products</p>
+              <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                 Start by stocking your store with products your customers will love
               </p>
             </div>
@@ -106,8 +107,8 @@ const ProductsPage: React.FC = () => {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className="text-[#005bd3] hover:underline">
               Learn more about products
             </a>
           </p>

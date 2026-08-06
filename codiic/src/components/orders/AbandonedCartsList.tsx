@@ -1,4 +1,9 @@
 import React, { useCallback, useState } from 'react';
+import {
+  adminListTableHeadClass,
+  adminListTableHeadRightClass,
+  adminListTableHeadRowClass,
+} from '../admin-list-ui';
 import AbandonedCartCard from './AbandonedCartCard';
 
 interface CartItem {
@@ -47,17 +52,17 @@ const AbandonedCartsList: React.FC<AbandonedCartsListProps> = ({
   }, []);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[900px] text-left">
+    <div className="overflow-x-auto bg-admin-surface">
+      <table className="w-full min-w-[900px] border-collapse text-left">
         <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Customer</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Cart</th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Last activity</th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-medium text-gray-500">Actions</th>
+          <tr className={adminListTableHeadRowClass}>
+            <th scope="col" className={adminListTableHeadClass}>Customer</th>
+            <th scope="col" className={adminListTableHeadClass}>Cart</th>
+            <th scope="col" className={adminListTableHeadClass}>Last activity</th>
+            <th scope="col" className={adminListTableHeadRightClass}>Actions</th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-admin-surface">
           {carts.map((cart) => (
             <AbandonedCartCard
               key={cart.customer._id}

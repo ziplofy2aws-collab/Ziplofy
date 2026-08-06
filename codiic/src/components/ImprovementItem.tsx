@@ -20,26 +20,20 @@ const ImprovementItemComponent: React.FC<ImprovementItemProps> = ({
   return (
     <button
       onClick={() => onClick?.(item.id)}
-      className="w-full flex items-start gap-3 p-3 bg-page-background-color border border-gray-200/80 rounded-lg hover:bg-blue-50 hover:border-blue-200/80 transition-colors text-left"
+      className="flex w-full items-start gap-3 rounded-lg border border-admin-border bg-admin-secondary p-3 text-left transition-colors hover:bg-admin-row-hover"
     >
-      {/* Icon */}
-      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-        {item.icon}
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center">{item.icon}</div>
+
+      <div className="min-w-0 flex-1">
+        <h4 className="mb-1 text-[13px] font-medium text-admin-text">{item.title}</h4>
+        <p className="text-[12px] text-admin-text-secondary">{item.description}</p>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-medium text-gray-900 mb-1">{item.title}</h4>
-        <p className="text-xs text-gray-600">{item.description}</p>
-      </div>
-
-      {/* Chevron */}
-      <div className="flex-shrink-0">
-        <ChevronRightIcon className="w-4 h-4 text-blue-500" />
+      <div className="shrink-0">
+        <ChevronRightIcon className="h-4 w-4 text-admin-text-subdued" />
       </div>
     </button>
   );
 };
 
 export default ImprovementItemComponent;
-

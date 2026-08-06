@@ -1,5 +1,6 @@
 import { ArrowPathIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import React, { useCallback } from 'react';
+import { adminListSecondaryButtonClass } from '../admin-list-ui';
 
 interface AbandonedCartsHeaderProps {
   cartCount: number;
@@ -27,14 +28,14 @@ const AbandonedCartsHeader: React.FC<AbandonedCartsHeaderProps> = ({
     <div className="mb-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <ShoppingCartIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
-          <h1 className="text-lg font-semibold text-gray-900">Abandoned carts</h1>
+          <ShoppingCartIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+          <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Abandoned carts</h1>
         </div>
         <button
           type="button"
           onClick={handleRefresh}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50"
+          className={`${adminListSecondaryButtonClass} gap-1.5`}
         >
           <ArrowPathIcon className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} aria-hidden />
           Refresh
@@ -42,7 +43,7 @@ const AbandonedCartsHeader: React.FC<AbandonedCartsHeaderProps> = ({
       </div>
 
       {cartCount > 0 ? (
-        <p className="mt-1.5 text-[13px] text-gray-500">
+        <p className="mt-1.5 text-[13px] text-admin-text-secondary">
           {cartCount} {cartCount === 1 ? 'cart' : 'carts'} · {totalLineItems}{' '}
           {totalLineItems === 1 ? 'item' : 'items'} · {formatInr(totalEstimatedValue)} estimated value
         </p>

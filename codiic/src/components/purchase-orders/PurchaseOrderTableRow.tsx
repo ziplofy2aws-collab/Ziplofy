@@ -37,7 +37,9 @@ const PurchaseOrderTableRow: React.FC<PurchaseOrderTableRowProps> = ({
 
   return (
     <tr
-      className="cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50/60"
+      className={`group cursor-pointer border-b border-admin-divider transition-colors last:border-b-0 ${
+        isSelected ? 'bg-admin-row-hover' : 'bg-admin-surface hover:bg-admin-row-hover'
+      }`}
       onClick={() => onRowClick(purchaseOrder._id)}
     >
       <td className="w-10 px-3 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -46,10 +48,10 @@ const PurchaseOrderTableRow: React.FC<PurchaseOrderTableRowProps> = ({
           checked={isSelected}
           onChange={(e) => onSelect(purchaseOrder._id, e.target.checked)}
           aria-label={`Select purchase order ${formatPurchaseOrderLabel(purchaseOrder._id)}`}
-          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+          className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
         />
       </td>
-      <td className={`${poTableCellClass} font-medium text-gray-900`}>
+      <td className={`${poTableCellClass} font-medium text-admin-text`}>
         {formatPurchaseOrderLabel(purchaseOrder._id)}
       </td>
       <td className={poTableCellClass}>{supplierName}</td>

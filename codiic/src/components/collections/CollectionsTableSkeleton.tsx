@@ -7,23 +7,23 @@ export function CollectionsTableSkeletonRows({ rows = 8 }: { rows?: number }) {
   return (
     <>
       {Array.from({ length: rows }, (_, index) => (
-        <tr key={index} className="animate-pulse border-b border-gray-100 last:border-b-0">
+        <tr key={index} className="animate-pulse border-b border-admin-divider last:border-b-0">
           <td className="w-10 px-3 py-2.5 text-center align-middle">
-            <span className="mx-auto block h-3.5 w-3.5 rounded bg-gray-200" />
+            <span className="mx-auto block h-3.5 w-3.5 rounded bg-admin-fill" />
           </td>
           <td className="px-3 py-2.5 align-middle">
             <div className="flex min-w-0 items-center gap-3">
-              <span className="h-10 w-10 shrink-0 rounded-md bg-gray-200" />
+              <span className="h-10 w-10 shrink-0 rounded-md bg-admin-fill" />
               <span
-                className={`h-3.5 rounded bg-gray-200 ${TITLE_WIDTHS[index % TITLE_WIDTHS.length]}`}
+                className={`h-3.5 rounded bg-admin-fill ${TITLE_WIDTHS[index % TITLE_WIDTHS.length]}`}
               />
             </div>
           </td>
           <td className="px-3 py-2.5 text-right align-middle">
-            <span className="ml-auto inline-block h-3.5 w-8 rounded bg-gray-100" />
+            <span className="ml-auto inline-block h-3.5 w-8 rounded bg-admin-secondary" />
           </td>
           <td className="px-3 py-2.5 text-right align-middle">
-            <span className="ml-auto inline-block h-3.5 w-6 rounded bg-gray-100" />
+            <span className="ml-auto inline-block h-3.5 w-6 rounded bg-admin-secondary" />
           </td>
         </tr>
       ))}

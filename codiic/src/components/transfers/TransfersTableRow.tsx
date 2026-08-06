@@ -32,7 +32,9 @@ const TransfersTableRow: React.FC<TransfersTableRowProps> = ({
 }) => {
   return (
     <tr
-      className="cursor-pointer border-b border-gray-100 transition-colors hover:bg-gray-50/60"
+      className={`group cursor-pointer border-b border-admin-divider transition-colors last:border-b-0 ${
+        isSelected ? 'bg-admin-row-hover' : 'bg-admin-surface hover:bg-admin-row-hover'
+      }`}
       onClick={() => onRowClick(transfer._id)}
     >
       <td className="w-10 px-3 py-2.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -41,10 +43,10 @@ const TransfersTableRow: React.FC<TransfersTableRowProps> = ({
           checked={isSelected}
           onChange={(e) => onSelect(transfer._id, e.target.checked)}
           aria-label={`Select transfer ${formatTransferLabel(transfer._id)}`}
-          className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+          className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
         />
       </td>
-      <td className={`${transferTableCellClass} font-medium text-gray-900`}>
+      <td className={`${transferTableCellClass} font-medium text-admin-text`}>
         {formatTransferLabel(transfer._id)}
       </td>
       <td className={transferTableCellClass}>{transfer.referenceName || '—'}</td>
@@ -59,19 +61,19 @@ const TransfersTableRow: React.FC<TransfersTableRowProps> = ({
             {transfer.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag._id}
-                className="inline-flex items-center rounded-md bg-gray-100 px-1.5 py-0.5 text-[11px] text-gray-600"
+                className="inline-flex items-center rounded-md bg-admin-secondary px-1.5 py-0.5 text-[11px] text-admin-text-secondary"
               >
                 {tag.name}
               </span>
             ))}
             {transfer.tags.length > 2 ? (
-              <span className="inline-flex items-center rounded-md bg-gray-100 px-1.5 py-0.5 text-[11px] text-gray-500">
+              <span className="inline-flex items-center rounded-md bg-admin-secondary px-1.5 py-0.5 text-[11px] text-admin-text-subdued">
                 +{transfer.tags.length - 2}
               </span>
             ) : null}
           </div>
         ) : (
-          <span className="text-[12px] text-gray-400">—</span>
+          <span className="text-[12px] text-admin-text-subdued">—</span>
         )}
       </td>
       <td className={transferTableCellClass}>

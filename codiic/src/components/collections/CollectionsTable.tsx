@@ -1,5 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import type { Collection } from "../../contexts/collection.context";
+import {
+  adminListTableHeadClass,
+  adminListTableHeadRightClass,
+  adminListTableHeadRowClass,
+} from "../admin-list-ui";
 import CollectionsTableItem from "./CollectionsTableItem";
 import { CollectionsTableSkeletonRows } from "./CollectionsTableSkeleton";
 
@@ -52,11 +57,11 @@ const CollectionsTable: React.FC<CollectionsTableProps> = ({
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[640px] text-left">
+    <div className="overflow-x-auto bg-admin-surface">
+      <table className="w-full min-w-[640px] border-collapse text-left">
         <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className="w-10 px-3 py-2.5 text-center">
+          <tr className={adminListTableHeadRowClass}>
+            <th className="w-10 px-3 py-2 text-center">
               <input
                 ref={selectAllRef}
                 type="checkbox"
@@ -64,24 +69,22 @@ const CollectionsTable: React.FC<CollectionsTableProps> = ({
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
                 disabled={loading}
                 aria-label="Select all collections"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </th>
-            <th className="px-3 py-2.5 text-[12px] font-medium text-gray-500">Title</th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-medium text-gray-500">Products</th>
-            <th className="px-3 py-2.5 text-right text-[12px] font-medium text-gray-500">
-              Product conditions
-            </th>
+            <th className={adminListTableHeadClass}>Title</th>
+            <th className={adminListTableHeadRightClass}>Products</th>
+            <th className={adminListTableHeadRightClass}>Product conditions</th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-admin-surface">
           {loading ? (
             <CollectionsTableSkeletonRows />
           ) : collections.length === 0 ? (
             <tr>
               <td colSpan={4} className="px-3 py-16 text-center">
-                <p className="text-[15px] font-semibold text-gray-900">No collections found</p>
-                <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+                <p className="text-[15px] font-semibold text-admin-text">No collections found</p>
+                <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                   Try changing the filters or search term
                 </p>
               </td>

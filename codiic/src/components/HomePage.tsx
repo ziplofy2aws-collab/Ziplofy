@@ -229,15 +229,15 @@ export default function HomePage() {
       {/* Onboarding Tour */}
       {showOnboarding && <OnboardingTour onComplete={handleOnboardingComplete} />}
 
-      <div className="min-h-[calc(100vh-48px)] w-full bg-dashboard-canvas">
-        <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <div className="w-full">
+        <div className="mx-auto max-w-[1400px]">
           {/* Top: greeting + primary action */}
           <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+              <h1 className="text-[20px] font-semibold tracking-tight text-admin-text sm:text-2xl">
                 Welcome back{userName !== 'User' ? `, ${userName}` : ''}
               </h1>
-              <p className="mt-2 text-base text-slate-500">
+              <p className="mt-1.5 text-[13px] text-admin-text-secondary">
                 Here&apos;s what&apos;s happening with your store today.
               </p>
             </div>
@@ -246,7 +246,7 @@ export default function HomePage() {
                 href={storefrontHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-slate-800"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a]"
               >
                 <GlobeAltIcon className="h-4 w-4" aria-hidden />
                 Open store
@@ -257,9 +257,9 @@ export default function HomePage() {
           <div className="mb-8 space-y-6">
             <DashboardUpgradeBanner />
 
-            {/* Tabs — pill switcher */}
+            {/* Tabs — Shopify-style gray selected chip */}
             <div
-              className="inline-flex w-fit items-center gap-0.5 rounded-full border border-slate-200/90 bg-white p-1 shadow-dashboard-card"
+              className="inline-flex w-fit items-center gap-0.5 rounded-xl border border-admin-border bg-admin-surface p-1"
               role="tablist"
               aria-label="Home sections"
             >
@@ -271,19 +271,21 @@ export default function HomePage() {
                   aria-selected={activeTab === tab}
                   onClick={() => setActiveTab(tab)}
                   className={`${
-                    activeTab === tab ? '' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  } relative rounded-full px-5 py-2 text-sm font-semibold outline-none transition focus-visible:ring-2 focus-visible:ring-blue-500/40`}
+                    activeTab === tab
+                      ? 'text-admin-text'
+                      : 'text-admin-text-secondary hover:bg-admin-row-hover hover:text-admin-text'
+                  } relative rounded-lg px-4 py-1.5 text-[13px] font-semibold outline-none transition focus-visible:ring-2 focus-visible:ring-[#005bd3]/30`}
                   style={{ WebkitTapHighlightColor: 'transparent' }}
                 >
                   {activeTab === tab && (
                     <motion.span
                       layoutId="home-tab-bubble"
-                      className="absolute inset-0 z-0 bg-blue-600 shadow-sm"
-                      style={{ borderRadius: 9999 }}
+                      className="absolute inset-0 z-0 bg-admin-fill"
+                      style={{ borderRadius: 8 }}
                       transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
                     />
                   )}
-                  <span className={`relative z-10 ${activeTab === tab ? 'text-white' : ''}`}>
+                  <span className="relative z-10">
                     {tab === 'dashboard' ? 'Dashboard' : 'Getting started'}
                   </span>
                 </button>
@@ -293,7 +295,7 @@ export default function HomePage() {
 
           {/* Content */}
           {activeTab === 'dashboard' ? (
-            <div key="dashboard" className="flex flex-col gap-8 animate-tab-fade">
+            <div key="dashboard" className="flex flex-col gap-6 animate-tab-fade">
               <DashboardContent />
               <CustomizeDomainCard />
             </div>

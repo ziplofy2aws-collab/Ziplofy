@@ -159,22 +159,22 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2">
-        <div className="bg-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium">
+      <div className="flex items-center gap-2 rounded-full bg-admin-header-control px-2.5 py-1.5">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
           ...
         </div>
-        <span className="text-gray-900 text-sm">Loading...</span>
+        <span className="text-sm text-white">Loading...</span>
       </div>
     );
   }
 
   if (error || !activeStore) {
     return (
-      <div className="flex items-center gap-2">
-        <div className="bg-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium">
+      <div className="flex items-center gap-2 rounded-full bg-admin-header-control px-2.5 py-1.5">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
           ?
         </div>
-        <span className="text-gray-900 text-sm">No Store</span>
+        <span className="text-sm text-white">No Store</span>
       </div>
     );
   }
@@ -185,15 +185,15 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
         <button
           ref={buttonRef}
           onClick={handleClick}
-          className="flex items-center gap-2 hover:bg-gray-100 rounded px-2.5 py-1.5 transition-colors"
+          className="flex items-center gap-2 rounded-full bg-admin-header-control px-2.5 py-1.5 transition-colors hover:bg-admin-header-control-hover"
         >
-          <div className="bg-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-medium">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
             {getStoreInitials(activeStore.storeName)}
           </div>
-          <span className="text-gray-900 text-sm font-medium max-w-[100px] truncate">
+          <span className="max-w-[100px] truncate text-sm font-medium text-white">
             {activeStore.storeName}
           </span>
-          <ChevronDownIcon className="w-4 h-4 text-gray-500" />
+          <ChevronDownIcon className="h-4 w-4 text-[#b5b5b5]" />
         </button>
 
         {/* Dropdown Menu */}

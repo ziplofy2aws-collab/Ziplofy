@@ -25,7 +25,7 @@ const DUMMY_METRICS = [
 
 function SparklinePlaceholder() {
   return (
-    <svg viewBox="0 0 48 12" className="mt-1.5 h-3 w-14 text-blue-500" aria-hidden>
+    <svg viewBox="0 0 48 12" className="mt-1.5 h-3 w-14 text-admin-text-secondary" aria-hidden>
       <polyline
         fill="none"
         stroke="currentColor"
@@ -88,20 +88,20 @@ const OrdersAnalyticsBar: React.FC = () => {
   }, [updateScrollState]);
 
   return (
-    <div className="border-b border-gray-100">
+    <div className="border-b border-admin-border bg-admin-surface">
       <div className="flex items-stretch">
-        <div className="relative shrink-0 border-r border-gray-100 px-3 py-3 sm:px-4">
+        <div className="relative shrink-0 border-r border-admin-divider px-3 py-3 sm:px-4">
           <button
             ref={buttonRef}
             type="button"
             onClick={() => setMenuOpen((prev) => !prev)}
             aria-expanded={menuOpen}
             aria-haspopup="listbox"
-            className="inline-flex items-center gap-1.5 rounded-lg px-1 py-1 text-[13px] font-medium text-gray-800 transition-colors hover:bg-gray-50"
+            className="inline-flex items-center gap-1.5 rounded-lg px-1 py-1 text-[13px] font-medium text-admin-text transition-colors hover:bg-admin-row-hover"
           >
-            <CalendarDaysIcon className="h-4 w-4 text-gray-500" aria-hidden />
+            <CalendarDaysIcon className="h-4 w-4 text-admin-text-secondary" aria-hidden />
             {selectedLabel}
-            <ChevronDownIcon className="h-3.5 w-3.5 text-gray-400" aria-hidden />
+            <ChevronDownIcon className="h-3.5 w-3.5 text-admin-text-subdued" aria-hidden />
           </button>
 
           {menuOpen ? (
@@ -109,7 +109,7 @@ const OrdersAnalyticsBar: React.FC = () => {
               ref={menuRef}
               role="listbox"
               aria-label="Date range"
-              className="absolute left-3 top-full z-20 mt-1 min-w-[180px] rounded-lg border border-gray-200 bg-white py-1 shadow-lg sm:left-4"
+              className="absolute left-3 top-full z-20 mt-1 min-w-[180px] overflow-hidden rounded-lg border border-admin-border bg-admin-surface py-1 shadow-[0_4px_12px_rgba(0,0,0,0.08)] sm:left-4"
             >
               {DATE_RANGE_OPTIONS.map((option) => (
                 <button
@@ -121,13 +121,13 @@ const OrdersAnalyticsBar: React.FC = () => {
                     setDateRange(option.value);
                     closeMenu();
                   }}
-                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-gray-800 hover:bg-gray-50"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
                 >
                   <span
                     className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border ${
                       dateRange === option.value
-                        ? 'border-gray-900 bg-gray-900'
-                        : 'border-gray-300 bg-white'
+                        ? 'border-admin-text bg-admin-text'
+                        : 'border-admin-border bg-admin-surface'
                     }`}
                   >
                     {dateRange === option.value ? (
@@ -149,11 +149,11 @@ const OrdersAnalyticsBar: React.FC = () => {
           {DUMMY_METRICS.map((metric) => (
             <div
               key={metric.label}
-              className="min-w-[140px] shrink-0 border-r border-gray-100 px-4 py-3 last:border-r-0 sm:min-w-[160px]"
+              className="min-w-[140px] shrink-0 border-r border-admin-divider px-4 py-3 last:border-r-0 sm:min-w-[160px]"
             >
-              <p className="whitespace-nowrap text-[12px] text-gray-500">{metric.label}</p>
+              <p className="whitespace-nowrap text-[12px] text-admin-text-secondary">{metric.label}</p>
               {metric.value ? (
-                <p className="mt-0.5 text-[15px] font-semibold text-gray-900">{metric.value}</p>
+                <p className="mt-0.5 text-[15px] font-semibold text-admin-text">{metric.value}</p>
               ) : (
                 <div className="mt-0.5 h-[22px]" aria-hidden />
               )}
@@ -162,13 +162,13 @@ const OrdersAnalyticsBar: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1 border-l border-gray-100 px-2 py-3">
+        <div className="flex shrink-0 items-center gap-1 border-l border-admin-divider px-2 py-3">
           <button
             type="button"
             onClick={() => scrollMetrics('left')}
             disabled={!canScrollLeft}
             aria-label="Scroll metrics left"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronLeftIcon className="h-4 w-4" aria-hidden />
           </button>
@@ -177,7 +177,7 @@ const OrdersAnalyticsBar: React.FC = () => {
             onClick={() => scrollMetrics('right')}
             disabled={!canScrollRight}
             aria-label="Scroll metrics right"
-            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronRightIcon className="h-4 w-4" aria-hidden />
           </button>

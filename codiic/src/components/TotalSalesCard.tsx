@@ -1,6 +1,7 @@
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { ArrowTrendingUpIcon } from '@heroicons/react/24/solid';
 import React from 'react';
+import { dashboardCardShell } from './dashboard-ui';
 
 interface TotalSalesCardProps {
   totalSales?: number;
@@ -8,32 +9,31 @@ interface TotalSalesCardProps {
   lastMonth?: number;
 }
 
-const cardShell =
-  'rounded-2xl border border-slate-200/90 bg-white p-6 shadow-dashboard-card transition-shadow duration-200 hover:shadow-dashboard-card-hover';
-
 const TotalSalesCard: React.FC<TotalSalesCardProps> = ({
   totalSales = 0,
   percentageChange = 0,
   lastMonth = 0,
 }) => {
   return (
-    <div className={cardShell}>
+    <div className={dashboardCardShell}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-slate-500">Total sales</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 tabular-nums">
+          <p className="text-[13px] font-medium text-admin-text-secondary">Total sales</p>
+          <p className="mt-2 text-2xl font-semibold tracking-tight text-admin-text tabular-nums">
             {totalSales.toLocaleString()}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/10">
+            <span className="inline-flex items-center gap-1 rounded-full bg-[#cdfee1] px-2 py-0.5 text-[12px] font-medium text-[#0c5132]">
               <ArrowTrendingUpIcon className="h-3.5 w-3.5" aria-hidden />
               +{percentageChange}%
             </span>
-            <span className="text-xs text-slate-500">vs last month ({lastMonth.toLocaleString()})</span>
+            <span className="text-[12px] text-admin-text-subdued">
+              vs last month ({lastMonth.toLocaleString()})
+            </span>
           </div>
         </div>
-        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 ring-1 ring-blue-100/80">
-          <ShoppingCartIcon className="h-7 w-7 text-blue-600" aria-hidden />
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-admin-secondary">
+          <ShoppingCartIcon className="h-5 w-5 text-admin-text-secondary" aria-hidden />
         </div>
       </div>
     </div>

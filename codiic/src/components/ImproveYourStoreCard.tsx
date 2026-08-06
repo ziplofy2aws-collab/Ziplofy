@@ -20,10 +20,11 @@ const ImproveYourStoreCard: React.FC<ImproveYourStoreCardProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-xl p-5 border border-gray-200/80 shadow-sm">
-      {/* Header */}
-      <div className="mb-4 pl-3 border-l-4 border-blue-600">
-        <h3 className="text-base font-semibold text-gray-900">Here are some ways to improve your store</h3>
+    <div className="rounded-xl border border-admin-border bg-admin-surface p-5">
+      <div className="mb-4">
+        <h3 className="text-[13px] font-semibold text-admin-text">
+          Here are some ways to improve your store
+        </h3>
       </div>
 
       {/* Two Column Grid */}
@@ -37,7 +38,7 @@ const ImproveYourStoreCard: React.FC<ImproveYourStoreCardProps> = ({
               title: 'Set Up taxes',
               description: 'Configure Tax Rates & Rules to boost Sales',
               icon: (
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {/* Coins with percentage sign */}
                   <circle cx="7" cy="11" r="2.5" strokeWidth={1.5} />
                   <circle cx="15" cy="13" r="2.5" strokeWidth={1.5} />
@@ -57,7 +58,7 @@ const ImproveYourStoreCard: React.FC<ImproveYourStoreCardProps> = ({
               title: 'Manage Collections',
               description: 'Combine different items to show under a common filter',
               icon: (
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {/* Stacked boxes */}
                   <rect x="6" y="4" width="12" height="4" rx="1" strokeWidth={1.5} />
                   <rect x="6" y="10" width="12" height="4" rx="1" strokeWidth={1.5} />
@@ -78,7 +79,7 @@ const ImproveYourStoreCard: React.FC<ImproveYourStoreCardProps> = ({
               title: 'Create Coupons',
               description: 'Add and manage discounts for orders',
               icon: (
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -98,7 +99,7 @@ const ImproveYourStoreCard: React.FC<ImproveYourStoreCardProps> = ({
               title: 'Shipping Integration',
               description: 'Integrate with shipping carriers for real-time tracking and shipping',
               icon: (
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {/* Delivery Truck */}
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                 </svg>

@@ -1,10 +1,16 @@
 import { UserGroupIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+} from '../components/admin-list-ui';
 import CustomersPageFilters from '../components/customers/CustomersPageFilters';
 import CustomersPageHeader from '../components/customers/CustomersPageHeader';
 import CustomersTable from '../components/customers/CustomersTable';
-import { customerPrimaryButtonClass } from '../components/customers/customer-ui.util';
 import { useCustomers } from '../contexts/customer.context';
 import { useStore } from '../contexts/store.context';
 
@@ -41,8 +47,8 @@ const CustomersPage: React.FC = () => {
   const showInitialSkeleton = loading && !hasCustomers;
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <CustomersPageHeader />
 
         {error ? (
@@ -51,7 +57,7 @@ const CustomersPage: React.FC = () => {
           </div>
         ) : null}
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className={adminListCardClass}>
           {showInitialSkeleton || hasCustomers ? (
             <CustomersPageFilters search={search} onSearchChange={setSearch} />
           ) : null}
@@ -63,16 +69,16 @@ const CustomersPage: React.FC = () => {
               onCustomerClick={handleCustomerClick}
             />
           ) : !hasCustomers ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gray-100">
-                <UserGroupIcon className="h-7 w-7 text-gray-400" aria-hidden />
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-admin-fill">
+                <UserGroupIcon className="h-7 w-7 text-admin-text-subdued" aria-hidden />
               </div>
-              <p className="text-[15px] font-semibold text-gray-900">No customers yet</p>
-              <p className="mt-1.5 text-[13px] text-gray-500">
+              <p className="text-[15px] font-semibold text-admin-text">No customers yet</p>
+              <p className="mt-1.5 text-[13px] text-admin-text-secondary">
                 Manage customer details, order history, and segments in one place.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
-                <button type="button" onClick={handleAddCustomer} className={customerPrimaryButtonClass}>
+                <button type="button" onClick={handleAddCustomer} className={adminListPrimaryButtonClass}>
                   Add customer
                 </button>
               </div>
@@ -83,8 +89,8 @@ const CustomersPage: React.FC = () => {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Learn more about customers
             </a>
           </p>

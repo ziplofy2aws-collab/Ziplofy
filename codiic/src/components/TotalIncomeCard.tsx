@@ -1,5 +1,6 @@
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { dashboardChartCardShell } from './dashboard-ui';
 
 interface TotalIncomeCardProps {
   data?: {
@@ -8,9 +9,6 @@ interface TotalIncomeCardProps {
     loss: number;
   }[];
 }
-
-const chartCard =
-  'rounded-2xl border border-slate-200/90 bg-white p-6 min-h-[320px] shadow-dashboard-card transition-shadow duration-200 hover:shadow-dashboard-card-hover';
 
 const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
   data = [
@@ -40,15 +38,15 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
   };
 
   return (
-    <div className={chartCard}>
-      <div className="mb-6 flex items-start justify-between gap-3">
+    <div className={dashboardChartCardShell}>
+      <div className="mb-5 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-base font-semibold text-slate-900">Total income</h3>
-          <p className="mt-0.5 text-sm text-slate-500">Profit and loss over time</p>
+          <h3 className="text-[13px] font-semibold text-admin-text">Total income</h3>
+          <p className="mt-0.5 text-[12px] text-admin-text-secondary">Profit and loss over time</p>
         </div>
         <button
           type="button"
-          className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+          className="rounded-lg p-1.5 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
           aria-label="Chart options"
         >
           <EllipsisHorizontalIcon className="h-5 w-5" />
@@ -66,7 +64,7 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
                   y1={y}
                   x2={chartWidth - 16}
                   y2={y}
-                  stroke="#E2E8F0"
+                  stroke="#ebebeb"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                 />
@@ -74,7 +72,7 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
                   x={startX - 12}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-slate-400"
+                  fill="#8a8a8a"
                   fontSize="11"
                   fontWeight="500"
                 >
@@ -99,8 +97,8 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
                   y={profitY}
                   width={barWidth}
                   height={profitHeight}
-                  fill="#2563eb"
-                  rx="8"
+                  fill="#303030"
+                  rx="6"
                   className="transition-opacity hover:opacity-90"
                 />
                 <rect
@@ -108,15 +106,15 @@ const TotalIncomeCard: React.FC<TotalIncomeCardProps> = ({
                   y={lossY}
                   width={barWidth}
                   height={lossHeight}
-                  fill="#e2e8f0"
-                  rx="8"
+                  fill="#e3e3e3"
+                  rx="6"
                   className="transition-opacity hover:opacity-90"
                 />
                 <text
                   x={x + barWidth / 2}
                   y={startY + chartHeight + 18}
                   textAnchor="middle"
-                  className="fill-slate-500"
+                  fill="#616161"
                   fontSize="11"
                   fontWeight="500"
                 >

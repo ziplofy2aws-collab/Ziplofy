@@ -66,8 +66,8 @@ export default function PurchaseOrdersListPage() {
   const hasPurchaseOrders = (purchaseOrders || []).length > 0;
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className="w-full">
+      <div className="mx-auto max-w-[1200px]">
         <PurchaseOrdersPageHeader />
 
         {error ? (
@@ -76,7 +76,7 @@ export default function PurchaseOrdersListPage() {
           </div>
         ) : null}
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
           <PurchaseOrdersPageFilters
             activeTab={activeTab}
             onTabChange={setActiveTab}
@@ -85,13 +85,13 @@ export default function PurchaseOrdersListPage() {
           />
 
           {loading ? (
-            <div className="flex min-h-[280px] items-center justify-center py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
+            <div className="flex min-h-[280px] items-center justify-center bg-admin-surface py-16">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
             </div>
           ) : !hasPurchaseOrders ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Create your first purchase order</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <p className="text-[15px] font-semibold text-admin-text">Create your first purchase order</p>
+              <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                 Order inventory from your suppliers and track incoming stock
               </p>
               <button type="button" onClick={handleCreatePurchaseOrder} className={`mt-4 ${poPrimaryButtonClass}`}>
@@ -104,8 +104,8 @@ export default function PurchaseOrdersListPage() {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-gray-600 hover:text-gray-800">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className="text-[#005bd3] hover:underline">
               Learn more about purchase orders
             </a>
           </p>

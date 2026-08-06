@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+} from '../../components/admin-list-ui';
 import AbandonedCartsEmptyState from '../../components/orders/AbandonedCartsEmptyState';
 import AbandonedCartsHeader from '../../components/orders/AbandonedCartsHeader';
 import AbandonedCartsList from '../../components/orders/AbandonedCartsList';
@@ -131,8 +137,8 @@ const AbandonedCartsPage: React.FC = () => {
   }, [abandonedCarts]);
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <AbandonedCartsHeader
           cartCount={abandonedCarts.length}
           totalLineItems={totalLineItems}
@@ -141,19 +147,19 @@ const AbandonedCartsPage: React.FC = () => {
           onRefresh={handleRefresh}
         />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className={adminListCardClass}>
           {loading ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
-              <p className="mt-4 text-[13px] text-gray-500">Loading abandoned carts…</p>
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+              <p className="mt-4 text-[13px] text-admin-text-secondary">Loading abandoned carts…</p>
             </div>
           ) : error ? (
-            <div className="flex min-h-[280px] flex-col items-center justify-center px-6 py-12 text-center">
+            <div className="flex min-h-[280px] flex-col items-center justify-center bg-admin-surface px-6 py-12 text-center">
               <p className="text-[13px] text-red-600">{error}</p>
               <button
                 type="button"
                 onClick={handleRefresh}
-                className="mt-4 text-[13px] font-medium text-gray-900 hover:underline"
+                className="mt-4 text-[13px] font-medium text-admin-text hover:underline"
               >
                 Try again
               </button>
@@ -171,8 +177,8 @@ const AbandonedCartsPage: React.FC = () => {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Learn more about abandoned carts
             </a>
           </p>

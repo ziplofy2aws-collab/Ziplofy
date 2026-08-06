@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { InventoryLevel } from '../../contexts/inventory-level.contexts';
+import { adminListTableHeadRowClass } from '../admin-list-ui';
 import {
   inventoryColumnHeaderClass,
   inventoryColumnHeaderWithHintClass,
@@ -92,11 +93,11 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
   };
 
   return (
-    <div className="min-h-0 flex-1 overflow-auto rounded-b-lg">
+    <div className="min-h-0 flex-1 overflow-auto bg-admin-surface">
       <table className="w-full min-w-[920px] border-separate border-spacing-0 text-left">
         <thead>
-          <tr className="bg-gray-50">
-            <th className="sticky left-0 top-0 z-30 w-10 border-b border-gray-100 bg-gray-50 px-3 py-2.5 text-center">
+          <tr className={adminListTableHeadRowClass}>
+            <th className="sticky left-0 top-0 z-30 w-10 border-b border-admin-border bg-admin-table-header px-3 py-2 text-center">
               <input
                 ref={selectAllRef}
                 type="checkbox"
@@ -104,55 +105,55 @@ const InventoryTable: React.FC<InventoryTableProps> = ({
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
                 disabled={loading}
                 aria-label="Select all inventory items"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30 disabled:cursor-not-allowed disabled:opacity-50"
               />
             </th>
-            <th className="sticky left-10 top-0 z-30 border-b border-gray-100 bg-gray-50 px-3 py-2.5 text-[12px] font-medium text-gray-500 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.08)]">
+            <th className="sticky left-10 top-0 z-30 border-b border-admin-border bg-admin-table-header px-3 py-2 text-left text-[12px] font-medium leading-5 text-[#616161] shadow-[2px_0_4px_-2px_rgba(0,0,0,0.06)]">
               Product
             </th>
-            <th className="sticky top-0 z-20 border-b border-gray-100 bg-gray-50 px-3 py-2.5 text-[12px] font-medium text-gray-500">
+            <th className="sticky top-0 z-20 border-b border-admin-border bg-admin-table-header px-3 py-2 text-left text-[12px] font-medium leading-5 text-[#616161]">
               SKU
             </th>
             <th
-              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              className={`sticky top-0 z-20 border-b border-admin-border bg-admin-table-header ${inventoryColumnHeaderWithHintClass}`}
               title={COLUMN_HINTS.unavailable}
             >
               Unavailable
             </th>
             <th
-              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              className={`sticky top-0 z-20 border-b border-admin-border bg-admin-table-header ${inventoryColumnHeaderWithHintClass}`}
               title={COLUMN_HINTS.committed}
             >
               Committed
             </th>
             <th
-              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              className={`sticky top-0 z-20 border-b border-admin-border bg-admin-table-header ${inventoryColumnHeaderWithHintClass}`}
               title={COLUMN_HINTS.available}
             >
               Available
             </th>
             <th
-              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderWithHintClass}`}
+              className={`sticky top-0 z-20 border-b border-admin-border bg-admin-table-header ${inventoryColumnHeaderWithHintClass}`}
               title={COLUMN_HINTS.onHand}
             >
               On hand
             </th>
             <th
-              className={`sticky top-0 z-20 border-b border-gray-100 bg-gray-50 ${inventoryColumnHeaderClass}`}
+              className={`sticky top-0 z-20 border-b border-admin-border bg-admin-table-header ${inventoryColumnHeaderClass}`}
               title={COLUMN_HINTS.incoming}
             >
               Incoming
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-admin-surface">
           {loading ? (
             <InventoryTableSkeletonRows />
           ) : levels.length === 0 ? (
             <tr>
               <td colSpan={8} className="px-3 py-16 text-center">
-                <p className="text-[15px] font-semibold text-gray-900">No inventory found</p>
-                <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+                <p className="text-[15px] font-semibold text-admin-text">No inventory found</p>
+                <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                   Try changing the location or search term
                 </p>
               </td>

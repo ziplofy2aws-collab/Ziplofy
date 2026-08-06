@@ -1,13 +1,11 @@
 import { ChevronDownIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useRef, useState } from 'react';
+import { dashboardChartCardShell } from './dashboard-ui';
 
 interface RevenueAnalyticsCardProps {
   timeframe?: string;
   data?: { day: string; value: number }[];
 }
-
-const chartCard =
-  'rounded-2xl border border-slate-200/90 bg-white p-6 min-h-[320px] shadow-dashboard-card transition-shadow duration-200 hover:shadow-dashboard-card-hover';
 
 const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
   timeframe = 'This Week',
@@ -60,24 +58,24 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
   }, [isDropdownOpen]);
 
   return (
-    <div className={chartCard}>
-      <div className="mb-6 flex items-start justify-between gap-3">
+    <div className={dashboardChartCardShell}>
+      <div className="mb-5 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-base font-semibold text-slate-900">Revenue analytics</h3>
-          <p className="mt-0.5 text-sm text-slate-500">Revenue over time</p>
+          <h3 className="text-[13px] font-semibold text-admin-text">Revenue analytics</h3>
+          <p className="mt-0.5 text-[12px] text-admin-text-secondary">Revenue over time</p>
         </div>
         <div className="flex shrink-0 items-center gap-1">
           <div className="relative" ref={dropdownRef}>
             <button
               type="button"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-100"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-admin-fill px-2.5 py-1.5 text-[12px] font-medium text-admin-text transition-colors hover:bg-[#d4d4d4]"
             >
               {selectedTimeframe}
-              <ChevronDownIcon className="h-3.5 w-3.5 text-slate-500" />
+              <ChevronDownIcon className="h-3.5 w-3.5 text-admin-text-subdued" />
             </button>
             {isDropdownOpen && (
-              <div className="absolute right-0 top-full z-20 mt-1 min-w-[132px] rounded-xl border border-slate-200/90 bg-white py-1 shadow-lg ring-1 ring-black/5">
+              <div className="absolute right-0 top-full z-20 mt-1 min-w-[132px] overflow-hidden rounded-lg border border-admin-border bg-admin-surface py-1 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
                 {timeframes.map((tf) => (
                   <button
                     key={tf}
@@ -86,7 +84,7 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
                       setSelectedTimeframe(tf);
                       setIsDropdownOpen(false);
                     }}
-                    className="w-full px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
+                    className="w-full px-3 py-1.5 text-left text-[13px] text-admin-text transition-colors hover:bg-admin-row-hover"
                   >
                     {tf}
                   </button>
@@ -96,7 +94,7 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
           </div>
           <button
             type="button"
-            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-lg p-1.5 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
             aria-label="Chart options"
           >
             <EllipsisHorizontalIcon className="h-5 w-5" />
@@ -115,7 +113,7 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
                   y1={y}
                   x2={chartWidth - 16}
                   y2={y}
-                  stroke="#E2E8F0"
+                  stroke="#ebebeb"
                   strokeWidth="1"
                   strokeDasharray="4 4"
                 />
@@ -123,7 +121,7 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
                   x={startX - 12}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-slate-400"
+                  fill="#8a8a8a"
                   fontSize="11"
                   fontWeight="500"
                 >
@@ -145,15 +143,15 @@ const RevenueAnalyticsCard: React.FC<RevenueAnalyticsCardProps> = ({
                   y={y}
                   width={barWidth}
                   height={barHeight}
-                  fill="#2563eb"
-                  rx="8"
+                  fill="#303030"
+                  rx="6"
                   className="transition-opacity hover:opacity-90"
                 />
                 <text
                   x={x + barWidth / 2}
                   y={startY + chartHeight + 18}
                   textAnchor="middle"
-                  className="fill-slate-500"
+                  fill="#616161"
                   fontSize="11"
                   fontWeight="500"
                 >

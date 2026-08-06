@@ -13,8 +13,8 @@ const PurchaseOrdersPageHeader: React.FC = () => {
   return (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div className="flex min-w-0 items-center gap-2">
-        <DocumentTextIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
-        <h1 className="text-lg font-semibold text-gray-900">Purchase orders</h1>
+        <DocumentTextIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+        <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Purchase orders</h1>
       </div>
 
       <button type="button" onClick={handleCreatePurchaseOrder} className={poPrimaryButtonClass}>

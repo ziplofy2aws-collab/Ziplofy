@@ -1,5 +1,11 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+} from '../../components/admin-list-ui';
 import DraftsEmptyState from '../../components/orders/DraftsEmptyState';
 import DraftsPageHeader from '../../components/orders/DraftsPageHeader';
 
@@ -11,17 +17,17 @@ const DraftsPage: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <DraftsPageHeader />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className={adminListCardClass}>
           <DraftsEmptyState onCreateDraftOrder={handleCreateDraftOrder} />
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Learn more about creating draft orders
             </a>
           </p>

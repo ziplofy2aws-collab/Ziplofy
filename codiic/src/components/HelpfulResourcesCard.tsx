@@ -12,7 +12,7 @@ const HelpfulResourcesCard: React.FC<HelpfulResourcesCardProps> = ({
       id: 'help-center',
       title: 'Visit our Help Center',
       icon: (
-        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -26,7 +26,7 @@ const HelpfulResourcesCard: React.FC<HelpfulResourcesCardProps> = ({
       id: 'academy',
       title: 'Try our Academy Page',
       icon: (
-        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -40,7 +40,7 @@ const HelpfulResourcesCard: React.FC<HelpfulResourcesCardProps> = ({
       id: 'forum',
       title: 'Try our Forum Area',
       icon: (
-        <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-6 h-6 text-admin-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -65,15 +65,11 @@ const HelpfulResourcesCard: React.FC<HelpfulResourcesCardProps> = ({
   );
 
   return (
-    <div className="bg-white rounded-xl p-5 border border-gray-200/80 shadow-sm flex-1">
-      {/* Header */}
-      <div className="mb-4 pl-3 border-l-4 border-blue-600">
-        <h3 className="text-base font-semibold text-gray-900">
-          Other Helpful Resources
-        </h3>
+    <div className="flex-1 rounded-xl border border-admin-border bg-admin-surface p-5">
+      <div className="mb-4">
+        <h3 className="text-[13px] font-semibold text-admin-text">Other Helpful Resources</h3>
       </div>
 
-      {/* Resources List */}
       <div className="space-y-2.5">
         {resources.map((resource) => (
           <HelpfulResourceItem

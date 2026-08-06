@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+} from "../components/admin-list-ui";
 import CollectionsPageFilters, {
   type CollectionFilterTab,
 } from "../components/collections/CollectionsPageFilters";
@@ -57,11 +64,11 @@ const ProductCollectionsPage: React.FC = () => {
   const showInitialSkeleton = loading && !hasCollections;
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={adminListPageInnerClass}>
         <CollectionsPageHeader />
 
-        <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+        <div className={adminListCardClass}>
           <CollectionsPageFilters
             activeTab={activeTab}
             onTabChange={setActiveTab}
@@ -76,15 +83,15 @@ const ProductCollectionsPage: React.FC = () => {
               onCollectionClick={handleCollectionClick}
             />
           ) : !hasCollections ? (
-            <div className="flex min-h-[360px] flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="text-[15px] font-semibold text-gray-900">Add your collections</p>
-              <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <div className="flex min-h-[360px] flex-col items-center justify-center bg-admin-surface px-6 py-16 text-center">
+              <p className="text-[15px] font-semibold text-admin-text">Add your collections</p>
+              <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
                 Group products into collections your customers can browse
               </p>
               <button
                 type="button"
                 onClick={handleAddCollection}
-                className="mt-4 inline-flex items-center rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-gray-800"
+                className={`mt-4 ${adminListPrimaryButtonClass}`}
               >
                 Add collection
               </button>
@@ -98,8 +105,8 @@ const ProductCollectionsPage: React.FC = () => {
         </div>
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-xs text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Learn more about collections
             </a>
           </p>

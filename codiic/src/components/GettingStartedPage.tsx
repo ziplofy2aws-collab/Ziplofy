@@ -19,13 +19,12 @@ const GettingStartedPage: React.FC<GettingStartedPageProps> = ({
 }) => {
   return (
     <div className="flex flex-col gap-6">
-      {/* Welcome Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Welcome to <span className="text-blue-600">codiic</span>
+        <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">
+          Welcome to <span className="text-admin-text">codiic</span>
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Let's set up your e-commerce store and manage your business effectively
+        <p className="mt-1 text-[13px] text-admin-text-secondary">
+          Let&apos;s set up your e-commerce store and manage your business effectively
         </p>
       </div>
 

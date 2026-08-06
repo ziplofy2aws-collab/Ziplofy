@@ -7,10 +7,22 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Barely off-white so white cards read almost flush with the canvas
-        'page-background-color': '#fefefe',
+        /**
+         * Shopify Polaris admin grays (Products-style hierarchy):
+         * canvas (#f1f1f1) → white surfaces pop; hover #f6f6f7; chrome #e3e3e3
+         */
+        'page-background-color': '#f1f1f1',
         /** Home / analytics canvas — matches reference dashboard gray */
         'dashboard-canvas': '#F8F9FA',
+        'admin-surface': '#ffffff',
+        'admin-secondary': '#f1f1f1',
+        'admin-border': '#e3e3e3',
+        'admin-divider': '#ebebeb',
+        'admin-row-hover': '#f6f6f7',
+        'admin-fill': '#e3e3e3',
+        'admin-text': '#303030',
+        'admin-text-secondary': '#616161',
+        'admin-text-subdued': '#8a8a8a',
       },
       boxShadow: {
         'dashboard-card': '0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06)',

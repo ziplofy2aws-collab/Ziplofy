@@ -54,18 +54,18 @@ const TransfersTable: React.FC<TransfersTableProps> = ({ transfers, onRowClick }
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[900px] text-left">
+    <div className="overflow-x-auto bg-admin-surface">
+      <table className="w-full min-w-[900px] border-collapse text-left">
         <thead>
-          <tr className="border-b border-gray-100 bg-gray-50/50">
-            <th className="w-10 px-3 py-2.5 text-center">
+          <tr className="border-b border-admin-border bg-admin-table-header">
+            <th className="w-10 px-3 py-2 text-center align-middle">
               <input
                 ref={selectAllRef}
                 type="checkbox"
                 checked={allVisibleSelected}
                 onChange={(e) => handleSelectAllVisible(e.target.checked)}
                 aria-label="Select all transfers"
-                className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                className="h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
               />
             </th>
             <th className={transferTableHeadClass}>Transfer</th>

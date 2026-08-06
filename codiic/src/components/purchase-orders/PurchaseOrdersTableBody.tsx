@@ -24,12 +24,12 @@ const PurchaseOrdersTableBody: React.FC<PurchaseOrdersTableBodyProps> = ({
   onRowClick,
 }) => {
   return (
-    <tbody className="bg-white">
+    <tbody className="bg-admin-surface">
       {purchaseOrders.length === 0 ? (
         <tr>
           <td colSpan={7} className="px-3 py-16 text-center">
-            <p className="text-[15px] font-semibold text-gray-900">No purchase orders found</p>
-            <p className="mt-1.5 text-[13px] font-normal text-gray-500">
+            <p className="text-[15px] font-semibold text-admin-text">No purchase orders found</p>
+            <p className="mt-1.5 text-[13px] font-normal text-admin-text-secondary">
               Try changing the filters or search term
             </p>
           </td>

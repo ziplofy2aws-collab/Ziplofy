@@ -12,15 +12,15 @@ const ProductsPageHeader: React.FC = () => {
   return (
     <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
       <div className="flex min-w-0 items-center gap-2">
-        <TagIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
-        <h1 className="text-lg font-semibold text-gray-900">Products</h1>
+        <TagIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />
+        <h1 className="text-[20px] font-semibold tracking-tight text-admin-text">Products</h1>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={handleAddProduct}
-          className="inline-flex items-center rounded-lg bg-gray-900 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-gray-800"
+          className="inline-flex items-center rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a]"
         >
           Add product
         </button>

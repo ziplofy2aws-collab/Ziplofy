@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+/**
+ * Tailwind v4 theme tokens (JS tailwind.config.js is NOT loaded by @tailwindcss/vite).
+ * Shopify admin gray hierarchy for Products and other admin surfaces.
+ */
+@theme {
+  --color-page-background-color: #f1f1f1;
+  --color-dashboard-canvas: #f1f1f1;
+  /* Slightly darker than page canvas so nav reads as a separate rail */
+  --color-admin-sidebar: #e8e8e8;
+  /* Shopify-style top bar */
+  --color-admin-header: #000000;
+  --color-admin-header-control: #1a1a1a;
+  --color-admin-header-control-hover: #262626;
+
+  --color-admin-surface: #ffffff;
+  --color-admin-secondary: #f1f1f1;
+  --color-admin-border: #e3e3e3;
+  --color-admin-divider: #ebebeb;
+  --color-admin-row-hover: #f6f6f7;
+  /* Index table column header strip (Shopify Products) */
+  --color-admin-table-header: #f7f7f7;
+  --color-admin-fill: #e3e3e3;
+
+  --color-admin-text: #303030;
+  --color-admin-text-secondary: #616161;
+  --color-admin-text-subdued: #8a8a8a;
+}
+
+/* Codiix face button on the black admin header */
+.codiix-header-btn--on-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.codiix-header-btn--on-dark.codiix-header-btn--active {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
