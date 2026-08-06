@@ -1,7 +1,20 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { axiosi } from '../config/axios.config';
+import {
+  goToOnboarding,
+  isOnboardingComplete,
+  setAuthUserId,
+} from '../utils/onboarding.util';
 
 const AUTH_ROUTES = ['/login', '/register'];
+
+function isPublicAuthPath(pathname: string): boolean {
+  return AUTH_ROUTES.includes(pathname) || pathname.startsWith('/onboarding');
+}
+
+function isOnboardingPath(pathname: string): boolean {
+  return pathname.startsWith('/onboarding');
+}
 
 interface UserContextType {
   loggedInUser: SecureUserInfo | null;
@@ -30,8 +43,8 @@ export const UserProvider = ({ children }:{children: React.ReactNode}) => {
 
   const redirectToAuth = useCallback(() => {
     // Auth now lives inside this app at /login. Avoid redirect loops when
-    // we are already on an auth route.
-    if (AUTH_ROUTES.includes(window.location.pathname)) return;
+    // we are already on an auth/onboarding route.
+    if (isPublicAuthPath(window.location.pathname)) return;
     window.location.href = '/login';
   }, []);
 
@@ -57,6 +70,12 @@ export const UserProvider = ({ children }:{children: React.ReactNode}) => {
       const { data } = await axiosi.get<SecureUserInfo | { success: boolean; data: SecureUserInfo }>('/auth/me');
       const user = data && typeof data === 'object' && 'data' in data ? data.data : (data as SecureUserInfo);
       setLoggedInUser(user);
+      setAuthUserId(user.id);
+
+      // If setup details were never finished, send them through onboarding again.
+      if (!isOnboardingComplete(user.id) && !isOnboardingPath(window.location.pathname)) {
+        goToOnboarding();
+      }
     } catch (err: any) {
       console.error('Error fetching user:', err);
       

@@ -41,7 +41,7 @@ async function seedIndiaTaxDefaults() {
           $set: {
             countryId: indiaObjectId,
             stateId: state._id,
-            taxLabel: 'IGST',
+            taxLabel: 'GST',
             taxRate: 18,
             calculationMethod: 'instead',
           },
@@ -70,8 +70,8 @@ async function seedIndiaTaxDefaults() {
         $set: {
           countryId: indiaObjectId,
           stateId: null,
-          taxLabel: 'Federal GST',
-          taxRate: 9,
+          taxLabel: 'GST',
+          taxRate: 18,
           calculationMethod: null,
         },
       },

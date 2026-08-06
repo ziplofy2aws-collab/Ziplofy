@@ -11,6 +11,13 @@ export interface IUser {
   status: "active" | "inactive" | "suspended";
   lastLogin: Date | null;
   assignedSupportDeveloperId: mongoose.Types.ObjectId | null;
+  onboardingGoals?: string[];
+  onboardingPaymentMethod?: 'upi' | 'card' | null;
+  onboardingPaymentHint?: string;
+  onboardingStatus?: 'not_started' | 'goals' | 'completed' | 'skipped';
+  onboardingCompletedAt?: Date | null;
+  onboardingPlan?: string;
+  onboardingIntroPrice?: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,6 +64,21 @@ const userSchema = new Schema<IUser & Document>({
     ref: "SupportDeveloper",
     default: null,
   },
+  onboardingGoals: { type: [String], default: [] },
+  onboardingPaymentMethod: {
+    type: String,
+    enum: ["upi", "card", null],
+    default: null,
+  },
+  onboardingPaymentHint: { type: String, trim: true, default: "" },
+  onboardingStatus: {
+    type: String,
+    enum: ["not_started", "goals", "completed", "skipped"],
+    default: "not_started",
+  },
+  onboardingCompletedAt: { type: Date, default: null },
+  onboardingPlan: { type: String, trim: true, default: "" },
+  onboardingIntroPrice: { type: Number, default: null },
 },{timestamps:true,versionKey:false});
 
 // Hash password before saving

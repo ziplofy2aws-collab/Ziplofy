@@ -11,6 +11,8 @@ import { frontendEnv } from "./config/env";
 import AuthProvider from "./contexts/auth.context";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import OnboardingGoalsPage from "./pages/onboarding/OnboardingGoalsPage";
+import OnboardingPaymentPage from "./pages/onboarding/OnboardingPaymentPage";
 import AdminStandardLayout from "./components/layout/AdminStandardLayout";
 import Sidebar from "./components/Sidebar";
 import { AmountOffProductsDiscountProvider } from "./contexts/amount-off-products-discount.context";
@@ -282,6 +284,7 @@ import { StoreShippingPolicyProvider } from "./contexts/store-shipping-policy.co
 import { StoreTermsPolicyProvider } from "./contexts/store-terms-policy.context";
 import { StoreBillingAddressProvider } from "./contexts/storeBillingAddress.context";
 import { StoreSubdomainProvider } from "./contexts/storeSubdomain.context";
+import { DomainsProvider } from "./contexts/domains.context";
 import { TaxAndDutiesGlobalSettingsProvider } from "./contexts/tax-and-duties-global-settings.context";
 import { TaxRateDefaultProvider } from "./contexts/tax-rate-default.context";
 import { TaxRateOverrideProvider } from "./contexts/tax-rate-override.context";
@@ -321,7 +324,10 @@ function LegacyBlogPostRedirect() {
 // This component is rendered INSIDE <Router>, so hooks like useLocation are safe here
 const AdminApp: React.FC = () => {
   const location = useLocation();
-  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
+  const isAuthRoute =
+    location.pathname === '/login' ||
+    location.pathname === '/register' ||
+    location.pathname.startsWith('/onboarding');
   const isCodeFullScreen = location.pathname.startsWith('/themes/code-fullscreen/');
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
   const isBasicElementor = location.pathname.startsWith('/themes/basic-elementor');
@@ -377,6 +383,8 @@ const AdminApp: React.FC = () => {
             {/* Authentication (merged in from the former standalone client app) */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/onboarding" element={<OnboardingGoalsPage />} />
+            <Route path="/onboarding/payment" element={<OnboardingPaymentPage />} />
             <Route element={<AdminStandardLayout />}>
             {/* Top-level */}
             <Route path="/" element={<HomePage />} />
@@ -657,6 +665,7 @@ const App: React.FC = () => {
         <AmountOffOrderDiscountProvider>
         <FreeShippingDiscountProvider>
         <StoreSubdomainProvider>
+        <DomainsProvider>
         <AbandonedCartProvider>
         <StoreBillingAddressProvider>
         <StoreBrandingProvider>
@@ -782,6 +791,7 @@ const App: React.FC = () => {
         </StoreBrandingProvider>
         </StoreBillingAddressProvider>
         </AbandonedCartProvider>
+        </DomainsProvider>
         </StoreSubdomainProvider>
         </FreeShippingDiscountProvider>
         </AmountOffOrderDiscountProvider>

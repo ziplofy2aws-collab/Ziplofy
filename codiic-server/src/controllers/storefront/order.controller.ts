@@ -23,6 +23,13 @@ import {
 } from '../../models/checkout-settings/checkout-settings.model';
 import { asyncErrorHandler, CustomError } from '../../utils/error.utils';
 import { getOrderConfirmationEmailBody, getOrderConfirmationEmailSubject, sendEmail } from '../../utils/email.utils';
+import { allocateStoreOrderId } from '../../utils/order-display-id.util';
+import { computeStoreOrderTax } from '../../utils/store-tax.util';
+import { Country } from '../../models/country/country.model';
+
+function roundOrderMoney(n: number): number {
+  return Math.round((n + Number.EPSILON) * 100) / 100;
+}
 
 export const createOrder = asyncErrorHandler(async (req: Request, res: Response) => {
   const user = req.storefrontUser;
@@ -144,18 +151,34 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
     }
   }
 
-  // Create order
+  // Create order with store prefix/suffix from General Settings
+  const { sequence, displayOrderId } = await allocateStoreOrderId(storeId);
+
+  const shippingCountry = await Country.findById(shippingAddress.countryId).select('name iso2').lean();
+  const computedTax = await computeStoreOrderTax({
+    storeId,
+    subtotal,
+    shippingCost: shippingCost || 0,
+    countryId: shippingAddress.countryId,
+    countryNameOrIso: shippingCountry?.iso2 || shippingCountry?.name,
+    stateNameOrCode: shippingAddress.state,
+  });
+  const resolvedTax = computedTax.tax;
+  const resolvedTotal = roundOrderMoney(subtotal + (shippingCost || 0) + resolvedTax);
+
   const order = await Order.create({
     storeId: new Types.ObjectId(storeId),
     customerId: new Types.ObjectId(user._id),
     shippingAddressId: new Types.ObjectId(shippingAddressId),
     billingAddressId: billingAddressId ? new Types.ObjectId(billingAddressId) : undefined,
+    orderSequence: sequence,
+    displayOrderId,
     paymentMethod: paymentMethod || undefined,
     paymentStatus: 'unpaid',
     subtotal,
-    tax: tax || 0,
+    tax: resolvedTax,
     shippingCost: shippingCost || 0,
-    total,
+    total: resolvedTotal,
     notes: notes || undefined,
     status: 'pending',
   });
@@ -342,7 +365,7 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
   if (user.email) {
     try {
       const customerName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || 'Customer';
-      const orderNumber = String(order._id).slice(-4).toUpperCase();
+      const orderNumber = order.displayOrderId || String(order._id).slice(-4).toUpperCase();
 
       const formatAddressLines = (address: any): string[] => {
         if (!address) return [];

@@ -19,6 +19,14 @@ export interface ICodiicUser {
   status: 'Active' | 'Inactive' | 'Pending';
   totalPurchases: number;
   assignedSupportDeveloperId?: mongoose.Types.ObjectId;
+  /** Client setup onboarding (goals + payment preference). */
+  onboardingGoals?: string[];
+  onboardingPaymentMethod?: 'upi' | 'card' | null;
+  onboardingPaymentHint?: string;
+  onboardingStatus?: 'not_started' | 'goals' | 'completed' | 'skipped';
+  onboardingCompletedAt?: Date | null;
+  onboardingPlan?: string;
+  onboardingIntroPrice?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -45,6 +53,21 @@ const codiicUserSchema: Schema<ICodiicUser & Document> = new mongoose.Schema(
       ref: 'SupportDeveloper',
       default: null,
     },
+    onboardingGoals: { type: [String], default: [] },
+    onboardingPaymentMethod: {
+      type: String,
+      enum: ['upi', 'card', null],
+      default: null,
+    },
+    onboardingPaymentHint: { type: String, trim: true, default: '' },
+    onboardingStatus: {
+      type: String,
+      enum: ['not_started', 'goals', 'completed', 'skipped'],
+      default: 'not_started',
+    },
+    onboardingCompletedAt: { type: Date, default: null },
+    onboardingPlan: { type: String, trim: true, default: '' },
+    onboardingIntroPrice: { type: Number, default: null },
   },
   { timestamps: true }
 );

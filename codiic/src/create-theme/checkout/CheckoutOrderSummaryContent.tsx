@@ -14,6 +14,8 @@ export type CheckoutOrderSummaryLine = {
 export type CheckoutOrderSummaryTotals = {
   subtotal: number;
   shipping: number;
+  tax?: number;
+  taxLabel?: string;
   total: number;
 };
 
@@ -207,6 +209,13 @@ export function CheckoutOrderSummaryContent({
               showInfo
               compact={isMobile}
             />
+            {(totals.tax ?? 0) > 0 ? (
+              <SummaryRow
+                label={totals.taxLabel || 'Tax'}
+                value={formatCheckoutPrice(totals.tax || 0)}
+                compact={isMobile}
+              />
+            ) : null}
           </div>
 
           <div

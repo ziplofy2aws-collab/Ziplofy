@@ -153,7 +153,9 @@ export const verifyOrderPayment = asyncErrorHandler(async (req: Request, res: Re
   let acknowledgementEmailSent = false;
   if (shouldSendAcknowledgement && payment.email) {
     try {
-      const orderNumber = order._id.toString().slice(-4).toUpperCase();
+      const orderNumber =
+        (order as { displayOrderId?: string }).displayOrderId ||
+        order._id.toString().slice(-4).toUpperCase();
       const storeName =
         typeof updatedOrder?.storeId === 'object' && 'storeName' in updatedOrder.storeId
           ? String(updatedOrder.storeId.storeName || 'Store')

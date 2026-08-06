@@ -11,7 +11,7 @@ import {
   verifyAdminLoginOtp,
 } from "../controllers/auth.controller";
 import { protect } from "../middlewares/auth.middleware";
-import { googleAuth, login, register } from "../controllers/codiic-auth.controller";
+import { googleAuth, login, register, saveOnboarding } from "../controllers/codiic-auth.controller";
 
 export const authRouter = Router();
 
@@ -19,6 +19,7 @@ export const authRouter = Router();
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.post("/google", googleAuth);
+authRouter.put("/onboarding", protect, saveOnboarding);
 
 authRouter.get("/me", protect, getMe);
 authRouter.post("/logout", protect, adminLogout);

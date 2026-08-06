@@ -5,6 +5,10 @@ export interface IOrder {
   customerId: mongoose.Types.ObjectId;
   shippingAddressId: mongoose.Types.ObjectId;
   billingAddressId?: mongoose.Types.ObjectId;
+  /** Sequential per-store number (e.g. 1001). Set on create for new orders. */
+  orderSequence?: number;
+  /** Formatted id: prefix + sequence + suffix from General Settings. */
+  displayOrderId?: string;
   orderDate: Date;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
   paymentMethod?: "credit_card" | "paypal" | "cod" | "bank_transfer" | "upi_id" | "other";
@@ -43,6 +47,15 @@ const OrderSchema = new Schema<IOrderDocument>(
     billingAddressId: {
       type: Schema.Types.ObjectId,
       ref: "CustomerAddress",
+    },
+    orderSequence: {
+      type: Number,
+      min: 1,
+    },
+    displayOrderId: {
+      type: String,
+      trim: true,
+      index: true,
     },
     orderDate: {
       type: Date,
@@ -88,6 +101,7 @@ const OrderSchema = new Schema<IOrderDocument>(
 
 // Indexes for better query performance
 OrderSchema.index({ storeId: 1, orderDate: -1 });
+OrderSchema.index({ storeId: 1, orderSequence: 1 }, { unique: true, sparse: true });
 OrderSchema.index({ customerId: 1, orderDate: -1 });
 OrderSchema.index({ status: 1 });
 OrderSchema.index({ paymentStatus: 1 });

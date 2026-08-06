@@ -4,7 +4,8 @@ export function formatOrderCurrency(amount: number): string {
   return `₹${Number(amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function formatOrderDisplayId(orderId: string): string {
+export function formatOrderDisplayId(orderId: string, displayOrderId?: string | null): string {
+  if (displayOrderId?.trim()) return displayOrderId.trim();
   if (!orderId) return '—';
   return `#${orderId.slice(-4).toUpperCase()}`;
 }

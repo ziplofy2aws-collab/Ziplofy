@@ -102,7 +102,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
   const [collectionSearchPage, setCollectionSearchPage] = useState<number>(1);
   const [collectionPagination, setCollectionPagination] = useState<any>(null);
   const [overrideLocation, setOverrideLocation] = useState<string>('india');
-  const [overrideTaxRate, setOverrideTaxRate] = useState<number>(9);
+  const [overrideTaxRate, setOverrideTaxRate] = useState<number>(18);
   const [editingTaxDefault, setEditingTaxDefault] = useState<any>(null);
   const [taxOverrides, setTaxOverrides] = useState<any[]>([]);
   const [productOverrides, setProductOverrides] = useState<any[]>([]);
@@ -694,7 +694,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
   );
 
   const displayFederalRate =
-    currentCountryTaxRate || federalTaxDefault?.taxRate || countryTaxMap[countryId || '']?.taxRate || 9;
+    currentCountryTaxRate || federalTaxDefault?.taxRate || countryTaxMap[countryId || '']?.taxRate || 18;
 
   return (
     <div className="w-full">
@@ -1047,7 +1047,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
               setAddOverrideModalOpen(true);
               setProductOverrideError(null);
               setOverrideLocation('india');
-              setOverrideTaxRate(9);
+              setOverrideTaxRate(18);
             }}
             sx={{
               display: 'flex',
@@ -1094,7 +1094,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
               setAddOverrideModalOpen(true);
               setProductOverrideError(null);
               setOverrideLocation('india');
-              setOverrideTaxRate(9);
+              setOverrideTaxRate(18);
               handleProductMenuClose();
             }}
           >
@@ -1492,7 +1492,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
               setCollectionDropdownOpen(false);
               setCollectionSearchPage(1);
               setOverrideLocation('india');
-              setOverrideTaxRate(9);
+              setOverrideTaxRate(18);
               setProductOverrideError(null);
               setOverrideCollectionContext(null);
             }}
@@ -1797,7 +1797,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
               setCollectionDropdownOpen(false);
               setCollectionSearchPage(1);
               setOverrideLocation('india');
-              setOverrideTaxRate(9);
+              setOverrideTaxRate(18);
               setProductOverrideError(null);
             }}
             sx={{
@@ -1930,7 +1930,7 @@ const IndiaTaxDetailsPage: React.FC = () => {
                 setCollectionDropdownOpen(false);
                 setCollectionSearchPage(1);
                 setOverrideLocation('india');
-                setOverrideTaxRate(9);
+                setOverrideTaxRate(18);
                 setProductOverrideError(null);
                 setOverrideCollectionContext(null);
               } catch (error: any) {

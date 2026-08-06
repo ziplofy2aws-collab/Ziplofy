@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codiic - Signup</title>
+  <link rel="icon" type="image/png" href="assets/img/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+  <div class="signup-shell">
+    <section class="signup-card">
+      <header class="signup-header">
+        <div class="signup-logo"><img src="assets/img/logo.png" alt="Codiic Logo"></div>
+        <h1>Get Started with Codiic</h1>
+        <p class="subheading">Join 50,000+ growing businesses worldwide</p>
+      </header>
+
+      <form id="signupForm" novalidate>
+        <div class="form-grid">
+          <div class="field" id="businessNameField">
+            <input class="floating-input" type="text" id="businessName" name="businessName" placeholder=" " autocomplete="organization" required>
+            <label for="businessName">Business Name</label>
+            <div class="helper">This will be your store name</div>
+            <div class="status-msg" id="businessNameStatus"></div>
+          </div>
+
+          <div class="field" id="storeUrlField">
+            <input class="floating-input" type="text" id="storeUrl" name="storeUrl" placeholder=" " required>
+            <label for="storeUrl">Store URL</label>
+            <div class="store-url-preview">https://yourstore.codiic.com</div>
+            <div class="status-msg" id="storeUrlStatus"></div>
+          </div>
+
+          <div class="field" id="businessCategoryField">
+            <select class="floating-select" id="businessCategory" name="businessCategory" required>
+              <option value="" selected disabled hidden></option>
+              <option value="fashion">Fashion & Apparel</option>
+              <option value="electronics">Electronics</option>
+              <option value="beauty">Beauty & Personal Care</option>
+              <option value="home">Home & Decor</option>
+              <option value="food">Food & Grocery</option>
+              <option value="other">Other</option>
+            </select>
+            <label for="businessCategory">Business Category</label>
+            <div class="status-msg" id="businessCategoryStatus"></div>
+          </div>
+
+          <div class="input-row">
+            <div class="field" id="emailField">
+              <input class="floating-input" type="email" id="email" name="email" placeholder=" " autocomplete="email" required>
+              <label for="email">Email</label>
+              <div class="status-msg" id="emailStatus"></div>
+            </div>
+
+            <div class="field" id="mobileField">
+              <div class="phone-wrap">
+                <div class="country-code" aria-hidden="true">
+                  <span>ðŸ‡®ðŸ‡³</span>
+                  <span>+91</span>
+                </div>
+                <div class="field">
+                  <input class="floating-input" type="tel" id="mobile" name="mobile" placeholder=" " inputmode="numeric" pattern="[0-9]{10}" required>
+                  <label for="mobile">Mobile Number</label>
+                </div>
+              </div>
+              <div class="status-msg" id="mobileStatus"></div>
+            </div>
+          </div>
+
+          <div class="field" id="passwordField">
+            <div class="password-wrap">
+              <input class="floating-input" type="password" id="password" name="password" placeholder=" " autocomplete="new-password" required>
+              <label for="password">Password</label>
+              <button type="button" class="toggle-password" id="togglePassword">Show</button>
+            </div>
+            <div class="strength-meter">
+              <div class="strength-bar"><span id="strengthProgress"></span></div>
+              <div class="strength-label" id="strengthLabel">Strength: Weak</div>
+            </div>
+            <div class="status-msg" id="passwordStatus"></div>
+          </div>
+
+          <label class="checkbox-row" for="terms">
+            <input type="checkbox" id="terms" name="terms" required>
+            <span>I agree to <a href="#" aria-label="Terms of Service">Terms of Service</a> and <a href="#" aria-label="Privacy Policy">Privacy Policy</a></span>
+          </label>
+          <div class="status-msg" id="termsStatus"></div>
+        </div>
+
+        <button class="cta-btn" type="submit">Create Your Store</button>
+
+        <ul class="trust-list" aria-label="Trust indicators">
+          <li><span class="tick">âœ”</span><span>Free to start</span></li>
+          <li><span class="tick">âœ”</span><span>No credit card required</span></li>
+          <li><span class="tick">âœ”</span><span>Setup in 2 minutes</span></li>
+        </ul>
+
+        <p class="footer-note">Already have an account? <a href="signin.html">Sign In</a></p>
+        <p class="copyright">Â© 2024 Codiic</p>
+      </form>
+    </section>
+  </div>
+
+  <script src="assets/js/sigup.js"></script>
+</body>
+</html>
+
+
+
