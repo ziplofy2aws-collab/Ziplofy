@@ -1,7 +1,7 @@
 import { ChevronDownIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useStorefrontAuth } from '@render-store/sdk';
+import { useStorefrontAuth, useStorefrontCart } from '@render-store/sdk';
 import type {
   CheckoutAddressFields,
   CheckoutCustomerInformation,
@@ -15,8 +15,11 @@ import {
 } from './checkout-form.types';
 import { isColorDark } from './settings/checkout-color.utils';
 import { buildCheckoutFieldChrome, type CheckoutMainViewTypography } from './checkout-form-styles';
+import { UpiPaymentQr } from './UpiPaymentQr';
 import {
   CHECKOUT_DEFAULT_SHIPPING_AMOUNT,
+  CHECKOUT_DEFAULT_TAX_RATE_PERCENT,
+  computeCheckoutTotals,
   validateCheckoutForm,
 } from './utils/checkout-order.utils';
 
@@ -43,6 +46,8 @@ type Props = {
   submitting?: boolean;
   availablePaymentMethods?: CheckoutPaymentMethodOption[];
   customerInformation?: CheckoutCustomerInformation;
+  /** Shown as UPI payee name in the QR when paying via UPI. */
+  storeName?: string;
 };
 
 function fieldLabelWithRequirement(label: string, option: 'dont_include' | 'optional' | 'required') {
@@ -338,6 +343,7 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
     submitting = false,
     availablePaymentMethods,
     customerInformation = DEFAULT_CUSTOMER_INFO,
+    storeName,
   },
   ref
 ) {
@@ -349,6 +355,12 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
     boxShadow: `inset 0 0 0 1px ${accentColor}`,
   };
   const { user } = useStorefrontAuth();
+  const { getAllItems } = useStorefrontCart();
+  const cartLines = getAllItems();
+  const checkoutTotals = useMemo(
+    () => computeCheckoutTotals(cartLines, { taxRatePercent: CHECKOUT_DEFAULT_TAX_RATE_PERCENT }),
+    [cartLines]
+  );
 
   const paymentMethods =
     availablePaymentMethods && availablePaymentMethods.length > 0
@@ -561,9 +573,21 @@ export const CheckoutMainView = forwardRef<CheckoutMainViewHandle, Props>(functi
                 </div>
               ) : null}
               {selectedPaymentMethod.key === 'upi_id' && selectedPaymentMethod.instructions.upiId ? (
-                <div className={chrome.valueClass}>
-                  <p className="font-medium">Pay to UPI ID:</p>
-                  <p>{selectedPaymentMethod.instructions.upiId}</p>
+                <div className={`space-y-4 ${chrome.valueClass}`}>
+                  <div>
+                    <p className="font-medium">Pay to UPI ID:</p>
+                    <p>{selectedPaymentMethod.instructions.upiId}</p>
+                  </div>
+                  <UpiPaymentQr
+                    upiId={selectedPaymentMethod.instructions.upiId}
+                    payeeName={storeName}
+                    amount={checkoutTotals.total > 0 ? checkoutTotals.total : undefined}
+                    transactionNote="Order payment"
+                    size={isMobile ? 160 : 180}
+                  />
+                  <p className="text-[12px] opacity-80">
+                    After placing your order you will confirm payment with the UTR / transaction ID.
+                  </p>
                 </div>
               ) : null}
             </div>

@@ -80,7 +80,7 @@ const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-semibold text-gray-900">{formatOrderDisplayId(order._id)}</h1>
+            <h1 className="text-xl font-semibold text-gray-900">{formatOrderDisplayId(order._id, order.displayOrderId)}</h1>
             <StatusBadge label={getPaymentStatusLabel(order.paymentStatus)} tone={paymentTone} />
             <StatusBadge label={getFulfillmentLabel(order.status)} tone={fulfillmentTone} />
           </div>

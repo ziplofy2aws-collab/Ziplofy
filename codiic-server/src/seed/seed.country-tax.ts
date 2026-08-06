@@ -29,7 +29,7 @@ async function seedCountryTax() {
       {
         $set: {
           countryId: indiaObjectId,
-          taxRate: 9,
+          taxRate: 18,
         },
       },
       {

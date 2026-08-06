@@ -12,6 +12,8 @@ export interface IGeneralSettings extends Document {
   // Order ID formatting
   orderIdPrefix: string;
   orderIdSuffix: string;
+  /** Next sequential number to assign (starts at 1001). */
+  nextOrderNumber: number;
 
   // Order processing
   fulfillmentOption: 'fulfill_all' | 'fulfill_gift_cards' | 'dont_fulfill';
@@ -75,6 +77,11 @@ const generalSettingsSchema = new Schema<IGeneralSettings>(
       type: String,
       default: '',
       trim: true,
+    },
+    nextOrderNumber: {
+      type: Number,
+      default: 1001,
+      min: 1,
     },
     fulfillmentOption: {
       type: String,

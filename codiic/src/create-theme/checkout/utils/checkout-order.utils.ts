@@ -7,6 +7,9 @@ import { DEFAULT_CHECKOUT_CUSTOMER_INFORMATION } from '../checkout-form.types';
 
 export const CHECKOUT_DEFAULT_SHIPPING_AMOUNT = 10;
 
+/** Default India GST when rate has not been loaded yet. */
+export const CHECKOUT_DEFAULT_TAX_RATE_PERCENT = 18;
+
 type CartLine = {
   quantity: number;
   productVariantId: string | { _id: string; price: number };
@@ -34,14 +37,43 @@ export function mapCartLinesToOrderItems(lines: CartLine[]) {
     .filter((item): item is NonNullable<typeof item> => item !== null);
 }
 
-export function computeCheckoutTotals(lines: CartLine[]) {
+function roundMoney(n: number): number {
+  return Math.round((n + Number.EPSILON) * 100) / 100;
+}
+
+export function computeCheckoutTotals(
+  lines: CartLine[],
+  options?: {
+    taxRatePercent?: number;
+    taxIncludedInPrice?: boolean;
+    chargeTaxOnShipping?: boolean;
+    shippingAmount?: number;
+  }
+) {
   let subtotal = 0;
   for (const line of lines) {
     const variant = variantOf(line);
     if (variant) subtotal += variant.price * line.quantity;
   }
-  const shipping = lines.length > 0 ? CHECKOUT_DEFAULT_SHIPPING_AMOUNT : 0;
-  return { subtotal, shipping, tax: 0, total: subtotal + shipping };
+  const shipping =
+    lines.length > 0
+      ? options?.shippingAmount ?? CHECKOUT_DEFAULT_SHIPPING_AMOUNT
+      : 0;
+  const rate =
+    typeof options?.taxRatePercent === 'number' && !Number.isNaN(options.taxRatePercent)
+      ? Math.max(0, options.taxRatePercent)
+      : CHECKOUT_DEFAULT_TAX_RATE_PERCENT;
+  const taxIncluded = Boolean(options?.taxIncludedInPrice);
+  const chargeOnShipping = Boolean(options?.chargeTaxOnShipping);
+  const taxableBase = chargeOnShipping ? subtotal + shipping : subtotal;
+  const tax = taxIncluded || rate <= 0 ? 0 : roundMoney((taxableBase * rate) / 100);
+  return {
+    subtotal: roundMoney(subtotal),
+    shipping: roundMoney(shipping),
+    tax,
+    taxRatePercent: rate,
+    total: roundMoney(subtotal + shipping + tax),
+  };
 }
 
 function isFieldRequired(option: CheckoutCustomerInformation['companyNameOption']) {

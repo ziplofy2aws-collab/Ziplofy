@@ -3,6 +3,7 @@ import { createContext, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 import { axiosi } from '../config/axios.config';
 import { safeLocalStorage } from '../types/local-storage';
+import { clearAuthUserId, redirectAfterAuth } from '../utils/onboarding.util';
 
 export type UserRoleType = 'superadmin' | 'support_admin' | 'developer_admin' | 'expert_panel' | 'client';
 
@@ -14,6 +15,7 @@ export type IUser = {
   accessToken: string;
   assignedSupportDeveloperId: string;
   storeId?: string;
+  isNewUser?: boolean;
 };
 
 interface AuthContextType {
@@ -26,12 +28,6 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// After a successful authentication we do a full navigation to the dashboard root.
-// The UserProvider bootstraps the session from the stored accessToken on load.
-function goToDashboard(): void {
-  window.location.assign('/');
-}
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<IUser | null>(null);
@@ -46,7 +42,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       safeLocalStorage.setItem('accessToken', data.accessToken);
       setUser(data);
       toast.success('Successfully logged in!');
-      goToDashboard();
+      redirectAfterAuth(data.id);
     } catch (error: any) {
       const message = getErrorMessage(error, 'Login failed');
       console.error('Login error:', error);
@@ -61,7 +57,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       safeLocalStorage.setItem('accessToken', data.accessToken);
       setUser(data);
       toast.success('Account created successfully!');
-      goToDashboard();
+      redirectAfterAuth(data.id);
     } catch (error: any) {
       const message = getErrorMessage(error, 'Registration failed');
       console.error('Register error:', error);
@@ -79,7 +75,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       safeLocalStorage.setItem('accessToken', data.accessToken);
       setUser(data);
       toast.success('Successfully signed in with Google!');
-      goToDashboard();
+      redirectAfterAuth(data.id);
     } catch (error: any) {
       const message = getErrorMessage(error, 'Google login failed');
       console.error('Google login error:', error);
@@ -90,6 +86,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async (): Promise<void> => {
     safeLocalStorage.removeItem('accessToken');
+    clearAuthUserId();
     setUser(null);
     window.location.assign('/login');
   };

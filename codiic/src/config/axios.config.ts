@@ -48,9 +48,11 @@ axiosi.interceptors.response.use(
       }
 
       // Auth now lives inside this app at /login. Avoid redirect loops when
-      // we are already on an auth route.
-      const authRoutes = ['/login', '/register'];
-      if (typeof window !== 'undefined' && !authRoutes.includes(window.location.pathname)) {
+      // we are already on an auth/onboarding route.
+      const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+      const isAuthOrOnboarding =
+        pathname === '/login' || pathname === '/register' || pathname.startsWith('/onboarding');
+      if (typeof window !== 'undefined' && !isAuthOrOnboarding) {
         window.location.href = '/login';
       }
     }

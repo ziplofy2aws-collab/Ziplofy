@@ -25,14 +25,14 @@ describe('StorefrontProvider', () => {
   beforeEach(() => {
     vi.resetModules();
     Object.defineProperty(window, 'location', {
-      value: { hostname: 'mystore.example.com' },
+      value: { hostname: 'mystore.codiic.com' },
       writable: true,
     });
   });
 
   it('resolves valid subdomain and sets store meta', async () => {
     const { axiosi } = await import('../config/axios.config');
-    (axiosi.get as ReturnType<typeof vi.fn>).mockImplementation(async (url: string) => {
+    (axiosi.get as ReturnType<typeof vi.fn>).mockImplementation(async (url: string, config?: { params?: Record<string, string> }) => {
       if (String(url).includes('/theme-runtime')) {
         return {
           data: {
@@ -47,6 +47,7 @@ describe('StorefrontProvider', () => {
           },
         };
       }
+      expect(config?.params?.subdomain).toBe('mystore');
       return {
         data: {
           success: true,
@@ -68,6 +69,49 @@ describe('StorefrontProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('isStoreFront')).toHaveTextContent('true');
       expect(screen.getByTestId('meta')).toHaveTextContent('My Store');
+    });
+  });
+
+  it('resolves custom domain via host query param', async () => {
+    Object.defineProperty(window, 'location', {
+      value: { hostname: 'www.brand.com' },
+      writable: true,
+    });
+
+    const { axiosi } = await import('../config/axios.config');
+    (axiosi.get as ReturnType<typeof vi.fn>).mockImplementation(async (url: string, config?: { params?: Record<string, string> }) => {
+      if (String(url).includes('/theme-runtime')) {
+        return {
+          data: {
+            success: true,
+            data: {
+              themeId: 't1',
+              themeName: 'Custom',
+              themeKind: 'store-custom',
+              isStoreCustomTheme: true,
+              themeConfig: { templates: {} },
+            },
+          },
+        };
+      }
+      expect(config?.params?.host).toBe('www.brand.com');
+      return {
+        data: {
+          success: true,
+          data: { storeId: 's2', name: 'Brand Store', description: 'Desc', themeKind: 'store-custom' },
+        },
+      };
+    });
+
+    render(
+      <StorefrontProvider>
+        <TestConsumer />
+      </StorefrontProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('isStoreFront')).toHaveTextContent('true');
+      expect(screen.getByTestId('meta')).toHaveTextContent('Brand Store');
     });
   });
 

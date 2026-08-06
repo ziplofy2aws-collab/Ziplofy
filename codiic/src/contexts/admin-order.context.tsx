@@ -64,6 +64,8 @@ export interface AdminOrder {
   customerId: AdminOrderCustomerRef; // populated (no password)
   shippingAddressId: AdminOrderAddressRef;
   billingAddressId?: AdminOrderAddressRef;
+  orderSequence?: number;
+  displayOrderId?: string;
   orderDate?: string;
   status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
   paymentMethod?: 'credit_card' | 'paypal' | 'cod' | 'bank_transfer' | 'upi_id' | 'other';

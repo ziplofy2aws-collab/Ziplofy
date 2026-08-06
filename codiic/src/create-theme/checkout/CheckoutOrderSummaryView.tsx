@@ -1,5 +1,5 @@
 import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   formatINR,
@@ -11,7 +11,10 @@ import {
 import type { CheckoutOrderSummaryConfig } from './settings/checkout-settings.types';
 import { resolveCheckoutOrderSummaryColors } from './settings/checkout-settings.types';
 import { checkoutPreviewCurrencyCode } from './utils/format-checkout-price';
-import { CHECKOUT_DEFAULT_SHIPPING_AMOUNT } from './utils/checkout-order.utils';
+import {
+  CHECKOUT_DEFAULT_TAX_RATE_PERCENT,
+  computeCheckoutTotals,
+} from './utils/checkout-order.utils';
 
 type Props = {
   storeId?: string | null;
@@ -56,6 +59,7 @@ function ProductImagePlaceholder() {
 }
 
 export function CheckoutOrderSummaryView({
+  storeId,
   orderSummaryConfig,
   colorPalette,
   layout = 'desktop',
@@ -63,6 +67,9 @@ export function CheckoutOrderSummaryView({
   const isMobile = layout === 'mobile';
   const { user, checkAuth } = useStorefrontAuth();
   const { getAllItems, getCartByCustomerId, loading } = useStorefrontCart();
+  const [taxRatePercent, setTaxRatePercent] = useState(CHECKOUT_DEFAULT_TAX_RATE_PERCENT);
+  const [taxLabel, setTaxLabel] = useState('GST');
+  const [taxIncludedInPrice, setTaxIncludedInPrice] = useState(false);
 
   useEffect(() => {
     void checkAuth();
@@ -73,6 +80,32 @@ export function CheckoutOrderSummaryView({
     void getCartByCustomerId(user._id);
   }, [getCartByCustomerId, user?._id]);
 
+  useEffect(() => {
+    if (!storeId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `/api/storefront/${storeId}/tax-rate?country=IN&subtotal=0`
+        );
+        const json = await res.json();
+        if (cancelled || !json?.success || !json?.data) return;
+        if (typeof json.data.ratePercent === 'number') {
+          setTaxRatePercent(json.data.ratePercent);
+        }
+        if (json.data.label) setTaxLabel(String(json.data.label));
+        if (typeof json.data.taxIncludedInPrice === 'boolean') {
+          setTaxIncludedInPrice(json.data.taxIncludedInPrice);
+        }
+      } catch {
+        // keep India default 18%
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [storeId]);
+
   const lines = getAllItems();
 
   const { backgroundColor, accentColor } = resolveCheckoutOrderSummaryColors(
@@ -81,15 +114,14 @@ export function CheckoutOrderSummaryView({
   );
   const backgroundImage = orderSummaryConfig?.backgroundImage?.trim() || null;
 
-  const totals = useMemo(() => {
-    let subtotal = 0;
-    for (const item of lines) {
-      const variant = variantOf(item);
-      if (variant) subtotal += variant.price * item.quantity;
-    }
-    const shipping = lines.length > 0 ? CHECKOUT_DEFAULT_SHIPPING_AMOUNT : 0;
-    return { subtotal, shipping, total: subtotal + shipping };
-  }, [lines]);
+  const totals = useMemo(
+    () =>
+      computeCheckoutTotals(lines, {
+        taxRatePercent,
+        taxIncludedInPrice,
+      }),
+    [lines, taxRatePercent, taxIncludedInPrice]
+  );
 
   return (
     <aside
@@ -199,6 +231,9 @@ export function CheckoutOrderSummaryView({
               showInfo
               compact={isMobile}
             />
+            {totals.tax > 0 ? (
+              <SummaryRow label={taxLabel} value={formatINR(totals.tax)} compact={isMobile} />
+            ) : null}
           </div>
 
           <div

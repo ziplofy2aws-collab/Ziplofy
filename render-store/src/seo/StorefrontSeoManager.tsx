@@ -7,6 +7,7 @@ import { useStorefrontCollections } from '@/contexts/storefront-collections.cont
 import { useStorefrontPages } from '@/contexts/storefront-pages.context';
 import { applyStorefrontSeoToDocument } from './document-head.util';
 import { resolveStorefrontSeo } from './resolve-storefront-seo';
+import { setCodiicFingerprintStoreId } from '@/platform/codiic-platform-fingerprint';
 
 /**
  * Platform-owned SEO runtime. Themes do not need to set document title or meta tags.
@@ -47,6 +48,10 @@ export function StorefrontSeoManager() {
     activePost,
     activePage,
   ]);
+
+  useEffect(() => {
+    setCodiicFingerprintStoreId(storeFrontMeta?.storeId ?? null);
+  }, [storeFrontMeta?.storeId]);
 
   useEffect(() => {
     if (!seo) return;

@@ -452,10 +452,17 @@ const AllThemes: React.FC = () => {
   const filteredCustomThemes = storeCustomThemes.filter((t) =>
     t.themeName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  // Applied store custom themes belong in Installed (they show Live/Installed on Custom tab).
+  const installedStoreCustomThemes = filteredCustomThemes.filter(
+    (t) =>
+      appliedStoreCustomThemeId != null &&
+      String(appliedStoreCustomThemeId) === String(t._id)
+  );
+  const installedTabCount = installedForStore.length + installedStoreCustomThemes.length;
 
   const tabs: { id: ThemesTab; label: string; count: number }[] = [
     { id: 'public', label: 'Public themes', count: filteredThemes.length },
-    { id: 'installed', label: 'Installed', count: installedForStore.length },
+    { id: 'installed', label: 'Installed', count: installedTabCount },
     { id: 'custom', label: 'Custom themes', count: filteredCustomThemes.length },
   ];
 
@@ -640,7 +647,7 @@ const AllThemes: React.FC = () => {
         <div className="p-4 sm:p-5">
           {activeTab === 'installed' && (
             <>
-          {installedForStore.length > 0 ? (
+          {installedTabCount > 0 ? (
           <div className={`themes-layout ${viewMode}`}>
             {installedForStore.map((it: any) => {
                     const t = it;
@@ -768,10 +775,54 @@ const AllThemes: React.FC = () => {
               </div>
                     );
                   })}
+
+            {installedStoreCustomThemes.map((theme) => {
+              const isApplying = applyingStoreCustomThemeId === theme._id;
+              return (
+                <div key={`store-custom-${theme._id}`} className="theme-card">
+                  <div className="theme-thumbnail">
+                    <div className="theme-image-placeholder flex flex-col items-center justify-center gap-2 bg-linear-to-br from-violet-50 to-blue-50 px-4 text-center">
+                      <SwatchIcon className="h-10 w-10 text-violet-500/80" aria-hidden />
+                      <span className="text-xs font-medium text-violet-900/70">Custom theme</span>
+                    </div>
+                  </div>
+                  <div className="theme-info">
+                    <div className="theme-header-info">
+                      <h3 className="theme-name">{theme.themeName}</h3>
+                      <span className="rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+                        Live
+                      </span>
+                    </div>
+                    {theme.themeDesc ? <p className="theme-description">{theme.themeDesc}</p> : null}
+                    <div className="theme-actions">
+                      <button
+                        type="button"
+                        className="action-btn primary"
+                        onClick={() => handleOpenStoreCustomTheme(theme._id)}
+                      >
+                        Edit
+                      </button>
+                      <button type="button" className="action-btn installed" disabled>
+                        Installed
+                      </button>
+                      <button
+                        type="button"
+                        className="action-btn secondary"
+                        disabled={isApplying}
+                        onClick={() => handleDeleteStoreCustomTheme(theme)}
+                      >
+                        <DeleteIcon fontSize="small" style={{ marginRight: 4 }} />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           ) : (
                 <div className="flex min-h-[120px] items-center justify-center rounded-lg border border-dashed border-gray-200 px-4 py-8 text-sm text-gray-500">
-                  No themes installed yet. Browse Public themes to install one.
+                  No themes installed yet. Browse Public themes or install a Custom theme.
             </div>
           )}
             </>

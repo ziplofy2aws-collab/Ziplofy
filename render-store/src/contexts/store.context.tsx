@@ -343,16 +343,36 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   }, []);
 
   useEffect(() => {
-    const hostname = window.location.hostname;
-    let parts = hostname.split(".");
+    const hostname = window.location.hostname.toLowerCase();
+    const parts = hostname.split(".");
     let possibleSub = parts.length > 1 ? parts[0].toLowerCase() : "";
-    // Dev: allow VITE_STORE_SUBDOMAIN when running on localhost
-    if (!possibleSub && typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_STORE_SUBDOMAIN) {
+
+    const isLocalhost =
+      hostname === "localhost" ||
+      hostname.endsWith(".localhost") ||
+      hostname === "127.0.0.1";
+    const isPlatformHost =
+      hostname === "codiic.com" ||
+      hostname.endsWith(".codiic.com") ||
+      (hostname.endsWith(".localhost") && hostname !== "localhost");
+
+    // Dev: allow VITE_STORE_SUBDOMAIN when running on bare localhost
+    if (
+      (!possibleSub || isLocalhost) &&
+      typeof import.meta !== "undefined" &&
+      (import.meta as any).env?.VITE_STORE_SUBDOMAIN
+    ) {
       possibleSub = ((import.meta as any).env.VITE_STORE_SUBDOMAIN as string).toLowerCase();
     }
-    const isAdmin = possibleSub === "admin";
 
-    if (!possibleSub || isAdmin) {
+    const reserved = new Set(["admin", "dashboard", "preview", "www", "api", "backend", "auth"]);
+    const isReserved = reserved.has(possibleSub);
+
+    // Custom domain: resolve by full host. Platform: resolve by subdomain label.
+    const useHostLookup = !isPlatformHost && !isLocalhost && hostname.includes(".");
+    const useSubdomainLookup = Boolean(possibleSub) && !isReserved && (isPlatformHost || isLocalhost);
+
+    if (!useHostLookup && !useSubdomainLookup) {
       setStoreFrontChecked(true);
       return;
     }
@@ -376,7 +396,11 @@ export const StorefrontProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           };
         }>(
           "/store-subdomain/check",
-          { params: { subdomain: possibleSub } }
+          {
+            params: useHostLookup
+              ? { host: hostname }
+              : { subdomain: possibleSub },
+          }
         );
         if (data.success && data.data) {
           setIsStoreFront(true);

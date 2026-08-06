@@ -72,7 +72,9 @@ const OrdersPage: React.FC = () => {
 
       return {
         orderId: o._id,
-        displayNumber: `#${1001 + (sorted.length - 1 - index)}`,
+        displayNumber:
+          o.displayOrderId?.trim() ||
+          `#${1001 + (sorted.length - 1 - index)}`,
         date: o.orderDate || o.createdAt || '',
         customer,
         fulfillBy: '—',

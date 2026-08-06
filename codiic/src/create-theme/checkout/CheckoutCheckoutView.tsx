@@ -177,6 +177,7 @@ export function CheckoutCheckoutView(props: CheckoutCheckoutViewProps) {
           submitting={props.submitting}
           availablePaymentMethods={availablePaymentMethods}
           customerInformation={customerInformation}
+          storeName={storeName}
         />
       </Suspense>
     ) : (

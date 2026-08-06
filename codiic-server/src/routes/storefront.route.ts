@@ -8,6 +8,7 @@ import {
   getStorefrontAddToCartLimit,
   getStorefrontCheckoutCustomerInformation,
 } from '../controllers/checkout-settings.controller';
+import { getStorefrontTaxRate } from '../controllers/storefront-tax.controller';
 import { getStoreData, getStorefrontThemeRuntime, renderStorefront, serveThemeAsset } from '../controllers/storefront.controller';
 import { renderStorefrontLiquidPage } from '../controllers/storefront-render.controller';
 import { getStorefrontReactThemePack } from '../controllers/storefront-theme-pack.controller';
@@ -26,6 +27,7 @@ storefrontRouter
   .route('/:storeId/checkout-customer-information')
   .get(getStorefrontCheckoutCustomerInformation);
 storefrontRouter.route('/:storeId/add-to-cart-limit').get(getStorefrontAddToCartLimit);
+storefrontRouter.route('/:storeId/tax-rate').get(getStorefrontTaxRate);
 storefrontRouter.route('/:storeId/render/page').get(renderStorefrontLiquidPage);
 storefrontRouter.route('/:storeId/theme-runtime').get(getStorefrontThemeRuntime);
 storefrontRouter.route('/:storeId/react-theme-pack').get(getStorefrontReactThemePack);

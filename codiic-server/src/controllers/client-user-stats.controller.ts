@@ -40,6 +40,27 @@ export const getClientUserStats = asyncErrorHandler(async (req: Request, res: Re
     throw new CustomError("This user is an admin, not a client user", 400);
   }
 
+  const userPayload = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: roleName,
+    status: user.status,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+    lastLogin: user.lastLogin,
+    assignedSupportDeveloper: assignedDev
+      ? { username: assignedDev.username || "", email: assignedDev.email || "" }
+      : null,
+    onboardingGoals: (user as any).onboardingGoals || [],
+    onboardingPaymentMethod: (user as any).onboardingPaymentMethod || null,
+    onboardingPaymentHint: (user as any).onboardingPaymentHint || "",
+    onboardingStatus: (user as any).onboardingStatus || "not_started",
+    onboardingCompletedAt: (user as any).onboardingCompletedAt || null,
+    onboardingPlan: (user as any).onboardingPlan || "",
+    onboardingIntroPrice: (user as any).onboardingIntroPrice ?? null,
+  };
+
   const stores = await Store.find({ userId: new Types.ObjectId(userId) }).lean();
   const storeIds = stores.map((s) => s._id);
 
@@ -47,19 +68,7 @@ export const getClientUserStats = asyncErrorHandler(async (req: Request, res: Re
     return res.status(200).json({
       success: true,
       data: {
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          role: roleName,
-          status: user.status,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-          lastLogin: user.lastLogin,
-          assignedSupportDeveloper: assignedDev
-            ? { username: assignedDev.username || "", email: assignedDev.email || "" }
-            : null,
-        },
+        user: userPayload,
         stores: [],
         totals: { storesCount: 0, ordersCount: 0, productsSold: 0, totalRevenue: 0 },
         ordersByMonth: [],
@@ -160,19 +169,7 @@ export const getClientUserStats = asyncErrorHandler(async (req: Request, res: Re
   res.status(200).json({
     success: true,
     data: {
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: roleName,
-        status: user.status,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        lastLogin: user.lastLogin,
-        assignedSupportDeveloper: assignedDev
-          ? { username: assignedDev.username || "", email: assignedDev.email || "" }
-          : null,
-      },
+      user: userPayload,
       stores: stores.map((s) => ({
         _id: s._id,
         storeName: s.storeName,

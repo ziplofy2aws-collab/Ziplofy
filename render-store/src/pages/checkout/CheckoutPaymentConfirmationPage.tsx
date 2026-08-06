@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { CHECKOUT_STOREFRONT_ROOT_CLASS } from '@codiic/create-theme/checkout/checkout-storefront.constants';
+import { UpiPaymentQr } from '@codiic/create-theme/checkout/UpiPaymentQr';
 import { useCheckoutPageAppearance } from '@/hooks/useCheckoutPageAppearance';
 import { usePayment } from '@/contexts/payment.context';
 import {
@@ -100,9 +101,18 @@ export function CheckoutPaymentConfirmationPage() {
             </div>
           ) : null}
           {paymentMethod === 'upi_id' && paymentInstructions?.upiId ? (
-            <div className="mt-3 text-[13px] text-[#444]">
-              <p className="font-medium text-[#121212]">Pay to UPI ID:</p>
-              <p>{paymentInstructions.upiId}</p>
+            <div className="mt-4 space-y-4 text-[13px] text-[#444]">
+              <div>
+                <p className="font-medium text-[#121212]">Pay to UPI ID:</p>
+                <p>{paymentInstructions.upiId}</p>
+              </div>
+              <UpiPaymentQr
+                upiId={paymentInstructions.upiId}
+                payeeName={displayStoreName}
+                amount={completedOrder.total}
+                transactionNote={completedOrder.confirmationLabel}
+                size={200}
+              />
             </div>
           ) : null}
         </div>

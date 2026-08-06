@@ -4,10 +4,11 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import { config } from './config';
 import { connectDB } from './config/database.config';
 import { errorMiddleware } from './middlewares/error.middleware';
 import { socketAuthMiddleware } from './middlewares/socket-auth.middleware';
+import { resolveCorsOrigin } from './utils/cors-origin.util';
+import { domainRouter } from './routes/domain.route';
 import amountOffProductsDiscountRouter from './routes/amount-off-products-discount.route';
 import { assignedSupportDeveloperRouter } from './routes/assigned-support-developer.route';
 import { authRouter } from './routes/auth.route';
@@ -94,6 +95,7 @@ import generalSettingsRouter from './routes/general-settings.route';
 import { installedThemesRouter } from './routes/installed-themes.route';
 import { loginLogRouter } from './routes/login-log.route';
 import { membershipPlanRouter } from './routes/membership-plan.route';
+import { platformPaymentIntentRouter } from './routes/platform-payment-intent.route';
 import marketIncludesRouter from './routes/market-includes.route';
 import marketRouter from './routes/market.route';
 import notificationCategoryRouter from './routes/notification-category.route';
@@ -173,7 +175,7 @@ const server = createServer(app);
 
 const io = new SocketIOServer(server, {
   cors: {
-    origin: config.allowedOrigins,
+    origin: resolveCorsOrigin,
     credentials: true,
   }
 });
@@ -185,7 +187,7 @@ const PORT = Number(env.PORT);
 
 // Middleware
 app.use(cors({
-  origin: config.allowedOrigins,
+  origin: resolveCorsOrigin,
   credentials: true,
 }));
 app.use(express.json());
@@ -266,6 +268,7 @@ app.use("/api/free-shipping-discounts", freeShippingDiscountRouter);
 app.use("/api/product-offers", productOffersRouter);
 app.use("/api/installed-themes", installedThemesRouter);
 app.use("/api/store-subdomain", storeSubdomainRouter);
+app.use("/api/domains", domainRouter);
 app.use("/api/storefront/auth", storefrontAuthRouter);
 app.use("/api/storefront/cart", cartRouter);
 app.use("/api/storefront/discounts/amount-off-order", storefrontAmountOffOrderRouter);
@@ -286,6 +289,7 @@ app.use("/api/store-banners", storeBannerRouter);
 app.use("/api/store-custom-themes", storeCustomThemeRouter);
 app.use("/api/store/cloud-storage", storeCloudStorageRouter);
 app.use("/api/payments", paymentRouter);
+app.use("/api/platform-payment-intents", platformPaymentIntentRouter);
 app.use("/api/payment-providers", paymentProviderRouter);
 app.use("/api/local-delivery-settings", localDeliverySettingsRouter);
 app.use("/api/local-delivery-location-entries", localDeliveryLocationEntryRouter);

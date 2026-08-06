@@ -313,7 +313,7 @@ export const getStatesWithTaxDetails = asyncErrorHandler(async (req: Request, re
   // Default federal tax rate (can be customized based on country)
   const defaultFederalRate = federalTaxOverride
     ? federalTaxOverride.taxRate
-    : country.name.toLowerCase() === 'india' ? 9 : 0; // Default 9% for India, 0% for others
+    : country.name.toLowerCase() === 'india' ? 18 : 0; // Default 18% GST for India, 0% for others
 
   // Merge states with tax details
   const statesWithTaxDetails = states.map((state) => {
@@ -341,7 +341,7 @@ export const getStatesWithTaxDetails = asyncErrorHandler(async (req: Request, re
       // Use default values
       // For India, default state rate is 18% (IGST), for others use 0% or federal rate
       const defaultStateRate = country.name.toLowerCase() === 'india' ? 18 : defaultFederalRate;
-      const defaultTaxLabel = country.name.toLowerCase() === 'india' ? 'IGST' : null;
+      const defaultTaxLabel = country.name.toLowerCase() === 'india' ? 'GST' : null;
 
       return {
         _id: state._id,

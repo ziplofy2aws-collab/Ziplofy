@@ -4,6 +4,7 @@ import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { CodiicUser, ICodiicUser } from '../models/codiic-user.model';
+import { PlatformPaymentIntent } from '../models/platform-payment-intent.model';
 import { asyncErrorHandler, CustomError } from '../utils/error.utils';
 import { createDefaultResourcesForNewUser } from '../utils/client-store-bootstrap.util';
 
@@ -25,6 +26,8 @@ interface SecureUserInfo {
   name: string;
   accessToken: string;
   assignedSupportDeveloperId: string;
+  /** Present on Google auth when a brand-new account was created. */
+  isNewUser?: boolean;
 }
 
 const signAccessToken = (user: ICodiicUser): string => {
@@ -107,6 +110,7 @@ export const googleAuth = asyncErrorHandler(async (req: Request, res: Response) 
   if (!payload.email) throw new CustomError('Google account email is required', 400);
 
   let user = await CodiicUser.findOne({ email: payload.email.toLowerCase() });
+  let isNewUser = false;
 
   if (!user) {
     const name = payload.name || payload.email.split('@')[0] || 'User';
@@ -120,6 +124,7 @@ export const googleAuth = asyncErrorHandler(async (req: Request, res: Response) 
     });
 
     await createDefaultResourcesForNewUser(user);
+    isNewUser = true;
   } else if (user.provider !== 'google') {
     await CodiicUser.updateOne(
       { _id: user._id },
@@ -128,5 +133,89 @@ export const googleAuth = asyncErrorHandler(async (req: Request, res: Response) 
   }
 
   const token = signAccessToken(user);
-  return res.status(200).json(toSecureUser(user, token));
+  return res.status(200).json({ ...toSecureUser(user, token), isNewUser });
+});
+
+type SaveOnboardingBody = {
+  goals?: string[];
+  paymentMethod?: 'upi' | 'card' | null;
+  paymentHint?: string;
+  planName?: string;
+  introPrice?: number;
+  skipped?: boolean;
+  completed?: boolean;
+};
+
+function maskPaymentHint(method: 'upi' | 'card' | null | undefined, hint: string): string {
+  const value = (hint || '').trim();
+  if (!value) return '';
+  if (method === 'upi') return value.toLowerCase();
+  const digits = value.replace(/\D/g, '');
+  if (digits.length < 4) return '••••';
+  return `•••• ${digits.slice(-4)}`;
+}
+
+/**
+ * Persist client setup onboarding (goals + payment preference) for admin visibility.
+ * Does not charge cards — stores intent only.
+ */
+export const saveOnboarding = asyncErrorHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+  if (!userId) throw new CustomError('Unauthorized', 401);
+
+  const body = req.body as SaveOnboardingBody;
+  const user = await CodiicUser.findById(userId);
+  if (!user) throw new CustomError('User not found', 404);
+
+  const goals = Array.isArray(body.goals)
+    ? body.goals.filter((g): g is string => typeof g === 'string' && g.trim().length > 0)
+    : user.onboardingGoals || [];
+
+  const paymentMethod =
+    body.paymentMethod === 'upi' || body.paymentMethod === 'card' ? body.paymentMethod : null;
+  const paymentHint = maskPaymentHint(paymentMethod, body.paymentHint || '');
+  const skipped = Boolean(body.skipped);
+  const completed = Boolean(body.completed) || skipped;
+  const planName = (body.planName || 'Basic').trim() || 'Basic';
+  const introPrice =
+    typeof body.introPrice === 'number' && Number.isFinite(body.introPrice) ? body.introPrice : 20;
+
+  user.onboardingGoals = goals;
+  user.onboardingPaymentMethod = paymentMethod;
+  user.onboardingPaymentHint = paymentHint;
+  user.onboardingPlan = planName;
+  user.onboardingIntroPrice = introPrice;
+  user.onboardingStatus = skipped ? 'skipped' : completed ? 'completed' : goals.length ? 'goals' : 'not_started';
+  if (completed) {
+    user.onboardingCompletedAt = new Date();
+  }
+  await user.save();
+
+  if (completed) {
+    await PlatformPaymentIntent.create({
+      userId: user._id,
+      userName: user.name,
+      userEmail: user.email,
+      goals,
+      paymentMethod,
+      paymentHint,
+      planName,
+      amount: introPrice,
+      currency: 'INR',
+      status: skipped ? 'skipped' : 'submitted',
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      onboardingGoals: user.onboardingGoals,
+      onboardingPaymentMethod: user.onboardingPaymentMethod,
+      onboardingPaymentHint: user.onboardingPaymentHint,
+      onboardingStatus: user.onboardingStatus,
+      onboardingCompletedAt: user.onboardingCompletedAt,
+      onboardingPlan: user.onboardingPlan,
+      onboardingIntroPrice: user.onboardingIntroPrice,
+    },
+  });
 });
