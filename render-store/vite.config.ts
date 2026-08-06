@@ -42,8 +42,7 @@ export default defineConfig({
   preview: {
     port: 5180,
     host: true,
-    // Merchant custom domains (e.g. www.brand.com) hit this Host header when DNS points here.
-    allowedHosts: true,
+    allowedHosts: ['preview.codiic.com', '.codiic.com', 'localhost','www.ziplofy.com'],
     proxy: {
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),
