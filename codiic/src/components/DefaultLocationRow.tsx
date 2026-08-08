@@ -37,15 +37,17 @@ const DefaultLocationRow: React.FC<DefaultLocationRowProps> = ({
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm">
-          <MapPinIcon className="h-5 w-5 text-blue-600" aria-hidden />
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-admin-border bg-admin-secondary text-admin-text">
+          <MapPinIcon className="h-5 w-5" aria-hidden />
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-gray-900">{name}</p>
+          <p className="text-[13px] font-semibold text-admin-text">{name}</p>
           {addressLine ? (
-            <p className="mt-0.5 text-sm text-gray-600">{addressLine}</p>
+            <p className="mt-0.5 text-[13px] text-admin-text-secondary">{addressLine}</p>
           ) : (
-            <p className="mt-0.5 text-sm italic text-gray-400">No address saved for this location</p>
+            <p className="mt-0.5 text-[13px] italic text-admin-text-subdued">
+              No address saved for this location
+            </p>
           )}
         </div>
       </div>
@@ -55,4 +57,3 @@ const DefaultLocationRow: React.FC<DefaultLocationRowProps> = ({
 };
 
 export default DefaultLocationRow;
-

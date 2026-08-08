@@ -1,5 +1,10 @@
-import React from 'react';
 import { ArrowRightIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import React from 'react';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListSecondaryButtonClass,
+} from './admin-list-ui';
 import ToggleSwitch from './ToggleSwitch';
 
 interface CustomerAccountsManagementCardProps {
@@ -24,41 +29,41 @@ const CustomerAccountsManagementCard: React.FC<CustomerAccountsManagementCardPro
   isControlsDisabled,
 }) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <h2 className="text-base font-semibold text-gray-900">Customer accounts management</h2>
+    <div className={`${adminListCardClass} p-5`}>
+      <div className="mb-4 flex items-center gap-2">
+        <h2 className="text-[13px] font-semibold text-admin-text">Customer accounts management</h2>
         <div className="group relative">
-          <InformationCircleIcon className="w-4 h-4 text-gray-500 cursor-help" />
-          <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg">
+          <InformationCircleIcon className="h-4 w-4 cursor-help text-admin-text-subdued" />
+          <div className="absolute bottom-full left-0 z-10 mb-2 hidden w-64 rounded-lg bg-admin-text p-2 text-[12px] text-white shadow-lg group-hover:block">
             Manage sign-in methods and account access
           </div>
         </div>
       </div>
 
-      <div className="space-y-0 divide-y divide-gray-100">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4 first:pt-0">
+      <div className="space-y-0 divide-y divide-admin-divider">
+        <div className="flex flex-col justify-between gap-4 py-4 first:pt-0 sm:flex-row sm:items-center">
           <div>
-            <h3 className="text-sm font-medium text-gray-900">Authentication</h3>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h3 className="text-[13px] font-medium text-admin-text">Authentication</h3>
+            <p className="mt-0.5 text-[13px] text-admin-text-secondary">
               Manage sign-in methods and account access
             </p>
           </div>
           <button
             type="button"
             onClick={onNavigateToAuthentication}
-            className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 transition-colors self-start sm:self-center"
+            className={`${adminListSecondaryButtonClass} gap-2 self-start sm:self-center`}
           >
             Manage
-            <ArrowRightIcon className="w-4 h-4" />
+            <ArrowRightIcon className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+        <div className="flex flex-col justify-between gap-4 py-4 sm:flex-row sm:items-center">
           <div>
-            <h3 className="text-sm font-medium text-gray-900">Self-serve returns</h3>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h3 className="text-[13px] font-medium text-admin-text">Self-serve returns</h3>
+            <p className="mt-0.5 text-[13px] text-admin-text-secondary">
               Allow customers to request and manage returns. Customize with{' '}
-              <button type="button" className="text-gray-700 font-medium hover:underline">
+              <button type="button" className={`${adminListFooterLinkClass} font-medium`}>
                 return rules
               </button>
             </p>
@@ -70,10 +75,10 @@ const CustomerAccountsManagementCard: React.FC<CustomerAccountsManagementCardPro
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+        <div className="flex flex-col justify-between gap-4 py-4 sm:flex-row sm:items-center">
           <div>
-            <h3 className="text-sm font-medium text-gray-900">Store credit</h3>
-            <p className="text-sm text-gray-500 mt-0.5">
+            <h3 className="text-[13px] font-medium text-admin-text">Store credit</h3>
+            <p className="mt-0.5 text-[13px] text-admin-text-secondary">
               Allow customers to see and spend store credit
             </p>
           </div>
@@ -84,26 +89,26 @@ const CustomerAccountsManagementCard: React.FC<CustomerAccountsManagementCardPro
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium text-gray-900">URL</h3>
-            <p className="text-sm text-gray-500 mt-0.5 mb-2">
+        <div className="flex flex-col justify-between gap-4 py-4 sm:flex-row sm:items-center">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-[13px] font-medium text-admin-text">URL</h3>
+            <p className="mb-2 mt-0.5 text-[13px] text-admin-text-secondary">
               Use this URL anywhere you&apos;d like customers to access customer accounts
             </p>
             <input
               type="text"
               value={accountUrl || ''}
               readOnly
-              className="w-full rounded-lg px-3 py-2 border border-gray-200 bg-gray-50 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+              className="w-full rounded-lg border border-admin-border bg-admin-secondary px-3 py-2 text-[13px] text-admin-text outline-none focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3]/30"
             />
           </div>
           <button
             type="button"
             onClick={onNavigateToDomains}
-            className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 transition-colors self-start sm:self-center shrink-0"
+            className={`${adminListSecondaryButtonClass} gap-2 shrink-0 self-start sm:self-center`}
           >
             Manage
-            <ArrowRightIcon className="w-4 h-4" />
+            <ArrowRightIcon className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -112,4 +117,3 @@ const CustomerAccountsManagementCard: React.FC<CustomerAccountsManagementCardPro
 };
 
 export default CustomerAccountsManagementCard;
-

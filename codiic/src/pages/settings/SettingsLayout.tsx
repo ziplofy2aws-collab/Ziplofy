@@ -1,15 +1,15 @@
 import React, { useCallback } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { ADMIN_SIDEBAR_WIDTH } from '../../components/admin-sidebar';
 import SettingsSidebar from '../../components/SettingsSidebar';
 
 const NAVBAR_HEIGHT = 56; // keep consistent with main Navbar (h-14 = 56px)
-const SETTINGS_SIDEBAR_WIDTH = 240;
 
 const SettingsLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const currentPath = location.pathname; // e.g. /settings/general
+  const currentPath = location.pathname;
 
   const handleNavigate = useCallback((path: string) => {
     navigate(path);
@@ -25,11 +25,15 @@ const SettingsLayout: React.FC = () => {
       style={{ minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}
     >
       <SettingsSidebar currentPath={currentPath} onNavigate={handleNavigate} onBack={handleBack} />
+      {/* Mirror App.tsx home main: sidebar width offset + same page padding */}
       <main
-        className="min-h-[calc(100vh-56px)] w-full overflow-y-auto"
-        style={{ paddingLeft: `${SETTINGS_SIDEBAR_WIDTH}px` }}
+        className="min-h-[calc(100vh-56px)] w-full overflow-y-auto p-4 antialiased text-admin-text sm:p-6 lg:p-8"
+        style={{
+          marginLeft: `${ADMIN_SIDEBAR_WIDTH}px`,
+          width: `calc(100% - ${ADMIN_SIDEBAR_WIDTH}px)`,
+        }}
       >
-        <div className="mx-auto w-full max-w-[1280px] px-4 py-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1280px]">
           <Outlet />
         </div>
       </main>
@@ -38,5 +42,3 @@ const SettingsLayout: React.FC = () => {
 };
 
 export default SettingsLayout;
-
-

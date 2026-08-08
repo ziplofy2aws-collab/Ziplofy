@@ -9,9 +9,13 @@ import AddPixelModal from '../../components/AddPixelModal';
 import CustomerEventsHeader from '../../components/CustomerEventsHeader';
 import PixelsTable from '../../components/PixelsTable';
 import Tabs from '../../components/Tabs';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+} from '../../components/admin-list-ui';
+import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 import { DataSaleOption, Pixel, usePixels } from '../../contexts/pixel.context';
 import { useStore } from '../../contexts/store.context';
-import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 
 const MAX_NAME = 30;
 const DEFAULT_CODE = `// Step 1. Initialize the JavaScript pixel SDK (make sure to exclude HTML)
@@ -98,7 +102,7 @@ const CustomerEventsPage: React.FC = () => {
   const renderStatusChip = useCallback((pixel: Pixel) => {
     const label = statusLabelMap[pixel.status?.toLowerCase()] || pixel.status;
     return (
-      <span className="px-2.5 py-1 rounded-md text-xs font-medium text-gray-700 bg-gray-100 border border-gray-200 capitalize">
+      <span className="rounded-md border border-admin-border bg-admin-secondary px-2.5 py-1 text-[12px] font-medium capitalize text-admin-text">
         {label}
       </span>
     );
@@ -120,60 +124,62 @@ const CustomerEventsPage: React.FC = () => {
     setAddOpen(true);
   }, []);
 
-  const handleRowClick = useCallback((pixelId: string) => {
-    navigate(`/settings/customer-events/${pixelId}`);
-  }, [navigate]);
+  const handleRowClick = useCallback(
+    (pixelId: string) => {
+      navigate(`/settings/customer-events/${pixelId}`);
+    },
+    [navigate]
+  );
 
-  const tabs = useMemo(() => [
-    { id: 'all', label: 'All' },
-    { id: 'app', label: 'App pixels' },
-    { id: 'custom', label: 'Custom pixels' },
-  ], []);
+  const tabs = useMemo(
+    () => [
+      { id: 'all', label: 'All' },
+      { id: 'app', label: 'App pixels' },
+      { id: 'custom', label: 'Custom pixels' },
+    ],
+    []
+  );
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
         <SettingsHero
           title="Customer events"
           description="Manage pixels and integrations that collect customer event data from your store."
         />
 
-        <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5 mb-6">
+        <div className={`${adminListCardClass} p-5`}>
           <CustomerEventsHeader onOpenModal={handleOpenModal} />
 
-          <div className="mt-4 rounded-xl border border-gray-200 overflow-hidden bg-white">
+          <div className="mt-4 overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
             <div className="px-4 pt-4">
-              <Tabs
-                tabs={tabs}
-                activeTab={tab}
-                onTabChange={handleTabChange}
-              />
+              <Tabs tabs={tabs} activeTab={tab} onTabChange={handleTabChange} />
             </div>
 
-            <div className="h-px bg-gray-200" />
+            <div className="h-px bg-admin-divider" />
 
-            <div className="px-4 py-3 flex justify-end gap-2 bg-gray-50/80">
+            <div className="flex justify-end gap-2 bg-admin-table-header px-4 py-3">
               <button
                 type="button"
                 disabled
-                className="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 text-gray-300 bg-white cursor-not-allowed"
+                className="inline-flex cursor-not-allowed items-center justify-center rounded-lg border border-admin-border bg-admin-surface p-2 text-admin-text-subdued"
               >
-                <MagnifyingGlassIcon className="w-4 h-4" />
+                <MagnifyingGlassIcon className="h-4 w-4" />
               </button>
               <button
                 type="button"
                 onClick={handleRefresh}
-                className="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center justify-center rounded-lg border border-admin-border bg-admin-surface p-2 text-admin-text transition-colors hover:bg-admin-row-hover"
               >
-                <ArrowPathIcon className="w-4 h-4" />
+                <ArrowPathIcon className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="h-px bg-gray-200" />
+            <div className="h-px bg-admin-divider" />
 
             {loading ? (
-              <div className="py-12 flex justify-center">
-                <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+              <div className="flex justify-center py-12">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
               </div>
             ) : hasPixels ? (
               <PixelsTable
@@ -182,21 +188,26 @@ const CustomerEventsPage: React.FC = () => {
                 onRowClick={handleRowClick}
               />
             ) : (
-              <div className="py-12 text-center text-gray-600">
-                <p className="text-sm text-gray-500">No pixels found for this store.</p>
+              <div className="py-12 text-center">
+                <p className="text-[13px] text-admin-text-subdued">
+                  No pixels found for this store.
+                </p>
               </div>
             )}
           </div>
 
-          <p className="text-sm text-gray-500 mt-4">
+          <p className="mt-4 text-[13px] text-admin-text-secondary">
             This list only shows{' '}
-            <button type="button" className="text-gray-700 font-medium hover:underline">
+            <button type="button" className={`${adminListFooterLinkClass} font-medium`}>
               pixels
             </button>{' '}
             that use the applicable codiic APIs, the supported pixel integration.
           </p>
 
-          <button type="button" className="text-sm text-gray-700 font-medium mt-4 inline-flex items-center hover:underline">
+          <button
+            type="button"
+            className={`mt-4 inline-flex items-center text-[13px] font-medium ${adminListFooterLinkClass}`}
+          >
             Learn more about pixels
           </button>
         </div>

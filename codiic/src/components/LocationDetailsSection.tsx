@@ -24,6 +24,8 @@ interface LocationDetailsSectionProps {
   onLocationClick: (locationId: string) => void;
 }
 
+const sectionHeaderClass = 'border-b border-admin-divider bg-admin-table-header px-5 py-4 sm:px-6';
+
 const LocationDetailsSection: React.FC<LocationDetailsSectionProps> = ({
   locations,
   defaultLocationId,
@@ -33,14 +35,12 @@ const LocationDetailsSection: React.FC<LocationDetailsSectionProps> = ({
   onLocationClick,
 }) => {
   return (
-    <SettingsPanel className="ring-1 ring-slate-200/60">
-      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">
-        <div className="border-l-4 border-blue-500/75 pl-3">
-          <h2 className="text-base font-semibold text-gray-900">All locations</h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Fulfillment, pickup, and local delivery use these addresses. Select a row to view or edit.
-          </p>
-        </div>
+    <SettingsPanel>
+      <div className={sectionHeaderClass}>
+        <h2 className="text-[13px] font-semibold text-admin-text">All locations</h2>
+        <p className="mt-1 text-[13px] text-admin-text-secondary">
+          Fulfillment, pickup, and local delivery use these addresses. Select a row to view or edit.
+        </p>
       </div>
       <div className="p-5 sm:p-6">
         {error && (
@@ -56,10 +56,10 @@ const LocationDetailsSection: React.FC<LocationDetailsSectionProps> = ({
         {loading ? (
           <div className="flex flex-col items-center justify-center gap-3 py-14">
             <div
-              className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600"
+              className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text"
               aria-hidden
             />
-            <p className="text-sm text-gray-500">Loading locations…</p>
+            <p className="text-[13px] text-admin-text-secondary">Loading locations…</p>
           </div>
         ) : (
           <LocationsTable
@@ -75,4 +75,3 @@ const LocationDetailsSection: React.FC<LocationDetailsSectionProps> = ({
 };
 
 export default LocationDetailsSection;
-

@@ -1,4 +1,5 @@
 import React from 'react';
+import { adminListPrimaryButtonClass, adminListSecondaryButtonClass } from './admin-list-ui';
 import Modal from './Modal';
 
 interface EditProfileModalProps {
@@ -18,6 +19,9 @@ interface EditProfileModalProps {
   onStoreEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onStorePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+const inputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
 
 export default function EditProfileModal({
   open,
@@ -47,32 +51,26 @@ export default function EditProfileModal({
       maxWidth="sm"
       actions={
         <>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-900 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-          >
+          <button type="button" onClick={onClose} className={adminListSecondaryButtonClass}>
             Cancel
           </button>
           <button
+            type="button"
             onClick={onSave}
             disabled={isDisabled}
-            className={`px-4 py-2 text-sm font-medium text-white rounded transition-colors ${
-              hasChanges
-                ? 'bg-gray-900 hover:bg-gray-800'
-                : 'bg-gray-300 cursor-not-allowed'
-            }`}
+            className={`${adminListPrimaryButtonClass} disabled:bg-admin-fill disabled:text-admin-text-subdued`}
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
         </>
       }
     >
-      <p className="text-sm text-gray-600 mb-6">
+      <p className="mb-6 text-[13px] text-admin-text-secondary">
         These details could be publicly available. Do not use your personal information.
       </p>
 
       <div className="mb-6">
-        <label htmlFor="store-name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="store-name" className="mb-1 block text-[13px] font-medium text-admin-text">
           Store name
         </label>
         <input
@@ -80,13 +78,13 @@ export default function EditProfileModal({
           type="text"
           value={storeName}
           onChange={onStoreNameChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-1"
+          className={`${inputClass} mb-1`}
         />
-        <p className="text-xs text-gray-600">Appears on your website</p>
+        <p className="text-[12px] text-admin-text-secondary">Appears on your website</p>
       </div>
 
       <div className="mb-6">
-        <label htmlFor="store-email" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="store-email" className="mb-1 block text-[13px] font-medium text-admin-text">
           Store email
         </label>
         <input
@@ -94,11 +92,11 @@ export default function EditProfileModal({
           type="email"
           value={storeEmail}
           onChange={onStoreEmailChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-1"
+          className={`${inputClass} mb-1`}
         />
-        <p className="text-xs text-gray-600">
+        <p className="text-[12px] text-admin-text-secondary">
           Receives messages about your store. For sender email, go to{' '}
-          <a href="/settings/notifications" className="text-blue-600 hover:underline">
+          <a href="/settings/notifications" className="text-[#005bd3] hover:underline">
             notification settings
           </a>
           .
@@ -106,7 +104,7 @@ export default function EditProfileModal({
       </div>
 
       <div>
-        <label htmlFor="store-phone" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="store-phone" className="mb-1 block text-[13px] font-medium text-admin-text">
           Store phone
         </label>
         <input
@@ -114,10 +112,9 @@ export default function EditProfileModal({
           type="tel"
           value={storePhone}
           onChange={onStorePhoneChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
         />
       </div>
     </Modal>
   );
 }
-

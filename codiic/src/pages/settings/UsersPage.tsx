@@ -3,6 +3,13 @@ import { ShieldCheckIcon } from '@heroicons/react/24/outline';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import Modal from '../../components/Modal';
+import {
+  adminListFooterLinkClass,
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from '../../components/admin-list-ui';
 import { SettingsHero, SettingsPanel } from '../../components/settings/SettingsPageScaffold';
 import { axiosi } from '../../config/axios.config';
 import { useStore } from '../../contexts/store.context';
@@ -31,6 +38,9 @@ type CreateInviteResponse = {
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const fieldClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued outline-none transition-colors focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3]/30';
 
 const UsersPage: React.FC = () => {
   const { activeStoreId } = useStore();
@@ -169,6 +179,12 @@ const UsersPage: React.FC = () => {
     }
   };
 
+  const statusBadgeClass = (status: StoreUserRow['status']) => {
+    if (status === 'active') return 'bg-admin-secondary text-admin-text';
+    if (status === 'pending') return 'bg-amber-50 text-amber-800';
+    return 'bg-admin-fill text-admin-text-secondary';
+  };
+
   return (
     <div className="w-full">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
@@ -177,17 +193,10 @@ const UsersPage: React.FC = () => {
           description="Manage staff accounts, roles, and permissions."
           actions={
             <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-xl border border-gray-200/90 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50/90"
-              >
+              <button type="button" className={adminListSecondaryButtonClass}>
                 Export
               </button>
-              <button
-                type="button"
-                onClick={openAddUsers}
-                className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700"
-              >
+              <button type="button" onClick={openAddUsers} className={adminListPrimaryButtonClass}>
                 Add users
               </button>
             </div>
@@ -197,15 +206,15 @@ const UsersPage: React.FC = () => {
         <SettingsPanel className="overflow-hidden p-0">
           {loading ? (
             <div className="flex min-h-[200px] items-center justify-center px-6 py-10">
-              <div className="h-7 w-7 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
+              <div className="h-7 w-7 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
             </div>
           ) : error ? (
             <div className="flex min-h-[200px] flex-col items-center justify-center px-6 py-10 text-center">
-              <p className="text-sm text-red-600">{error}</p>
+              <p className="text-[13px] text-red-600">{error}</p>
               <button
                 type="button"
                 onClick={() => void loadUsers()}
-                className="mt-3 text-sm font-medium text-gray-900 hover:underline"
+                className="mt-3 text-[13px] font-medium text-admin-text hover:underline"
               >
                 Retry
               </button>
@@ -214,8 +223,8 @@ const UsersPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50/80">
-                    <th className="w-12 py-3 pl-5 pr-3 text-left">
+                  <tr className={adminListTableHeadRowClass}>
+                    <th className="w-12 py-2 pl-5 pr-3 text-left">
                       <input
                         type="checkbox"
                         ref={(input) => {
@@ -223,60 +232,56 @@ const UsersPage: React.FC = () => {
                         }}
                         checked={isAllSelected}
                         onChange={handleSelectAll}
-                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                        className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                       />
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      User
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      Status
-                    </th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      Role
-                    </th>
+                    <th className={adminListTableHeadClass}>User</th>
+                    <th className={adminListTableHeadClass}>Status</th>
+                    <th className={adminListTableHeadClass}>Role</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody>
                   {users.length === 0 ? (
                     <tr>
-                      <td colSpan={4} className="px-4 py-10 text-center text-sm text-gray-500">
+                      <td
+                        colSpan={4}
+                        className="px-4 py-10 text-center text-[13px] text-admin-text-subdued"
+                      >
                         No users yet. Click Add users to invite staff.
                       </td>
                     </tr>
                   ) : (
                     users.map((user) => (
-                      <tr key={user._id} className="transition-colors hover:bg-gray-50/80">
-                        <td className="py-3 pl-5 pr-3">
+                      <tr
+                        key={user._id}
+                        className="border-b border-admin-divider bg-admin-surface transition-colors last:border-b-0 hover:bg-admin-row-hover"
+                      >
+                        <td className="py-2.5 pl-5 pr-3">
                           <input
                             type="checkbox"
                             checked={selectedUsers.has(user._id)}
                             onChange={() => handleSelectUser(user._id)}
-                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                            className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                           />
                         </td>
-                        <td className="px-4 py-3">
-                          <p className="max-w-[300px] truncate text-sm font-medium text-gray-900">
+                        <td className="px-3 py-2.5">
+                          <p className="max-w-[300px] truncate text-[13px] font-medium text-admin-text">
                             {user.email}
                           </p>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-2.5">
                           <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                              user.status === 'active'
-                                ? 'bg-green-50 text-green-700'
-                                : user.status === 'pending'
-                                  ? 'bg-amber-50 text-amber-700'
-                                  : 'bg-gray-100 text-gray-600'
-                            }`}
+                            className={`inline-flex items-center rounded-md px-2 py-0.5 text-[12px] font-medium ${statusBadgeClass(
+                              user.status
+                            )}`}
                           >
                             {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
                           </span>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-3 py-2.5">
                           <div className="flex items-center gap-2">
-                            <ShieldCheckIcon className="h-4 w-4 text-gray-400" />
-                            <span className="text-sm text-gray-900">{user.role}</span>
+                            <ShieldCheckIcon className="h-4 w-4 text-admin-text-subdued" />
+                            <span className="text-[13px] text-admin-text">{user.role}</span>
                           </div>
                         </td>
                       </tr>
@@ -288,8 +293,8 @@ const UsersPage: React.FC = () => {
           )}
         </SettingsPanel>
 
-        <p className="text-sm text-gray-500">
-          <button type="button" onClick={() => {}} className="font-medium text-gray-700 hover:underline">
+        <p className="text-[13px] text-admin-text-secondary">
+          <button type="button" onClick={() => {}} className={`${adminListFooterLinkClass} font-medium`}>
             Learn more about users
           </button>
         </p>
@@ -297,12 +302,15 @@ const UsersPage: React.FC = () => {
 
       <Modal open={addOpen} onClose={closeAddUsers} title="Add users" maxWidth="md">
         <div className="space-y-4 px-1 py-1">
-          <p className="text-sm text-gray-600">
+          <p className="text-[13px] text-admin-text-secondary">
             Invite a staff member by email and assign a store role.
           </p>
 
           <div>
-            <label htmlFor="invite-email" className="mb-1.5 block text-sm font-medium text-gray-800">
+            <label
+              htmlFor="invite-email"
+              className="mb-1.5 block text-[13px] font-medium text-admin-text"
+            >
               Email
             </label>
             <input
@@ -314,16 +322,19 @@ const UsersPage: React.FC = () => {
                 if (inviteError) setInviteError(null);
               }}
               placeholder="colleague@example.com"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-gray-900"
+              className={fieldClass}
             />
           </div>
 
           <div>
-            <label htmlFor="invite-role" className="mb-1.5 block text-sm font-medium text-gray-800">
+            <label
+              htmlFor="invite-role"
+              className="mb-1.5 block text-[13px] font-medium text-admin-text"
+            >
               Role
             </label>
             {roles.length === 0 ? (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-800">
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-3 text-[13px] text-amber-800">
                 No roles found.{' '}
                 <Link to="/settings/users/roles/new" className="font-medium underline">
                   Create a role
@@ -335,7 +346,7 @@ const UsersPage: React.FC = () => {
                 id="invite-role"
                 value={inviteRoleId}
                 onChange={(event) => setInviteRoleId(event.target.value)}
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 outline-none focus:border-gray-900"
+                className={fieldClass}
               >
                 {roles.map((role) => (
                   <option key={role._id} value={role._id}>
@@ -346,14 +357,14 @@ const UsersPage: React.FC = () => {
             )}
           </div>
 
-          {inviteError ? <p className="text-sm text-red-600">{inviteError}</p> : null}
+          {inviteError ? <p className="text-[13px] text-red-600">{inviteError}</p> : null}
 
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={closeAddUsers}
               disabled={submitting}
-              className="rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+              className={adminListSecondaryButtonClass}
             >
               Cancel
             </button>
@@ -361,7 +372,7 @@ const UsersPage: React.FC = () => {
               type="button"
               onClick={() => void handleSendInvite()}
               disabled={!canSubmitInvite || submitting || roles.length === 0}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className={adminListPrimaryButtonClass}
             >
               {submitting ? 'Sending…' : 'Send invite'}
             </button>

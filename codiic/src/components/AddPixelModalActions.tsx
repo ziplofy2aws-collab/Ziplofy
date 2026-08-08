@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from './admin-list-ui';
 
 interface AddPixelModalActionsProps {
   onClose: () => void;
@@ -15,16 +19,14 @@ const AddPixelModalActions: React.FC<AddPixelModalActionsProps> = ({
 }) => {
   return (
     <>
-      <button
-        onClick={onClose}
-        className="px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md transition-colors"
-      >
+      <button type="button" onClick={onClose} className={adminListSecondaryButtonClass}>
         Cancel
       </button>
       <button
+        type="button"
         onClick={onCreate}
         disabled={!isValid || loading}
-        className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors"
+        className={adminListPrimaryButtonClass}
       >
         Add pixel
       </button>
@@ -33,4 +35,3 @@ const AddPixelModalActions: React.FC<AddPixelModalActionsProps> = ({
 };
 
 export default AddPixelModalActions;
-

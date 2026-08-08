@@ -20,6 +20,12 @@ import { useStoreShippingPolicy } from '../../contexts/store-shipping-policy.con
 import { useStoreTermsPolicy } from '../../contexts/store-terms-policy.context';
 import { useStore } from '../../contexts/store.context';
 import { useUserContext } from '../../contexts/user.context';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from '../../components/admin-list-ui';
 import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 import {
   isRichTextContentEmpty,
@@ -28,22 +34,20 @@ import {
   normalizeRichTextForEditor,
 } from '../../utils/theme-editor-rich-text.util';
 
-/** Shared modal chrome — policies editors */
-const modalNoticeBox = 'mb-4 rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm';
+/** Shared modal chrome — policies editors (admin tokens) */
+const modalNoticeBox = 'mb-4 rounded-xl border border-admin-border bg-admin-surface p-4';
 const modalDisclaimerBox =
-  'mt-3 rounded-lg border border-slate-200/80 bg-slate-50/90 p-3 text-slate-600';
-const btnGhost =
-  'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50';
-const btnPrimary =
-  'inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-blue-600';
+  'mt-3 rounded-lg border border-admin-border bg-admin-fill p-3 text-admin-text-secondary';
+const btnGhost = adminListSecondaryButtonClass;
+const btnPrimary = adminListPrimaryButtonClass;
 const btnPrimaryMuted =
-  'inline-flex cursor-not-allowed items-center justify-center rounded-lg bg-slate-300 px-4 py-2 text-sm font-semibold text-white';
-const btnTemplate =
-  'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50';
+  'inline-flex cursor-not-allowed items-center justify-center rounded-lg bg-admin-fill px-3 py-1.5 text-[13px] font-semibold text-admin-text-subdued';
+const btnTemplate = `${adminListSecondaryButtonClass} px-3 py-2 text-xs`;
+const modalLinkClass = `${adminListFooterLinkClass} font-medium underline decoration-[#005bd3]/30 underline-offset-2`;
 const policyStatusInactive =
-  'px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-700 rounded-md';
+  'inline-flex items-center rounded-md bg-admin-fill px-2 py-0.5 text-xs font-medium text-admin-text-secondary';
 const policyStatusActive =
-  'inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800';
+  'inline-flex items-center rounded-md bg-admin-secondary px-2 py-0.5 text-xs font-medium text-admin-text';
 
 const isPolicyDirty = (current: string, stored: string | undefined) =>
   !isRichTextEditorContentEqual(current, stored ?? '');
@@ -235,22 +239,22 @@ const PoliciesSettings: React.FC = () => {
         />
 
       {/* Return rules */}
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5 mb-6">
+      <div className={`${adminListCardClass} mb-6 p-5`}>
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-base font-semibold text-gray-900 mb-1">Return rules</h2>
+            <h2 className="mb-1 text-base font-semibold text-admin-text">Return rules</h2>
             {rules && (
               <>
                 <span
-                  className={`inline-block px-2.5 py-1 rounded-md text-xs font-medium mr-2 ${
+                  className={`mr-2 inline-block rounded-md px-2.5 py-1 text-xs font-medium ${
                     rules.enabled
-                      ? 'bg-gray-100 text-gray-700'
-                      : 'bg-gray-100 text-gray-700'
+                      ? 'bg-admin-secondary text-admin-text'
+                      : 'bg-admin-fill text-admin-text-secondary'
                   }`}
                 >
                   {rules.enabled ? 'On' : 'Off'}
                 </span>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="mt-2 text-sm text-admin-text-subdued">
                   Enable return rules to simplify return management, set up return fees, return shipping and define final sale items
                 </p>
               </>
@@ -258,7 +262,7 @@ const PoliciesSettings: React.FC = () => {
           </div>
           <button
             type="button"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className={adminListPrimaryButtonClass}
             disabled={loading}
             onClick={() => navigate(rules ? '/settings/policies/manage-return-rules' : '/settings/policies/manage-return-rules/new')}
           >
@@ -268,25 +272,25 @@ const PoliciesSettings: React.FC = () => {
       </div>
 
       {/* Written policies */}
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm mb-6 overflow-hidden">
-        <div className="p-5 pb-4 flex items-start justify-between gap-4">
+      <div className={`${adminListCardClass} mb-6`}>
+        <div className="flex items-start justify-between gap-4 p-5 pb-4">
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Written policies</h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <h2 className="text-base font-semibold text-admin-text">Written policies</h2>
+            <p className="mt-1 text-sm text-admin-text-subdued">
               Policies are linked in the footer of checkout and can be added to your online store menu
             </p>
           </div>
           <button
             type="button"
-            className="inline-flex items-center justify-center p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors border border-gray-200 bg-white"
+            className="inline-flex items-center justify-center rounded-lg border border-admin-border bg-admin-surface p-2 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
             aria-label="More actions"
           >
-            <EllipsisHorizontalIcon className="w-4 h-4" />
+            <EllipsisHorizontalIcon className="h-4 w-4" />
           </button>
         </div>
-        <div className="border-t border-gray-200">
+        <div className="border-t border-admin-divider">
           <PoliciesRow
-            icon={<ArrowPathIcon className="w-4 h-4" />}
+            icon={<ArrowPathIcon className="h-4 w-4" />}
             label="Return and refund policy"
             right={
               returnRefundPolicy ? (
@@ -300,9 +304,9 @@ const PoliciesSettings: React.FC = () => {
               setReturnOpen(true);
             }}
           />
-          <div className="border-t border-gray-200" />
+          <div className="border-t border-admin-divider" />
           <PoliciesRow
-            icon={<LockClosedIcon className="w-4 h-4" />}
+            icon={<LockClosedIcon className="h-4 w-4" />}
             label="Privacy policy"
             right={
               privacyPolicy ? (
@@ -316,9 +320,9 @@ const PoliciesSettings: React.FC = () => {
               setPrivacyOpen(true);
             }}
           />
-          <div className="border-t border-gray-200" />
+          <div className="border-t border-admin-divider" />
           <PoliciesRow
-            icon={<ScaleIcon className="w-4 h-4" />}
+            icon={<ScaleIcon className="h-4 w-4" />}
             label="Terms of service"
             right={
               termsPolicy ? (
@@ -332,9 +336,9 @@ const PoliciesSettings: React.FC = () => {
               setTermsOpen(true);
             }}
           />
-          <div className="border-t border-gray-200" />
+          <div className="border-t border-admin-divider" />
           <PoliciesRow
-            icon={<TruckIcon className="w-4 h-4" />}
+            icon={<TruckIcon className="h-4 w-4" />}
             label="Shipping policy"
             right={
               policy ? (
@@ -348,9 +352,9 @@ const PoliciesSettings: React.FC = () => {
               setShippingOpen(true);
             }}
           />
-          <div className="border-t border-gray-200" />
+          <div className="border-t border-admin-divider" />
           <PoliciesRow
-            icon={<IdentificationIcon className="w-4 h-4" />}
+            icon={<IdentificationIcon className="h-4 w-4" />}
             label="Contact information"
             right={
               info ? (
@@ -419,11 +423,11 @@ const PoliciesSettings: React.FC = () => {
       >
         <div className={modalNoticeBox}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <p className="text-sm leading-relaxed text-slate-600">
+            <p className="text-sm leading-relaxed text-admin-text-secondary">
               Templates aren&apos;t legal advice. By using policy templates, you agree that you&apos;ve read and agree to the{' '}
               <button
                 type="button"
-                className="font-medium text-blue-600 underline decoration-blue-600/30 underline-offset-2 hover:text-blue-700"
+                className={modalLinkClass}
                 onClick={() => setShowReturnDisclaimer((v) => !v)}
               >
                 disclaimer {showReturnDisclaimer ? '▾' : '▸'}
@@ -435,7 +439,7 @@ const PoliciesSettings: React.FC = () => {
           </div>
           {showReturnDisclaimer && (
             <div className={modalDisclaimerBox}>
-              <h3 className="mb-2 text-xs font-semibold text-slate-900">Generated policies disclaimer</h3>
+              <h3 className="mb-2 text-xs font-semibold text-admin-text">Generated policies disclaimer</h3>
               <p className="text-xs leading-relaxed">
                 The materials below are for informational purposes only and do not constitute advertising, a solicitation or legal advice. Automated translations from the original English versions are available for convenience only.
               </p>
@@ -495,16 +499,16 @@ const PoliciesSettings: React.FC = () => {
           </>
         }
       >
-        <p className="mb-4 rounded-lg border border-blue-100 bg-blue-50/60 px-3 py-2 text-sm text-slate-600">
+        <p className="mb-4 rounded-lg border border-admin-border bg-admin-fill px-3 py-2 text-sm text-admin-text-secondary">
           Contact information is required on your website if you are selling into the European Union.
         </p>
         <div className={modalNoticeBox}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <p className="text-sm leading-relaxed text-slate-600">
+            <p className="text-sm leading-relaxed text-admin-text-secondary">
               Templates aren&apos;t legal advice. By using policy templates, you agree that you&apos;ve read and agree to the{' '}
               <button
                 type="button"
-                className="font-medium text-blue-600 underline decoration-blue-600/30 underline-offset-2 hover:text-blue-700"
+                className={modalLinkClass}
                 onClick={() => setShowDisclaimer((v) => !v)}
               >
                 disclaimer {showDisclaimer ? '▾' : '▸'}
@@ -516,7 +520,7 @@ const PoliciesSettings: React.FC = () => {
           </div>
           {showDisclaimer && (
             <div className={modalDisclaimerBox}>
-              <h3 className="mb-2 text-xs font-semibold text-slate-900">Generated policies disclaimer</h3>
+              <h3 className="mb-2 text-xs font-semibold text-admin-text">Generated policies disclaimer</h3>
               <p className="mb-2 text-xs leading-relaxed">
                 The materials below are for informational purposes only and do not constitute advertising, a solicitation or legal advice. Automated translations from the original English versions are available for convenience only.
               </p>
@@ -537,17 +541,17 @@ const PoliciesSettings: React.FC = () => {
           onChange={setContactContent}
           placeholder="Add your contact information..."
         />
-        <div className="mt-4 flex items-center gap-3 rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-sm font-semibold text-white">
+        <div className="mt-4 flex items-center gap-3 rounded-xl border border-admin-border bg-admin-surface p-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-admin-text text-sm font-semibold text-white">
             S
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-slate-900">codiic Inbox</p>
-            <p className="text-xs text-slate-500">4.7 ★</p>
+            <p className="text-sm font-medium text-admin-text">codiic Inbox</p>
+            <p className="text-xs text-admin-text-subdued">4.7 ★</p>
           </div>
           <button
             type="button"
-            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+            className="rounded-lg p-2 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
             aria-label="More"
           >
             <EllipsisHorizontalIcon className="h-4 w-4" />
@@ -605,11 +609,11 @@ const PoliciesSettings: React.FC = () => {
       >
         <div className={modalNoticeBox}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <p className="text-sm leading-relaxed text-slate-600">
+            <p className="text-sm leading-relaxed text-admin-text-secondary">
               Templates aren&apos;t legal advice. By using policy templates, you agree that you&apos;ve read and agree to the{' '}
               <button
                 type="button"
-                className="font-medium text-blue-600 underline decoration-blue-600/30 underline-offset-2 hover:text-blue-700"
+                className={modalLinkClass}
                 onClick={() => setShowTermsDisclaimer((v) => !v)}
               >
                 disclaimer {showTermsDisclaimer ? '▾' : '▸'}
@@ -621,7 +625,7 @@ const PoliciesSettings: React.FC = () => {
           </div>
           {showTermsDisclaimer && (
             <div className={modalDisclaimerBox}>
-              <h3 className="mb-2 text-xs font-semibold text-slate-900">Generated policies disclaimer</h3>
+              <h3 className="mb-2 text-xs font-semibold text-admin-text">Generated policies disclaimer</h3>
               <p className="mb-2 text-xs leading-relaxed">
                 The materials below are for informational purposes only and do not constitute advertising, a solicitation or legal advice. Automated translations from the original English versions are available for convenience only.
               </p>
@@ -691,11 +695,11 @@ const PoliciesSettings: React.FC = () => {
       >
         <div className={modalNoticeBox}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <p className="text-sm leading-relaxed text-slate-600">
+            <p className="text-sm leading-relaxed text-admin-text-secondary">
               Templates aren&apos;t legal advice. By using policy templates, you agree that you&apos;ve read and agree to the{' '}
               <button
                 type="button"
-                className="font-medium text-blue-600 underline decoration-blue-600/30 underline-offset-2 hover:text-blue-700"
+                className={modalLinkClass}
                 onClick={() => setShowShippingDisclaimer((v) => !v)}
               >
                 disclaimer {showShippingDisclaimer ? '▾' : '▸'}
@@ -707,14 +711,14 @@ const PoliciesSettings: React.FC = () => {
           </div>
           {showShippingDisclaimer && (
             <div className={modalDisclaimerBox}>
-              <h3 className="mb-2 text-xs font-semibold text-slate-900">Generated policies disclaimer</h3>
+              <h3 className="mb-2 text-xs font-semibold text-admin-text">Generated policies disclaimer</h3>
               <p className="text-xs leading-relaxed">
                 The materials below are for informational purposes only and do not constitute advertising, a solicitation or legal advice. Automated translations from the original English versions are available for convenience only.
               </p>
             </div>
           )}
         </div>
-        <p className="mb-4 text-sm leading-relaxed text-slate-600">
+        <p className="mb-4 text-sm leading-relaxed text-admin-text-secondary">
           Describe processing times, carriers, and regions you ship to. Customers see this in your store footer and checkout.
         </p>
         <PolicyModalEditor
@@ -774,11 +778,11 @@ const PoliciesSettings: React.FC = () => {
       >
         <div className={modalNoticeBox}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <p className="text-sm leading-relaxed text-slate-600">
+            <p className="text-sm leading-relaxed text-admin-text-secondary">
               Templates aren&apos;t legal advice. By using policy templates, you agree that you&apos;ve read and agree to the{' '}
               <button
                 type="button"
-                className="font-medium text-blue-600 underline decoration-blue-600/30 underline-offset-2 hover:text-blue-700"
+                className={modalLinkClass}
                 onClick={() => setShowPrivacyDisclaimer((v) => !v)}
               >
                 disclaimer {showPrivacyDisclaimer ? '▾' : '▸'}
@@ -790,7 +794,7 @@ const PoliciesSettings: React.FC = () => {
           </div>
           {showPrivacyDisclaimer && (
             <div className={modalDisclaimerBox}>
-              <h3 className="mb-2 text-xs font-semibold text-slate-900">Generated policies disclaimer</h3>
+              <h3 className="mb-2 text-xs font-semibold text-admin-text">Generated policies disclaimer</h3>
               <p className="mb-2 text-xs leading-relaxed">
                 The materials below are for informational purposes only and do not constitute advertising, a solicitation or legal advice. Automated translations from the original English versions are available for convenience only.
               </p>
@@ -800,10 +804,10 @@ const PoliciesSettings: React.FC = () => {
             </div>
           )}
         </div>
-        <div className="mb-4 flex flex-col gap-3 rounded-xl border border-slate-200/90 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-4 flex flex-col gap-3 rounded-xl border border-admin-border bg-admin-surface p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-900">Use automated policy</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
+            <p className="text-sm font-semibold text-admin-text">Use automated policy</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-admin-text-secondary">
               Keep policy content in sync with store settings and latest templates.
             </p>
           </div>
@@ -811,8 +815,8 @@ const PoliciesSettings: React.FC = () => {
             type="button"
             role="switch"
             aria-checked={privacyAutomated}
-            className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${
-              privacyAutomated ? 'bg-blue-600' : 'bg-slate-300'
+            className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30 ${
+              privacyAutomated ? 'bg-admin-text' : 'bg-admin-fill'
             }`}
             onClick={() => setPrivacyAutomated(!privacyAutomated)}
           >

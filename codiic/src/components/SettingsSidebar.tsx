@@ -1,7 +1,6 @@
 import {
   BellIcon,
   CalendarIcon,
-  CodeBracketIcon,
   Cog6ToothIcon,
   CreditCardIcon,
   DocumentTextIcon,
@@ -15,14 +14,16 @@ import {
   StarIcon,
   TruckIcon,
   UserCircleIcon,
-  UserGroupIcon
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  ADMIN_SIDEBAR_WIDTH,
+  adminSidebarAsideClass,
+} from './admin-sidebar';
 import SettingsSidebarHeader from './SettingsSidebarHeader';
 import { SettingsNavItem } from './SettingsSidebarItem';
 import SettingsSidebarNavList from './SettingsSidebarNavList';
-
-const drawerWidth = 240;
 
 const SETTINGS_NAV: SettingsNavItem[] = [
   { text: 'General', icon: Cog6ToothIcon, path: '/settings/general' },
@@ -47,7 +48,6 @@ const SETTINGS_NAV: SettingsNavItem[] = [
   { text: 'Domains', icon: LanguageIcon, path: '/settings/domains' },
   { text: 'Customer Events', icon: CalendarIcon, path: '/settings/customer-events' },
   { text: 'Notifications', icon: BellIcon, path: '/settings/notifications' },
-  { text: 'Metafields and metaobjects', icon: CodeBracketIcon, path: '/settings/metafields-and-metaobjects' },
   { text: 'Languages', icon: LanguageIcon, path: '/settings/languages' },
   { text: 'Customer Privacy', icon: ShieldCheckIcon, path: '/settings/customer-privacy' },
   { text: 'Policies', icon: DocumentTextIcon, path: '/settings/policies' },
@@ -60,12 +60,15 @@ interface SettingsSidebarProps {
 }
 
 export default function SettingsSidebar({ currentPath, onNavigate, onBack }: SettingsSidebarProps) {
-  // Auto-expand sections based on current path
   const defaultExpanded = useMemo(() => {
     const map: Record<string, boolean> = {};
     SETTINGS_NAV.forEach((item) => {
       if (item.children) {
-        const hasActiveChild = item.children.some((child) => child.path === currentPath);
+        const hasActiveChild = item.children.some(
+          (child) =>
+            !!child.path &&
+            (currentPath === child.path || currentPath.startsWith(`${child.path}/`))
+        );
         const isPathActive = item.path && currentPath.startsWith(item.path);
         map[item.path || item.text] = hasActiveChild || !!isPathActive;
       }
@@ -80,7 +83,10 @@ export default function SettingsSidebar({ currentPath, onNavigate, onBack }: Set
   }, [defaultExpanded]);
 
   const isActivePath = useCallback(
-    (path?: string): boolean => !!path && currentPath === path,
+    (path?: string): boolean => {
+      if (!path) return false;
+      return currentPath === path || currentPath.startsWith(`${path}/`);
+    },
     [currentPath]
   );
 
@@ -116,13 +122,18 @@ export default function SettingsSidebar({ currentPath, onNavigate, onBack }: Set
 
   return (
     <aside
-      className="fixed left-0 top-14 z-50 flex h-[calc(100vh-56px)] w-[240px] shrink-0 flex-col border-r border-slate-200/80 bg-slate-50/90 backdrop-blur"
-      style={{ width: `${drawerWidth}px` }}
+      className={adminSidebarAsideClass}
+      style={{ width: `${ADMIN_SIDEBAR_WIDTH}px` }}
     >
-      {/* Header Section */}
-      <SettingsSidebarHeader onBack={onBack} />
+      {/* Same rail chrome as home: top block + divider + scrollable list */}
+      <nav className="shrink-0">
+        <ul className="m-0 list-none p-2 pb-2">
+          <SettingsSidebarHeader onBack={onBack} />
+        </ul>
+      </nav>
 
-      {/* Navigation List */}
+      <div className="w-full border-t border-admin-border" />
+
       <nav className="flex-1 overflow-y-auto">
         <SettingsSidebarNavList
           items={SETTINGS_NAV}

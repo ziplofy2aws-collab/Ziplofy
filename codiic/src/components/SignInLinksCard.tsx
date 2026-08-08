@@ -1,5 +1,6 @@
-import React from 'react';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import React from 'react';
+import { adminListCardClass, adminListFooterLinkClass } from './admin-list-ui';
 import ToggleSwitch from './ToggleSwitch';
 
 interface SignInLinksCardProps {
@@ -10,6 +11,9 @@ interface SignInLinksCardProps {
   isControlsDisabled: boolean;
 }
 
+const radioClass =
+  'h-4 w-4 border-admin-border text-admin-text focus:ring-2 focus:ring-[#005bd3]/30 focus:ring-offset-0';
+
 const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
   showSignInLinks,
   onShowSignInLinksChange,
@@ -17,20 +21,27 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
   onAccountVersionChange,
   isControlsDisabled,
 }) => {
+  const optionCardClass = (selected: boolean) =>
+    `flex flex-1 cursor-pointer items-start gap-3 rounded-lg border p-4 transition-all ${
+      selected
+        ? 'border-admin-text bg-admin-secondary ring-1 ring-admin-text/15'
+        : 'border-admin-border hover:border-admin-fill hover:bg-admin-row-hover'
+    } ${isControlsDisabled ? 'cursor-not-allowed opacity-50' : ''}`;
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+    <div className={`${adminListCardClass} p-5`}>
+      <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-base font-semibold text-gray-900">Sign-in links</h2>
+          <div className="mb-1 flex items-center gap-2">
+            <h2 className="text-[13px] font-semibold text-admin-text">Sign-in links</h2>
             <div className="group relative">
-              <InformationCircleIcon className="w-4 h-4 text-gray-500 cursor-help" />
-              <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block z-10 w-64 p-2 bg-gray-900 text-white text-xs rounded-lg shadow-lg">
+              <InformationCircleIcon className="h-4 w-4 cursor-help text-admin-text-subdued" />
+              <div className="absolute bottom-full left-0 z-10 mb-2 hidden w-64 rounded-lg bg-admin-text p-2 text-[12px] text-white shadow-lg group-hover:block">
                 Show sign-in links in the header of online store and at checkout
               </div>
             </div>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-[13px] text-admin-text-secondary">
             Show sign-in links in the header of online store and at checkout
           </p>
         </div>
@@ -43,32 +54,30 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
 
       {showSignInLinks ? (
         <>
-          <div className="rounded-lg bg-gray-50/80 border border-gray-200 p-4 mb-4 flex items-start gap-2">
-            <InformationCircleIcon className="w-4 h-4 shrink-0 mt-0.5 text-gray-500" />
-            <p className="text-sm text-gray-600">
+          <div className="mb-4 flex items-start gap-2 rounded-lg border border-admin-border bg-admin-secondary p-4">
+            <InformationCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-admin-text-subdued" />
+            <p className="text-[13px] text-admin-text-secondary">
               Customers are required to sign in before checking out. To change this, go to{' '}
-              <button type="button" className="text-gray-700 font-medium cursor-pointer hover:underline">
+              <button type="button" className={`${adminListFooterLinkClass} font-medium`}>
                 checkout settings
               </button>
               .
             </p>
           </div>
 
-          <h3 className="text-sm font-medium text-gray-900 mb-3">
+          <h3 className="mb-3 text-[13px] font-medium text-admin-text">
             Choose which version of customer accounts to link to
           </h3>
 
-          <div className="flex flex-col md:flex-row gap-3">
+          <div className="flex flex-col gap-3 md:flex-row">
             <div
               role="button"
               tabIndex={0}
               onClick={() => !isControlsDisabled && onAccountVersionChange('recommended')}
-              onKeyDown={(e) => e.key === 'Enter' && !isControlsDisabled && onAccountVersionChange('recommended')}
-              className={`flex-1 p-4 rounded-lg border transition-all cursor-pointer flex items-start gap-3 ${
-                accountVersion === 'recommended'
-                  ? 'border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/30'
-                  : 'border-gray-200 hover:border-gray-300'
-              } ${isControlsDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onKeyDown={(e) =>
+                e.key === 'Enter' && !isControlsDisabled && onAccountVersionChange('recommended')
+              }
+              className={optionCardClass(accountVersion === 'recommended')}
             >
               <div className="mt-0.5">
                 <input
@@ -77,17 +86,17 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
                   checked={accountVersion === 'recommended'}
                   onChange={() => onAccountVersionChange('recommended')}
                   disabled={isControlsDisabled}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500/30"
+                  className={radioClass}
                 />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h4 className="text-sm font-medium text-gray-900">Customer accounts</h4>
-                  <span className="rounded-full px-2.5 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium">
+                <div className="mb-1 flex items-center gap-2">
+                  <h4 className="text-[13px] font-medium text-admin-text">Customer accounts</h4>
+                  <span className="rounded-md bg-admin-fill px-2 py-0.5 text-[12px] font-medium text-admin-text">
                     Recommended
                   </span>
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-[13px] text-admin-text-secondary">
                   Customers sign in with a one-time code sent to their email (no passwords)
                 </p>
               </div>
@@ -97,12 +106,10 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
               role="button"
               tabIndex={0}
               onClick={() => !isControlsDisabled && onAccountVersionChange('legacy')}
-              onKeyDown={(e) => e.key === 'Enter' && !isControlsDisabled && onAccountVersionChange('legacy')}
-              className={`flex-1 p-4 rounded-lg border transition-all cursor-pointer flex items-start gap-3 ${
-                accountVersion === 'legacy'
-                  ? 'border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/30'
-                  : 'border-gray-200 hover:border-gray-300'
-              } ${isControlsDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+              onKeyDown={(e) =>
+                e.key === 'Enter' && !isControlsDisabled && onAccountVersionChange('legacy')
+              }
+              className={optionCardClass(accountVersion === 'legacy')}
             >
               <div className="mt-0.5">
                 <input
@@ -111,12 +118,12 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
                   checked={accountVersion === 'legacy'}
                   onChange={() => onAccountVersionChange('legacy')}
                   disabled={isControlsDisabled}
-                  className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500/30"
+                  className={radioClass}
                 />
               </div>
               <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-900 mb-1">Legacy</h4>
-                <p className="text-sm text-gray-500">
+                <h4 className="mb-1 text-[13px] font-medium text-admin-text">Legacy</h4>
+                <p className="text-[13px] text-admin-text-secondary">
                   Customers create an account and sign in with email and password
                 </p>
               </div>
@@ -124,7 +131,7 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
           </div>
         </>
       ) : (
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="mt-2 text-[13px] text-admin-text-subdued">
           Both versions are still accessible by URL
         </p>
       )}
@@ -133,4 +140,3 @@ const SignInLinksCard: React.FC<SignInLinksCardProps> = ({
 };
 
 export default SignInLinksCard;
-

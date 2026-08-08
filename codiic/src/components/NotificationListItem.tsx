@@ -21,26 +21,24 @@ const NotificationListItem: React.FC<NotificationListItemProps> = ({
   return (
     <>
       <button
+        type="button"
         onClick={() => {
           onNavigate(path);
         }}
-        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+        className="flex w-full items-center gap-3 px-4 py-3 transition-colors hover:bg-admin-row-hover"
       >
-        <div className="shrink-0 w-8 flex items-center justify-center">
-          {icon}
-        </div>
+        <div className="flex w-8 shrink-0 items-center justify-center">{icon}</div>
         <div className="flex-1 text-left">
-          <p className="text-sm font-medium text-gray-900">{title}</p>
-          {description && (
-            <p className="text-sm text-gray-500 mt-0.5">{description}</p>
-          )}
+          <p className="text-[13px] font-medium text-admin-text">{title}</p>
+          {description ? (
+            <p className="mt-0.5 text-[13px] text-admin-text-secondary">{description}</p>
+          ) : null}
         </div>
-        <ChevronRightIcon className="w-4 h-4 text-gray-500 shrink-0" />
+        <ChevronRightIcon className="h-4 w-4 shrink-0 text-admin-text-subdued" />
       </button>
-      {showDivider && <div className="h-px bg-gray-200 mx-4" />}
+      {showDivider ? <div className="mx-4 h-px bg-admin-divider" /> : null}
     </>
   );
 };
 
 export default NotificationListItem;
-

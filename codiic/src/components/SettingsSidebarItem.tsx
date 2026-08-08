@@ -1,5 +1,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { adminSidebarNavItemClass } from './admin-sidebar';
 import SettingsSidebarChildrenList from './SettingsSidebarChildrenList';
 
 export interface SettingsNavItem {
@@ -11,60 +12,73 @@ export interface SettingsNavItem {
 
 interface SettingsSidebarItemProps {
   item: SettingsNavItem;
-  isCurrentPath: boolean;
+  parentHighlighted: boolean;
   isExpanded: boolean;
   hasChildren: boolean;
+  activeChildPath?: string;
+  activeChildIndex: number;
   onItemClick: (item: SettingsNavItem) => void;
   onChildClick: (path?: string) => void;
-  isActivePath: (path?: string) => boolean;
 }
 
 export default function SettingsSidebarItem({
   item,
-  isCurrentPath,
+  parentHighlighted,
   isExpanded,
   hasChildren,
+  activeChildPath,
+  activeChildIndex,
   onItemClick,
   onChildClick,
-  isActivePath,
 }: SettingsSidebarItemProps) {
   const Icon = item.icon;
 
+  const lineHeight =
+    hasChildren && isExpanded && activeChildIndex >= 0
+      ? 40 + 28 * (activeChildIndex + 1)
+      : 0;
+
   return (
-    <li>
+    <li className="relative">
+      {hasChildren && isExpanded && lineHeight > 0 ? (
+        <div
+          className="absolute left-[10px] top-0 z-0 w-0.5 bg-admin-border"
+          style={{ height: `${lineHeight}px` }}
+          aria-hidden
+        />
+      ) : null}
+
       <button
+        type="button"
         onClick={() => onItemClick(item)}
-        className={`w-full rounded-lg flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-100 transition-colors text-left ${
-          isCurrentPath ? 'bg-blue-50 text-blue-700 shadow-[inset_0_0_0_1px_rgba(59,130,246,0.25)]' : ''
-        }`}
+        className={adminSidebarNavItemClass(parentHighlighted)}
       >
-        <Icon className="w-4 h-4 shrink-0" />
+        <Icon className="h-4 w-4 shrink-0" />
         <span className="flex-1 text-sm font-medium">{item.text}</span>
-        {hasChildren && (
-          <span className="shrink-0">
+        {hasChildren ? (
+          <span className="shrink-0 text-admin-text-subdued">
             {isExpanded ? (
-              <ChevronUpIcon className="w-4 h-4 text-slate-400" />
+              <ChevronUpIcon className="h-4 w-4" />
             ) : (
-              <ChevronDownIcon className="w-4 h-4 text-slate-400" />
+              <ChevronDownIcon className="h-4 w-4" />
             )}
           </span>
-        )}
+        ) : null}
       </button>
 
-      {hasChildren && (
+      {hasChildren ? (
         <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          className={`relative overflow-hidden transition-all duration-300 ease-in-out ${
             isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
           }`}
         >
           <SettingsSidebarChildrenList
             children={item.children!}
-            isActivePath={isActivePath}
+            activeChildPath={activeChildPath}
             onChildClick={onChildClick}
           />
         </div>
-      )}
+      ) : null}
     </li>
   );
 }
-

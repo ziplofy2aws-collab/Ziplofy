@@ -1,23 +1,23 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { adminSidebarNavItemClass } from './admin-sidebar';
 
 interface SettingsSidebarHeaderProps {
   onBack: () => void;
 }
 
+/** Renders as an `<li>` so it sits in the same `ul.p-2` list chrome as home. */
 export default function SettingsSidebarHeader({ onBack }: SettingsSidebarHeaderProps) {
   return (
-    <div className="border-b border-slate-200/80 px-4 py-3">
-      <div className="flex items-center">
-        <button
-          onClick={onBack}
-          className="mr-2 cursor-pointer rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-blue-50 hover:text-blue-700"
-          aria-label="Go back"
-        >
-          <ArrowLeftIcon className="w-4 h-4" />
-        </button>
-        <h2 className="text-sm font-semibold text-slate-800">Settings</h2>
-      </div>
-    </div>
+    <li>
+      <button
+        type="button"
+        onClick={onBack}
+        className={adminSidebarNavItemClass(false)}
+        aria-label="Back to home"
+      >
+        <ArrowLeftIcon className="h-4 w-4 shrink-0" />
+        <span className="flex-1 text-sm font-medium">Settings</span>
+      </button>
+    </li>
   );
 }
-

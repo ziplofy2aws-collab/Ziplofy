@@ -1,4 +1,5 @@
 import React from 'react';
+import { adminListCardClass } from './admin-list-ui';
 
 interface TimeZone {
   value: string;
@@ -17,6 +18,11 @@ interface StoreDefaultsSectionProps {
   onTimeZoneChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
+const selectClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const labelClass = 'mb-1 block text-[12px] text-admin-text-secondary';
+const hintClass = 'mt-2 text-[12px] text-admin-text-secondary';
+
 export default function StoreDefaultsSection({
   backupRegion,
   unitSystem,
@@ -29,28 +35,30 @@ export default function StoreDefaultsSection({
   onTimeZoneChange,
 }: StoreDefaultsSectionProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
+    <div className={`${adminListCardClass} p-5`}>
       <div className="mb-4">
-        <h2 className="text-base font-semibold text-gray-900">Store defaults</h2>
-        <p className="mt-1 text-sm text-gray-500">Configure currency, measurement units, and time zone.</p>
+        <h2 className="text-[13px] font-semibold text-admin-text">Store defaults</h2>
+        <p className="mt-1 text-[13px] text-admin-text-secondary">
+          Configure currency, measurement units, and time zone.
+        </p>
       </div>
 
       {/* Currency display */}
       <div className="mb-6">
-        <label htmlFor="currency-label" className="block text-xs text-gray-600 mb-1">
+        <label htmlFor="currency-label" className={labelClass}>
           Currency display
         </label>
         <select
           id="currency-label"
           value="INR"
           disabled
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500 cursor-not-allowed"
+          className="w-full cursor-not-allowed rounded-lg border border-admin-border bg-admin-secondary px-3 py-1.5 text-[13px] text-admin-text-subdued"
         >
           <option value="INR">Indian Rupee (INR ₹)</option>
         </select>
-        <p className="text-xs text-gray-600 mt-2">
+        <p className={hintClass}>
           To manage the currencies customers see, go to{' '}
-          <a href="/settings/markets" className="text-gray-700 hover:underline">
+          <a href="/settings/markets" className="text-admin-text hover:underline">
             Markets
           </a>
         </p>
@@ -58,35 +66,33 @@ export default function StoreDefaultsSection({
 
       {/* Backup Region */}
       <div className="mb-6">
-        <label htmlFor="backup-region-label" className="block text-xs text-gray-600 mb-1">
+        <label htmlFor="backup-region-label" className={labelClass}>
           Backup Region
         </label>
         <select
           id="backup-region-label"
           value={backupRegion}
           onChange={onBackupRegionChange}
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white outline-none transition-all focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+          className={selectClass}
         >
           <option value="India">India</option>
           <option value="United States">United States</option>
           <option value="United Kingdom">United Kingdom</option>
           <option value="Canada">Canada</option>
         </select>
-        <p className="text-xs text-gray-600 mt-2">
-          Determines settings for customers outside of your markets.
-        </p>
+        <p className={hintClass}>Determines settings for customers outside of your markets.</p>
       </div>
 
       {/* Unit system */}
       <div className="mb-6">
-        <label htmlFor="unit-system-label" className="block text-xs text-gray-600 mb-1">
+        <label htmlFor="unit-system-label" className={labelClass}>
           Unit system
         </label>
         <select
           id="unit-system-label"
           value={unitSystem}
           onChange={onUnitSystemChange}
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white outline-none transition-all focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+          className={selectClass}
         >
           <option value="metric">Metric system</option>
           <option value="imperial">Imperial system</option>
@@ -95,14 +101,14 @@ export default function StoreDefaultsSection({
 
       {/* Default weight unit */}
       <div className="mb-6">
-        <label htmlFor="weight-unit-label" className="block text-xs text-gray-600 mb-1">
+        <label htmlFor="weight-unit-label" className={labelClass}>
           Default weight unit
         </label>
         <select
           id="weight-unit-label"
           value={weightUnit}
           onChange={onWeightUnitChange}
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white outline-none transition-all focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+          className={selectClass}
         >
           <option value="kg">Kilogram (kg)</option>
           <option value="g">Gram (g)</option>
@@ -113,14 +119,14 @@ export default function StoreDefaultsSection({
 
       {/* Time zone */}
       <div>
-        <label htmlFor="timezone-label" className="block text-xs text-gray-600 mb-1">
+        <label htmlFor="timezone-label" className={labelClass}>
           Time zone
         </label>
         <select
           id="timezone-label"
           value={timeZone}
           onChange={onTimeZoneChange}
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white outline-none transition-all focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+          className={selectClass}
         >
           {timeZones.map((tz) => (
             <option key={tz.value} value={tz.value}>
@@ -128,11 +134,8 @@ export default function StoreDefaultsSection({
             </option>
           ))}
         </select>
-        <p className="text-xs text-gray-600 mt-2">
-          Sets the time for when orders and analytics are recorded.
-        </p>
+        <p className={hintClass}>Sets the time for when orders and analytics are recorded.</p>
       </div>
     </div>
   );
 }
-

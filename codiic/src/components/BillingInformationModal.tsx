@@ -1,5 +1,6 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { adminListPrimaryButtonClass, adminListSecondaryButtonClass } from './admin-list-ui';
 import Modal from './Modal';
 
 interface Country {
@@ -38,6 +39,12 @@ interface BillingInformationModalProps {
   onStateChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onPinCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+const inputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const searchInputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface py-1.5 pl-8 pr-3 text-[13px] font-normal text-admin-text focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const labelClass = 'mb-1 block text-[13px] font-medium text-admin-text';
 
 export default function BillingInformationModal({
   open,
@@ -78,27 +85,23 @@ export default function BillingInformationModal({
       onClose={onClose}
       title={
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">Billing information</h2>
-          <p className="text-sm text-gray-600">Your customers could see this information.</p>
+          <h2 className="mb-1 text-lg font-semibold text-admin-text">Billing information</h2>
+          <p className="text-[13px] text-admin-text-secondary">
+            Your customers could see this information.
+          </p>
         </div>
       }
       maxWidth="sm"
       actions={
         <>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-900 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-          >
+          <button type="button" onClick={onClose} className={adminListSecondaryButtonClass}>
             Cancel
           </button>
           <button
+            type="button"
             onClick={onSave}
             disabled={isDisabled}
-            className={`px-4 py-2 text-sm font-medium text-white rounded transition-colors ${
-              hasChanges && !saving
-                ? 'bg-gray-900 hover:bg-gray-800'
-                : 'bg-gray-300 cursor-not-allowed'
-            }`}
+            className={`${adminListPrimaryButtonClass} disabled:bg-admin-fill disabled:text-admin-text-subdued`}
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
@@ -106,7 +109,7 @@ export default function BillingInformationModal({
       }
     >
       <div className="mb-6">
-        <label htmlFor="legal-business-name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="legal-business-name" className={labelClass}>
           Legal business name
         </label>
         <input
@@ -114,19 +117,19 @@ export default function BillingInformationModal({
           type="text"
           value={legalBusinessName}
           onChange={onLegalBusinessNameChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
         />
       </div>
 
       <div className="mb-6">
-        <label htmlFor="country-label" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="country-label" className={labelClass}>
           Country/region
         </label>
         <select
           id="country-label"
           value={country}
           onChange={onCountryChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
         >
           {countries.length > 0 ? (
             countries.map((c) => (
@@ -141,25 +144,25 @@ export default function BillingInformationModal({
       </div>
 
       <div className="mb-6">
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="address" className={labelClass}>
           Address
         </label>
         <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-            <MagnifyingGlassIcon className="w-4 h-4" />
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-admin-text-subdued">
+            <MagnifyingGlassIcon className="h-4 w-4" />
           </div>
           <input
             id="address"
             type="text"
             value={address}
             onChange={onAddressChange}
-            className="w-full rounded-md border border-gray-300 pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className={searchInputClass}
           />
         </div>
       </div>
 
       <div className="mb-6">
-        <label htmlFor="apartment" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="apartment" className={labelClass}>
           Apartment, suite, etc.
         </label>
         <input
@@ -167,13 +170,13 @@ export default function BillingInformationModal({
           type="text"
           value={apartment}
           onChange={onApartmentChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
         />
       </div>
 
-      <div className="flex gap-4 mb-6">
+      <div className="mb-6 flex gap-4">
         <div className="flex-1">
-          <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="city" className={labelClass}>
             City
           </label>
           <input
@@ -181,19 +184,14 @@ export default function BillingInformationModal({
             type="text"
             value={city}
             onChange={onCityChange}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className={inputClass}
           />
         </div>
         <div className="flex-1">
-          <label htmlFor="state-label" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="state-label" className={labelClass}>
             State
           </label>
-          <select
-            id="state-label"
-            value={state}
-            onChange={onStateChange}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
+          <select id="state-label" value={state} onChange={onStateChange} className={inputClass}>
             <option value="">Select a state</option>
             <option value="Delhi">Delhi</option>
             <option value="Maharashtra">Maharashtra</option>
@@ -208,7 +206,7 @@ export default function BillingInformationModal({
       </div>
 
       <div>
-        <label htmlFor="pin-code" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="pin-code" className={labelClass}>
           PIN code
         </label>
         <input
@@ -216,10 +214,9 @@ export default function BillingInformationModal({
           type="text"
           value={pinCode}
           onChange={onPinCodeChange}
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className={inputClass}
         />
       </div>
     </Modal>
   );
 }
-

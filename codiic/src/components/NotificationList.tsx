@@ -1,4 +1,5 @@
 import React from 'react';
+import { adminListCardClass } from './admin-list-ui';
 import NotificationListItem from './NotificationListItem';
 
 interface NotificationItem {
@@ -13,12 +14,9 @@ interface NotificationListProps {
   onNavigate: (path: string) => void;
 }
 
-const NotificationList: React.FC<NotificationListProps> = ({
-  items,
-  onNavigate,
-}) => {
+const NotificationList: React.FC<NotificationListProps> = ({ items, onNavigate }) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm overflow-hidden">
+    <div className={adminListCardClass}>
       {items.map((item, index) => (
         <NotificationListItem
           key={item.path}
@@ -35,4 +33,3 @@ const NotificationList: React.FC<NotificationListProps> = ({
 };
 
 export default NotificationList;
-

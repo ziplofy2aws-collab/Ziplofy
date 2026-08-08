@@ -54,7 +54,7 @@ const ThemeEditorPagePickerInner: React.FC<ThemeEditorPagePickerProps> = ({
   manifest,
   editorSchema,
 }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(faluise);
   const [query, setQuery] = useState('');
   const [menuPos, setMenuPos] = useState<{ top: number; left: number; width: number } | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);

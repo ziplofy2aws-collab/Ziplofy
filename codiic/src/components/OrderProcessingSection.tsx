@@ -1,5 +1,6 @@
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { adminListCardClass } from './admin-list-ui';
 
 interface OrderProcessingSectionProps {
   fulfillmentOption: 'fulfill_all' | 'fulfill_gift_cards' | 'dont_fulfill';
@@ -12,6 +13,9 @@ interface OrderProcessingSectionProps {
   onAutoArchiveChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+const controlClass =
+  'h-4 w-4 rounded border-admin-border text-admin-text focus:ring-1 focus:ring-[#005bd3]';
+
 export default function OrderProcessingSection({
   fulfillmentOption,
   notifyCustomers,
@@ -23,104 +27,117 @@ export default function OrderProcessingSection({
   onAutoArchiveChange,
 }: OrderProcessingSectionProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
-      <div className="flex items-center mb-2">
-        <h2 className="text-base font-semibold text-gray-900">Order processing</h2>
-        <div className="ml-2 group relative">
+    <div className={`${adminListCardClass} p-5`}>
+      <div className="mb-2 flex items-center">
+        <h2 className="text-[13px] font-semibold text-admin-text">Order processing</h2>
+        <div className="group relative ml-2">
           <button
-            className="p-1 text-gray-500 hover:text-gray-700"
+            className="p-1 text-admin-text-subdued transition-colors hover:text-admin-text-secondary"
             title="Order processing settings"
             aria-label="Order processing settings"
           >
-            <InformationCircleIcon className="w-4 h-4" />
+            <InformationCircleIcon className="h-4 w-4" />
           </button>
         </div>
       </div>
-      <p className="text-sm text-gray-500 mb-4">Automate fulfillment and archiving behavior for paid orders.</p>
+      <p className="mb-4 text-[13px] text-admin-text-secondary">
+        Automate fulfillment and archiving behavior for paid orders.
+      </p>
 
       {/* After an order has been paid */}
       <div className="mb-6">
-        <p className="text-xs font-medium text-gray-500 mb-3">After an order has been paid</p>
+        <p className="mb-3 text-[12px] font-medium text-admin-text-subdued">
+          After an order has been paid
+        </p>
         <div className="space-y-2">
           <div>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="radio"
                 name="fulfillment-option"
                 value="fulfill_all"
                 checked={fulfillmentOption === 'fulfill_all'}
                 onChange={onFulfillmentOptionChange}
-                className="w-4 h-4 text-blue-600 focus:ring-blue-500/30"
+                className={controlClass}
               />
-              <span className="text-sm text-gray-900">Automatically fulfill the order's line items</span>
+              <span className="text-[13px] text-admin-text">
+                Automatically fulfill the order&apos;s line items
+              </span>
             </label>
             {fulfillmentOption === 'fulfill_all' && (
               <div className="ml-6 mt-2 space-y-2">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
                     checked={notifyCustomers}
                     onChange={onNotifyCustomersChange}
-                    className="w-4 h-4 text-blue-600 focus:ring-blue-500/30"
+                    className={controlClass}
                   />
-                  <span className="text-sm text-gray-900">Notify customers of their shipment</span>
+                  <span className="text-[13px] text-admin-text">
+                    Notify customers of their shipment
+                  </span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
                     checked={fulfillHighRiskOrders}
                     onChange={onFulfillHighRiskOrdersChange}
-                    className="w-4 h-4 text-blue-600 focus:ring-blue-500/30"
+                    className={controlClass}
                   />
-                  <span className="text-sm text-gray-900">Automatically fulfill all orders, even those with a high risk of fraud</span>
+                  <span className="text-[13px] text-admin-text">
+                    Automatically fulfill all orders, even those with a high risk of fraud
+                  </span>
                 </label>
               </div>
             )}
           </div>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-2">
             <input
               type="radio"
               name="fulfillment-option"
               value="fulfill_gift_cards"
               checked={fulfillmentOption === 'fulfill_gift_cards'}
               onChange={onFulfillmentOptionChange}
-              className="w-4 h-4 text-blue-600 focus:ring-blue-500/30"
+              className={controlClass}
             />
-            <span className="text-sm text-gray-900">Automatically fulfill only the gift cards of the order</span>
+            <span className="text-[13px] text-admin-text">
+              Automatically fulfill only the gift cards of the order
+            </span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex cursor-pointer items-center gap-2">
             <input
               type="radio"
               name="fulfillment-option"
               value="dont_fulfill"
               checked={fulfillmentOption === 'dont_fulfill'}
               onChange={onFulfillmentOptionChange}
-              className="w-4 h-4 text-blue-600 focus:ring-blue-500/30"
+              className={controlClass}
             />
-            <span className="text-sm text-gray-900">Don't fulfill any of the order's line items automatically</span>
+            <span className="text-[13px] text-admin-text">
+              Don&apos;t fulfill any of the order&apos;s line items automatically
+            </span>
           </label>
         </div>
       </div>
 
       {/* After an order has been fulfilled and paid */}
       <div>
-        <p className="text-xs font-medium text-gray-500 mb-3">
+        <p className="mb-3 text-[12px] font-medium text-admin-text-subdued">
           After an order has been fulfilled and paid, or when all items have been refunded
         </p>
-        <label className="flex items-center gap-2 cursor-pointer">
+        <label className="flex cursor-pointer items-center gap-2">
           <input
             type="checkbox"
             checked={autoArchive}
             onChange={onAutoArchiveChange}
-            className="w-4 h-4 text-blue-600 focus:ring-blue-500/30"
+            className={controlClass}
           />
-          <span className="text-sm text-gray-900">Automatically archive the order</span>
+          <span className="text-[13px] text-admin-text">Automatically archive the order</span>
         </label>
-        <p className="text-xs text-gray-500 mt-1 ml-6">
+        <p className="ml-6 mt-1 text-[12px] text-admin-text-subdued">
           The order will be removed from your list of open orders.
         </p>
       </div>
     </div>
   );
 }
-

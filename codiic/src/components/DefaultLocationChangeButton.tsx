@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { adminListSecondaryButtonClass } from './admin-list-ui';
 import DropdownMenu from './DropdownMenu';
 import DropdownMenuItem from './DropdownMenuItem';
 import LocationMenuItem from './LocationMenuItem';
@@ -39,14 +40,10 @@ const DefaultLocationChangeButton: React.FC<DefaultLocationChangeButtonProps> = 
 
   return (
     <div className="flex flex-wrap items-center gap-2 sm:justify-end">
-      <span className="inline-flex items-center rounded-md border border-blue-200/80 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-800">
+      <span className="inline-flex items-center rounded-md border border-admin-border bg-admin-secondary px-2.5 py-1 text-[12px] font-medium text-admin-text">
         Default
       </span>
-      <button
-        type="button"
-        onClick={handleOpen}
-        className="cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50"
-      >
+      <button type="button" onClick={handleOpen} className={adminListSecondaryButtonClass}>
         Change
       </button>
       <DropdownMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
@@ -63,4 +60,3 @@ const DefaultLocationChangeButton: React.FC<DefaultLocationChangeButtonProps> = 
 };
 
 export default DefaultLocationChangeButton;
-

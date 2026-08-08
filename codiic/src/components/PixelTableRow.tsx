@@ -1,8 +1,5 @@
+import { EllipsisHorizontalIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
 import React from 'react';
-import {
-  EllipsisHorizontalIcon,
-  Squares2X2Icon,
-} from '@heroicons/react/24/outline';
 import type { Pixel } from '../contexts/pixel.context';
 
 interface PixelTableRowProps {
@@ -19,29 +16,29 @@ const PixelTableRow: React.FC<PixelTableRowProps> = ({
   return (
     <tr
       onClick={() => onRowClick(pixel._id)}
-      className="border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer transition-colors last:border-b-0"
+      className="cursor-pointer border-b border-admin-divider bg-admin-surface transition-colors last:border-b-0 hover:bg-admin-row-hover"
     >
-      <td className="px-4 py-3">
+      <td className="px-3 py-2.5">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gray-100 border border-gray-200 text-gray-600 flex items-center justify-center shrink-0">
-            <Squares2X2Icon className="w-3.5 h-3.5" />
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-admin-border bg-admin-secondary text-admin-text-secondary">
+            <Squares2X2Icon className="h-3.5 w-3.5" />
           </div>
-          <span className="text-sm font-medium capitalize text-gray-900">
+          <span className="text-[13px] font-medium capitalize text-admin-text">
             {pixel.pixelName}
           </span>
         </div>
       </td>
-      <td className="px-4 py-3 text-sm capitalize text-gray-900">{pixel.type}</td>
-      <td className="px-4 py-3">{renderStatusChip(pixel)}</td>
-      <td className="px-4 py-3 text-right">
+      <td className="px-3 py-2.5 text-[13px] capitalize text-admin-text">{pixel.type}</td>
+      <td className="px-3 py-2.5">{renderStatusChip(pixel)}</td>
+      <td className="px-3 py-2.5 text-right">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="inline-flex items-center justify-center p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors"
+          className="inline-flex items-center justify-center rounded-lg p-2 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
         >
-          <EllipsisHorizontalIcon className="w-4 h-4" />
+          <EllipsisHorizontalIcon className="h-4 w-4" />
         </button>
       </td>
     </tr>
@@ -49,4 +46,3 @@ const PixelTableRow: React.FC<PixelTableRowProps> = ({
 };
 
 export default PixelTableRow;
-

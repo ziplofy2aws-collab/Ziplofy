@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import CustomerAccountsManagementCard from '../../components/CustomerAccountsManagementCard';
 import SignInLinksCard from '../../components/SignInLinksCard';
 import TurnOffSelfServeReturnsModal from '../../components/TurnOffSelfServeReturnsModal';
+import { adminListPrimaryButtonClass } from '../../components/admin-list-ui';
+import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 import { useCustomerAccountSettings } from '../../contexts/customer-account-settings.context';
 import { useStore } from '../../contexts/store.context';
-import { SettingsHero } from '../../components/settings/SettingsPageScaffold';
 
 const CustomerAccountsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -101,11 +102,9 @@ const CustomerAccountsPage: React.FC = () => {
 
   const handleSelfServeReturnsChange = useCallback((checked: boolean) => {
     if (selfServeReturns && !checked) {
-      // Trying to turn off - show confirmation modal
       setPendingReturnsValue(checked);
       setTurnOffReturnsModalOpen(true);
     } else {
-      // Turning on - no confirmation needed
       setSelfServeReturns(checked);
     }
   }, [selfServeReturns]);
@@ -133,7 +132,7 @@ const CustomerAccountsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
         <SettingsHero
           title="Customer accounts"
           description="Configure sign-in options, authentication, and account features."
@@ -143,7 +142,7 @@ const CustomerAccountsPage: React.FC = () => {
                 type="button"
                 onClick={handleSave}
                 disabled={!hasUnsavedChanges || isControlsDisabled}
-                className="inline-flex min-w-[100px] items-center justify-center rounded-xl px-4 py-2.5 text-sm font-medium text-white bg-blue-600 shadow-sm hover:bg-blue-700 transition-colors disabled:cursor-not-allowed disabled:opacity-50 shrink-0"
+                className={`${adminListPrimaryButtonClass} min-w-[100px] shrink-0`}
               >
                 {saving ? 'Saving...' : 'Save changes'}
               </button>
@@ -152,40 +151,37 @@ const CustomerAccountsPage: React.FC = () => {
         />
 
         {error && (
-          <div className="rounded-xl border border-red-200 bg-red-50/80 text-red-800 px-4 py-3 text-sm">
+          <div className="rounded-xl border border-red-200 bg-red-50/80 px-4 py-3 text-[13px] text-red-800">
             {error}
           </div>
         )}
 
         <div className="space-y-6">
-        {/* Sign-in links */}
-        <SignInLinksCard
-          showSignInLinks={showSignInLinks}
-          onShowSignInLinksChange={handleShowSignInLinksChange}
-          accountVersion={accountVersion}
-          onAccountVersionChange={handleAccountVersionChange}
-          isControlsDisabled={isControlsDisabled}
-        />
+          <SignInLinksCard
+            showSignInLinks={showSignInLinks}
+            onShowSignInLinksChange={handleShowSignInLinksChange}
+            accountVersion={accountVersion}
+            onAccountVersionChange={handleAccountVersionChange}
+            isControlsDisabled={isControlsDisabled}
+          />
 
-        {/* Customer accounts management */}
-        <CustomerAccountsManagementCard
-          accountUrl={accountUrl}
-          onNavigateToAuthentication={handleNavigateToAuthentication}
-          onNavigateToDomains={handleNavigateToDomains}
-          selfServeReturns={selfServeReturns}
-          onSelfServeReturnsChange={handleSelfServeReturnsChange}
-          storeCredit={storeCredit}
-          onStoreCreditChange={handleStoreCreditChange}
-          isControlsDisabled={isControlsDisabled}
-        />
-      </div>
+          <CustomerAccountsManagementCard
+            accountUrl={accountUrl}
+            onNavigateToAuthentication={handleNavigateToAuthentication}
+            onNavigateToDomains={handleNavigateToDomains}
+            selfServeReturns={selfServeReturns}
+            onSelfServeReturnsChange={handleSelfServeReturnsChange}
+            storeCredit={storeCredit}
+            onStoreCreditChange={handleStoreCreditChange}
+            isControlsDisabled={isControlsDisabled}
+          />
+        </div>
 
-      {/* Turn off self-serve returns confirmation modal */}
-      <TurnOffSelfServeReturnsModal
-        open={turnOffReturnsModalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleConfirmTurnOff}
-      />
+        <TurnOffSelfServeReturnsModal
+          open={turnOffReturnsModalOpen}
+          onClose={handleCloseModal}
+          onConfirm={handleConfirmTurnOff}
+        />
       </div>
     </div>
   );

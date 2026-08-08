@@ -15,9 +15,12 @@ import {
 } from '@heroicons/react/24/outline';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-
-// Sidebar dimensions
-const drawerWidth = 240;
+import {
+  ADMIN_SIDEBAR_WIDTH,
+  adminSidebarAsideClass,
+  adminSidebarChildItemClass,
+  adminSidebarNavItemClass,
+} from './admin-sidebar';
 
 // ---- Types ----
 interface SubNavItem {
@@ -167,15 +170,11 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-14 z-50 flex h-[calc(100vh-56px)] w-[240px] shrink-0 flex-col border-r border-admin-border bg-admin-sidebar"
-      style={{
-        width: `${drawerWidth}px`,
-      }}
+      className={adminSidebarAsideClass}
+      style={{ width: `${ADMIN_SIDEBAR_WIDTH}px` }}
     >
-      {/* navbar — match SettingsSidebar: slate surface + p-2 list */}
       <nav className="flex-1 overflow-y-auto">
         <ul className="m-0 list-none p-2">
-          {/* nav list */}
           {NAV.map((item) => {
             const hasKids = !!item.children?.length;
             const openSection = open[item.text] ?? false;
@@ -228,11 +227,7 @@ export default function Sidebar() {
                     }
                   }}
                   data-tour-id={`nav-${item.text.toLowerCase().replace(/\s+/g, '-')}`}
-                  className={`relative z-10 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
-                    parentHighlighted
-                      ? 'bg-admin-surface font-medium text-admin-text shadow-[0_1px_0_rgba(0,0,0,0.05)]'
-                      : 'text-admin-text hover:bg-admin-fill'
-                  }`}
+                  className={adminSidebarNavItemClass(parentHighlighted)}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="flex-1 text-sm font-medium">{item.text}</span>
@@ -275,11 +270,7 @@ export default function Sidebar() {
                           <li key={sub.text}>
                             <Link
                               to={sub.path}
-                              className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 pl-10 text-left transition-colors ${
-                                subActive
-                                  ? 'bg-admin-surface font-medium text-admin-text shadow-[0_1px_0_rgba(0,0,0,0.05)]'
-                                  : 'text-admin-text-secondary hover:bg-admin-fill'
-                              }`}
+                              className={adminSidebarChildItemClass(subActive)}
                             >
                               <span className="text-xs font-medium">{sub.text}</span>
                             </Link>
@@ -303,11 +294,9 @@ export default function Sidebar() {
             <Link
               to="/settings/general"
               data-tour-id="nav-settings"
-              className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
+              className={adminSidebarNavItemClass(
                 location.pathname.startsWith('/settings')
-                  ? 'bg-admin-surface font-medium text-admin-text shadow-[0_1px_0_rgba(0,0,0,0.05)]'
-                  : 'text-admin-text hover:bg-admin-fill'
-              }`}
+              )}
             >
               <Cog6ToothIcon className="h-4 w-4 shrink-0" />
               <span className="flex-1 text-sm font-medium">Settings</span>

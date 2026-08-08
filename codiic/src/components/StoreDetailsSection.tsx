@@ -1,4 +1,5 @@
 import { PencilIcon } from '@heroicons/react/24/outline';
+import { adminListCardClass } from './admin-list-ui';
 
 interface StoreDetailsSectionProps {
   settings?: {
@@ -32,56 +33,57 @@ export default function StoreDetailsSection({
   onEditBilling,
 }: StoreDetailsSectionProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200/80 shadow-sm p-5">
-      <div className="flex items-start justify-between gap-4 mb-4">
+    <div className={`${adminListCardClass} p-5`}>
+      <div className="mb-4 flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-base font-semibold text-gray-900">Store details</h2>
-          <p className="mt-1 text-sm text-gray-500">Basic information used across your admin and storefront.</p>
+          <h2 className="text-[13px] font-semibold text-admin-text">Store details</h2>
+          <p className="mt-1 text-[13px] text-admin-text-secondary">
+            Basic information used across your admin and storefront.
+          </p>
         </div>
       </div>
 
       <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-medium text-gray-500">Store profile</p>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-[12px] font-medium text-admin-text-subdued">Store profile</p>
           <button
             onClick={onEditProfile}
-            className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+            className="rounded-lg p-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
             aria-label="Edit profile"
           >
-            <PencilIcon className="w-4 h-4" />
+            <PencilIcon className="h-4 w-4" />
           </button>
         </div>
-        <p className="text-sm font-medium text-gray-900 mb-1">
+        <p className="mb-1 text-[13px] font-medium text-admin-text">
           {settings?.storeName || activeStore?.storeName || 'My Store'}
         </p>
-        <p className="text-xs text-gray-600 mb-1">
+        <p className="mb-1 text-[12px] text-admin-text-secondary">
           {settings?.storeEmail || loggedInUser?.email || 'developer200419@gmail.com'}
         </p>
-        <p className="text-xs text-gray-600">
-          {settings?.storePhone && settings.storePhone.trim() 
-            ? settings.storePhone 
-            : (info?.contactInfo && info.contactInfo.trim() ? info.contactInfo : 'No phone number')}
+        <p className="text-[12px] text-admin-text-secondary">
+          {settings?.storePhone && settings.storePhone.trim()
+            ? settings.storePhone
+            : info?.contactInfo && info.contactInfo.trim()
+              ? info.contactInfo
+              : 'No phone number'}
         </p>
       </div>
 
-      <hr className="my-4 border-gray-100" />
+      <hr className="my-4 border-admin-divider" />
 
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-medium text-gray-500">Billing address</p>
+        <div className="mb-2 flex items-center justify-between">
+          <p className="text-[12px] font-medium text-admin-text-subdued">Billing address</p>
           <button
             onClick={onEditBilling}
-            className="p-2 text-gray-600 hover:bg-gray-50 rounded-lg transition-colors"
+            className="rounded-lg p-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
             aria-label="Edit billing address"
           >
-            <PencilIcon className="w-4 h-4" />
+            <PencilIcon className="h-4 w-4" />
           </button>
         </div>
-        <p className="text-sm font-medium text-gray-900">
-          {billingAddress?.country || 'India'}
-        </p>
+        <p className="text-[13px] font-medium text-admin-text">{billingAddress?.country || 'India'}</p>
       </div>
     </div>
   );
 }
-

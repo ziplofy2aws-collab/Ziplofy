@@ -1,5 +1,6 @@
 import { EllipsisHorizontalIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import React, { useCallback, useMemo, useState } from 'react';
+import { adminListPrimaryButtonClass } from '../admin-list-ui';
 import DropdownMenu from '../DropdownMenu';
 import DropdownMenuItem from '../DropdownMenuItem';
 import type { StoreCheckoutConfiguration } from '../../contexts/store-checkout-configurations.context';
@@ -76,45 +77,45 @@ const CheckoutConfigurationsBlock: React.FC<CheckoutConfigurationsBlockProps> = 
     <div className="p-5 sm:p-6">
       <div className="mb-4">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-gray-900">Configurations</h2>
-          <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-slate-600">
+          <h2 className="text-sm font-semibold text-admin-text">Configurations</h2>
+          <span className="rounded-md bg-admin-secondary px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-admin-text">
             New
           </span>
           <button
             type="button"
-            className="text-slate-400 transition-colors hover:text-slate-600"
+            className="text-admin-text-subdued transition-colors hover:text-admin-text-secondary"
             aria-label="About configurations"
           >
             <InformationCircleIcon className="h-4 w-4" />
           </button>
         </div>
-        <p className="mt-1 text-sm text-gray-600">Customize checkout and customer accounts</p>
+        <p className="mt-1 text-sm text-admin-text-secondary">Customize checkout and customer accounts</p>
       </div>
 
       {loading ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="rounded-xl border border-admin-border bg-admin-surface p-4">
           <div className="animate-pulse space-y-3">
-            <div className="h-4 w-48 rounded bg-slate-200" />
-            <div className="h-3 w-36 rounded bg-slate-100" />
+            <div className="h-4 w-48 rounded bg-admin-fill" />
+            <div className="h-3 w-36 rounded bg-admin-secondary" />
           </div>
         </div>
       ) : configuration ? (
-        <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 rounded-xl border border-admin-border bg-admin-surface p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-sm font-semibold text-gray-900">{configurationTitle}</p>
+              <p className="text-sm font-semibold text-admin-text">{configurationTitle}</p>
               <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
                 Active
               </span>
             </div>
-            <p className="mt-1 text-sm text-gray-500">Last saved: {lastSavedLabel}</p>
+            <p className="mt-1 text-sm text-admin-text-subdued">Last saved: {lastSavedLabel}</p>
           </div>
 
           <div className="flex shrink-0 items-center gap-2 self-start sm:self-center">
             <button
               type="button"
               onClick={(e) => setMoreMenuAnchor(moreMenuOpen ? null : e.currentTarget)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               aria-label="More configuration actions"
               aria-expanded={moreMenuOpen}
               aria-haspopup="menu"
@@ -126,19 +127,15 @@ const CheckoutConfigurationsBlock: React.FC<CheckoutConfigurationsBlockProps> = 
                 {deleting ? 'Deleting…' : 'Delete configuration'}
               </DropdownMenuItem>
             </DropdownMenu>
-            <button
-              type="button"
-              onClick={onEdit}
-              className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
-            >
+            <button type="button" onClick={onEdit} className={adminListPrimaryButtonClass}>
               Edit
             </button>
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/60 p-5 sm:p-6">
-          <p className="text-sm font-medium text-gray-900">No checkout configuration yet</p>
-          <p className="mt-1 max-w-xl text-sm text-gray-600">
+        <div className="rounded-xl border border-dashed border-admin-border bg-admin-fill/50 p-5 sm:p-6">
+          <p className="text-sm font-medium text-admin-text">No checkout configuration yet</p>
+          <p className="mt-1 max-w-xl text-sm text-admin-text-secondary">
             Create a configuration to customize your checkout, thank you page, and customer account
             screens.
           </p>
@@ -146,7 +143,7 @@ const CheckoutConfigurationsBlock: React.FC<CheckoutConfigurationsBlockProps> = 
             type="button"
             onClick={onCreate}
             disabled={creating}
-            className="mt-4 inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60"
+            className={`mt-4 ${adminListPrimaryButtonClass}`}
           >
             {creating ? 'Creating…' : 'Create configuration'}
           </button>

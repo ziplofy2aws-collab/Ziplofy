@@ -97,7 +97,6 @@ const KEYBOARD_SHORTCUT_COLUMNS: KeyboardShortcutSection[][] = [
   [KEYBOARD_SHORTCUT_SECTIONS[3]],
 ];
 
-
 interface KeyboardShortcutsModalProps {
   open: boolean;
   onClose: () => void;
@@ -105,25 +104,20 @@ interface KeyboardShortcutsModalProps {
 
 export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortcutsModalProps) {
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title="Keyboard Shortcuts"
-      maxWidth="lg"
-    >
-      <div className="bg-gray-50 -mx-6 -my-4 px-6 py-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+    <Modal open={open} onClose={onClose} title="Keyboard Shortcuts" maxWidth="lg">
+      <div className="-mx-6 -my-4 bg-admin-secondary px-6 py-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
           {KEYBOARD_SHORTCUT_COLUMNS.map((column, columnIndex) => (
             <div
               key={`column-${columnIndex}`}
               className={`flex flex-col gap-6 ${
-                columnIndex > 0 ? 'md:border-l md:border-gray-200 md:pl-6' : ''
+                columnIndex > 0 ? 'md:border-l md:border-admin-divider md:pl-6' : ''
               }`}
             >
               {column.map((section) => (
                 <div key={section.title} className="flex flex-col gap-3">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-1">{section.title}</h3>
-                  <div className="flex flex-col gap-2 bg-white rounded-lg border border-gray-200 p-4">
+                  <h3 className="mb-1 text-[13px] font-semibold text-admin-text">{section.title}</h3>
+                  <div className="flex flex-col gap-2 rounded-xl border border-admin-border bg-admin-surface p-4">
                     {section.shortcuts.map((shortcut) => (
                       <ShortcutRow key={`${section.title}-${shortcut.action}`} {...shortcut} />
                     ))}
@@ -137,4 +131,3 @@ export default function KeyboardShortcutsModal({ open, onClose }: KeyboardShortc
     </Modal>
   );
 }
-

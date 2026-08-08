@@ -3,7 +3,8 @@ import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PastBillsSection from '../../components/PastBillsSection';
 import UpcomingBillSection from '../../components/UpcomingBillSection';
-import { SettingsHero, SettingsCallout } from '../../components/settings/SettingsPageScaffold';
+import { adminListSecondaryButtonClass } from '../../components/admin-list-ui';
+import { SettingsCallout, SettingsHero } from '../../components/settings/SettingsPageScaffold';
 
 const BillingSettingsPage: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const BillingSettingsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
         <SettingsHero
           title="Billing"
           description="Manage payment methods, upcoming charges, and past bills."
@@ -38,7 +39,7 @@ const BillingSettingsPage: React.FC = () => {
             <button
               type="button"
               onClick={handleNavigateToProfile}
-              className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200/90 hover:bg-gray-50/90 transition-colors shrink-0 shadow-sm"
+              className={`${adminListSecondaryButtonClass} shrink-0`}
             >
               Billing profile
             </button>
@@ -47,16 +48,16 @@ const BillingSettingsPage: React.FC = () => {
 
         <SettingsCallout
           variant="info"
-          icon={<InformationCircleIcon className="h-5 w-5 text-blue-600" />}
+          icon={<InformationCircleIcon className="h-5 w-5 text-admin-text-secondary" />}
           title="Ensure your billing address meets India payment requirements"
         >
           <p>
             Indian payment regulations require specific address formatting.{' '}
-            <button type="button" className="font-medium text-blue-700 hover:underline">
+            <button type="button" className="font-medium text-[#005bd3] hover:underline">
               View address guidelines
             </button>{' '}
             to see the requirements, or{' '}
-            <button type="button" className="font-medium text-blue-700 hover:underline">
+            <button type="button" className="font-medium text-[#005bd3] hover:underline">
               update your address now
             </button>
             .
@@ -76,4 +77,3 @@ const BillingSettingsPage: React.FC = () => {
 };
 
 export default BillingSettingsPage;
-

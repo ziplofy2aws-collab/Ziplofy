@@ -11,12 +11,19 @@ import {
 import { useCountries } from '../../contexts/country.context';
 import { useTaxAndDutiesGlobalSettings } from '../../contexts/tax-and-duties-global-settings.context';
 import { useStore } from '../../contexts/store.context';
+import {
+  adminListFooterLinkClass,
+  adminListSearchInputClass,
+  adminListSecondaryButtonClass,
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from '../../components/admin-list-ui';
 import { SettingsCallout, SettingsHero, SettingsPanel } from '../../components/settings/SettingsPageScaffold';
 
-const btnOutline =
-  'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50';
+const sectionHeaderClass = 'border-b border-admin-divider bg-admin-table-header px-5 py-4 sm:px-6';
+
 const iconBtn =
-  'inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition-colors hover:border-slate-300 hover:bg-slate-50';
+  'inline-flex items-center justify-center rounded-lg border border-admin-border bg-admin-surface p-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover';
 
 interface TaxRegion {
   id: string;
@@ -107,11 +114,8 @@ const TaxesAndDutiesPage: React.FC = () => {
 
   const paginatedRegions = filteredRegions;
 
-  const searchInputClass =
-    'w-full rounded-lg border border-slate-200 bg-white py-2 pl-10 pr-3 text-sm text-slate-900 shadow-inner placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20';
-
   const checkboxClass =
-    'mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500/30';
+    'mt-0.5 h-4 w-4 shrink-0 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30';
 
   return (
     <div className="w-full">
@@ -122,40 +126,36 @@ const TaxesAndDutiesPage: React.FC = () => {
           tip="Tax region details vary by country—select a row to configure rates and registrations where supported."
         />
 
-        <SettingsPanel className="ring-1 ring-slate-200/60">
-          <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0 border-l-4 border-blue-500/75 pl-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-base font-semibold text-gray-900">Tax regions</h2>
-                  <button
-                    type="button"
-                    className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
-                    title="Regions where you collect tax. Add shipping zones to expose new regions."
-                    aria-label="About tax regions"
-                  >
-                    <InformationCircleIcon className="h-4 w-4" />
-                  </button>
-                </div>
-                <p className="mt-1 text-sm text-gray-500">
-                  Areas where customers pay tax and you collect or remit. Create a{' '}
-                  <button
-                    type="button"
-                    onClick={() => navigate('/settings/shipping-and-delivery')}
-                    className="font-medium text-blue-700 underline-offset-2 hover:underline"
-                  >
-                    shipping zone
-                  </button>{' '}
-                  to add a region. Consult a tax professional if you are unsure about liability.
-                </p>
-              </div>
+        <SettingsPanel>
+          <div className={sectionHeaderClass}>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-[13px] font-semibold text-admin-text">Tax regions</h2>
+              <button
+                type="button"
+                className="rounded-lg p-1.5 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
+                title="Regions where you collect tax. Add shipping zones to expose new regions."
+                aria-label="About tax regions"
+              >
+                <InformationCircleIcon className="h-4 w-4" />
+              </button>
             </div>
+            <p className="mt-1 text-[13px] text-admin-text-secondary">
+              Areas where customers pay tax and you collect or remit. Create a{' '}
+              <button
+                type="button"
+                onClick={() => navigate('/settings/shipping-and-delivery')}
+                className={`${adminListFooterLinkClass} font-medium underline-offset-2`}
+              >
+                shipping zone
+              </button>{' '}
+              to add a region. Consult a tax professional if you are unsure about liability.
+            </p>
           </div>
 
           <div className="p-5 sm:p-6">
             <SettingsCallout
               variant="info"
-              icon={<InformationCircleIcon className="h-5 w-5 text-blue-600" />}
+              icon={<InformationCircleIcon className="h-5 w-5 text-admin-text-secondary" />}
               className="mb-4"
             >
               Currently we are operating in India only. Click India below to configure base taxes
@@ -163,14 +163,14 @@ const TaxesAndDutiesPage: React.FC = () => {
             </SettingsCallout>
 
             <div className="mb-4 flex flex-wrap items-center gap-2">
-              <div className="relative min-w-[200px] flex-1 max-w-[320px]">
-                <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <div className="relative min-w-[200px] max-w-[320px] flex-1">
+                <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-text-subdued" />
                 <input
                   type="search"
                   placeholder="Search regions"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className={searchInputClass}
+                  className={adminListSearchInputClass}
                   aria-label="Search tax regions"
                 />
               </div>
@@ -182,39 +182,33 @@ const TaxesAndDutiesPage: React.FC = () => {
               </button>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-inner ring-1 ring-slate-100/80">
+            <div className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[520px] border-collapse text-left">
                   <thead>
-                    <tr className="border-b border-slate-200 bg-gradient-to-r from-slate-50/95 to-slate-50/50">
-                      <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600 sm:px-5">
-                        Region
-                      </th>
-                      <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600 sm:px-5">
-                        Collecting
-                      </th>
-                      <th className="px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-600 sm:px-5">
-                        Tax service
-                      </th>
+                    <tr className={adminListTableHeadRowClass}>
+                      <th className={`${adminListTableHeadClass} px-4 sm:px-5`}>Region</th>
+                      <th className={`${adminListTableHeadClass} px-4 sm:px-5`}>Collecting</th>
+                      <th className={`${adminListTableHeadClass} px-4 sm:px-5`}>Tax service</th>
                       <th className="w-10 px-2 sm:w-12" aria-hidden />
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody>
                     {countriesLoading ? (
                       <tr>
                         <td colSpan={4} className="px-4 py-12 text-center">
                           <div className="inline-flex flex-col items-center gap-2">
                             <div
-                              className="h-7 w-7 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600"
+                              className="h-7 w-7 animate-spin rounded-full border-2 border-admin-border border-t-admin-text"
                               aria-hidden
                             />
-                            <span className="text-sm text-slate-500">Loading countries…</span>
+                            <span className="text-[13px] text-admin-text-secondary">Loading countries…</span>
                           </div>
                         </td>
                       </tr>
                     ) : paginatedRegions.length === 0 ? (
                       <tr>
-                        <td colSpan={4} className="px-4 py-10 text-center text-sm text-slate-500">
+                        <td colSpan={4} className="px-4 py-10 text-center text-[13px] text-admin-text-secondary">
                           India tax region is not available yet.
                         </td>
                       </tr>
@@ -231,27 +225,29 @@ const TaxesAndDutiesPage: React.FC = () => {
                               navigate(`/settings/taxes-and-duties/${region.id}`);
                             }
                           }}
-                          className="cursor-pointer transition-colors hover:bg-blue-50/50"
+                          className="cursor-pointer border-b border-admin-divider bg-admin-surface transition-colors last:border-b-0 hover:bg-admin-row-hover"
                         >
                           <td className="px-4 py-3.5 sm:px-5">
                             <div className="flex items-center gap-3">
                               <span className="text-xl leading-none" role="img" aria-hidden>
                                 {region.flag}
                               </span>
-                              <span className="text-sm font-semibold text-gray-900">{region.name}</span>
+                              <span className="text-[13px] font-semibold text-admin-text">{region.name}</span>
                             </div>
                           </td>
                           <td className="px-4 py-3.5 sm:px-5">
                             {region.collecting ? (
-                              <span className="inline-flex rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-800">
+                              <span className="inline-flex rounded-md border border-admin-border bg-admin-fill px-2.5 py-1 text-[12px] font-medium text-admin-text">
                                 {region.collecting}
                               </span>
                             ) : (
-                              <span className="text-sm text-slate-400">—</span>
+                              <span className="text-[13px] text-admin-text-subdued">—</span>
                             )}
                           </td>
-                          <td className="px-4 py-3.5 text-sm text-slate-600 sm:px-5">{region.taxService}</td>
-                          <td className="px-2 py-3.5 text-slate-400">
+                          <td className="px-4 py-3.5 text-[13px] text-admin-text-secondary sm:px-5">
+                            {region.taxService}
+                          </td>
+                          <td className="px-2 py-3.5 text-admin-text-subdued">
                             <ChevronRightIcon className="h-5 w-5" aria-hidden />
                           </td>
                         </tr>
@@ -264,82 +260,88 @@ const TaxesAndDutiesPage: React.FC = () => {
           </div>
         </SettingsPanel>
 
-        <SettingsPanel className="ring-1 ring-slate-200/60">
-          <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">
-            <div className="border-l-4 border-blue-500/75 pl-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-base font-semibold text-gray-900">Duties and import taxes</h2>
-                <button
-                  type="button"
-                  className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
-                  title="Collect duties at checkout to reduce surprise fees for international buyers."
-                  aria-label="About duties and import taxes"
-                >
-                  <InformationCircleIcon className="h-4 w-4" />
-                </button>
-              </div>
-              <p className="mt-1 text-sm text-gray-500">
-                Optional checkout collection for cross-border duties (fees may apply).
-              </p>
+        <SettingsPanel>
+          <div className={sectionHeaderClass}>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-[13px] font-semibold text-admin-text">Duties and import taxes</h2>
+              <button
+                type="button"
+                className="rounded-lg p-1.5 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
+                title="Collect duties at checkout to reduce surprise fees for international buyers."
+                aria-label="About duties and import taxes"
+              >
+                <InformationCircleIcon className="h-4 w-4" />
+              </button>
             </div>
+            <p className="mt-1 text-[13px] text-admin-text-secondary">
+              Optional checkout collection for cross-border duties (fees may apply).
+            </p>
           </div>
           <div className="p-5 sm:p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900">Collect duties and import taxes at checkout</p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="text-[13px] font-semibold text-admin-text">
+                  Collect duties and import taxes at checkout
+                </p>
+                <p className="mt-1 text-[13px] text-admin-text-secondary">
                   Prevent surprise fees for international customers at delivery • 0.5% transaction fee
                 </p>
               </div>
-              <button type="button" className={`${btnOutline} shrink-0`}>
+              <button type="button" className={`${adminListSecondaryButtonClass} shrink-0`}>
                 Set up
               </button>
             </div>
 
-            <SettingsCallout variant="info" icon={<InformationCircleIcon className="h-5 w-5 text-blue-600" />} className="mt-4">
+            <SettingsCallout
+              variant="info"
+              icon={<InformationCircleIcon className="h-5 w-5 text-admin-text-secondary" />}
+              className="mt-4"
+            >
               Ensure the carriers you use offer{' '}
-              <button type="button" className="font-medium text-blue-800 underline-offset-2 hover:underline">
+              <button type="button" className={`${adminListFooterLinkClass} font-medium underline-offset-2`}>
                 Delivered duty paid (DDP) shipping labels
               </button>
               .
             </SettingsCallout>
 
-            <div className="mt-8 border-t border-slate-100 pt-6">
+            <div className="mt-8 border-t border-admin-divider pt-6">
               <div className="mb-4 flex items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold text-gray-900">Customs information</h3>
+                <h3 className="text-[13px] font-semibold text-admin-text">Customs information</h3>
                 <button
                   type="button"
-                  className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800"
+                  className="rounded-lg p-2 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
                   aria-label="Customs options"
                 >
                   <EllipsisVerticalIcon className="h-4 w-4" />
                 </button>
               </div>
 
-              <div className="space-y-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 sm:p-5">
+              <div className="space-y-4 rounded-xl border border-admin-border bg-admin-secondary p-4 sm:p-5">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Country of origin</p>
-                  <p className="mt-1 text-sm font-medium text-gray-900">No default set</p>
+                  <p className="text-[12px] font-medium uppercase tracking-wide text-admin-text-subdued">
+                    Country of origin
+                  </p>
+                  <p className="mt-1 text-[13px] font-medium text-admin-text">No default set</p>
                 </div>
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                  <p className="text-[12px] font-medium uppercase tracking-wide text-admin-text-subdued">
                     Harmonized System (HS) codes
                   </p>
-                  <p className="mt-1 text-sm font-medium text-gray-900">No physical products available</p>
+                  <p className="mt-1 text-[13px] font-medium text-admin-text">No physical products available</p>
                 </div>
               </div>
             </div>
           </div>
         </SettingsPanel>
 
-        <SettingsPanel className="ring-1 ring-slate-200/60">
-          <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white px-5 py-4 sm:px-6">
-            <div className="border-l-4 border-blue-500/75 pl-3">
-              <h2 className="text-base font-semibold text-gray-900">Global settings</h2>
-              <p className="mt-1 text-sm text-gray-500">Defaults that apply across your catalog and checkout.</p>
-            </div>
+        <SettingsPanel>
+          <div className={sectionHeaderClass}>
+            <h2 className="text-[13px] font-semibold text-admin-text">Global settings</h2>
+            <p className="mt-1 text-[13px] text-admin-text-secondary">
+              Defaults that apply across your catalog and checkout.
+            </p>
           </div>
-          <div className="divide-y divide-slate-100 px-5 py-1 sm:px-6">
+          <div className="divide-y divide-admin-divider px-5 py-1 sm:px-6">
             <label className="flex cursor-pointer items-start gap-3 py-5">
               <input
                 type="checkbox"
@@ -355,10 +357,12 @@ const TaxesAndDutiesPage: React.FC = () => {
                 className={checkboxClass}
               />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900">Include sales tax in product price and shipping rate</p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="text-[13px] font-semibold text-admin-text">
+                  Include sales tax in product price and shipping rate
+                </p>
+                <p className="mt-1 text-[13px] text-admin-text-secondary">
                   Assumes a 9% tax rate, adjusted to local rates in markets with{' '}
-                  <button type="button" className="font-medium text-blue-700 underline-offset-2 hover:underline">
+                  <button type="button" className={`${adminListFooterLinkClass} font-medium underline-offset-2`}>
                     dynamic tax inclusion
                   </button>
                   .
@@ -381,8 +385,8 @@ const TaxesAndDutiesPage: React.FC = () => {
                 className={checkboxClass}
               />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900">Charge sales tax on shipping</p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="text-[13px] font-semibold text-admin-text">Charge sales tax on shipping</p>
+                <p className="mt-1 text-[13px] text-admin-text-secondary">
                   Automatically calculated for Canada, European Union, and United States
                 </p>
               </div>
@@ -403,10 +407,10 @@ const TaxesAndDutiesPage: React.FC = () => {
                 className={checkboxClass}
               />
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900">Charge VAT on digital goods</p>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="text-[13px] font-semibold text-admin-text">Charge VAT on digital goods</p>
+                <p className="mt-1 text-[13px] text-admin-text-secondary">
                   Creates a collection of digital goods that will be{' '}
-                  <button type="button" className="font-medium text-blue-700 underline-offset-2 hover:underline">
+                  <button type="button" className={`${adminListFooterLinkClass} font-medium underline-offset-2`}>
                     charged VAT
                   </button>{' '}
                   at checkout (for European customers)

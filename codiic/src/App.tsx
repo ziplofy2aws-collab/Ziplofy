@@ -15,6 +15,7 @@ import OnboardingGoalsPage from "./pages/onboarding/OnboardingGoalsPage";
 import OnboardingPaymentPage from "./pages/onboarding/OnboardingPaymentPage";
 import AdminStandardLayout from "./components/layout/AdminStandardLayout";
 import Sidebar from "./components/Sidebar";
+import { ADMIN_SIDEBAR_WIDTH } from "./components/admin-sidebar";
 import { AmountOffProductsDiscountProvider } from "./contexts/amount-off-products-discount.context";
 import { CustomerTagsProvider } from "./contexts/customer-tags.context";
 import { CustomerTimelineProvider } from "./contexts/customer-timeline.context";
@@ -302,7 +303,6 @@ import { VendorProvider } from "./contexts/vendor.context";
 /** Marketing children */
 
 const NAVBAR_HEIGHT = 56; // keep consistent with Sidebar offset (h-14 = 56px)
-const SIDEBAR_WIDTH = 240; // keep consistent with Sidebar width
 
 const PageLoader: React.FC = () => (
   <div className="flex min-h-[280px] w-full items-center justify-center px-4 py-16">
@@ -362,14 +362,16 @@ const AdminApp: React.FC = () => {
           className={[
             "flex-1 overflow-x-hidden antialiased text-gray-900 transition-[margin-left] duration-300 ease-out",
             lockMainScroll ? "flex flex-col overflow-hidden" : "overflow-y-auto",
-            isFullScreen ? "bg-transparent p-0" : "bg-page-background-color p-4 sm:p-6 lg:p-8",
+            isFullScreen || isSettings
+              ? "bg-transparent p-0"
+              : "bg-page-background-color p-4 sm:p-6 lg:p-8",
           ]
             .filter(Boolean)
             .join(" ")}
           style={{
             marginTop: showNavbar ? `${NAVBAR_HEIGHT}px` : 0,
-            marginLeft: showSidebar ? `${SIDEBAR_WIDTH}px` : 0,
-            width: showSidebar ? `calc(100% - ${SIDEBAR_WIDTH}px)` : "100%",
+            marginLeft: showSidebar ? `${ADMIN_SIDEBAR_WIDTH}px` : 0,
+            width: showSidebar ? `calc(100% - ${ADMIN_SIDEBAR_WIDTH}px)` : "100%",
             height: showNavbar ? `calc(100vh - ${NAVBAR_HEIGHT}px)` : "100vh",
           }}
         >

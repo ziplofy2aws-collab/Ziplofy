@@ -3,29 +3,25 @@ import { SettingsNavItem } from './SettingsSidebarItem';
 
 interface SettingsSidebarChildrenListProps {
   children: SettingsNavItem[];
-  isActivePath: (path?: string) => boolean;
+  activeChildPath?: string;
   onChildClick: (path?: string) => void;
 }
 
 export default function SettingsSidebarChildrenList({
   children,
-  isActivePath,
+  activeChildPath,
   onChildClick,
 }: SettingsSidebarChildrenListProps) {
   return (
-    <ul className="p-0 m-0 list-none">
-      {children.map((child) => {
-        const childActiveState = isActivePath(child.path);
-        return (
-          <SettingsSidebarChildItem
-            key={child.path}
-            child={child}
-            isActive={childActiveState}
-            onChildClick={onChildClick}
-          />
-        );
-      })}
+    <ul className="relative z-10 m-0 list-none p-0">
+      {children.map((child) => (
+        <SettingsSidebarChildItem
+          key={child.path}
+          child={child}
+          isActive={!!child.path && child.path === activeChildPath}
+          onChildClick={onChildClick}
+        />
+      ))}
     </ul>
   );
 }
-

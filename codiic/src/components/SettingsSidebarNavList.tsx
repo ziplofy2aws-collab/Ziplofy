@@ -22,31 +22,47 @@ export default function SettingsSidebarNavList({
       {items.map((item) => {
         const hasChildren = Array.isArray(item.children) && item.children.length > 0;
         const itemKey = item.path || item.text;
-        const childActive = hasChildren
-          ? item.children!.some((child) => isActivePath(child.path))
-          : false;
-        const isCurrentPath = hasChildren
-          ? childActive ||
-            (!!item.path && currentPath.startsWith(`${item.path}/`)) ||
-            isActivePath(item.path)
-          : isActivePath(item.path) ||
-            (!!item.path && currentPath.startsWith(`${item.path}/`));
-        const isExpanded = hasChildren ? expanded[itemKey] ?? childActive : false;
+
+        const activeChildPath = hasChildren
+          ? [...item.children!]
+              .filter(
+                (child) =>
+                  !!child.path &&
+                  (currentPath === child.path || currentPath.startsWith(`${child.path}/`))
+              )
+              .sort((a, b) => (b.path?.length ?? 0) - (a.path?.length ?? 0))[0]?.path
+          : undefined;
+
+        const sectionActive =
+          isActivePath(item.path) ||
+          (!!item.path && currentPath.startsWith(`${item.path}/`)) ||
+          !!activeChildPath;
+
+        // Same as main Sidebar: white pill on the leaf only
+        const parentHighlighted = hasChildren
+          ? sectionActive && !activeChildPath
+          : sectionActive;
+
+        const isExpanded = hasChildren ? expanded[itemKey] ?? !!activeChildPath : false;
+
+        const activeChildIndex = hasChildren
+          ? item.children!.findIndex((child) => child.path === activeChildPath)
+          : -1;
 
         return (
           <SettingsSidebarItem
             key={itemKey}
             item={item}
-            isCurrentPath={isCurrentPath}
+            parentHighlighted={parentHighlighted}
             isExpanded={isExpanded}
             hasChildren={hasChildren}
+            activeChildPath={activeChildPath}
+            activeChildIndex={activeChildIndex}
             onItemClick={onItemClick}
             onChildClick={onChildClick}
-            isActivePath={isActivePath}
           />
         );
       })}
     </ul>
   );
 }
-

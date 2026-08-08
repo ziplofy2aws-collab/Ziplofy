@@ -77,7 +77,7 @@ export async function assignDefaultCatalogThemeToStore(
   });
 
   return {
-    themeId: String(themeObjectId),
+    themeId: String(themeObjectId), 
     themeName: String(theme.name ?? 'Theme'),
     installedThemeId: String(installedTheme._id),
   };
