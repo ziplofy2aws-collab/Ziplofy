@@ -23,7 +23,7 @@ export default function MarketsListItem({ id, name, status, onSelect }: MarketsL
       </div>
       <div className={`${adminListTableCellClass} flex items-center`}>
         {isActive ? (
-          <span className="inline-flex items-center rounded-md bg-admin-secondary px-2 py-0.5 text-[11px] font-medium text-admin-text">
+          <span className="inline-flex items-center rounded-md bg-[#e3f1df] px-2 py-0.5 text-[11px] font-medium text-[#1b5e3b]">
             Active
           </span>
         ) : (

@@ -4,12 +4,19 @@ import {
   ChevronUpIcon,
 } from '@heroicons/react/24/outline';
 import React from 'react';
+import {
+  adminListFooterLinkClass,
+  adminListSecondaryButtonClass,
+} from '../admin-list-ui';
+import {
+  FulfillmentStatusBadge,
+  PaymentStatusBadge,
+} from '../orders/order-status-badges';
 import type { AdminOrder } from '../../contexts/admin-order.context';
 import {
   formatOrderDisplayId,
   formatOrderHeaderDate,
   getFulfillmentLabel,
-  getPaymentStatusLabel,
   isOrderFulfilled,
 } from '../../utils/order-details.util';
 
@@ -22,27 +29,10 @@ interface OrderDetailsHeaderProps {
   hasNext?: boolean;
 }
 
-function StatusBadge({
-  label,
-  tone,
-}: {
-  label: string;
-  tone: 'paid' | 'unfulfilled' | 'fulfilled' | 'cancelled' | 'pending';
-}) {
-  const toneClass =
-    tone === 'unfulfilled'
-      ? 'bg-[#FFEA8A] text-[#5c5a1f]'
-      : tone === 'fulfilled'
-        ? 'bg-emerald-100 text-emerald-800'
-        : tone === 'cancelled'
-          ? 'bg-gray-200 text-gray-700'
-          : tone === 'pending'
-            ? 'bg-amber-100 text-amber-800'
-            : 'bg-[#E3E3E3] text-gray-800';
-
+function CancelledStatusBadge({ label }: { label: string }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${toneClass}`}>
-      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ebebeb] px-2 py-0.5 text-[12px] font-medium text-[#616161]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#8a8a8a]" />
       {label}
     </span>
   );
@@ -57,21 +47,15 @@ const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({
   hasNext = false,
 }) => {
   const fulfilled = isOrderFulfilled(order.status);
-  const fulfillmentTone =
-    order.status === 'cancelled' ? 'cancelled' : fulfilled ? 'fulfilled' : 'unfulfilled';
-  const paymentTone =
-    order.paymentStatus === 'paid'
-      ? 'paid'
-      : order.paymentStatus === 'refunded'
-        ? 'cancelled'
-        : 'pending';
+  const paymentBadgeStatus =
+    order.paymentStatus === 'paid' ? 'paid' : order.paymentStatus === 'refunded' ? 'refunded' : 'pending';
 
   return (
     <div className="mb-5">
       <button
         type="button"
         onClick={onBack}
-        className="mb-4 inline-flex items-center gap-1 text-sm text-gray-600 transition-colors hover:text-gray-900"
+        className={`mb-4 inline-flex items-center gap-1 text-[13px] ${adminListFooterLinkClass}`}
       >
         <ChevronLeftIcon className="h-4 w-4" />
         Orders
@@ -80,48 +64,42 @@ const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-xl font-semibold text-gray-900">{formatOrderDisplayId(order._id, order.displayOrderId)}</h1>
-            <StatusBadge label={getPaymentStatusLabel(order.paymentStatus)} tone={paymentTone} />
-            <StatusBadge label={getFulfillmentLabel(order.status)} tone={fulfillmentTone} />
+            <h1 className="text-xl font-semibold text-admin-text">
+              {formatOrderDisplayId(order._id, order.displayOrderId)}
+            </h1>
+            <PaymentStatusBadge status={paymentBadgeStatus} />
+            {order.status === 'cancelled' ? (
+              <CancelledStatusBadge label={getFulfillmentLabel(order.status)} />
+            ) : (
+              <FulfillmentStatusBadge status={fulfilled ? 'fulfilled' : 'unfulfilled'} />
+            )}
           </div>
-          <p className="mt-1 text-sm text-gray-600">
+          <p className="mt-1 text-[13px] text-admin-text-secondary">
             {formatOrderHeaderDate(order.orderDate || order.createdAt)}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-          >
+          <button type="button" className={adminListSecondaryButtonClass}>
             Refund
           </button>
-          <button
-            type="button"
-            className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-          >
+          <button type="button" className={adminListSecondaryButtonClass}>
             Edit
           </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-          >
+          <button type="button" className={`${adminListSecondaryButtonClass} gap-1`}>
             Print
-            <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+            <ChevronDownIcon className="h-4 w-4 text-admin-text-secondary" />
           </button>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
-          >
+          <button type="button" className={`${adminListSecondaryButtonClass} gap-1`}>
             More actions
-            <ChevronDownIcon className="h-4 w-4 text-gray-500" />
+            <ChevronDownIcon className="h-4 w-4 text-admin-text-secondary" />
           </button>
-          <div className="ml-1 flex overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="ml-1 flex overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <button
               type="button"
               onClick={onPrevious}
               disabled={!hasPrevious}
-              className="border-r border-gray-200 px-2.5 py-1.5 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="border-r border-admin-border px-2.5 py-1.5 text-admin-text-secondary transition-colors hover:bg-admin-row-hover disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Previous order"
             >
               <ChevronUpIcon className="h-4 w-4" />
@@ -130,7 +108,7 @@ const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({
               type="button"
               onClick={onNext}
               disabled={!hasNext}
-              className="px-2.5 py-1.5 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className="px-2.5 py-1.5 text-admin-text-secondary transition-colors hover:bg-admin-row-hover disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Next order"
             >
               <ChevronDownIcon className="h-4 w-4" />

@@ -55,7 +55,7 @@ const OrderTimelineList: React.FC<OrderTimelineListProps> = ({
     <div className="mt-6">
       {groupedEntries.map((group) => (
         <div key={group.label} className="mb-2">
-          <p className="mb-4 text-sm font-semibold text-gray-900">{group.label}</p>
+          <p className="mb-4 text-[13px] font-semibold text-admin-text">{group.label}</p>
           <div className="pl-1">
             {group.entries.map((entry, index) => (
               <OrderTimelineItem

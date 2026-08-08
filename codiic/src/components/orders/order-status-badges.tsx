@@ -5,8 +5,8 @@ const badgeBaseClass =
   'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[12px] font-medium';
 
 /** Soft pastel status tones (low-saturation pills) */
-const toneSuccess = 'bg-[#e3f1df] text-[#1b5e3b]';
-const toneSuccessDot = 'bg-[#4a8c68]';
+const toneSuccess = 'bg-[#cdfee1] text-[#0c5132]';
+const toneSuccessDot = 'bg-[#0c5132]';
 /** Payment waiting attention — soft amber */
 const tonePaymentPending = 'bg-[#fef3d0] text-[#6b5500]';
 const tonePaymentPendingDot = 'bg-[#c9a227]';

@@ -1,0 +1,251 @@
+import React from 'react';
+
+const cardShell =
+  'flex min-h-[280px] flex-col overflow-hidden rounded-xl border border-admin-border bg-admin-surface p-5 sm:min-h-[300px] sm:p-6';
+
+const ctaClass =
+  'inline-flex w-fit items-center justify-center rounded-full border border-admin-border bg-admin-surface px-4 py-2 text-[13px] font-semibold text-admin-text transition-colors hover:bg-admin-row-hover';
+
+type SetupCardProps = {
+  title: string;
+  description: string;
+  ctaLabel: string;
+  onClick: () => void;
+  illustration: React.ReactNode;
+  eyebrow?: string;
+  className?: string;
+};
+
+function SetupCard({
+  title,
+  description,
+  ctaLabel,
+  onClick,
+  illustration,
+  eyebrow,
+  className = '',
+}: SetupCardProps) {
+  return (
+    <div className={`${cardShell} ${className}`.trim()}>
+      <div className="relative z-[1] min-w-0">
+        {eyebrow ? (
+          <p className="mb-1 text-[12px] font-medium text-admin-text-secondary">{eyebrow}</p>
+        ) : null}
+        <h3 className="text-[17px] font-semibold tracking-tight text-admin-text sm:text-lg">{title}</h3>
+        <p className="mt-1.5 max-w-[34ch] text-[13px] leading-5 text-admin-text-secondary">{description}</p>
+      </div>
+
+      <div className="relative my-4 flex min-h-[120px] flex-1 items-center justify-center sm:min-h-[140px]">
+        {illustration}
+      </div>
+
+      <div className="relative z-[1] mt-auto">
+        <button type="button" onClick={onClick} className={ctaClass}>
+          {ctaLabel}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ProductIllustration() {
+  return (
+    <div className="relative flex h-[140px] w-full max-w-[260px] items-end justify-center gap-3">
+      <div className="absolute inset-x-8 bottom-2 h-16 rounded-full bg-admin-secondary blur-md" aria-hidden />
+      <div className="relative z-[1] h-24 w-20 rounded-t-[40%] border border-admin-border bg-[#f7f7f5] shadow-sm">
+        <div className="absolute inset-x-3 top-4 h-10 rounded-md bg-white/80" />
+        <div className="absolute inset-x-4 bottom-3 h-2 rounded-full bg-admin-fill" />
+      </div>
+      <div className="relative z-[2] mb-4 flex h-16 w-16 items-center justify-center rounded-xl border border-dashed border-admin-border bg-admin-surface shadow-sm">
+        <span className="text-xl font-light text-admin-text-subdued">+</span>
+      </div>
+      <div className="relative z-[1] h-20 w-16 rounded-lg border border-[#b7e4c7] bg-[#cdfee1]/70 shadow-sm">
+        <div className="absolute inset-2 rounded-md border border-[#9ed4b0]/60 bg-white/40" />
+      </div>
+    </div>
+  );
+}
+
+function ThemeIllustration() {
+  return (
+    <div className="relative h-[140px] w-full max-w-[280px]">
+      <div className="absolute left-4 top-4 h-24 w-36 -rotate-6 rounded-lg border border-admin-border bg-[#eef2f7] shadow-sm" />
+      <div className="absolute right-2 top-2 h-28 w-40 rotate-3 overflow-hidden rounded-lg border border-admin-border bg-admin-surface shadow-md">
+        <div className="h-5 border-b border-admin-divider bg-admin-table-header" />
+        <div className="space-y-2 p-3">
+          <div className="h-2 w-3/4 rounded bg-admin-fill" />
+          <div className="h-2 w-1/2 rounded bg-admin-secondary" />
+          <div className="mt-3 grid grid-cols-3 gap-1.5">
+            <div className="aspect-square rounded bg-[#dbe7ff]" />
+            <div className="aspect-square rounded bg-[#ffe8d6]" />
+            <div className="aspect-square rounded bg-[#e3f1df]" />
+          </div>
+        </div>
+      </div>
+      <div className="absolute bottom-3 left-1/2 z-[2] flex h-14 w-14 -translate-x-1/2 flex-col items-center justify-center gap-1 rounded-xl border border-admin-border bg-admin-surface shadow-md">
+        <div className="flex gap-0.5">
+          <span className="h-2 w-2 rounded-sm bg-admin-text-subdued" />
+          <span className="h-2 w-2 rounded-sm bg-admin-text-subdued" />
+          <span className="h-2 w-2 rounded-sm bg-admin-text-subdued" />
+        </div>
+        <div className="rounded bg-admin-text px-1.5 py-0.5 text-[9px] font-semibold text-white">Aa</div>
+      </div>
+    </div>
+  );
+}
+
+function PaymentsIllustration() {
+  return (
+    <div className="relative flex h-[120px] w-full max-w-[220px] items-center justify-center">
+      <div className="absolute left-2 top-4 h-14 w-14 -rotate-12 rounded-xl border border-admin-border bg-[#003087] shadow-md" />
+      <div className="absolute right-6 top-2 z-[1] flex h-12 w-16 items-center justify-center rounded-lg border border-admin-border bg-[#1a1f71] shadow-md">
+        <span className="text-[10px] font-bold tracking-wide text-white">CARD</span>
+      </div>
+      <div className="absolute bottom-3 left-1/2 z-[2] flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-admin-border bg-admin-surface shadow-md">
+        <div className="flex -space-x-1.5">
+          <span className="h-5 w-5 rounded-full bg-[#eb001b]" />
+          <span className="h-5 w-5 rounded-full bg-[#f79e1b]" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NameTagIllustration() {
+  return (
+    <div className="relative flex h-[130px] w-full max-w-[200px] items-center justify-center">
+      <div className="w-[168px] overflow-hidden rounded-xl border border-admin-border bg-admin-surface shadow-md">
+        <div className="bg-[#c62828] px-3 py-2 text-center">
+          <p className="text-[8px] font-bold tracking-[0.2em] text-white">HELLO</p>
+          <p className="text-[7px] font-medium tracking-wide text-white/90">my name is</p>
+        </div>
+        <div
+          className="h-14"
+          style={{
+            backgroundImage:
+              'linear-gradient(135deg, #f8f1e8 0%, #e8f4ff 35%, #fff4d6 65%, #e8ffe8 100%)',
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function DomainIllustration() {
+  return (
+    <div className="relative flex h-[130px] w-full max-w-[240px] items-center justify-center">
+      <div
+        className="absolute inset-2 rounded-lg opacity-60"
+        style={{
+          backgroundImage:
+            'linear-gradient(#e3e3e3 1px, transparent 1px), linear-gradient(90deg, #e3e3e3 1px, transparent 1px)',
+          backgroundSize: '16px 16px',
+        }}
+        aria-hidden
+      />
+      <div className="relative z-[1] flex w-[200px] items-center gap-2 rounded-full border border-admin-border bg-admin-surface px-3 py-2.5 shadow-md">
+        <span className="h-3.5 w-3.5 rounded-full border-2 border-admin-text-subdued" />
+        <span className="truncate text-[12px] text-admin-text-secondary">.codiic.com</span>
+      </div>
+      <div
+        className="absolute bottom-4 right-8 h-0 w-0 border-l-[10px] border-r-[6px] border-t-[16px] border-l-transparent border-r-transparent border-t-admin-text"
+        aria-hidden
+      />
+    </div>
+  );
+}
+
+function ShippingIllustration() {
+  return (
+    <div className="relative flex h-[140px] w-full max-w-[260px] items-center justify-end pr-2">
+      <div className="absolute left-0 top-1/2 h-10 w-28 -translate-y-1/2 rounded-md border border-admin-border bg-admin-surface shadow-sm">
+        <div className="m-1.5 h-6 rounded-sm bg-admin-secondary" />
+      </div>
+      <div className="relative z-[1] h-24 w-28 rounded-md border border-admin-border bg-[#fafafa] shadow-md">
+        <div className="absolute -top-1 left-2 right-2 h-3 rounded-t-md border border-admin-border bg-admin-secondary" />
+        <div className="absolute left-2 top-5 rounded bg-[#1b5e3b] px-1.5 py-0.5 text-[7px] font-bold text-white">
+          READY
+        </div>
+        <div className="absolute right-2 top-5 rounded-full bg-[#fef3d0] px-1.5 py-0.5 text-[7px] font-bold text-[#6b5500]">
+          SHIP
+        </div>
+        <div className="absolute bottom-3 left-2 right-2 h-8 rounded border border-dashed border-admin-border bg-white" />
+      </div>
+    </div>
+  );
+}
+
+export type DashboardEmptySetupGuideProps = {
+  onAddProduct: () => void;
+  onChooseTheme: () => void;
+  onSetupPayments: () => void;
+  onNameStore: () => void;
+  onSetupDomain: () => void;
+  onReviewShipping: () => void;
+};
+
+export default function DashboardEmptySetupGuide({
+  onAddProduct,
+  onChooseTheme,
+  onSetupPayments,
+  onNameStore,
+  onSetupDomain,
+  onReviewShipping,
+}: DashboardEmptySetupGuideProps) {
+  return (
+    <section aria-label="Store setup guide" className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <SetupCard
+          title="Add your first product"
+          description="Start with a title, price, and a photo. You can always add more detail later."
+          ctaLabel="Add product"
+          onClick={onAddProduct}
+          illustration={<ProductIllustration />}
+        />
+        <SetupCard
+          title="Choose your store design"
+          description="Pick a theme that fits your brand, then customize from there."
+          ctaLabel="Choose theme"
+          onClick={onChooseTheme}
+          illustration={<ThemeIllustration />}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <SetupCard
+          title="Set up payments"
+          description="Choose a payment provider to let customers pay by card or digital wallet."
+          ctaLabel="Activate payments"
+          onClick={onSetupPayments}
+          illustration={<PaymentsIllustration />}
+        />
+        <SetupCard
+          title="Name your store"
+          description="Customers will see this across your storefront, emails, and checkout."
+          ctaLabel="Add name"
+          onClick={onNameStore}
+          illustration={<NameTagIllustration />}
+        />
+        <SetupCard
+          eyebrow="Get ₹2,000 back"
+          title="Get a custom domain"
+          description="Give your store a branded URL that's easy to find, trust, and remember."
+          ctaLabel="Set up domain"
+          onClick={onSetupDomain}
+          illustration={<DomainIllustration />}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <SetupCard
+          title="Review shipping rates"
+          description="Look over the defaults set up for you based on your location."
+          ctaLabel="Review rates"
+          onClick={onReviewShipping}
+          illustration={<ShippingIllustration />}
+          className="min-h-[240px] sm:min-h-[260px]"
+        />
+      </div>
+    </section>
+  );
+}

@@ -89,4 +89,5 @@ export function formatAddressLines(addr?: AdminOrderAddressRef): string[] {
   return lines;
 }
 
-export const orderCardClass = 'overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm';
+export const orderCardClass =
+  'overflow-hidden rounded-xl border border-admin-border bg-admin-surface';

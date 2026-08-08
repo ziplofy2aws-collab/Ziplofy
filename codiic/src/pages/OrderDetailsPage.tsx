@@ -183,8 +183,8 @@ const OrderDetailsPage: React.FC = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-page-background-color">
         <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-gray-800" />
-          <p className="mt-3 text-sm text-gray-600">Loading order...</p>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+          <p className="mt-3 text-[13px] text-admin-text-secondary">Loading order...</p>
         </div>
       </div>
     );
@@ -194,11 +194,11 @@ const OrderDetailsPage: React.FC = () => {
     return (
       <div className="flex min-h-screen items-center justify-center bg-page-background-color">
         <div className="text-center">
-          <p className="text-sm text-red-600">{error || 'Order not found'}</p>
+          <p className="text-[13px] text-red-600">{error || 'Order not found'}</p>
           <button
             type="button"
             onClick={() => navigate('/orders')}
-            className="mt-4 text-sm font-medium text-blue-700 hover:underline"
+            className="mt-4 text-[13px] font-medium text-[#005bd3] hover:underline"
           >
             Back to orders
           </button>

@@ -48,7 +48,7 @@ const OrderTimelineSection: React.FC<OrderTimelineSectionProps> = ({
   return (
     <>
       <section>
-        <h2 className="mb-4 text-sm font-semibold text-gray-900">Timeline</h2>
+        <h2 className="mb-4 text-[13px] font-semibold text-admin-text">Timeline</h2>
         <OrderTimelineComposer
           comment={comment}
           userInitials={userInitials}
@@ -59,10 +59,10 @@ const OrderTimelineSection: React.FC<OrderTimelineSectionProps> = ({
 
         {timelineLoading && timelineEntries.length === 0 ? (
           <div className="flex justify-center py-8">
-            <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
           </div>
         ) : timelineError ? (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-[13px] text-red-700">
             {timelineError}
           </div>
         ) : timelineEntries.length === 0 ? null : (

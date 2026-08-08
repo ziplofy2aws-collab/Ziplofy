@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InlineWidget } from 'react-calendly';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useProducts } from '../contexts/product.context';
 import { useSocket } from '../contexts/socket.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
@@ -11,6 +12,7 @@ import { useUserContext } from '../contexts/user.context';
 import { SocketEventType } from '../types/event.types';
 import CustomizeDomainCard from './CustomizeDomainCard';
 import DashboardContent from './DashboardContent';
+import DashboardEmptySetupGuide from './DashboardEmptySetupGuide';
 import DashboardUpgradeBanner from './DashboardUpgradeBanner';
 import GettingStartedPage from './GettingStartedPage';
 import OnboardingTour from './OnboardingTour';
@@ -25,6 +27,7 @@ export default function HomePage() {
   const { loggedInUser } = useUserContext();
   const { activeStoreId } = useStore();
   const { storeSubdomain, getByStoreId } = useStoreSubdomain();
+  const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
 
   useEffect(() => {
     if (activeStoreId) {
@@ -32,6 +35,13 @@ export default function HomePage() {
     }
   }, [activeStoreId, getByStoreId]);
 
+  useEffect(() => {
+    if (activeStoreId) {
+      void fetchProductsByStoreId(activeStoreId);
+    }
+  }, [activeStoreId, fetchProductsByStoreId]);
+
+  const isEmptyStore = !productsLoading && products.length === 0;
   const storefrontHref = storeSubdomain?.url?.trim() || undefined;
 
   // Tour is now only shown when user clicks "Show Tour" button in navbar
@@ -97,6 +107,30 @@ export default function HomePage() {
       default:
         console.log('Step clicked:', stepId);
     }
+  }, [navigate]);
+
+  const handleEmptySetupAddProduct = useCallback(() => {
+    navigate('/products/new');
+  }, [navigate]);
+
+  const handleEmptySetupChooseTheme = useCallback(() => {
+    navigate('/themes/all-themes');
+  }, [navigate]);
+
+  const handleEmptySetupPayments = useCallback(() => {
+    navigate('/settings/payments');
+  }, [navigate]);
+
+  const handleEmptySetupNameStore = useCallback(() => {
+    navigate('/settings/general');
+  }, [navigate]);
+
+  const handleEmptySetupDomain = useCallback(() => {
+    navigate('/settings/domains');
+  }, [navigate]);
+
+  const handleEmptySetupShipping = useCallback(() => {
+    navigate('/settings/shipping-and-delivery');
   }, [navigate]);
 
   // Handle improvement item clicks in Getting Started page
@@ -235,10 +269,14 @@ export default function HomePage() {
           <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <h1 className="text-[20px] font-semibold tracking-tight text-admin-text sm:text-2xl">
-                Welcome back{userName !== 'User' ? `, ${userName}` : ''}
+                {isEmptyStore
+                  ? `Welcome${userName !== 'User' ? `, ${userName}` : ''}`
+                  : `Welcome back${userName !== 'User' ? `, ${userName}` : ''}`}
               </h1>
               <p className="mt-1.5 text-[13px] text-admin-text-secondary">
-                Here&apos;s what&apos;s happening with your store today.
+                {isEmptyStore
+                  ? "Let's get your store ready to sell."
+                  : "Here's what's happening with your store today."}
               </p>
             </div>
             {storefrontHref ? (
@@ -296,8 +334,30 @@ export default function HomePage() {
           {/* Content */}
           {activeTab === 'dashboard' ? (
             <div key="dashboard" className="flex flex-col gap-6 animate-tab-fade">
-              <DashboardContent />
-              <CustomizeDomainCard />
+              {productsLoading ? (
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="min-h-[280px] animate-pulse rounded-xl border border-admin-border bg-admin-surface"
+                    />
+                  ))}
+                </div>
+              ) : isEmptyStore ? (
+                <DashboardEmptySetupGuide
+                  onAddProduct={handleEmptySetupAddProduct}
+                  onChooseTheme={handleEmptySetupChooseTheme}
+                  onSetupPayments={handleEmptySetupPayments}
+                  onNameStore={handleEmptySetupNameStore}
+                  onSetupDomain={handleEmptySetupDomain}
+                  onReviewShipping={handleEmptySetupShipping}
+                />
+              ) : (
+                <>
+                  <DashboardContent />
+                  <CustomizeDomainCard />
+                </>
+              )}
             </div>
           ) : (
             <div key="getting-started" className="animate-tab-fade">
