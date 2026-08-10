@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lyvora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+
+<body>
+
+  <header class="lv-header" role="banner">
+    <div class="lv-announce" role="region" aria-label="Promotional offers">
+      <div class="lv-announce__inner">
+        <button type="button" class="lv-announce__arrow lv-announce__arrow--prev" data-lv-announce-prev
+          aria-label="Previous announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="lv-announce__viewport">
+          <div class="lv-announce__track" data-lv-announce-track>
+            <p class="lv-announce__msg" data-lv-announce-slide>
+              ⚡ Pick a FREE gift of your choice above ₹999 ⚡
+            </p>
+            <p class="lv-announce__msg" data-lv-announce-slide>
+              ⚡ FREE shipping on orders above ₹799 ⚡
+            </p>
+          </div>
+        </div>
+
+        <button type="button" class="lv-announce__arrow lv-announce__arrow--next" data-lv-announce-next
+          aria-label="Next announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="lv-navbar">
+      <div class="lv-navbar__inner">
+        <div class="lv-navbar__left">
+          <button type="button" class="lv-navbar__toggle" data-lv-menu-toggle aria-expanded="false"
+            aria-label="Open menu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+          <a href="index.html" class="lv-navbar__logo" aria-label="Lyvora home">
+            <img src="assets/img/logo.png" alt="Lyvora" width="160" height="58" decoding="async" />
+          </a>
+        </div>
+
+        <nav class="lv-navbar__menu" aria-label="Primary navigation">
+          <a href="shop.html" class="lv-navbar__shop">Shop</a>
+          <a href="shop.html">Categories</a>
+          <a href="#">Blogs</a>
+          <a href="#">Lyvora Plus</a>
+          <a href="#">About us</a>
+          <a href="#">Help</a>
+        </nav>
+
+        <div class="lv-navbar__actions">
+          <form class="lv-navbar__search" role="search" action="#" method="get">
+            <button type="submit" class="lv-navbar__search-btn" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.25" />
+                <path d="M16.25 16.25L21 21" stroke-linecap="round" />
+              </svg>
+            </button>
+            <input type="search" name="q" placeholder="Search" aria-label="Search products" />
+          </form>
+
+          <a href="#" class="lv-navbar__icon-btn lv-navbar__account" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke-linecap="round" />
+            </svg>
+            <span class="lv-navbar__bolt" aria-hidden="true">
+              <svg viewBox="0 0 12 16" fill="currentColor">
+                <path d="M7.2 0L0 9.2h4.6L3.4 16 12 5.6H6.8L7.2 0z" />
+              </svg>
+            </span>
+          </a>
+
+          <a href="#" class="lv-navbar__icon-btn lv-navbar__cart" aria-label="Shopping bag, 0 items">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M8 8V7a4 4 0 118 0v1" stroke-linecap="round" />
+              <path d="M6.5 8h11l-1.1 12.5H7.6L6.5 8z" stroke-linejoin="round" />
+            </svg>
+            <span class="lv-navbar__cart-badge" aria-hidden="true">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="lv-hero" data-lv-hero-slider aria-label="Featured promotions">
+    <div class="lv-hero__viewport">
+      <div class="lv-hero__track" data-lv-hero-track>
+        <div class="lv-hero__slide" data-lv-hero-slide>
+          <picture>
+            <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-1.png" />
+            <img src="assets/img/hero-banner-1.png" alt="Hero banner 1" width="1920" height="720" decoding="async" />
+          </picture>
+        </div>
+        <div class="lv-hero__slide" data-lv-hero-slide>
+          <picture>
+            <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-2.png" />
+            <img src="assets/img/hero-banner-2.png" alt="Hero banner 2" width="1920" height="720" decoding="async" />
+          </picture>
+        </div>
+        <div class="lv-hero__slide" data-lv-hero-slide>
+          <picture>
+            <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-3.png" />
+            <img src="assets/img/hero-banner-3.png" alt="Hero banner 3" width="1920" height="720" decoding="async" />
+          </picture>
+        </div>
+        <div class="lv-hero__slide" data-lv-hero-slide>
+          <picture>
+            <source media="(max-width: 768px)" srcset="assets/img/mobile-hero-4.png" />
+            <img src="assets/img/hero-banner-4.png" alt="Hero banner 4" width="1920" height="720" decoding="async" />
+          </picture>
+        </div>
+      </div>
+    </div>
+    <div class="lv-hero__dots" data-lv-hero-dots aria-hidden="true"></div>
+  </section>
+
+  <section class="lv-cats" aria-label="Shop by category">
+    <div class="lv-cats__inner">
+      <div class="lv-cats__row">
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-1.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Sunscreens</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-2.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Haircare</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-3.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Toners</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-4.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Serums</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-5.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Patches</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-6.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Lip Balms</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-7.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Body Care</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-8.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Cleansers</span>
+        </a>
+        <a href="#" class="lv-cats__item">
+          <span class="lv-cats__thumb">
+            <img src="assets/img/cat-9.png" alt="" width="160" height="160" decoding="async" />
+          </span>
+          <span class="lv-cats__label">Moisturisers</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="lv-promos" aria-label="Featured collections">
+    <div class="lv-promos__inner">
+      <div class="lv-promos__grid">
+        <a href="#" class="lv-promos__card">
+          <img src="assets/img/promo-1.png" alt="Best of K-Beauty" width="608" height="647" decoding="async" />
+        </a>
+        <a href="#" class="lv-promos__card">
+          <img src="assets/img/promo-2.png" alt="One Shot Ritual" width="608" height="648" decoding="async" />
+        </a>
+        <a href="#" class="lv-promos__card">
+          <img src="assets/img/promo-3.png" alt="Salon at Home" width="608" height="647" decoding="async" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="lv-explore" aria-labelledby="lv-explore-heading" data-lv-explore>
+    <div class="lv-explore__inner">
+      <h2 id="lv-explore-heading" class="lv-explore__title">Explore Skincare</h2>
+
+      <div class="lv-explore__toolbar">
+        <div class="lv-explore__filters" role="tablist" aria-label="Product filters">
+          <button type="button" class="lv-explore__filter is-active" data-lv-filter="bestseller" role="tab"
+            aria-selected="true">Bestseller</button>
+          <button type="button" class="lv-explore__filter" data-lv-filter="new" role="tab" aria-selected="false">New
+            Launch</button>
+          <button type="button" class="lv-explore__filter" data-lv-filter="haircare" role="tab"
+            aria-selected="false">Haircare</button>
+          <button type="button" class="lv-explore__filter" data-lv-filter="lip" role="tab" aria-selected="false">Lip
+            Balms</button>
+          <button type="button" class="lv-explore__filter" data-lv-filter="treatment" role="tab"
+            aria-selected="false">Treatment Creams</button>
+          <button type="button" class="lv-explore__filter" data-lv-filter="all" role="tab"
+            aria-selected="false">All</button>
+        </div>
+
+        <div class="lv-explore__nav">
+          <button type="button" class="lv-explore__arrow" data-lv-explore-prev aria-label="Previous products" disabled>
+            <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+              <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button type="button" class="lv-explore__arrow" data-lv-explore-next aria-label="Next products">
+            <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+              <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="lv-explore__viewport" data-lv-explore-viewport>
+        <div class="lv-explore__track" data-lv-explore-track>
+          <article class="lv-pcard" data-lv-explore-card data-tags="bestseller treatment all" data-lv-product-id="es-1" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">Unclogs Pores</p>
+                <p class="lv-pcard__benefit-sub">Smooths Texture</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-1.png" alt="Blackhead Melting Water" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">130 ml</p>
+              <p class="lv-pcard__highlight">Melts blackheads ✅</p>
+              <h3 class="lv-pcard__name">Blackhead Melting Water</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.7</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(960+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 499</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="bestseller new all" data-lv-product-id="es-2" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">In-Vivo Tested</p>
+                <p class="lv-pcard__benefit-sub">Sweat &amp; Water Resistant</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-2.png" alt="Berry Bright Sunscreen" width="220" height="280"
+                decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 gm</p>
+              <p class="lv-pcard__highlight">Niacinamide ✨</p>
+              <h3 class="lv-pcard__name">Berry Bright Sunscreen</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.5</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(1735+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 399</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="bestseller treatment all" data-lv-product-id="es-3" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">6-Hour Acne Relief</p>
+                <p class="lv-pcard__benefit-sub">Targets Breakouts</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-3.png" alt="Acne Spot Corrector Gel" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">15 ml</p>
+              <p class="lv-pcard__highlight">Reduces redness 💖</p>
+              <h3 class="lv-pcard__name">Acne Spot Corrector Gel</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.8</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(1090+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 399</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="bestseller treatment all" data-lv-product-id="es-4" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">Smooths Fine Lines</p>
+                <p class="lv-pcard__benefit-sub">Improves Skin Firmness</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-4.png" alt="6 Peptide Booster Complex" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 ml</p>
+              <p class="lv-pcard__highlight">Boosts Collagen 🐙</p>
+              <h3 class="lv-pcard__name">6 Peptide Booster Complex</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.7</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(1020+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 599</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="bestseller treatment all" data-lv-product-id="es-5" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">Retinol Night Cream</p>
+                <p class="lv-pcard__benefit-sub">Delays Signs of Ageing</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-5.png" alt="Defender Multi Peptide Retinol Night Cream"
+                width="220" height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 gm</p>
+              <p class="lv-pcard__highlight">Delays skin ageing 🍦</p>
+              <h3 class="lv-pcard__name">Defender Multi Peptide Retinol Night Cream</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.7</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(470+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 499</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="bestseller new all" data-lv-product-id="es-6" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">Ultra Light Oil</p>
+                <p class="lv-pcard__benefit-sub">Melts Makeup &amp; SPF</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-6.png" alt="Daily Dissolve Oil Cleanser" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">100 ml</p>
+              <p class="lv-pcard__highlight">Dissolves makeup 💧</p>
+              <h3 class="lv-pcard__name">Daily Dissolve Oil Cleanser</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.6</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(820+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 449</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="haircare new all" data-lv-product-id="es-7" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">Scalp Detox</p>
+                <p class="lv-pcard__benefit-sub">Strengthens Hair Roots</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-7.png" alt="Green Tea Scalp Serum" width="220" height="280"
+                decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 ml</p>
+              <p class="lv-pcard__highlight">Reduces hair fall 🌿</p>
+              <h3 class="lv-pcard__name">Green Tea Scalp Serum</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.5</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(640+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 549</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-explore-card data-tags="lip new all" data-lv-product-id="es-8" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">Softens Lips</p>
+                <p class="lv-pcard__benefit-sub">24hr Moisture Lock</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/ES-8.png" alt="Velvet Crush Lip Balm" width="220" height="280"
+                decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">10 gm</p>
+              <p class="lv-pcard__highlight">Shea butter rich 💋</p>
+              <h3 class="lv-pcard__name">Velvet Crush Lip Balm</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.6</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(510+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 249</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lv-featured" aria-labelledby="lv-featured-heading">
+    <div class="lv-featured__inner">
+      <h2 id="lv-featured-heading" class="lv-featured__title">Featured On Lyvora</h2>
+
+      <div class="lv-featured__layout">
+        <div class="lv-featured__grid">
+          <a href="#" class="lv-featured__card">
+            <img src="assets/img/Lyvora-1.png" alt="14 - 22 years old" width="560" height="704" decoding="async" />
+          </a>
+          <a href="#" class="lv-featured__card">
+            <img src="assets/img/Lyvora-2.png" alt="23 - 31 years old" width="560" height="706" decoding="async" />
+          </a>
+          <a href="#" class="lv-featured__card">
+            <img src="assets/img/Lyvora-3.png" alt="32 - 45 years old" width="560" height="712" decoding="async" />
+          </a>
+          <a href="#" class="lv-featured__card">
+            <img src="assets/img/Lyvora-4.png" alt="46 - 60 years old" width="560" height="714" decoding="async" />
+          </a>
+        </div>
+
+        <a href="#" class="lv-featured__hero">
+          <img src="assets/img/Lyvora-5.png" alt="Explore Rejuvinita Signature Gold for all ages" width="701"
+            height="561" decoding="async" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="lv-banner" aria-label="Anti-dandruff care">
+    <div class="lv-banner__inner">
+      <img src="assets/img/banner.png" alt="Complete Anti-Dandruff Care — Powered by FlakeShield Technology"
+        width="2172" height="724" decoding="async" />
+    </div>
+  </section>
+
+  <section class="lv-dsd" aria-labelledby="lv-dsd-heading" data-lv-dsd>
+    <div class="lv-dsd__inner">
+      <h2 id="lv-dsd-heading" class="lv-dsd__title">Daily Sun Defense</h2>
+
+      <div class="lv-dsd__nav">
+        <button type="button" class="lv-explore__arrow" data-lv-dsd-prev aria-label="Previous products" disabled>
+          <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+            <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button type="button" class="lv-explore__arrow" data-lv-dsd-next aria-label="Next products">
+          <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+            <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="lv-dsd__viewport" data-lv-dsd-viewport>
+        <div class="lv-dsd__track" data-lv-dsd-track>
+          <article class="lv-pcard" data-lv-dsd-card data-lv-product-id="dsd-1" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">In-Vivo Tested</p>
+                <p class="lv-pcard__benefit-sub">100% Mineral UV Filters</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/DSD-1.png" alt="100% Mineral Sunscreen SPF 50" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 ml</p>
+              <p class="lv-pcard__highlight">100% Mineral</p>
+              <h3 class="lv-pcard__name">100% Mineral Sunscreen SPF 50 PA++++</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.3</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(190+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 399</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-dsd-card data-lv-product-id="dsd-2" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">In-Vivo Tested</p>
+                <p class="lv-pcard__benefit-sub">Instant Cooling &amp; Oil Balance</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/DSD-2.png" alt="Cooling Fluid Sunscreen SPF 65" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 ml</p>
+              <p class="lv-pcard__highlight">Instant cooling</p>
+              <h3 class="lv-pcard__name">Cooling Fluid Sunscreen | SPF 65 PA++++</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.5</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(280+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 399</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-dsd-card data-lv-product-id="dsd-3" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">In-Vivo Tested</p>
+                <p class="lv-pcard__benefit-sub">Sweat &amp; Water Resistant</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/DSD-3.png" alt="Berry Bright Sunscreen" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 gm</p>
+              <p class="lv-pcard__highlight">Niacinamide ✨</p>
+              <h3 class="lv-pcard__name">Berry Bright Sunscreen</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.5</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(1735+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 399</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-dsd-card data-lv-product-id="dsd-4" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">In-Vivo Tested</p>
+                <p class="lv-pcard__benefit-sub">Oil-Free &amp; Lightweight</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/DSD-4.png" alt="Sun Drink Oil Free Sunscreen" width="220"
+                height="280" decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 Gms</p>
+              <p class="lv-pcard__highlight">Fights free radicals ✅</p>
+              <h3 class="lv-pcard__name">Sun Drink Oil Free Sunscreen</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.8</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(390+)</span>
+              </div>
+              <p class="lv-pcard__price">Rs. 399</p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+
+          <article class="lv-pcard" data-lv-dsd-card data-lv-product-id="dsd-5" style="cursor:pointer">
+            <div class="lv-pcard__media">
+              <div class="lv-pcard__benefit">
+                <p class="lv-pcard__benefit-title">In-Vivo Tested</p>
+                <p class="lv-pcard__benefit-sub">Fights Free Radicals</p>
+              </div>
+              <img class="lv-pcard__img" src="assets/img/DSD-5.png" alt="Peach The Sun" width="220" height="280"
+                decoding="async" />
+            </div>
+            <div class="lv-pcard__body">
+              <p class="lv-pcard__size">50 Gms</p>
+              <p class="lv-pcard__highlight">Fights free radicals 🍷</p>
+              <h3 class="lv-pcard__name">Peach The Sun</h3>
+              <div class="lv-pcard__rating">
+                <span class="lv-pcard__score">4.7</span>
+                <span class="lv-pcard__stars" aria-hidden="true">★★★★★</span>
+                <span class="lv-pcard__reviews">(100+)</span>
+              </div>
+              <p class="lv-pcard__price">
+                Rs. 399
+                <span class="lv-pcard__price-old">Rs. 499</span>
+              </p>
+            </div>
+            <button type="button" class="lv-pcard__cart">Add To Cart</button>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lv-trust" aria-labelledby="lv-trust-heading" data-lv-trust>
+    <div class="lv-trust__inner">
+      <header class="lv-trust__header">
+        <p class="lv-trust__eyebrow">Trusted by Experts</p>
+        <h2 id="lv-trust-heading" class="lv-trust__title">
+          Clinically Proven <span>Results</span><br />
+          <span>Guaranteed</span>
+        </h2>
+      </header>
+
+      <div class="lv-trust__layout">
+        <div class="lv-trust__list" role="tablist" aria-label="Clinically proven products">
+          <button type="button" class="lv-trust__item is-active" role="tab" aria-selected="true" data-lv-trust-tab="0" data-lv-product-id="es-7">
+            <span class="lv-trust__thumb">
+              <img src="assets/img/ES-7.png" alt="" width="72" height="72" decoding="async" />
+            </span>
+            <span class="lv-trust__meta">
+              <span class="lv-trust__name">Anti-Dandruff Daily Care Duo</span>
+              <span class="lv-trust__price">Rs. 898</span>
+            </span>
+            <span class="lv-trust__shop">Shop</span>
+          </button>
+
+          <button type="button" class="lv-trust__item" role="tab" aria-selected="false" data-lv-trust-tab="1" data-lv-product-id="es-3">
+            <span class="lv-trust__thumb">
+              <img src="assets/img/ES-3.png" alt="" width="72" height="72" decoding="async" />
+            </span>
+            <span class="lv-trust__meta">
+              <span class="lv-trust__name">Acne Spot Corrector Gel</span>
+              <span class="lv-trust__price">Rs. 399</span>
+            </span>
+            <span class="lv-trust__shop">Shop</span>
+          </button>
+
+          <button type="button" class="lv-trust__item" role="tab" aria-selected="false" data-lv-trust-tab="2" data-lv-product-id="es-1">
+            <span class="lv-trust__thumb">
+              <img src="assets/img/ES-1.png" alt="" width="72" height="72" decoding="async" />
+            </span>
+            <span class="lv-trust__meta">
+              <span class="lv-trust__name">Blackhead Melting Water</span>
+              <span class="lv-trust__price">Rs. 499</span>
+            </span>
+            <span class="lv-trust__shop">Shop</span>
+          </button>
+
+          <button type="button" class="lv-trust__item" role="tab" aria-selected="false" data-lv-trust-tab="3" data-lv-product-id="dsd-3">
+            <span class="lv-trust__thumb">
+              <img src="assets/img/DSD-3.png" alt="" width="72" height="72" decoding="async" />
+            </span>
+            <span class="lv-trust__meta">
+              <span class="lv-trust__name">Berry Bright Sunscreen</span>
+              <span class="lv-trust__price">Rs. 399</span>
+            </span>
+            <span class="lv-trust__shop">Shop</span>
+          </button>
+        </div>
+
+        <div class="lv-trust__detail" data-lv-trust-detail>
+          <p class="lv-trust__copy" data-lv-trust-copy>
+            The Anti-Dandruff Shampoo &amp; Conditioner duo combines Ketoconazole and Nano-Climbazole to reduce
+            flakes, soothe itching, and hydrate hair.
+          </p>
+
+          <div class="lv-trust__stats">
+            <div class="lv-trust__stat">
+              <p class="lv-trust__stat-value" data-lv-trust-stat1>100%</p>
+              <p class="lv-trust__stat-label" data-lv-trust-label1>100% Reduction in Dandruff Causing Fungus</p>
+            </div>
+            <div class="lv-trust__stat">
+              <p class="lv-trust__stat-value" data-lv-trust-stat2>98%</p>
+              <p class="lv-trust__stat-label" data-lv-trust-label2>Relief from Itchiness in 1 Wash</p>
+            </div>
+          </div>
+
+          <a href="#" class="lv-trust__promo" data-lv-trust-promo>
+            Add 4 more to unlock Buy 2 Get 2 + 2 freebies
+          </a>
+        </div>
+
+        <div class="lv-trust__visual">
+          <img src="assets/img/trust.png" alt="Lyvora clinically proven skincare" width="561" height="701"
+            decoding="async" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lv-reviews" aria-labelledby="lv-reviews-heading" data-lv-reviews>
+    <div class="lv-reviews__inner">
+      <h2 id="lv-reviews-heading" class="lv-reviews__title">What Our Customers Are Saying</h2>
+
+      <div class="lv-reviews__slider">
+        <button type="button" class="lv-reviews__arrow lv-reviews__arrow--prev" data-lv-reviews-prev
+          aria-label="Previous review" disabled>
+          <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+            <path d="M7 1L1 7l6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="lv-reviews__viewport" data-lv-reviews-viewport>
+          <div class="lv-reviews__track" data-lv-reviews-track>
+            <article class="lv-reviews__card" data-lv-reviews-card>
+              <h3 class="lv-reviews__card-title">Superb, Nice product</h3>
+              <p class="lv-reviews__stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <p class="lv-reviews__text">
+                The products in this combo is just superb, luved them. Cleared my skin, now I luv my skin. worth for
+                money
+              </p>
+              <p class="lv-reviews__author">Rachana malik</p>
+            </article>
+
+            <article class="lv-reviews__card" data-lv-reviews-card>
+              <h3 class="lv-reviews__card-title">Acne clear cream</h3>
+              <p class="lv-reviews__stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <p class="lv-reviews__text">
+                Superb moisturizer ,this drastically changed my skin from acne prone to clean and clear one.i recommend
+                this to everyone who has oily acne prone skin
+              </p>
+              <p class="lv-reviews__author">Johny T R</p>
+            </article>
+
+            <article class="lv-reviews__card" data-lv-reviews-card>
+              <h3 class="lv-reviews__card-title">Wonderful product</h3>
+              <p class="lv-reviews__stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <p class="lv-reviews__text">
+                I used this combo products, just wow products... Instant facial glow, pigmentation reduced and brighter
+                face
+              </p>
+              <p class="lv-reviews__author">Anusree</p>
+            </article>
+
+            <article class="lv-reviews__card" data-lv-reviews-card>
+              <h3 class="lv-reviews__card-title">Best sunscreen ever</h3>
+              <p class="lv-reviews__stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <p class="lv-reviews__text">
+                Lightweight, non-greasy and no white cast. I wear it daily under makeup and my skin still looks fresh
+                by evening
+              </p>
+              <p class="lv-reviews__author">Meera Shah</p>
+            </article>
+
+            <article class="lv-reviews__card" data-lv-reviews-card>
+              <h3 class="lv-reviews__card-title">Glow in a week</h3>
+              <p class="lv-reviews__stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <p class="lv-reviews__text">
+                Started noticing glow within a week. Texture feels smoother and the serum absorbs quickly without sticky
+                feel
+              </p>
+              <p class="lv-reviews__author">Priya Nair</p>
+            </article>
+
+            <article class="lv-reviews__card" data-lv-reviews-card>
+              <h3 class="lv-reviews__card-title">Worth every rupee</h3>
+              <p class="lv-reviews__stars" aria-label="5 out of 5 stars">★★★★★</p>
+              <p class="lv-reviews__text">
+                Bought the night cream after reading reviews and it did not disappoint. Skin feels nourished and soft
+                every morning
+              </p>
+              <p class="lv-reviews__author">Karthik Menon</p>
+            </article>
+          </div>
+        </div>
+
+        <button type="button" class="lv-reviews__arrow lv-reviews__arrow--next" data-lv-reviews-next
+          aria-label="Next review">
+          <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+            <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="lv-footer" role="contentinfo">
+    <div class="lv-footer__brand">
+      <div class="lv-footer__brand-inner">
+        <h2 class="lv-footer__brand-title">
+          Lyvora Is India’s Destination For Thoughtfully Curated, 100% Authentic Beauty.
+        </h2>
+        <p class="lv-footer__brand-text">
+          We bring together skincare, haircare, and body care from formulas we trust, selected for quality,
+          performance, and relevance for Indian skin and hair.
+        </p>
+        <p class="lv-footer__brand-text">
+          Every product on Lyvora is chosen with intent. Because it’s not about chasing trends, it’s about choosing
+          what truly works.
+        </p>
+      </div>
+    </div>
+
+    <div class="lv-footer__main">
+      <div class="lv-footer__inner">
+        <div class="lv-footer__col">
+          <h3 class="lv-footer__heading">Shop</h3>
+          <ul class="lv-footer__links">
+            <li><a href="shop.html">Best Sellers</a></li>
+            <li><a href="shop.html">Skin Care</a></li>
+            <li><a href="shop.html">Hair Care</a></li>
+            <li><a href="shop.html">Lip Care</a></li>
+            <li><a href="shop.html">Kits</a></li>
+            <li><a href="shop.html" class="lv-footer__hot">Hot Deals</a></li>
+          </ul>
+        </div>
+
+        <div class="lv-footer__col">
+          <h3 class="lv-footer__heading">Information</h3>
+          <ul class="lv-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Shipping &amp; Returns</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Collaboration Application</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+          </ul>
+        </div>
+
+        <div class="lv-footer__col lv-footer__col--newsletter">
+          <h3 class="lv-footer__heading">Newsletter</h3>
+          <p class="lv-footer__newsletter-text">
+            Subscribe to receive updates, access to exclusive deals, and more.
+          </p>
+          <form class="lv-footer__form" action="#" method="post">
+            <label class="visually-hidden" for="lv-newsletter-email">Email address</label>
+            <input id="lv-newsletter-email" type="email" name="email" placeholder="Enter your email address" required
+              autocomplete="email" />
+            <button type="submit" class="lv-footer__submit" aria-label="Subscribe">
+              <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+                <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+          <div class="lv-footer__social">
+            <a href="#" class="lv-footer__social-link" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h2.2l.8-3H14V9c0-.6.4-1 1-1z" />
+              </svg>
+            </a>
+            <a href="#" class="lv-footer__social-link" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="#" class="lv-footer__social-link" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M21.6 7.2a2.7 2.7 0 00-1.9-1.9C18 5 12 5 12 5s-6 0-7.7.3A2.7 2.7 0 002.4 7.2 28 28 0 002 12a28 28 0 00.4 4.8 2.7 2.7 0 001.9 1.9C6 19 12 19 12 19s6 0 7.7-.3a2.7 2.7 0 001.9-1.9A28 28 0 0022 12a28 28 0 00-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <p class="lv-footer__copy">© Lyvora 2019 - 2026. All Rights Reserved</p>
+    </div>
+
+    <a href="https://wa.me/" class="lv-footer__whatsapp" target="_blank" rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path
+          d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.96.52 3.88 1.5 5.57L2 22l4.75-1.55a10 10 0 004.79 1.2h.01c5.45 0 9.88-4.4 9.88-9.82A9.78 9.78 0 0012.04 2zm5.74 14.03c-.24.66-1.37 1.23-1.9 1.3-.49.07-1.11.1-1.79-.11-.41-.13-.94-.31-1.62-.6-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.14-1.51-1.14-2.88 0-1.37.72-2.04.97-2.32.25-.28.55-.35.73-.35h.53c.17 0 .4-.06.62.47.24.56.8 1.94.87 2.08.07.14.12.3.02.49-.1.19-.14.3-.28.46-.14.16-.29.35-.42.47-.14.14-.28.29-.12.56.16.28.71 1.17 1.53 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.19-.28.37-.23.62-.14.25.09 1.58.74 1.85.88.28.14.46.21.53.33.07.12.07.7-.17 1.36z" />
+      </svg>
+    </a>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+
+</html>

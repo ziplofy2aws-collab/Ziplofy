@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product | Lyvora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/product.css" />
+</head>
+
+<body>
+
+  <header class="lv-header" role="banner">
+    <div class="lv-announce" role="region" aria-label="Promotional offers">
+      <div class="lv-announce__inner">
+        <button type="button" class="lv-announce__arrow lv-announce__arrow--prev" data-lv-announce-prev
+          aria-label="Previous announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M15 6l-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div class="lv-announce__viewport">
+          <div class="lv-announce__track" data-lv-announce-track>
+            <p class="lv-announce__msg" data-lv-announce-slide>
+              ⚡ Pick a FREE gift of your choice above ₹999 ⚡
+            </p>
+            <p class="lv-announce__msg" data-lv-announce-slide>
+              ⚡ FREE shipping on orders above ₹799 ⚡
+            </p>
+          </div>
+        </div>
+
+        <button type="button" class="lv-announce__arrow lv-announce__arrow--next" data-lv-announce-next
+          aria-label="Next announcement">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="lv-navbar">
+      <div class="lv-navbar__inner">
+        <div class="lv-navbar__left">
+          <button type="button" class="lv-navbar__toggle" data-lv-menu-toggle aria-expanded="false"
+            aria-label="Open menu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
+          <a href="index.html" class="lv-navbar__logo" aria-label="Lyvora home">
+            <img src="assets/img/logo.png" alt="Lyvora" width="160" height="58" decoding="async" />
+          </a>
+        </div>
+
+        <nav class="lv-navbar__menu" aria-label="Primary navigation">
+          <a href="shop.html" class="lv-navbar__shop">Shop</a>
+          <a href="shop.html">Categories</a>
+          <a href="#">Blogs</a>
+          <a href="#">Lyvora Plus</a>
+          <a href="#">About us</a>
+          <a href="#">Help</a>
+        </nav>
+
+        <div class="lv-navbar__actions">
+          <form class="lv-navbar__search" role="search" action="#" method="get">
+            <button type="submit" class="lv-navbar__search-btn" aria-label="Search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <circle cx="11" cy="11" r="6.25" />
+                <path d="M16.25 16.25L21 21" stroke-linecap="round" />
+              </svg>
+            </button>
+            <input type="search" name="q" placeholder="Search" aria-label="Search products" />
+          </form>
+
+          <a href="#" class="lv-navbar__icon-btn lv-navbar__account" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5.5 20c0-3.5 3-6 6.5-6s6.5 2.5 6.5 6" stroke-linecap="round" />
+            </svg>
+            <span class="lv-navbar__bolt" aria-hidden="true">
+              <svg viewBox="0 0 12 16" fill="currentColor">
+                <path d="M7.2 0L0 9.2h4.6L3.4 16 12 5.6H6.8L7.2 0z" />
+              </svg>
+            </span>
+          </a>
+
+          <a href="#" class="lv-navbar__icon-btn lv-navbar__cart" aria-label="Shopping bag, 0 items">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M8 8V7a4 4 0 118 0v1" stroke-linecap="round" />
+              <path d="M6.5 8h11l-1.1 12.5H7.6L6.5 8z" stroke-linejoin="round" />
+            </svg>
+            <span class="lv-navbar__cart-badge" aria-hidden="true">0</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="lv-pdp">
+    
+    <nav class="lv-pdp__crumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a><span>/</span>
+      <a href="shop.html">Shop</a><span>/</span>
+      <span data-lv-pdp-crumb>Product</span>
+    </nav>
+
+    <div class="lv-pdp__shell">
+      <div class="lv-pdp__gallery">
+        <div class="lv-pdp__stage">
+          <div class="lv-pdp__callout" aria-hidden="true">
+            <p data-lv-pdp-callout>the cult-favourite<br />clear skin serum</p>
+          </div>
+          <div class="lv-pdp__trusted" aria-hidden="true">trusted by<br /><strong>1L+ GLOW FACES</strong></div>
+          <span class="lv-pdp__offer-tag">+ Extra ₹50 off*</span>
+          <button type="button" class="lv-pdp__zoom" aria-label="Zoom image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="M16 16l4.5 4.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <img class="lv-pdp__main-img" src="assets/img/ES-1.png" alt="" width="700" height="700" data-lv-pdp-main
+            decoding="async" />
+        </div>
+        <div class="lv-pdp__thumbs" data-lv-pdp-thumbs></div>
+      </div>
+
+      <div class="lv-pdp__info">
+        <h1 class="lv-pdp__title" data-lv-pdp-title>Product</h1>
+
+        <div class="lv-pdp__pills">
+          <span class="lv-pdp__pill lv-pdp__pill--rating">
+            <span aria-hidden="true">★</span>
+            <span data-lv-pdp-score>4.7</span>
+            <span data-lv-pdp-reviews>(0)</span>
+          </span>
+          <span class="lv-pdp__pill" data-lv-pdp-tag1>Fades marks</span>
+          <span class="lv-pdp__pill" data-lv-pdp-tag2>Brightens skin</span>
+        </div>
+
+        <div class="lv-pdp__pricing">
+          <span class="lv-pdp__price">MRP <strong data-lv-pdp-price>₹0</strong></span>
+          <s class="lv-pdp__mrp" data-lv-pdp-mrp>₹0</s>
+          <span class="lv-pdp__off" data-lv-pdp-off></span>
+        </div>
+        <p class="lv-pdp__tax">(Inclusive of all taxes)</p>
+
+        <button type="button" class="lv-pdp__best">
+          <span class="lv-pdp__best-icon" aria-hidden="true">✂</span>
+          <span>Best price: <strong data-lv-pdp-best>₹0</strong></span>
+          <span class="lv-pdp__best-chevron" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="lv-pdp__cash">
+          <span class="lv-pdp__cash-icon" aria-hidden="true">◎</span>
+          <span>Get upto <strong data-lv-pdp-cash>₹0</strong> worth of LyvoraCash</span>
+          <span class="lv-pdp__cash-info" aria-hidden="true">i</span>
+        </div>
+
+        <div class="lv-pdp__size-block">
+          <p class="lv-pdp__size-label">Size:</p>
+          <div class="lv-pdp__sizes" data-lv-pdp-sizes></div>
+        </div>
+
+        <div class="lv-pdp__gifts">
+          <h2 class="lv-pdp__section-title">Free gifts</h2>
+          <div class="lv-pdp__gift-track">
+            <article class="lv-pdp__gift">
+              <div class="lv-pdp__gift-media">
+                <img src="assets/img/ES-6.png" alt="" width="56" height="56" decoding="async" />
+              </div>
+              <div class="lv-pdp__gift-body">
+                <span class="lv-pdp__gift-icon" aria-hidden="true">🎁</span>
+                <p class="lv-pdp__gift-name">Daily Dissolve Oil Cleanser | 10 ml | Travel-Size</p>
+                <p class="lv-pdp__gift-rule">Claim above ₹699</p>
+              </div>
+            </article>
+            <article class="lv-pdp__gift">
+              <div class="lv-pdp__gift-media">
+                <img src="assets/img/ES-8.png" alt="" width="56" height="56" decoding="async" />
+              </div>
+              <div class="lv-pdp__gift-body">
+                <span class="lv-pdp__gift-icon" aria-hidden="true">🎁</span>
+                <p class="lv-pdp__gift-name">Velvet Crush Lip Balm Mini | 5 gm</p>
+                <p class="lv-pdp__gift-rule">Claim above ₹999</p>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="lv-pdp__offers-head">
+          <h2 class="lv-pdp__section-title">Available offers</h2>
+          <a href="#" class="lv-pdp__view-all">View all &gt;</a>
+        </div>
+
+        <div class="lv-pdp__coupons">
+          <article class="lv-pdp__coupon">
+            <p class="lv-pdp__coupon-code">FIRST100</p>
+            <p class="lv-pdp__coupon-desc">Flat ₹100 off on orders above ₹999. New users only.</p>
+            <button type="button" class="lv-pdp__coupon-copy" data-lv-copy="FIRST100">FIRST100</button>
+            <a href="#" class="lv-pdp__coupon-more">Valid on select products | More info &gt;</a>
+          </article>
+          <article class="lv-pdp__coupon">
+            <p class="lv-pdp__coupon-code">LYVORA50</p>
+            <p class="lv-pdp__coupon-desc">Extra ₹50 off on serums &amp; treatments above ₹699.</p>
+            <button type="button" class="lv-pdp__coupon-copy" data-lv-copy="LYVORA50">LYVORA50</button>
+            <a href="#" class="lv-pdp__coupon-more">Valid on select products | More info &gt;</a>
+          </article>
+          <article class="lv-pdp__coupon">
+            <p class="lv-pdp__coupon-code">GLOW20</p>
+            <p class="lv-pdp__coupon-desc">20% off on second skincare product. Auto applied at checkout.</p>
+            <button type="button" class="lv-pdp__coupon-copy" data-lv-copy="GLOW20">GLOW20</button>
+            <a href="#" class="lv-pdp__coupon-more">Valid on select products | More info &gt;</a>
+          </article>
+        </div>
+
+        <button type="button" class="lv-pdp__bag">Add to bag</button>
+
+        <p class="lv-pdp__tagline" data-lv-pdp-tagline>Clear skin is always a bright idea.</p>
+        <p class="lv-pdp__desc" data-lv-pdp-desc></p>
+        <ul class="lv-pdp__bullets">
+          <li data-lv-pdp-b1>Fades acne marks in 2 weeks</li>
+          <li data-lv-pdp-b2>Smoothens, soothes &amp; moisturizes skin</li>
+          <li data-lv-pdp-b3>Lightweight feel for everyday use</li>
+        </ul>
+
+        <div class="lv-pdp__delivery">
+          <h2 class="lv-pdp__section-title">Delivery estimate</h2>
+          <p class="lv-pdp__delivery-sub">if ordered before 12pm, today</p>
+          <a href="#lv-pincode" class="lv-pdp__pin-link">enter pincode to get delivery date.</a>
+          <form class="lv-pdp__pin-form" action="#" method="get">
+            <label class="visually-hidden" for="lv-pincode">Pincode</label>
+            <input id="lv-pincode" type="text" name="pincode" inputmode="numeric" maxlength="6"
+              placeholder="Enter pincode to get delivery date" />
+            <button type="submit">Check</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <section class="lv-acc" data-lv-acc aria-label="Product details">
+      <div class="lv-acc__row lv-acc__row--split">
+        <div class="lv-acc__item">
+          <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+            <span>What makes it unique</span>
+            <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="lv-acc__panel" hidden>
+            <p>
+              Thoughtfully formulated with high-performance actives that target visible concerns without a heavy feel.
+              Clean texture, sensorial finish, and results that show with consistent use.
+            </p>
+          </div>
+        </div>
+
+        <div class="lv-acc__item">
+          <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+            <span>How to use</span>
+            <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+              <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div class="lv-acc__panel" hidden>
+            <ol>
+              <li>Cleanse your face and pat dry.</li>
+              <li>Apply a pea-sized amount morning and/or night.</li>
+              <li>Follow with moisturizer and sunscreen in the AM.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="lv-acc__item">
+        <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+          <span>Clinical results</span>
+          <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+            <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="lv-acc__panel" hidden>
+          <ul>
+            <li>9 out of 10 users reported clearer-looking skin in 2 weeks*</li>
+            <li>Improved texture and glow with daily use*</li>
+            <li>*Based on consumer study results. Individual results may vary.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lv-acc__item">
+        <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+          <span>Ingredients</span>
+          <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+            <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="lv-acc__panel" hidden>
+          <p data-lv-acc-ingredients>
+            Key ingredients adapted to this formula. Full INCI list available on pack.
+          </p>
+        </div>
+      </div>
+
+      <div class="lv-acc__item">
+        <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+          <span>FAQs</span>
+          <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+            <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="lv-acc__panel" hidden>
+          <p><strong>Is it suitable for sensitive skin?</strong><br />Patch test first. If irritation occurs,
+            discontinue
+            use.</p>
+          <p><strong>Can I use it with other actives?</strong><br />Yes, start slowly and introduce one new product at a
+            time.</p>
+          <p><strong>How long until I see results?</strong><br />Most users notice improvement within 2–4 weeks of
+            consistent use.</p>
+        </div>
+      </div>
+
+      <div class="lv-acc__item">
+        <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+          <span>Regime selling – best paired with</span>
+          <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+            <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="lv-acc__panel" hidden>
+          <p>Pair with a gentle cleanser, a lightweight moisturizer, and daily SPF for best results.</p>
+          <ul>
+            <li>Daily Dissolve Oil Cleanser</li>
+            <li>Berry Bright Sunscreen</li>
+            <li>Defender Night Cream</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="lv-acc__item">
+        <button type="button" class="lv-acc__trigger" data-lv-acc-trigger aria-expanded="false">
+          <span>Reviews</span>
+          <svg class="lv-acc__icon" viewBox="0 0 12 8" fill="none" aria-hidden="true">
+            <path d="M1 1.5l5 5 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div class="lv-acc__panel" hidden>
+          <p data-lv-acc-reviews>Loved by customers for texture, finish, and visible results. See rating and count
+            above.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="lv-pdp__related" aria-labelledby="lv-related-heading" data-lv-pdp-related-section>
+      <h2 id="lv-related-heading" class="lv-pdp__related-title">You May Also Like</h2>
+      <div class="lv-pdp__related-viewport" data-lv-pdp-related-viewport>
+        <div class="lv-pdp__related-grid" data-lv-pdp-related></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="lv-footer" role="contentinfo">
+    <div class="lv-footer__brand">
+      <div class="lv-footer__brand-inner">
+        <h2 class="lv-footer__brand-title">
+          Lyvora Is India’s Destination For Thoughtfully Curated, 100% Authentic Beauty.
+        </h2>
+        <p class="lv-footer__brand-text">
+          We bring together skincare, haircare, and body care from formulas we trust, selected for quality,
+          performance, and relevance for Indian skin and hair.
+        </p>
+        <p class="lv-footer__brand-text">
+          Every product on Lyvora is chosen with intent. Because it’s not about chasing trends, it’s about choosing
+          what truly works.
+        </p>
+      </div>
+    </div>
+
+    <div class="lv-footer__main">
+      <div class="lv-footer__inner">
+        <div class="lv-footer__col">
+          <h3 class="lv-footer__heading">Shop</h3>
+          <ul class="lv-footer__links">
+            <li><a href="shop.html">Best Sellers</a></li>
+            <li><a href="shop.html">Skin Care</a></li>
+            <li><a href="shop.html">Hair Care</a></li>
+            <li><a href="shop.html">Lip Care</a></li>
+            <li><a href="shop.html">Kits</a></li>
+            <li><a href="shop.html" class="lv-footer__hot">Hot Deals</a></li>
+          </ul>
+        </div>
+
+        <div class="lv-footer__col">
+          <h3 class="lv-footer__heading">Information</h3>
+          <ul class="lv-footer__links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Shipping &amp; Returns</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Collaboration Application</a></li>
+            <li><a href="#">Affiliate Program</a></li>
+          </ul>
+        </div>
+
+        <div class="lv-footer__col lv-footer__col--newsletter">
+          <h3 class="lv-footer__heading">Newsletter</h3>
+          <p class="lv-footer__newsletter-text">
+            Subscribe to receive updates, access to exclusive deals, and more.
+          </p>
+          <form class="lv-footer__form" action="#" method="post">
+            <label class="visually-hidden" for="lv-pdp-newsletter-email">Email address</label>
+            <input id="lv-pdp-newsletter-email" type="email" name="email" placeholder="Enter your email address"
+              required autocomplete="email" />
+            <button type="submit" class="lv-footer__submit" aria-label="Subscribe">
+              <svg viewBox="0 0 8 14" fill="none" aria-hidden="true">
+                <path d="M1 1l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+          </form>
+          <div class="lv-footer__social">
+            <a href="#" class="lv-footer__social-link" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h2.2l.8-3H14V9c0-.6.4-1 1-1z" />
+              </svg>
+            </a>
+            <a href="#" class="lv-footer__social-link" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+            <a href="#" class="lv-footer__social-link" aria-label="YouTube">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M21.6 7.2a2.7 2.7 0 00-1.9-1.9C18 5 12 5 12 5s-6 0-7.7.3A2.7 2.7 0 002.4 7.2 28 28 0 002 12a28 28 0 00.4 4.8 2.7 2.7 0 001.9 1.9C6 19 12 19 12 19s6 0 7.7-.3a2.7 2.7 0 001.9-1.9A28 28 0 0022 12a28 28 0 00-.4-4.8zM10 15.5v-7l6 3.5-6 3.5z" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <p class="lv-footer__copy">© Lyvora 2019 - 2026. All Rights Reserved</p>
+    </div>
+
+    <a href="https://wa.me/" class="lv-footer__whatsapp" target="_blank" rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path
+          d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.96.52 3.88 1.5 5.57L2 22l4.75-1.55a10 10 0 004.79 1.2h.01c5.45 0 9.88-4.4 9.88-9.82A9.78 9.78 0 0012.04 2zm5.74 14.03c-.24.66-1.37 1.23-1.9 1.3-.49.07-1.11.1-1.79-.11-.41-.13-.94-.31-1.62-.6-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.14-1.51-1.14-2.88 0-1.37.72-2.04.97-2.32.25-.28.55-.35.73-.35h.53c.17 0 .4-.06.62.47.24.56.8 1.94.87 2.08.07.14.12.3.02.49-.1.19-.14.3-.28.46-.14.16-.29.35-.42.47-.14.14-.28.29-.12.56.16.28.71 1.17 1.53 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.17-.19.7-.81.89-1.09.19-.28.37-.23.62-.14.25.09 1.58.74 1.85.88.28.14.46.21.53.33.07.12.07.7-.17 1.36z" />
+      </svg>
+    </a>
+  </footer>
+
+  <script src="assets/js/products-data.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/product.js"></script>
+</body>
+
+</html>
