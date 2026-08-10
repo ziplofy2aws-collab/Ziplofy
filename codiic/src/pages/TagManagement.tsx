@@ -13,8 +13,8 @@ const TagManagement: React.FC = () => {
 
   return (
     <div className={adminListPageShellClass}>
-      <div className={`${adminListPageInnerClass} space-y-6`}>
-        <header className="mb-0 flex flex-wrap items-start justify-between gap-3">
+      <div className={`${adminListPageInnerClass} flex flex-col gap-8`}>
+        <header className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
               <TagIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" aria-hidden />

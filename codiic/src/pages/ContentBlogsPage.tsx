@@ -12,6 +12,19 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
+  adminListCardClass,
+  adminListFilterBarClass,
+  adminListFilterChipClass,
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSearchInputClass,
+  adminListTableCellClass,
+  adminListTableHeadClass,
+  adminListTableHeadRowClass,
+} from '../components/admin-list-ui';
+import {
   BLOG_COMMENTS_MODES,
   formatBlogCommentsLabel,
   useBlogs,
@@ -42,6 +55,9 @@ const COMMENTS_FILTER_LABELS: Record<BlogCommentsMode, string> = {
   moderated: 'Allowed, pending moderation',
   allowed: 'Allowed',
 };
+
+const checkboxClass =
+  'h-3.5 w-3.5 cursor-pointer rounded border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30';
 
 function formatBlogUpdatedAt(iso: string): string {
   try {
@@ -95,17 +111,17 @@ function FilterDropdown({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[13px] font-normal transition-colors ${
+        className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[13px] font-medium transition-colors ${
           active
-            ? 'border-gray-300 bg-gray-100 text-gray-800'
-            : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+            ? 'border-admin-border bg-admin-fill text-admin-text'
+            : 'border-admin-border bg-admin-surface text-admin-text hover:bg-admin-row-hover'
         }`}
       >
         {valueLabel || label}
-        <ChevronDownIcon className="h-3.5 w-3.5 text-gray-400" />
+        <ChevronDownIcon className="h-3.5 w-3.5 text-admin-text-subdued" />
       </button>
       {open ? (
-        <div className="absolute left-0 top-full z-30 mt-1 max-h-60 min-w-[180px] overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+        <div className="absolute left-0 top-full z-30 mt-1 max-h-60 min-w-[180px] overflow-y-auto rounded-xl border border-admin-border bg-admin-surface py-1 shadow-lg">
           {children(() => setOpen(false))}
         </div>
       ) : null}
@@ -127,7 +143,9 @@ function FilterOption({
       type="button"
       onClick={onClick}
       className={`block w-full px-3 py-2 text-left text-[13px] transition-colors ${
-        selected ? 'bg-gray-100 font-medium text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+        selected
+          ? 'bg-admin-row-hover font-medium text-admin-text'
+          : 'text-admin-text hover:bg-admin-row-hover'
       }`}
     >
       {children}
@@ -147,44 +165,48 @@ function SortMenu({
   onSortOrderChange: (order: SortOrder) => void;
 }) {
   return (
-    <div className="w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-lg">
-      <p className="px-3 py-1.5 text-[13px] font-medium text-gray-800">Sort by</p>
+    <div className="w-56 rounded-xl border border-admin-border bg-admin-surface py-2 shadow-lg">
+      <p className="px-3 py-1.5 text-[13px] font-medium text-admin-text">Sort by</p>
       {(Object.keys(SORT_FIELD_LABELS) as SortField[]).map((field) => (
         <label
           key={field}
-          className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-gray-700 hover:bg-gray-50"
+          className="flex cursor-pointer items-center gap-2.5 px-3 py-1.5 text-[13px] text-admin-text hover:bg-admin-row-hover"
         >
           <input
             type="radio"
             name="blog-sort-field"
             checked={sortField === field}
             onChange={() => onSortFieldChange(field)}
-            className="h-3.5 w-3.5 border-gray-300 text-gray-900 focus:ring-gray-400"
+            className="h-3.5 w-3.5 border-[#8c9196] text-admin-text focus:ring-[#005bd3]/30"
           />
           {SORT_FIELD_LABELS[field]}
         </label>
       ))}
 
-      <div className="my-2 border-t border-gray-100" />
+      <div className="my-2 border-t border-admin-divider" />
 
       <button
         type="button"
         onClick={() => onSortOrderChange('asc')}
         className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] transition-colors ${
-          sortOrder === 'asc' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+          sortOrder === 'asc'
+            ? 'bg-admin-row-hover text-admin-text'
+            : 'text-admin-text hover:bg-admin-row-hover'
         }`}
       >
-        <ArrowUpIcon className="h-3.5 w-3.5 text-gray-500" />
+        <ArrowUpIcon className="h-3.5 w-3.5 text-admin-text-secondary" />
         Oldest first
       </button>
       <button
         type="button"
         onClick={() => onSortOrderChange('desc')}
         className={`flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] transition-colors ${
-          sortOrder === 'desc' ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50'
+          sortOrder === 'desc'
+            ? 'bg-admin-row-hover text-admin-text'
+            : 'text-admin-text hover:bg-admin-row-hover'
         }`}
       >
-        <ArrowDownIcon className="h-3.5 w-3.5 text-gray-500" />
+        <ArrowDownIcon className="h-3.5 w-3.5 text-admin-text-secondary" />
         Newest first
       </button>
     </div>
@@ -214,8 +236,8 @@ function SortableColumnHeader({
     <button
       type="button"
       onClick={() => onColumnSort(field)}
-      className={`inline-flex items-center gap-1 text-xs font-normal transition-colors hover:text-gray-700 ${
-        isActive ? 'text-gray-700' : 'text-gray-500'
+      className={`inline-flex items-center gap-1 text-[12px] font-medium transition-colors hover:text-admin-text ${
+        isActive ? 'text-admin-text' : 'text-[#616161]'
       }`}
     >
       {label}
@@ -311,8 +333,8 @@ function BlogsTable({
         type="button"
         title="Sort"
         onClick={() => onSortOpenChange(!sortOpen)}
-        className={`inline-flex h-7 w-7 items-center justify-center rounded-md border bg-white text-gray-500 transition-colors hover:bg-gray-50 ${
-          sortOpen ? 'border-gray-300 bg-gray-50' : 'border-gray-200'
+        className={`inline-flex h-7 w-7 items-center justify-center rounded-lg border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover ${
+          sortOpen ? 'border-admin-border bg-admin-row-hover' : 'border-admin-border'
         }`}
       >
         <ArrowsUpDownIcon className="h-3.5 w-3.5" />
@@ -331,40 +353,40 @@ function BlogsTable({
   );
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="border-b border-gray-100 px-3 py-2">
+    <div className={adminListCardClass}>
+      <div className={adminListFilterBarClass}>
         {searchOpen ? (
-          <>
+          <div className="flex w-full flex-col gap-2">
             <div className="flex items-center gap-2">
               <div className="relative min-w-0 flex-1">
-                <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
+                <MagnifyingGlassIcon className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-admin-text-subdued" />
                 <input
                   type="search"
                   value={searchQuery}
                   onChange={(e) => onSearchQueryChange(e.target.value)}
                   placeholder="Searching all blogs"
                   autoFocus
-                  className="w-full rounded-md border border-blue-500 py-1.5 pl-8 pr-3 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
+                  className={adminListSearchInputClass}
                 />
               </div>
               <button
                 type="button"
                 onClick={onClearSearchAndFilters}
-                className="shrink-0 text-[13px] font-normal text-gray-800 transition-colors hover:text-gray-600"
+                className="shrink-0 text-[13px] font-normal text-admin-text transition-colors hover:text-admin-text-secondary"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 disabled
-                className="shrink-0 cursor-not-allowed text-[13px] font-normal text-gray-300"
+                className="shrink-0 cursor-not-allowed text-[13px] font-normal text-admin-text-subdued"
               >
                 Save as
               </button>
               {renderSortButton()}
             </div>
 
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2">
               <FilterDropdown
                 label="Comments"
                 valueLabel={commentsLabel}
@@ -397,20 +419,17 @@ function BlogsTable({
                 )}
               </FilterDropdown>
             </div>
-          </>
+          </div>
         ) : (
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex w-full items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-[13px] font-normal text-gray-700"
-              >
+              <button type="button" className={adminListFilterChipClass}>
                 All
               </button>
               <button
                 type="button"
                 title="Create view"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               >
                 <PlusIcon className="h-3.5 w-3.5" />
               </button>
@@ -421,7 +440,7 @@ function BlogsTable({
                 type="button"
                 title="Search and filter"
                 onClick={() => onSearchOpenChange(true)}
-                className="inline-flex h-7 items-center gap-1 rounded-md border border-gray-200 bg-white px-2 text-gray-500 transition-colors hover:bg-gray-50"
+                className="inline-flex h-7 items-center gap-1 rounded-lg border border-admin-border bg-admin-surface px-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
               >
                 <MagnifyingGlassIcon className="h-3.5 w-3.5" />
                 <Bars3BottomLeftIcon className="h-3.5 w-3.5" />
@@ -435,7 +454,7 @@ function BlogsTable({
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px] text-left">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50/50">
+            <tr className={adminListTableHeadRowClass}>
               <th className="w-10 px-3 py-2 text-center">
                 <input
                   ref={selectAllRef}
@@ -443,10 +462,10 @@ function BlogsTable({
                   checked={allVisibleSelected}
                   onChange={(e) => onSelectAllVisible(e.target.checked)}
                   aria-label="Select all blogs"
-                  className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                  className={checkboxClass}
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Title"
                   field="title"
@@ -455,7 +474,7 @@ function BlogsTable({
                   onColumnSort={onColumnSort}
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Comments"
                   field="comments"
@@ -464,7 +483,7 @@ function BlogsTable({
                   onColumnSort={onColumnSort}
                 />
               </th>
-              <th className="px-3 py-2">
+              <th className={adminListTableHeadClass}>
                 <SortableColumnHeader
                   label="Updated"
                   field="updated"
@@ -475,16 +494,22 @@ function BlogsTable({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {loading && rows.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-3 py-8 text-center text-[13px] font-normal text-gray-500">
+                <td
+                  colSpan={4}
+                  className="px-3 py-8 text-center text-[13px] text-admin-text-secondary"
+                >
                   Loading blogs…
                 </td>
               </tr>
             ) : rows.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-3 py-8 text-center text-[13px] font-normal text-gray-500">
+                <td
+                  colSpan={4}
+                  className="px-3 py-8 text-center text-[13px] text-admin-text-secondary"
+                >
                   No blogs found
                 </td>
               </tr>
@@ -493,8 +518,10 @@ function BlogsTable({
                 <tr
                   key={blog.id}
                   onClick={() => onBlogClick(blog.id)}
-                  className={`cursor-pointer transition-colors ${
-                    selectedIds.has(blog.id) ? 'bg-gray-50' : 'hover:bg-gray-50/80'
+                  className={`cursor-pointer border-b border-admin-divider transition-colors last:border-b-0 ${
+                    selectedIds.has(blog.id)
+                      ? 'bg-admin-row-hover'
+                      : 'bg-admin-surface hover:bg-admin-row-hover'
                   }`}
                 >
                   <td
@@ -506,22 +533,20 @@ function BlogsTable({
                       checked={selectedIds.has(blog.id)}
                       onChange={(e) => onSelectRow(blog.id, e.target.checked)}
                       aria-label={`Select blog ${blog.title}`}
-                      className="h-3.5 w-3.5 cursor-pointer rounded border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                      className={checkboxClass}
                     />
                   </td>
-                  <td className="px-3 py-2.5 text-[13px] font-semibold text-gray-800">
+                  <td className="px-3 py-2.5 text-[13px] font-medium text-admin-text">
                     <Link
                       to={`/content/blogs/${blog.id}`}
                       onClick={(e) => e.stopPropagation()}
-                      className="text-gray-800 hover:text-blue-600"
+                      className="text-admin-text hover:text-[#005bd3]"
                     >
                       {blog.title}
                     </Link>
                   </td>
-                  <td className="px-3 py-2.5 text-[13px] font-normal text-gray-600">
-                    {blog.commentsLabel}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-[13px] font-normal text-gray-600">
+                  <td className={adminListTableCellClass}>{blog.commentsLabel}</td>
+                  <td className={adminListTableCellClass}>
                     {formatBlogUpdatedAt(blog.updatedAt)}
                   </td>
                 </tr>
@@ -635,26 +660,23 @@ export const ContentBlogsPage = () => {
   const hasActiveFilters = searchQuery.trim().length > 0 || commentsFilter !== 'all';
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={`${adminListPageInnerClass} py-5`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <nav className="flex min-w-0 items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
             <Link
               to="/content/articles"
-              className="inline-flex items-center gap-1 font-normal text-gray-500 transition-colors hover:text-gray-700"
+              className={`inline-flex items-center gap-1 font-medium ${adminListFooterLinkClass}`}
             >
               <PencilSquareIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
               Blog posts
             </Link>
-            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-300" aria-hidden />
-            <span className="truncate font-normal text-gray-700">Manage blogs</span>
+            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-admin-text-subdued" aria-hidden />
+            <span className="truncate font-medium text-admin-text">Manage blogs</span>
           </nav>
 
-          <Link
-            to="/content/blogs/new"
-            className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-[13px] font-medium text-white transition-colors hover:bg-blue-700"
-          >
-            <PlusIcon className="h-3.5 w-3.5" />
+          <Link to="/content/blogs/new" className={adminListPrimaryButtonClass}>
+            <PlusIcon className="mr-1.5 h-3.5 w-3.5" />
             Add blog
           </Link>
         </div>
@@ -685,8 +707,8 @@ export const ContentBlogsPage = () => {
         />
 
         <div className="py-5 text-center">
-          <p className="text-xs text-gray-500">
-            <a href="#" className="text-blue-600 hover:text-blue-700">
+          <p className="text-[12px] text-admin-text-secondary">
+            <a href="#" className={adminListFooterLinkClass}>
               Blogs
             </a>{' '}
             are a great way to build a community around your products and your brand.

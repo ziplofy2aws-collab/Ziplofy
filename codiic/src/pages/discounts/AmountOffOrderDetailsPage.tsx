@@ -107,8 +107,8 @@ const AmountOffOrderDetailsPage: React.FC = () => {
   if (!discount) {
     return id && loading ? (
       <div className={`${discountPageShellClass} flex min-h-[60vh] flex-col items-center justify-center gap-3`}>
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-        <p className="text-[13px] text-gray-500">Loading discount…</p>
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+        <p className="text-[13px] text-admin-text-secondary">Loading discount…</p>
       </div>
     ) : (
       <DiscountNotFound />
@@ -249,25 +249,25 @@ const AmountOffOrderDetailsPage: React.FC = () => {
           >
             {ordersLoading ? (
               <div className="flex justify-center py-8">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
               </div>
             ) : ordersData && ordersData.data.length > 0 ? (
               <div className="space-y-4">
-                <div className="overflow-x-auto rounded-lg border border-gray-200">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                <div className="overflow-x-auto rounded-lg border border-admin-border">
+                  <table className="min-w-full divide-y divide-admin-divider">
+                    <thead className="bg-admin-table-header">
                       <tr>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-gray-500">Customer</th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-gray-500">Order</th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-gray-500">Total</th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-gray-500">Used at</th>
-                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-gray-500">Actions</th>
+                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-admin-text-secondary">Customer</th>
+                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-admin-text-secondary">Order</th>
+                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-admin-text-secondary">Total</th>
+                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-admin-text-secondary">Used at</th>
+                        <th className="px-3 py-2.5 text-left text-[12px] font-medium text-admin-text-secondary">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 bg-white">
+                    <tbody className="divide-y divide-admin-divider bg-admin-surface">
                       {ordersData.data.map((row: AmountOffOrderDiscountUsageOrder, idx: number) => (
-                        <tr key={idx} className="hover:bg-gray-50/50">
-                          <td className="px-3 py-2.5 text-[13px] text-gray-900">
+                        <tr key={idx} className="hover:bg-admin-row-hover/50">
+                          <td className="px-3 py-2.5 text-[13px] text-admin-text">
                             {row.customer ? (
                               <span>
                                 {[row.customer.firstName, row.customer.lastName]
@@ -275,24 +275,24 @@ const AmountOffOrderDetailsPage: React.FC = () => {
                                   .join(' ')
                                   .trim() || '—'}
                                 {row.customer.email ? (
-                                  <span className="block text-[12px] text-gray-500">{row.customer.email}</span>
+                                  <span className="block text-[12px] text-admin-text-secondary">{row.customer.email}</span>
                                 ) : null}
                               </span>
                             ) : (
                               '—'
                             )}
                           </td>
-                          <td className="px-3 py-2.5 text-[13px] text-gray-900">
+                          <td className="px-3 py-2.5 text-[13px] text-admin-text">
                             {row.order ? (
                               <span className="font-mono text-[12px]">#{String(row.order._id).slice(-8)}</span>
                             ) : (
                               '—'
                             )}
                           </td>
-                          <td className="px-3 py-2.5 text-[13px] text-gray-900">
+                          <td className="px-3 py-2.5 text-[13px] text-admin-text">
                             {row.order ? `₹${(row.order.total / 100).toFixed(2)}` : '—'}
                           </td>
-                          <td className="px-3 py-2.5 text-[13px] text-gray-500">
+                          <td className="px-3 py-2.5 text-[13px] text-admin-text-secondary">
                             {row.usage?.usedAt ? new Date(row.usage.usedAt).toLocaleString() : '—'}
                           </td>
                           <td className="px-3 py-2.5">
@@ -300,7 +300,7 @@ const AmountOffOrderDetailsPage: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => navigate(`/orders/${row.order!._id}`)}
-                                className="text-[13px] font-medium text-gray-700 hover:text-gray-900"
+                                className="text-[13px] font-medium text-admin-text hover:text-admin-text"
                               >
                                 View order
                               </button>
@@ -313,13 +313,13 @@ const AmountOffOrderDetailsPage: React.FC = () => {
                 </div>
                 {ordersData.pagination &&
                 ordersData.pagination.totalItems > ordersData.pagination.itemsPerPage ? (
-                  <p className="text-[12px] text-gray-500">
+                  <p className="text-[12px] text-admin-text-secondary">
                     Showing {ordersData.data.length} of {ordersData.pagination.totalItems} orders
                   </p>
                 ) : null}
               </div>
             ) : (
-              <p className="py-6 text-center text-[13px] text-gray-500">
+              <p className="py-6 text-center text-[13px] text-admin-text-secondary">
                 No orders have used this discount yet.
               </p>
             )}

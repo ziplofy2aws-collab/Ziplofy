@@ -166,6 +166,11 @@ const BlogPostCommentsPage = lazy(() =>
 const ContactFormSubmissionsPage = lazy(() =>
   import("./pages/ContactFormSubmissionsPage").then(m => ({ default: m.ContactFormSubmissionsPage }))
 );
+const ContactFormSubmissionDetailPage = lazy(() =>
+  import("./pages/ContactFormSubmissionDetailPage").then(m => ({
+    default: m.ContactFormSubmissionDetailPage,
+  }))
+);
 const NewsletterSubscriptionsPage = lazy(() =>
   import("./pages/NewsletterSubscriptionsPage").then(m => ({ default: m.NewsletterSubscriptionsPage }))
 );
@@ -450,6 +455,10 @@ const AdminApp: React.FC = () => {
             <Route path="/content/articles/:articleId" element={<BlogPostEditPage />} />
             <Route path="/content/comments/article/:articleId" element={<BlogPostCommentsPage />} />
             <Route path="/content/contact-submissions" element={<ContactFormSubmissionsPage />} />
+            <Route
+              path="/content/contact-submissions/:submissionId"
+              element={<ContactFormSubmissionDetailPage />}
+            />
             <Route path="/content/newsletter-subscriptions" element={<NewsletterSubscriptionsPage />} />
             <Route path="/content/blogs" element={<ContentBlogsPage />} />
             <Route path="/content/blogs/new" element={<ContentBlogCreatePage />} />

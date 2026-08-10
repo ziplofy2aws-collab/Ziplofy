@@ -169,8 +169,8 @@ const DiscountDetailsPage: React.FC = () => {
       <>
         {id && loading ? (
           <div className={`${discountPageShellClass} flex min-h-[60vh] flex-col items-center justify-center gap-3`}>
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-            <p className="text-[13px] text-gray-500">Loading discount…</p>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+            <p className="text-[13px] text-admin-text-secondary">Loading discount…</p>
           </div>
         ) : (
           <DiscountNotFound />
@@ -240,45 +240,45 @@ const DiscountDetailsPage: React.FC = () => {
             />
 
             {/* Orders where this discount was used */}
-            <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-200">
-                <h3 className="text-base font-semibold text-gray-900">Orders using this discount</h3>
-                <p className="text-sm text-gray-500 mt-0.5">
+            <div className="rounded-xl border border-admin-border bg-admin-surface overflow-hidden">
+              <div className="px-5 py-4 border-b border-admin-border">
+                <h3 className="text-base font-semibold text-admin-text">Orders using this discount</h3>
+                <p className="text-sm text-admin-text-secondary mt-0.5">
                   Orders where customers applied this amount off products discount
                 </p>
               </div>
               <div className="p-5">
                 {ordersLoading ? (
                   <div className="flex justify-center py-8">
-                    <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-admin-text-subdued border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : ordersData && ordersData.data.length > 0 ? (
                   <div className="space-y-4">
                     <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
+                      <table className="min-w-full divide-y divide-admin-divider">
                         <thead>
-                          <tr className="bg-gray-50">
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                          <tr className="bg-admin-table-header">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">
                               Customer
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">
                               Order
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">
                               Total
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">
                               Used at
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">
                               Actions
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-admin-divider">
                           {ordersData.data.map((row: AmountOffProductsDiscountUsageOrder, idx: number) => (
-                            <tr key={idx} className="hover:bg-gray-50/50">
-                              <td className="px-4 py-3 text-sm text-gray-900">
+                            <tr key={idx} className="hover:bg-admin-row-hover/50">
+                              <td className="px-4 py-3 text-sm text-admin-text">
                                 {row.customer ? (
                                   <span>
                                     {[row.customer.firstName, row.customer.lastName]
@@ -286,7 +286,7 @@ const DiscountDetailsPage: React.FC = () => {
                                       .join(" ")
                                       .trim() || "—"}
                                     {row.customer.email && (
-                                      <span className="block text-gray-500 text-xs">
+                                      <span className="block text-admin-text-secondary text-xs">
                                         {row.customer.email}
                                       </span>
                                     )}
@@ -295,7 +295,7 @@ const DiscountDetailsPage: React.FC = () => {
                                   "—"
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-900">
+                              <td className="px-4 py-3 text-sm text-admin-text">
                                 {row.order ? (
                                   <span className="font-mono text-xs">
                                     #{String(row.order._id).slice(-8)}
@@ -304,10 +304,10 @@ const DiscountDetailsPage: React.FC = () => {
                                   "—"
                                 )}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-900">
+                              <td className="px-4 py-3 text-sm text-admin-text">
                                 {row.order ? `₹${(row.order.total / 100).toFixed(2)}` : "—"}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-500">
+                              <td className="px-4 py-3 text-sm text-admin-text-secondary">
                                 {row.usage?.usedAt
                                   ? new Date(row.usage.usedAt).toLocaleString()
                                   : "—"}
@@ -317,7 +317,7 @@ const DiscountDetailsPage: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() => navigate(`/orders/${row.order!._id}`)}
-                                    className="text-[13px] font-medium text-gray-700 hover:text-gray-900"
+                                    className="text-[13px] font-medium text-admin-text hover:text-admin-text"
                                   >
                                     View order
                                   </button>
@@ -331,14 +331,14 @@ const DiscountDetailsPage: React.FC = () => {
                     {ordersData.pagination &&
                       ordersData.pagination.totalItems >
                         ordersData.pagination.itemsPerPage && (
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-admin-text-secondary">
                           Showing {ordersData.data.length} of{" "}
                           {ordersData.pagination.totalItems} orders
                         </p>
                       )}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500 py-6 text-center">
+                  <p className="text-sm text-admin-text-secondary py-6 text-center">
                     No orders have used this discount yet.
                   </p>
                 )}

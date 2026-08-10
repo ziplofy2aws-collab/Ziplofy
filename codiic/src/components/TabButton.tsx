@@ -20,10 +20,10 @@ const TabButton: React.FC<TabButtonProps> = ({
       <button
         type="button"
         onClick={() => onClick(id)}
-        className={`rounded-xl px-3.5 py-2 text-sm font-semibold transition-all sm:px-4 ${
+        className={`rounded-lg px-3 py-1.5 text-[13px] font-medium transition-colors sm:px-3.5 ${
           isActive
-            ? 'bg-blue-600 text-white shadow-sm shadow-blue-500/25'
-            : 'border border-gray-200/90 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900'
+            ? 'bg-admin-text text-white'
+            : 'border border-admin-border bg-admin-surface text-admin-text hover:bg-admin-row-hover'
         }`}
       >
         {label}
@@ -35,10 +35,10 @@ const TabButton: React.FC<TabButtonProps> = ({
     <button
       type="button"
       onClick={() => onClick(id)}
-      className={`px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
+      className={`-mb-px border-b-2 px-4 py-2.5 text-[13px] font-medium transition-colors ${
         isActive
-          ? 'text-blue-600 border-blue-600'
-          : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+          ? 'border-admin-text text-admin-text'
+          : 'border-transparent text-admin-text-secondary hover:border-admin-border hover:text-admin-text'
       }`}
     >
       {label}

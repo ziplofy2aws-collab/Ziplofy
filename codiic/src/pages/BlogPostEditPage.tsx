@@ -10,6 +10,13 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import {
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from '../components/admin-list-ui';
 import { DeleteBlogPostModal } from '../components/DeleteBlogPostModal';
 import ArticleAddedBanner from '../components/blog-posts/ArticleAddedBanner';
 import BlogPostFormPageSkeleton from '../components/blog-posts/BlogPostFormPageSkeleton';
@@ -60,9 +67,9 @@ function BlogPostCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
-        <h2 className="text-[13px] font-medium text-gray-800">{title}</h2>
+    <section className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
+      <div className="flex items-center justify-between gap-3 border-b border-admin-divider bg-admin-table-header px-4 py-2.5">
+        <h2 className="text-[13px] font-semibold text-admin-text">{title}</h2>
         {action}
       </div>
       <div className="p-4">{children}</div>
@@ -73,18 +80,27 @@ function BlogPostCard({
 function VisibilityBadge({ visibility }: { visibility: Visibility }) {
   if (visibility === 'visible') {
     return (
-      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[12px] font-medium text-emerald-700">
+      <span className="inline-flex items-center rounded-full bg-[#cdfee1] px-2 py-0.5 text-[12px] font-medium text-[#0c5132]">
         Visible
       </span>
     );
   }
 
   return (
-    <span className="inline-flex items-center rounded-full bg-sky-50 px-2 py-0.5 text-[12px] font-medium text-sky-700">
+    <span className="inline-flex items-center rounded-full bg-admin-secondary px-2 py-0.5 text-[12px] font-medium text-admin-text-secondary">
       Hidden
     </span>
   );
 }
+
+const fieldLabelClass = 'mb-1.5 block text-[12px] font-medium text-admin-text-secondary';
+const fieldInputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface py-1.5 pl-3 pr-9 text-[13px] font-normal text-admin-text placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const fieldInputPlainClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const radioClass = 'h-3.5 w-3.5 border-admin-border text-admin-text focus:ring-[#005bd3]/30';
+const iconButtonClass =
+  'inline-flex h-8 w-8 items-center justify-center rounded-lg border border-admin-border bg-admin-surface text-admin-text-secondary transition-colors hover:bg-admin-row-hover disabled:cursor-not-allowed disabled:opacity-40';
 
 function snapshotFromPost(post: BlogPost): BlogPostFormSnapshot {
   return {
@@ -423,7 +439,7 @@ export const BlogPostEditPage = () => {
 
   if (!articleId) {
     return (
-      <div className="min-h-screen bg-page-background-color p-8 text-center text-[13px] text-gray-500">
+      <div className="min-h-screen bg-page-background-color p-8 text-center text-[13px] text-admin-text-secondary">
         Blog post not found.
       </div>
     );
@@ -434,18 +450,18 @@ export const BlogPostEditPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={`${adminListPageInnerClass} py-5`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <Link
               to="/content/articles"
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
+              className={iconButtonClass}
               aria-label="Back to blog posts"
             >
               <ArrowLeftIcon className="h-4 w-4" />
             </Link>
-            <h1 className="truncate text-[15px] font-semibold text-gray-900">
+            <h1 className="truncate text-[15px] font-semibold text-admin-text">
               {title.trim() || initial?.title || 'Blog post'}
             </h1>
             {loaded ? <VisibilityBadge visibility={visibility} /> : null}
@@ -457,16 +473,12 @@ export const BlogPostEditPage = () => {
                 href={viewHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+                className={adminListSecondaryButtonClass}
               >
                 View
               </a>
             ) : (
-              <button
-                type="button"
-                disabled
-                className="inline-flex cursor-not-allowed items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-400"
-              >
+              <button type="button" disabled className={adminListSecondaryButtonClass}>
                 View
               </button>
             )}
@@ -474,7 +486,7 @@ export const BlogPostEditPage = () => {
             <button
               type="button"
               onClick={() => navigate(`/content/comments/article/${articleId}`)}
-              className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+              className={adminListSecondaryButtonClass}
             >
               Manage comments
             </button>
@@ -483,20 +495,20 @@ export const BlogPostEditPage = () => {
               <button
                 type="button"
                 onClick={() => setMoreMenuOpen((open) => !open)}
-                className="inline-flex items-center gap-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+                className={adminListSecondaryButtonClass}
               >
                 More actions
-                <ChevronDownIcon className="h-3.5 w-3.5" aria-hidden />
+                <ChevronDownIcon className="ml-1 h-3.5 w-3.5" aria-hidden />
               </button>
               {moreMenuOpen ? (
-                <div className="absolute right-0 z-20 mt-1 min-w-44 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                <div className="absolute right-0 z-20 mt-1 min-w-44 overflow-hidden rounded-xl border border-admin-border bg-admin-surface py-1 shadow-lg">
                   <button
                     type="button"
                     onClick={() => {
                       setMoreMenuOpen(false);
                       setDeleteModalOpen(true);
                     }}
-                    className="block w-full px-3 py-2 text-left text-[13px] font-normal text-red-600 hover:bg-gray-50"
+                    className="block w-full px-3 py-2 text-left text-[13px] text-red-600 hover:bg-admin-row-hover"
                   >
                     Delete blog post
                   </button>
@@ -508,7 +520,7 @@ export const BlogPostEditPage = () => {
               type="button"
               disabled={!previousPostId}
               onClick={() => previousPostId && navigate(`/content/articles/${previousPostId}`)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className={iconButtonClass}
               aria-label="Previous blog post"
             >
               <ChevronUpIcon className="h-4 w-4" />
@@ -517,7 +529,7 @@ export const BlogPostEditPage = () => {
               type="button"
               disabled={!nextPostId}
               onClick={() => nextPostId && navigate(`/content/articles/${nextPostId}`)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+              className={iconButtonClass}
               aria-label="Next blog post"
             >
               <ChevronDownIcon className="h-4 w-4" />
@@ -533,233 +545,224 @@ export const BlogPostEditPage = () => {
           />
         ) : null}
 
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-              <div className="flex flex-col gap-3">
-                <section className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm">
-                  <div className="space-y-4">
-                    <div>
-                      <label
-                        htmlFor="blog-post-title-edit"
-                        className="mb-1 block text-xs font-normal text-gray-500"
-                      >
-                        Title
-                      </label>
-                      <div className="relative">
-                        <input
-                          id="blog-post-title-edit"
-                          type="text"
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          className="w-full rounded-md border border-gray-200 py-1.5 pl-3 pr-9 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
-                        />
-                        <SparklesIcon
-                          className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300"
-                          aria-hidden
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="mb-1 block text-xs font-normal text-gray-500">Content</label>
-                      <ProductDescriptionInput
-                        value={content}
-                        onChange={setContent}
-                        hideLabel
-                        placeholder="Write your blog post..."
-                        enableTemplates={false}
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                <section className="rounded-lg border border-gray-200/80 bg-white shadow-sm">
-                  <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
-                    <h2 className="text-[13px] font-medium text-gray-800">Excerpt</h2>
-                    <button
-                      type="button"
-                      onClick={() => setExcerptEditing((value) => !value)}
-                      className="rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
-                      aria-expanded={excerptEditing}
-                      aria-label={excerptEditing ? 'Close excerpt editor' : 'Edit excerpt'}
-                    >
-                      <PencilIcon className="h-4 w-4" />
-                    </button>
-                  </div>
-
-                  <div className="p-4">
-                    {!excerptEditing ? (
-                      <p className="text-[13px] font-normal text-gray-500">
-                        {excerptEmpty
-                          ? 'Add a summary of the post to appear on your home page or blog.'
-                          : excerpt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()}
-                      </p>
-                    ) : (
-                      <div className="space-y-3">
-                        <p className="text-[13px] font-normal text-gray-500">
-                          Add a summary of the post to appear on your home page or blog.
-                        </p>
-                        <ProductDescriptionInput
-                          value={excerpt}
-                          onChange={setExcerpt}
-                          hideLabel
-                          placeholder="Write an excerpt..."
-                          enableImages={false}
-                          enableTemplates={false}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </section>
-
-                <SearchEngineListingEditor
-                  entityTitle={title}
-                  entityDescription={excerpt || content}
-                  pageTitle={pageTitle}
-                  metaDescription={metaDescription}
-                  urlHandle={urlHandle}
-                  urlPrefix={selectedBlog ? `blogs/${selectedBlog.urlHandle}` : 'blogs'}
-                  fallbackSlug="blog-post"
-                  urlOrigin={storefrontBase || undefined}
-                  metaDescriptionMax={SNIPPET_MAX}
-                  onPageTitleChange={setPageTitle}
-                  onMetaDescriptionChange={setMetaDescription}
-                  onUrlHandleChange={setUrlHandle}
-                  compact
-                />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <BlogPostCard
-                  title="Visibility"
-                  action={<CalendarDaysIcon className="h-4 w-4 text-gray-400" aria-hidden />}
-                >
-                  <div className="space-y-2">
-                    <label className="flex cursor-pointer items-center gap-2 text-[13px] font-normal text-gray-700">
-                      <input
-                        type="radio"
-                        name="blog-post-visibility-edit"
-                        checked={visibility === 'visible'}
-                        onChange={() => setVisibility('visible')}
-                        className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
-                      />
-                      Visible
-                    </label>
-                    <label className="flex cursor-pointer items-center gap-2 text-[13px] font-normal text-gray-700">
-                      <input
-                        type="radio"
-                        name="blog-post-visibility-edit"
-                        checked={visibility === 'hidden'}
-                        onChange={() => setVisibility('hidden')}
-                        className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
-                      />
-                      Hidden
-                    </label>
-                  </div>
-                </BlogPostCard>
-
-                <BlogPostCard title="Image">
-                  {featuredImageUrl ? (
-                    <div className="space-y-2">
-                      <div className="relative overflow-hidden rounded-md border border-gray-200">
-                        <img
-                          src={featuredImageUrl}
-                          alt="Blog post featured"
-                          className="h-40 w-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleRemoveImage}
-                          className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/65 text-white transition hover:bg-black/80"
-                          aria-label="Remove image"
-                        >
-                          <XMarkIcon className="h-4 w-4" />
-                        </button>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setImagePickerOpen(true)}
-                        className="text-[12px] font-normal text-blue-600 hover:text-blue-700"
-                      >
-                        Change image
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex min-h-[140px] flex-col items-center justify-center rounded-md border border-dashed border-gray-200 bg-gray-50/60 px-4 py-6 text-center">
-                      <button
-                        type="button"
-                        onClick={() => setImagePickerOpen(true)}
-                        className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
-                      >
-                        Add image
-                      </button>
-                      <p className="mt-2 text-[12px] font-normal text-gray-400">
-                        Choose from your store files or upload a new image
-                      </p>
-                    </div>
-                  )}
-                </BlogPostCard>
-
-                <BlogPostCard title="Organization">
-                  <div className="space-y-3">
-                    <div>
-                      <label
-                        htmlFor="blog-post-author-edit"
-                        className="mb-1 block text-xs font-normal text-gray-500"
-                      >
-                        Author
-                      </label>
-                      <input
-                        id="blog-post-author-edit"
-                        type="text"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-[13px] font-normal text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="blog-post-blog-edit"
-                        className="mb-1 block text-xs font-normal text-gray-500"
-                      >
-                        Blog
-                      </label>
-                      <select
-                        id="blog-post-blog-edit"
-                        value={blogId}
-                        onChange={(e) => setBlogId(e.target.value)}
-                        className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
-                      >
-                        {blogs.length === 0 ? (
-                          <option value="">No blogs available</option>
-                        ) : (
-                          blogs.map((row) => (
-                            <option key={row._id} value={row._id}>
-                              {row.title}
-                            </option>
-                          ))
-                        )}
-                      </select>
-                    </div>
-                    <BlogTagsInput
-                      selectedTagIds={selectedTagIds}
-                      activeStoreId={activeStoreId}
-                      onTagsChange={setSelectedTagIds}
-                      inputId="blog-tags-edit"
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+          <div className="flex flex-col gap-4">
+            <section className="rounded-xl border border-admin-border bg-admin-surface p-4 sm:p-5">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="blog-post-title-edit" className={fieldLabelClass}>
+                    Title
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="blog-post-title-edit"
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className={fieldInputClass}
+                    />
+                    <SparklesIcon
+                      className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-text-subdued"
+                      aria-hidden
                     />
                   </div>
-                </BlogPostCard>
-              </div>
-            </div>
+                </div>
 
-        <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                onClick={() => void handleSave()}
-                disabled={!canSave}
-                className="inline-flex min-w-22 items-center justify-center rounded-lg px-4 py-1.5 text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 enabled:bg-blue-600 enabled:text-white enabled:hover:bg-blue-700"
-              >
-                {saving ? 'Saving…' : 'Save'}
-              </button>
+                <div>
+                  <label className={fieldLabelClass}>Content</label>
+                  <ProductDescriptionInput
+                    value={content}
+                    onChange={setContent}
+                    hideLabel
+                    placeholder="Write your blog post..."
+                    enableTemplates={false}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
+              <div className="flex items-center justify-between gap-3 border-b border-admin-divider bg-admin-table-header px-4 py-2.5">
+                <h2 className="text-[13px] font-semibold text-admin-text">Excerpt</h2>
+                <button
+                  type="button"
+                  onClick={() => setExcerptEditing((value) => !value)}
+                  className="rounded-lg p-1 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
+                  aria-expanded={excerptEditing}
+                  aria-label={excerptEditing ? 'Close excerpt editor' : 'Edit excerpt'}
+                >
+                  <PencilIcon className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="p-4">
+                {!excerptEditing ? (
+                  <p className="text-[13px] text-admin-text-secondary">
+                    {excerptEmpty
+                      ? 'Add a summary of the post to appear on your home page or blog.'
+                      : excerpt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()}
+                  </p>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-[13px] text-admin-text-secondary">
+                      Add a summary of the post to appear on your home page or blog.
+                    </p>
+                    <ProductDescriptionInput
+                      value={excerpt}
+                      onChange={setExcerpt}
+                      hideLabel
+                      placeholder="Write an excerpt..."
+                      enableImages={false}
+                      enableTemplates={false}
+                    />
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <SearchEngineListingEditor
+              entityTitle={title}
+              entityDescription={excerpt || content}
+              pageTitle={pageTitle}
+              metaDescription={metaDescription}
+              urlHandle={urlHandle}
+              urlPrefix={selectedBlog ? `blogs/${selectedBlog.urlHandle}` : 'blogs'}
+              fallbackSlug="blog-post"
+              urlOrigin={storefrontBase || undefined}
+              metaDescriptionMax={SNIPPET_MAX}
+              onPageTitleChange={setPageTitle}
+              onMetaDescriptionChange={setMetaDescription}
+              onUrlHandleChange={setUrlHandle}
+              compact
+            />
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <BlogPostCard
+              title="Visibility"
+              action={<CalendarDaysIcon className="h-4 w-4 text-admin-text-subdued" aria-hidden />}
+            >
+              <div className="space-y-2">
+                <label className="flex cursor-pointer items-center gap-2 text-[13px] text-admin-text">
+                  <input
+                    type="radio"
+                    name="blog-post-visibility-edit"
+                    checked={visibility === 'visible'}
+                    onChange={() => setVisibility('visible')}
+                    className={radioClass}
+                  />
+                  Visible
+                </label>
+                <label className="flex cursor-pointer items-center gap-2 text-[13px] text-admin-text">
+                  <input
+                    type="radio"
+                    name="blog-post-visibility-edit"
+                    checked={visibility === 'hidden'}
+                    onChange={() => setVisibility('hidden')}
+                    className={radioClass}
+                  />
+                  Hidden
+                </label>
+              </div>
+            </BlogPostCard>
+
+            <BlogPostCard title="Image">
+              {featuredImageUrl ? (
+                <div className="space-y-2">
+                  <div className="relative overflow-hidden rounded-lg border border-admin-border">
+                    <img
+                      src={featuredImageUrl}
+                      alt="Blog post featured"
+                      className="h-40 w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/65 text-white transition hover:bg-black/80"
+                      aria-label="Remove image"
+                    >
+                      <XMarkIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setImagePickerOpen(true)}
+                    className={`text-[12px] font-medium ${adminListFooterLinkClass}`}
+                  >
+                    Change image
+                  </button>
+                </div>
+              ) : (
+                <div className="flex min-h-[140px] flex-col items-center justify-center rounded-lg border border-dashed border-admin-border bg-admin-fill/40 px-4 py-6 text-center">
+                  <button
+                    type="button"
+                    onClick={() => setImagePickerOpen(true)}
+                    className={adminListSecondaryButtonClass}
+                  >
+                    Add image
+                  </button>
+                  <p className="mt-2 text-[12px] text-admin-text-subdued">
+                    Choose from your store files or upload a new image
+                  </p>
+                </div>
+              )}
+            </BlogPostCard>
+
+            <BlogPostCard title="Organization">
+              <div className="space-y-3">
+                <div>
+                  <label htmlFor="blog-post-author-edit" className={fieldLabelClass}>
+                    Author
+                  </label>
+                  <input
+                    id="blog-post-author-edit"
+                    type="text"
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    className={fieldInputPlainClass}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="blog-post-blog-edit" className={fieldLabelClass}>
+                    Blog
+                  </label>
+                  <select
+                    id="blog-post-blog-edit"
+                    value={blogId}
+                    onChange={(e) => setBlogId(e.target.value)}
+                    className={fieldInputPlainClass}
+                  >
+                    {blogs.length === 0 ? (
+                      <option value="">No blogs available</option>
+                    ) : (
+                      blogs.map((row) => (
+                        <option key={row._id} value={row._id}>
+                          {row.title}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+                <BlogTagsInput
+                  selectedTagIds={selectedTagIds}
+                  activeStoreId={activeStoreId}
+                  onTagsChange={setSelectedTagIds}
+                  inputId="blog-tags-edit"
+                />
+              </div>
+            </BlogPostCard>
+          </div>
+        </div>
+
+        <div className="mt-5 flex justify-end">
+          <button
+            type="button"
+            onClick={() => void handleSave()}
+            disabled={!canSave}
+            className={adminListPrimaryButtonClass}
+          >
+            {saving ? 'Saving…' : 'Save'}
+          </button>
         </div>
       </div>
 

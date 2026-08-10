@@ -254,10 +254,10 @@ const FreeShippingPage: React.FC = () => {
   }));
 
   const inputClass =
-    'w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-[13px] font-normal text-gray-700 transition-colors placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200';
+    'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text transition-colors placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
 
   return (
-    <div className="min-h-screen bg-page-background-color">
+    <div className="w-full">
       <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <DiscountFormHeader
@@ -283,39 +283,39 @@ const FreeShippingPage: React.FC = () => {
           )}
 
           {/* Method */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Method</h2>
+              <h2 className="text-[13px] font-semibold text-admin-text mb-4">Method</h2>
               <fieldset className="mb-3">
-                <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Discount method</legend>
+                <legend className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-2">Discount method</legend>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="method"
                       value="discount-code"
                       checked={formData.method === 'discount-code'}
                       onChange={(e) => handleInputChange('method', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Discount code</span>
+                    <span className="text-sm text-admin-text">Discount code</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="method"
                       value="automatic"
                       checked={formData.method === 'automatic'}
                       onChange={(e) => handleInputChange('method', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Automatic discount</span>
+                    <span className="text-sm text-admin-text">Automatic discount</span>
                   </label>
                 </div>
               </fieldset>
               {formData.method === 'discount-code' && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Discount code</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Discount code</label>
                   <input
                     type="text"
                     value={formData.discountCode}
@@ -323,12 +323,12 @@ const FreeShippingPage: React.FC = () => {
                     placeholder="e.g. FREESHIP"
                     className={inputClass}
                   />
-                  <p className="mt-1.5 text-xs text-gray-500">Customers enter this code at checkout</p>
+                  <p className="mt-1.5 text-xs text-admin-text-secondary">Customers enter this code at checkout</p>
                 </div>
               )}
               {formData.method === 'automatic' && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Title</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Title</label>
                   <input
                     type="text"
                     value={formData.title}
@@ -336,48 +336,48 @@ const FreeShippingPage: React.FC = () => {
                     placeholder="e.g. Free shipping"
                     className={inputClass}
                   />
-                  <p className="mt-1.5 text-xs text-gray-500">Shown to customers when the discount applies</p>
+                  <p className="mt-1.5 text-xs text-admin-text-secondary">Shown to customers when the discount applies</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Country */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Country</h2>
+              <h2 className="text-[13px] font-semibold text-admin-text mb-4">Country</h2>
               
               <fieldset className="mb-3">
-                <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Country selection</legend>
+                <legend className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-2">Country selection</legend>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="countrySelection"
                       value="all-countries"
                       checked={formData.countrySelection === 'all-countries'}
                       onChange={(e) => handleInputChange('countrySelection', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">All countries</span>
+                    <span className="text-sm text-admin-text">All countries</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="countrySelection"
                       value="selected-countries"
                       checked={formData.countrySelection === 'selected-countries'}
                       onChange={(e) => handleInputChange('countrySelection', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Selected countries</span>
+                    <span className="text-sm text-admin-text">Selected countries</span>
                   </label>
                 </div>
               </fieldset>
 
               {formData.countrySelection === 'selected-countries' && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Search countries</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Search countries</label>
                   <div className="relative max-w-md">
                     <input
                       type="text"
@@ -388,7 +388,7 @@ const FreeShippingPage: React.FC = () => {
                     />
                     {countriesLoading && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-admin-text-subdued border-t-transparent rounded-full animate-spin" />
                       </div>
                     )}
                   </div>
@@ -397,13 +397,13 @@ const FreeShippingPage: React.FC = () => {
                       {selectedCountryIds.map((id) => (
                         <span
                           key={id}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 border border-gray-200 text-xs"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-admin-secondary text-admin-text border border-admin-border text-xs"
                         >
                           {getCountryDisplayName(id)}
                           <button
                             type="button"
                             onClick={() => handleRemoveCountry(id)}
-                            className="p-0.5 rounded hover:bg-gray-200 text-gray-500 hover:text-gray-900"
+                            className="p-0.5 rounded hover:bg-admin-row-hover text-admin-text-secondary hover:text-admin-text"
                           >
                             <XMarkIcon className="w-3.5 h-3.5" />
                           </button>
@@ -423,26 +423,26 @@ const FreeShippingPage: React.FC = () => {
                         return `${selected.length} countries selected`;
                       }}
                     />
-                    <p className="mt-1.5 text-xs text-gray-500">{selectedCountryIds.length} country(ies) selected</p>
+                    <p className="mt-1.5 text-xs text-admin-text-secondary">{selectedCountryIds.length} country(ies) selected</p>
                   </div>
                 </div>
               )}
 
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mt-6 mb-3">Shipping rates</h3>
-              <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+              <h3 className="text-sm font-semibold text-admin-text uppercase tracking-wide mt-6 mb-3">Shipping rates</h3>
+              <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                 <input
                   type="checkbox"
                   checked={formData.excludeShippingRates}
                   onChange={(e) => handleInputChange('excludeShippingRates', e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                  className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                 />
-                <span className="text-sm text-gray-700">Exclude shipping rates over a certain amount</span>
+                <span className="text-sm text-admin-text">Exclude shipping rates over a certain amount</span>
               </label>
               {formData.excludeShippingRates && (
                 <div className="ml-6 mt-3">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Shipping rate limit (₹)</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Shipping rate limit (₹)</label>
                   <div className="relative max-w-xs">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-admin-text-secondary text-sm">₹</span>
                     <input
                       type="number"
                       value={formData.shippingRateLimit}
@@ -451,69 +451,69 @@ const FreeShippingPage: React.FC = () => {
                       className={`${inputClass} pl-8`}
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-gray-500">Maximum shipping rate amount in rupees</p>
+                  <p className="mt-1.5 text-xs text-admin-text-secondary">Maximum shipping rate amount in rupees</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Eligibility */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-1">Eligibility</h2>
-              <p className="text-xs text-gray-500 mb-4">Available on all sales channels</p>
+              <h2 className="text-sm font-semibold text-admin-text uppercase tracking-wide mb-1">Eligibility</h2>
+              <p className="text-xs text-admin-text-secondary mb-4">Available on all sales channels</p>
               <fieldset className="mb-4">
-                <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Customer eligibility</legend>
+                <legend className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-2">Customer eligibility</legend>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="eligibility"
                       value="all-customers"
                       checked={formData.eligibility === 'all-customers'}
                       onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">All customers</span>
+                    <span className="text-sm text-admin-text">All customers</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="eligibility"
                       value="specific-customer-segments"
                       checked={formData.eligibility === 'specific-customer-segments'}
                       onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Specific customer segments</span>
+                    <span className="text-sm text-admin-text">Specific customer segments</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="eligibility"
                       value="specific-customers"
                       checked={formData.eligibility === 'specific-customers'}
                       onChange={(e) => handleInputChange('eligibility', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Specific customers</span>
+                    <span className="text-sm text-admin-text">Specific customers</span>
                   </label>
                 </div>
               </fieldset>
               {formData.method === 'automatic' && formData.eligibility === 'all-customers' && (
-                <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 mt-2">
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover mt-2">
                   <input
                     type="checkbox"
                     checked={formData.applyOnPOSPro}
                     onChange={(e) => handleInputChange('applyOnPOSPro', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                    className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                   />
-                  <span className="text-sm text-gray-700">Apply on POS Pro locations</span>
+                  <span className="text-sm text-admin-text">Apply on POS Pro locations</span>
                 </label>
               )}
               {(formData.eligibility === 'specific-customer-segments' || formData.eligibility === 'specific-customers') && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">
                     {formData.eligibility === 'specific-customer-segments' ? 'Search customer segments' : 'Search customers'}
                   </label>
                   <div className="relative">
@@ -535,7 +535,7 @@ const FreeShippingPage: React.FC = () => {
                     />
                     {(segmentsLoading || customersLoading || customerSearchLoading) && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-admin-text-subdued border-t-transparent rounded-full animate-spin" />
                       </div>
                     )}
                   </div>
@@ -548,7 +548,7 @@ const FreeShippingPage: React.FC = () => {
                         onChange={setSelectedSegmentIds}
                         renderValue={(selected) => segments.filter(s => selected.includes(s._id)).map(s => s.name).join(', ')}
                       />
-                      <p className="mt-1.5 text-xs text-gray-500">{selectedSegmentIds.length} segment(s) selected</p>
+                      <p className="mt-1.5 text-xs text-admin-text-secondary">{selectedSegmentIds.length} segment(s) selected</p>
                     </div>
                   )}
                   {formData.eligibility === 'specific-customers' && customersForSelect.length > 0 && (
@@ -560,7 +560,7 @@ const FreeShippingPage: React.FC = () => {
                         onChange={setSelectedCustomerIds}
                         renderValue={(selected) => customers.filter(c => selected.includes(c._id)).map(c => (`${c.firstName || ''} ${c.lastName || ''}`.trim() || c.email)).join(', ')}
                       />
-                      <p className="mt-1.5 text-xs text-gray-500">{selectedCustomerIds.length} customer(s) selected</p>
+                      <p className="mt-1.5 text-xs text-admin-text-secondary">{selectedCustomerIds.length} customer(s) selected</p>
                     </div>
                   )}
                 </div>
@@ -569,52 +569,52 @@ const FreeShippingPage: React.FC = () => {
           </div>
 
           {/* Minimum purchase requirements */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Minimum purchase requirements</h2>
+              <h2 className="text-[13px] font-semibold text-admin-text mb-4">Minimum purchase requirements</h2>
               <fieldset className="mb-4">
-                <legend className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">Requirements</legend>
+                <legend className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-2">Requirements</legend>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="minimumPurchase"
                       value="no-requirements"
                       checked={formData.minimumPurchase === 'no-requirements'}
                       onChange={(e) => handleInputChange('minimumPurchase', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">No minimum requirements</span>
+                    <span className="text-sm text-admin-text">No minimum requirements</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="minimumPurchase"
                       value="minimum-amount"
                       checked={formData.minimumPurchase === 'minimum-amount'}
                       onChange={(e) => handleInputChange('minimumPurchase', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Minimum purchase amount</span>
+                    <span className="text-sm text-admin-text">Minimum purchase amount</span>
                   </label>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="radio"
                       name="minimumPurchase"
                       value="minimum-quantity"
                       checked={formData.minimumPurchase === 'minimum-quantity'}
                       onChange={(e) => handleInputChange('minimumPurchase', e.target.value)}
-                      className="h-4 w-4 border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Minimum quantity of items</span>
+                    <span className="text-sm text-admin-text">Minimum quantity of items</span>
                   </label>
                 </div>
               </fieldset>
               {formData.minimumPurchase === 'minimum-amount' && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Minimum amount (₹)</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Minimum amount (₹)</label>
                   <div className="relative max-w-xs">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-admin-text-secondary text-sm">₹</span>
                     <input
                       type="number"
                       value={formData.minimumAmount}
@@ -623,12 +623,12 @@ const FreeShippingPage: React.FC = () => {
                       className={`${inputClass} pl-8`}
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-gray-500">Applies to the order total</p>
+                  <p className="mt-1.5 text-xs text-admin-text-secondary">Applies to the order total</p>
                 </div>
               )}
               {formData.minimumPurchase === 'minimum-quantity' && (
                 <div className="mt-4">
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Minimum quantity</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Minimum quantity</label>
                   <input
                     type="number"
                     value={formData.minimumQuantity}
@@ -636,7 +636,7 @@ const FreeShippingPage: React.FC = () => {
                     placeholder="e.g. 2"
                     className={inputClass}
                   />
-                  <p className="mt-1.5 text-xs text-gray-500">Minimum number of items in the order</p>
+                  <p className="mt-1.5 text-xs text-admin-text-secondary">Minimum number of items in the order</p>
                 </div>
               )}
             </div>
@@ -644,35 +644,35 @@ const FreeShippingPage: React.FC = () => {
 
           {formData.method === 'discount-code' && (
             <>
-              <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+              <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
                 <div className="px-5 py-4 sm:px-6 sm:py-5">
-                  <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Sales channel access</h2>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <h2 className="text-[13px] font-semibold text-admin-text mb-4">Sales channel access</h2>
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="checkbox"
                       checked={formData.allowDiscountOnChannels}
                       onChange={(e) => handleInputChange('allowDiscountOnChannels', e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Allow discount to be featured on selected channels</span>
+                    <span className="text-sm text-admin-text">Allow discount to be featured on selected channels</span>
                   </label>
                 </div>
               </div>
-              <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+              <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
                 <div className="px-5 py-4 sm:px-6 sm:py-5">
-                  <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Maximum discount uses</h2>
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                  <h2 className="text-[13px] font-semibold text-admin-text mb-4">Maximum discount uses</h2>
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                     <input
                       type="checkbox"
                       checked={formData.limitTotalUses}
                       onChange={(e) => handleInputChange('limitTotalUses', e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Limit total number of uses</span>
+                    <span className="text-sm text-admin-text">Limit total number of uses</span>
                   </label>
                   {formData.limitTotalUses && (
                     <div className="ml-6 mt-3">
-                      <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Total uses limit</label>
+                      <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Total uses limit</label>
                       <input
                         type="number"
                         value={formData.totalUsesLimit}
@@ -682,14 +682,14 @@ const FreeShippingPage: React.FC = () => {
                       />
                     </div>
                   )}
-                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 mt-3">
+                  <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover mt-3">
                     <input
                       type="checkbox"
                       checked={formData.limitOneUsePerCustomer}
                       onChange={(e) => handleInputChange('limitOneUsePerCustomer', e.target.checked)}
-                      className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                      className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                     />
-                    <span className="text-sm text-gray-700">Limit to one use per customer</span>
+                    <span className="text-sm text-admin-text">Limit to one use per customer</span>
                   </label>
                 </div>
               </div>
@@ -697,32 +697,32 @@ const FreeShippingPage: React.FC = () => {
           )}
 
           {/* Combinations */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Combinations</h2>
+              <h2 className="text-[13px] font-semibold text-admin-text mb-4">Combinations</h2>
               <div className="space-y-3">
-                <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                   <input
                     type="checkbox"
                     checked={formData.productDiscounts}
                     onChange={(e) => handleInputChange('productDiscounts', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                    className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                   />
-                  <span className="text-sm text-gray-700">Product discounts</span>
+                  <span className="text-sm text-admin-text">Product discounts</span>
                 </label>
-                {formData.productDiscounts && <p className="ml-6 text-xs text-gray-500">Eligible product discounts apply first.</p>}
-                <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50">
+                {formData.productDiscounts && <p className="ml-6 text-xs text-admin-text-secondary">Eligible product discounts apply first.</p>}
+                <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover">
                   <input
                     type="checkbox"
                     checked={formData.orderDiscounts}
                     onChange={(e) => handleInputChange('orderDiscounts', e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                    className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                   />
-                  <span className="text-sm text-gray-700">Order discounts</span>
+                  <span className="text-sm text-admin-text">Order discounts</span>
                 </label>
               </div>
               {(formData.productDiscounts || formData.orderDiscounts) && (
-                <div className="mt-4 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                <div className="mt-4 p-3 rounded-lg bg-[#fef3d0]/60 border border-[#e6d3a0]">
                   <p className="text-xs text-amber-800">This discount won't combine with other discounts at checkout.</p>
                 </div>
               )}
@@ -730,12 +730,12 @@ const FreeShippingPage: React.FC = () => {
           </div>
 
           {/* Active dates */}
-          <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
             <div className="px-5 py-4 sm:px-6 sm:py-5">
-              <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Active dates</h2>
+              <h2 className="text-[13px] font-semibold text-admin-text mb-4">Active dates</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Start date</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Start date</label>
                   <input
                     type="date"
                     value={formData.startDate}
@@ -744,29 +744,29 @@ const FreeShippingPage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">Start time (IST)</label>
+                  <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">Start time (IST)</label>
                   <input
                     type="time"
                     value={formData.startTime}
                     onChange={(e) => handleInputChange('startTime', e.target.value)}
                     className={inputClass}
                   />
-                  <p className="mt-1.5 text-xs text-gray-500">Indian Standard Time</p>
+                  <p className="mt-1.5 text-xs text-admin-text-secondary">Indian Standard Time</p>
                 </div>
               </div>
-              <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-gray-50 mt-4">
+              <label className="flex items-center gap-3 cursor-pointer p-2 rounded-lg hover:bg-admin-row-hover mt-4">
                 <input
                   type="checkbox"
                   checked={formData.setEndDate}
                   onChange={(e) => handleInputChange('setEndDate', e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-gray-900 focus:ring-gray-300"
+                  className="h-4 w-4 rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30"
                 />
-                <span className="text-sm text-gray-700">Set end date</span>
+                <span className="text-sm text-admin-text">Set end date</span>
               </label>
               {formData.setEndDate && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">End date</label>
+                    <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">End date</label>
                     <input
                       type="date"
                       value={formData.endDate}
@@ -775,14 +775,14 @@ const FreeShippingPage: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">End time (IST)</label>
+                    <label className="block text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-1.5">End time (IST)</label>
                     <input
                       type="time"
                       value={formData.endTime}
                       onChange={(e) => handleInputChange('endTime', e.target.value)}
                       className={inputClass}
                     />
-                    <p className="mt-1.5 text-xs text-gray-500">Indian Standard Time</p>
+                    <p className="mt-1.5 text-xs text-admin-text-secondary">Indian Standard Time</p>
                   </div>
                 </div>
               )}

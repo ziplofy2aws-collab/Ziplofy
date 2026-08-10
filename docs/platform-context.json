@@ -1,0 +1,980 @@
+{
+  "meta": {
+    "document": "platform-context",
+    "purpose": "Deep product context for landing-page copywriters and designers. Derived from codebase scan of admin/, codiic/, codiic-server/, remote-themes/, render-store/, and related theme packs.",
+    "generatedFor": "External landing page developer",
+    "brandPrimary": "Codiic",
+    "brandLegacyToAvoid": ["Ziplofy"],
+    "productCategory": "Hosted ecommerce / merchant operating system (Shopify-style)",
+    "primaryMarket": "India-first ecommerce SMBs",
+    "scanScope": [
+      "admin",
+      "codiic",
+      "codiic-server",
+      "remote-themes",
+      "render-store",
+      "codiic/src/theme-packs",
+      "themes (legacy static only)"
+    ],
+    "accuracyPolicy": {
+      "claimable": "Features with live UI + backend APIs in production code paths",
+      "claimWithHedge": "Nav-labeled features, seeded provider catalogs, or partial scaffolding",
+      "doNotClaimAsLive": "Third-party payment gateway SDKs (Razorpay/Stripe/PayPal charging), SMS gateways, shipping carrier label APIs, Calendly as a platform product, WAVE dividers as current product"
+    }
+  },
+
+  "oneLiner": "Codiic is an India-ready, Shopify-style ecommerce platform: merchants get a full admin + visual storefront/theme tools; shoppers get a hosted React storefront; Codiic staff run themes, plans, and support from an internal admin.",
+
+  "elevatorPitch": {
+    "short": "Launch and run an online store with products, orders, markets, content, discounts, and a no-code theme builder—optimized for Indian payments (UPI, COD, bank transfer) and GST.",
+    "medium": "Codiic gives merchants a complete store admin (catalog, inventory, orders, customers, marketing, markets) plus a hosted online store with installable theme packs and a Create Theme visual builder. Payments start India-native (UPI with UTR verification, COD, bank transfer). Custom domains, blogs, policies, checkout branding, and staff permissions are built in. An internal Codiic Admin operates membership plans, theme catalog publishing, and merchant support."
+  },
+
+  "positioning": {
+    "competitorsAnalogy": "Shopify-like merchant OS for India",
+    "differentiators": [
+      "India-first money rails: UPI (QR + UTR review), COD, bank transfer",
+      "India tax readiness: GST / IGST configuration with India market bootstrap",
+      "Visual Create Theme builder + installable React theme packs (Horizon, Watch, and more)",
+      "Hosted storefront runtime separate from themes (themes control look; platform owns cart/checkout/SEO/auth)",
+      "Multi-market catalogs, multi-location inventory, transfers, purchase orders",
+      "Built-in marketing automations builder, discounts suite, blogs/CMS",
+      "AI assistant Codiix for merchant/theme help",
+      "Platform ops console for theme marketplace, SaaS plans, hire-a-developer workflow"
+    ],
+    "audiences": [
+      {
+        "persona": "Merchant / store owner",
+        "app": "codiic (dashboard)",
+        "needs": "Sell online quickly, manage catalog/orders, customize storefront, accept India payments"
+      },
+      {
+        "persona": "Shopper / customer",
+        "app": "render-store (storefront)",
+        "needs": "Browse, cart, checkout, account, track orders"
+      },
+      {
+        "persona": "Codiic platform operator / support / theme publisher",
+        "app": "admin",
+        "needs": "Oversee clients, publish themes, manage plans, assign support developers"
+      }
+    ]
+  },
+
+  "brand": {
+    "name": "Codiic",
+    "aiAssistantName": "Codiix",
+    "accentNote": "Dashboard design language uses charcoal admin chrome; yellow #FBBF24 appears as a brand accent in product guidelines",
+    "hostsAndDomains": {
+      "marketingSiteFolder": "codiic website/",
+      "merchantDashboardHosts": ["dashboard.codiic.com", "admin.codiic.com (see deployments)"],
+      "apiHostExample": "backend.codiic.com",
+      "themePreviewHost": "preview.codiic.com",
+      "storefrontSubdomains": "*.codiic.com",
+      "transactionalEmailDomainExample": "codiicemail.com"
+    },
+    "copyGuidance": {
+      "leadWith": "Codiic",
+      "avoidLeadingWith": ["Ziplofy", "Shopify (except as analogy)"],
+      "legacyNote": "A few leftover strings still say Ziplofy in roles/locations/theme defaults—do not use on new marketing"
+    }
+  },
+
+  "architecture": {
+    "packages": [
+      {
+        "id": "codiic",
+        "path": "codiic/",
+        "productName": "Codiic Merchant Dashboard",
+        "audience": "Store owners & store staff",
+        "role": "Full merchant admin: home, orders, products, customers, marketing, discounts, content, markets, online store/themes, settings",
+        "stack": ["React 19", "TypeScript", "Vite", "Tailwind v4", "TipTap", "GrapesJS", "Monaco", "React Flow", "Socket.io client", "Google OAuth", "Framer Motion"]
+      },
+      {
+        "id": "render-store",
+        "path": "render-store/",
+        "productName": "Codiic Storefront",
+        "audience": "Shoppers",
+        "role": "Hosted storefront runtime: themes, cart, checkout, account, SEO, discounts, blogs, pages",
+        "stack": ["React 19", "TypeScript", "Vite", "Tailwind v4", "React Router 7", "Framer Motion", "QRCode"]
+      },
+      {
+        "id": "codiic-server",
+        "path": "codiic-server/",
+        "npmName": "codiic3b",
+        "productName": "Codiic API / Backend",
+        "audience": "All apps",
+        "role": "Multi-tenant Express API: auth, stores, commerce, themes, storefront render, tax, inventory, notifications",
+        "stack": ["Node.js", "Express", "TypeScript", "MongoDB/Mongoose", "JWT", "AWS S3", "LiquidJS", "Socket.IO", "Nodemailer", "BullMQ/ioredis (scaffolded, workers off)"]
+      },
+      {
+        "id": "admin",
+        "path": "admin/",
+        "productName": "Codiic Admin (Platform Ops)",
+        "audience": "Internal Codiic staff",
+        "role": "Client oversight, membership plans, theme catalog publishing, RBAC, hire-developer support, activity logs",
+        "stack": ["React 19", "Vite", "TypeScript", "Recharts", "Socket.io client"]
+      },
+      {
+        "id": "remote-themes",
+        "path": "remote-themes/",
+        "productName": "Remote Theme Packs",
+        "audience": "Theme authors / platform",
+        "role": "Installable React theme packs (Horizon, Watch) with schema + default config + dist assets"
+      },
+      {
+        "id": "theme-packs-in-dashboard",
+        "path": "codiic/src/theme-packs/",
+        "productName": "Dashboard theme pack mirrors",
+        "packsPresent": ["horizon", "watch", "bloom", "makeup", "studio", "volt"]
+      }
+    ],
+    "tenancyModel": {
+      "summary": "Multi-tenant: each merchant User can own Stores; commerce data scoped by storeId; shoppers are Customers per store; staff invited via store roles/permissions",
+      "layers": [
+        "Platform user (merchant owner / admin staff)",
+        "Store (tenant)",
+        "Store staff via invites + StoreRole permission keys",
+        "Storefront customer accounts"
+      ],
+      "newStoreBootstrap": [
+        "Default Store + Location",
+        "General + notification settings",
+        "Default India market (INR, en-IN) + includes",
+        "Default catalog theme install (when configured)",
+        "Default packaging",
+        "Random subdomain slug"
+      ]
+    }
+  },
+
+  "featurePillars": [
+    {
+      "id": "online-store-and-design",
+      "title": "Online store & visual design",
+      "maturity": "live",
+      "headlineSuggestions": [
+        "Design a store that looks like your brand—without waiting on developers",
+        "Install themes or build your own with Create Theme"
+      ],
+      "features": [
+        {
+          "name": "Hosted online storefront",
+          "description": "Customer-facing React storefront resolves by subdomain/custom domain",
+          "maturity": "live"
+        },
+        {
+          "name": "Theme library / packs",
+          "description": "Installable themes including Horizon (general Shopify-style reference) and Watch (luxury/watches vertical); additional packs in dashboard: Bloom, Makeup, Studio, Volt",
+          "maturity": "live"
+        },
+        {
+          "name": "Create Theme visual builder",
+          "description": "No-code section/block editor with live preview, page picker, Shopify-style sidebar",
+          "maturity": "live"
+        },
+        {
+          "name": "Rich section catalog",
+          "description": "Heroes, slideshows, featured collections/products, hotspots, FAQs, forms, blogs, storytelling, header/footer, and more",
+          "maturity": "live"
+        },
+        {
+          "name": "Multi-page templates",
+          "description": "Home, product, collections, cart, search, blogs, auth, profile, orders, preferences, password, 404, checkout-related pages",
+          "maturity": "live"
+        },
+        {
+          "name": "Live theme preview",
+          "description": "Editor iframe previews the real storefront runtime (preview.codiic.com)",
+          "maturity": "live"
+        },
+        {
+          "name": "Checkout appearance / profiles",
+          "description": "Visual checkout branding and checkout configuration editor",
+          "maturity": "live"
+        },
+        {
+          "name": "CMS pages & menus",
+          "description": "Custom pages, navigation menus, password-protected store preference",
+          "maturity": "live"
+        },
+        {
+          "name": "Alternate builders",
+          "description": "GrapesJS custom theme builder, Elementor-style builder, layout/code editors",
+          "maturity": "live"
+        },
+        {
+          "name": "Codiix AI assistant",
+          "description": "In-dashboard assistant for navigation and theme/help guidance",
+          "maturity": "live"
+        },
+        {
+          "name": "Theme marketplace publishing (platform)",
+          "description": "Internal admin can upload/publish themes to the catalog (S3 assets, categories, plans)",
+          "maturity": "live",
+          "audience": "platform"
+        }
+      ]
+    },
+    {
+      "id": "catalog-inventory",
+      "title": "Products, catalog & inventory",
+      "maturity": "live",
+      "headlineSuggestions": [
+        "Manage every SKU, collection, and warehouse location in one place"
+      ],
+      "features": [
+        {
+          "name": "Products & variants",
+          "description": "Full product CRUD with variants, images, types, tags, vendors",
+          "maturity": "live"
+        },
+        {
+          "name": "Collections",
+          "description": "Group products for merchandising and theme sections",
+          "maturity": "live"
+        },
+        {
+          "name": "Multi-location inventory",
+          "description": "Track stock across locations",
+          "maturity": "live"
+        },
+        {
+          "name": "Transfers & shipments",
+          "description": "Move inventory between locations with transfer workflows and shipments",
+          "maturity": "live"
+        },
+        {
+          "name": "Purchase orders",
+          "description": "Create POs, mark ordered, receive inventory",
+          "maturity": "live"
+        },
+        {
+          "name": "Gift cards",
+          "description": "Gift card products and issued gift cards with timeline",
+          "maturity": "live"
+        },
+        {
+          "name": "Packaging profiles",
+          "description": "Box/envelope packages for shipping weight/dimensions",
+          "maturity": "live"
+        },
+        {
+          "name": "Markets & catalogs",
+          "description": "Sell across markets with catalogs linking assortment/pricing",
+          "maturity": "live"
+        },
+        {
+          "name": "Vendors & tag management",
+          "description": "Cross-entity tagging hubs for products, customers, transfers, POs, blogs",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "orders-fulfillment",
+      "title": "Orders & fulfillment",
+      "maturity": "live",
+      "headlineSuggestions": [
+        "Run orders from payment to fulfillment with clear status at a glance"
+      ],
+      "features": [
+        {
+          "name": "Orders list & detail",
+          "description": "Order hub with payment/fulfillment badges, line items, customer, timeline",
+          "maturity": "live"
+        },
+        {
+          "name": "Create order",
+          "description": "Create orders from admin",
+          "maturity": "live"
+        },
+        {
+          "name": "Draft orders",
+          "description": "Draft order UI flows in merchant dashboard",
+          "maturity": "partial",
+          "note": "Strong UI/permissions/notification scaffolding; confirm backend depth before claiming 'full draft orders ERP'"
+        },
+        {
+          "name": "Abandoned carts",
+          "description": "Abandoned cart recovery list & customer detail",
+          "maturity": "partial",
+          "note": "Staff can inspect store carts; dedicated abandoned-checkout recovery product is partial vs Shopify Mail recovery"
+        },
+        {
+          "name": "Order timeline",
+          "description": "Staff comments and events on the order",
+          "maturity": "live"
+        },
+        {
+          "name": "UTR payment verification",
+          "description": "Verify customer-submitted UTR for manual UPI/bank payments on the order",
+          "maturity": "live",
+          "indiaSpecific": true
+        },
+        {
+          "name": "Fulfillment & payment status badges",
+          "description": "Paid, payment pending, fulfilled, unfulfilled status chips",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "customers-b2b",
+      "title": "Customers & B2B",
+      "maturity": "live",
+      "features": [
+        {
+          "name": "Customer CRM",
+          "description": "Profiles, addresses, tags, timelines",
+          "maturity": "live"
+        },
+        {
+          "name": "Customer segments",
+          "description": "Segment customers for targeting",
+          "maturity": "live"
+        },
+        {
+          "name": "B2B companies",
+          "description": "Company records for business customers",
+          "maturity": "live"
+        },
+        {
+          "name": "Customer accounts",
+          "description": "Storefront login/signup/profile/orders/preferences; Google/Facebook auth settings in admin",
+          "maturity": "live"
+        },
+        {
+          "name": "Customer privacy controls",
+          "description": "Privacy settings and data-sharing/Network Intelligence style controls in settings",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "payments-india",
+      "title": "Payments (India-ready)",
+      "maturity": "live_with_roadmap",
+      "headlineSuggestions": [
+        "Accept UPI, COD, and bank transfer from day one",
+        "Built for how India actually pays"
+      ],
+      "features": [
+        {
+          "name": "UPI payments",
+          "description": "UPI ID method with QR and UTR confirmation flow",
+          "maturity": "live",
+          "indiaSpecific": true
+        },
+        {
+          "name": "Cash on delivery (COD)",
+          "description": "Manual COD provider at checkout",
+          "maturity": "live",
+          "indiaSpecific": true
+        },
+        {
+          "name": "Bank transfer",
+          "description": "Manual bank transfer payment method",
+          "maturity": "live"
+        },
+        {
+          "name": "Payment transactions ledger",
+          "description": "Review manual payment confirmations (UTR) per store",
+          "maturity": "live"
+        },
+        {
+          "name": "Payment capture rules UI",
+          "description": "Configure when payments are captured (checkout / fulfill / manual)",
+          "maturity": "live"
+        },
+        {
+          "name": "Third-party gateways (Razorpay, Stripe, PayPal, Cashfree, PhonePe, etc.)",
+          "description": "Provider catalog + connect records seeded; charging SDKs not live in server",
+          "maturity": "roadmap",
+          "landingPageGuidance": "Say 'coming soon' or 'provider-ready catalog' — do NOT claim live card gateway processing today"
+        },
+        {
+          "name": "INR as default currency",
+          "description": "Store defaults lock to INR; Asia/Kolkata timezone defaults appear in general settings",
+          "maturity": "live",
+          "indiaSpecific": true
+        }
+      ]
+    },
+    {
+      "id": "shipping-tax",
+      "title": "Shipping, delivery & tax",
+      "maturity": "live",
+      "features": [
+        {
+          "name": "Shipping profiles, zones & rates",
+          "description": "Configure how orders ship by profile/zone/rate",
+          "maturity": "live"
+        },
+        {
+          "name": "Local delivery",
+          "description": "Local delivery settings with per-location entries",
+          "maturity": "live"
+        },
+        {
+          "name": "Packages",
+          "description": "Define packaging for fulfillment",
+          "maturity": "live"
+        },
+        {
+          "name": "Pickup / routing / delivery expectations UI",
+          "description": "Additional shipping UX cards in settings",
+          "maturity": "live"
+        },
+        {
+          "name": "Carrier label APIs",
+          "description": "Carrier is metadata/string; no Shiprocket/FedEx label buying in server",
+          "maturity": "not_live",
+          "landingPageGuidance": "Do not claim automated carrier label purchasing"
+        },
+        {
+          "name": "Taxes and duties",
+          "description": "Global tax settings + India tax region configuration",
+          "maturity": "live",
+          "indiaSpecific": true
+        },
+        {
+          "name": "Federal GST & state IGST",
+          "description": "India tax details for base taxes and state IGST rates",
+          "maturity": "live",
+          "indiaSpecific": true
+        },
+        {
+          "name": "Tax included in prices / tax on shipping / VAT on digital toggles",
+          "description": "Global tax behavior switches",
+          "maturity": "live"
+        },
+        {
+          "name": "Product & shipping tax overrides",
+          "description": "Per-product/country style overrides",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "marketing-growth",
+      "title": "Marketing, discounts & growth",
+      "maturity": "live",
+      "features": [
+        {
+          "name": "Marketing overview, campaigns, attribution",
+          "description": "Marketing hub pages in merchant admin",
+          "maturity": "live"
+        },
+        {
+          "name": "Visual marketing automations",
+          "description": "React Flow builder with triggers, conditions, actions",
+          "maturity": "live"
+        },
+        {
+          "name": "Discount: amount off products",
+          "description": "Code + automatic product discounts",
+          "maturity": "live"
+        },
+        {
+          "name": "Discount: Buy X Get Y",
+          "description": "BXGY promotions",
+          "maturity": "live"
+        },
+        {
+          "name": "Discount: amount off order",
+          "description": "Order-level discounts",
+          "maturity": "live"
+        },
+        {
+          "name": "Discount: free shipping",
+          "description": "Free shipping promotions",
+          "maturity": "live"
+        },
+        {
+          "name": "Newsletter subscriptions & contact submissions",
+          "description": "Lead capture inbox from storefront forms",
+          "maturity": "live"
+        },
+        {
+          "name": "Customer event pixels",
+          "description": "Custom JS/pixel snippets with consent flags",
+          "maturity": "live"
+        },
+        {
+          "name": "Checkout marketing opt-ins",
+          "description": "Email/SMS marketing checkboxes at checkout",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "content-seo",
+      "title": "Content & SEO",
+      "maturity": "live",
+      "features": [
+        {
+          "name": "Blogs & articles",
+          "description": "Blog containers, posts, comments, tags, visibility",
+          "maturity": "live"
+        },
+        {
+          "name": "Files / media library",
+          "description": "Store media management",
+          "maturity": "live"
+        },
+        {
+          "name": "Menus",
+          "description": "Navigation menu management",
+          "maturity": "live"
+        },
+        {
+          "name": "URL redirects",
+          "description": "SEO redirect rules",
+          "maturity": "live"
+        },
+        {
+          "name": "Metaobjects",
+          "description": "Structured content metaobjects",
+          "maturity": "live"
+        },
+        {
+          "name": "Storefront SEO engine",
+          "description": "Per-page titles/descriptions/social images, Open Graph, JSON-LD (Product, Collection, Organization), canonicals, sitemap/robots",
+          "maturity": "live"
+        },
+        {
+          "name": "Legal policies",
+          "description": "Privacy, terms, shipping, return/refund policies + return rules / final-sale items",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "domains-infra",
+      "title": "Domains, settings & infrastructure",
+      "maturity": "live",
+      "features": [
+        {
+          "name": "Free store subdomain",
+          "description": "*.codiic.com style subdomain on signup/bootstrap",
+          "maturity": "live"
+        },
+        {
+          "name": "Custom domain connect",
+          "description": "Connect, DNS instructions, verify, disconnect",
+          "maturity": "live"
+        },
+        {
+          "name": "General store settings",
+          "description": "Store name, defaults, branding, contact, billing address, order ID settings",
+          "maturity": "live"
+        },
+        {
+          "name": "Locations",
+          "description": "Default and additional stock/fulfillment locations",
+          "maturity": "live"
+        },
+        {
+          "name": "Users, roles & security",
+          "description": "Invite staff, store roles/permissions, security settings",
+          "maturity": "live"
+        },
+        {
+          "name": "Plans & billing UI",
+          "description": "Membership plan surfaces priced in INR; platform payment intents for onboarding",
+          "maturity": "live"
+        },
+        {
+          "name": "Notifications & webhooks UI",
+          "description": "Notification categories/options/overrides",
+          "maturity": "live"
+        },
+        {
+          "name": "Cloud asset uploads (AWS S3)",
+          "description": "Presigned uploads for themes/media",
+          "maturity": "live"
+        },
+        {
+          "name": "Realtime ops sockets",
+          "description": "Socket.IO for hire-developer notifications and related ops events",
+          "maturity": "live"
+        },
+        {
+          "name": "Empty-store dashboard setup guide",
+          "description": "When a store has 0 products, dashboard shows Shopify-style setup cards (product, theme, payments, name, domain, shipping)",
+          "maturity": "live"
+        }
+      ]
+    },
+    {
+      "id": "analytics",
+      "title": "Analytics & home",
+      "maturity": "partial",
+      "features": [
+        {
+          "name": "Home dashboard metrics & charts",
+          "description": "Sales, revenue, customers, charts when store has data",
+          "maturity": "live"
+        },
+        {
+          "name": "Analytics hub / Reports / Live View",
+          "description": "Nav labels present; verify depth before heavy BI claims",
+          "maturity": "partial"
+        },
+        {
+          "name": "Client analytics (platform admin)",
+          "description": "Internal admin charts for client overview/orders/revenue/products",
+          "maturity": "live",
+          "audience": "platform"
+        }
+      ]
+    },
+    {
+      "id": "platform-ops",
+      "title": "Platform operations (Codiic Admin)",
+      "maturity": "live",
+      "audience": "internal",
+      "landingPageGuidance": "Useful for 'behind the platform' / enterprise trust sections—not the merchant hero",
+      "features": [
+        {
+          "name": "Client list & store oversight",
+          "maturity": "live"
+        },
+        {
+          "name": "Membership plan management",
+          "maturity": "live"
+        },
+        {
+          "name": "Theme developer catalog & asset upload",
+          "maturity": "live"
+        },
+        {
+          "name": "Platform RBAC + 2FA admin login",
+          "maturity": "live"
+        },
+        {
+          "name": "Hire a developer requests + assign support developers",
+          "maturity": "live"
+        },
+        {
+          "name": "Activity / audit logs",
+          "maturity": "live"
+        },
+        {
+          "name": "Domain/ticket/live support consoles",
+          "maturity": "partial",
+          "note": "UI shells / mock data in places—hedge if used in marketing"
+        }
+      ]
+    }
+  ],
+
+  "storefrontDetail": {
+    "runtime": "render-store",
+    "themeModes": [
+      {
+        "mode": "remote_react_pack",
+        "description": "Loads theme.js / theme.css from installed remote pack (Horizon, Watch, etc.)"
+      },
+      {
+        "mode": "create_theme_composer",
+        "description": "Renders section configs from Create Theme / custom theme themeConfig"
+      }
+    ],
+    "customerJourneys": [
+      "Browse home and collections",
+      "Product detail with variants",
+      "Search",
+      "Add to cart (guest + logged-in sync)",
+      "Checkout (sign-in required to place order) with shipping/billing, marketing opt-in",
+      "Pay via COD / bank transfer / UPI (+ card/PayPal options in UI)",
+      "Thank-you / payment confirmation / order status",
+      "Account: profile, addresses, orders, preferences",
+      "Read blogs, custom pages, policies",
+      "Contact form & newsletter"
+    ],
+    "seoCapabilities": [
+      "Merchant SEO home title/meta/social image",
+      "Per product/collection/blog/page SEO fields",
+      "Open Graph",
+      "JSON-LD Organization / Product / CollectionPage",
+      "Canonical URLs",
+      "Sitemap.xml & robots.txt (deploy-level)",
+      "noindex on 404"
+    ],
+    "platformOwns": [
+      "Cart persistence",
+      "Checkout logic",
+      "Auth",
+      "Discounts application",
+      "SEO document head",
+      "Password gate"
+    ],
+    "themesOwn": [
+      "Visual sections and page layouts",
+      "Merchandising presentation",
+      "Brand look & feel"
+    ]
+  },
+
+  "themePackInventory": {
+    "remoteThemes": [
+      {
+        "id": "horizon",
+        "positioning": "General Shopify-style reference / benchmark theme",
+        "sectionDepth": "full"
+      },
+      {
+        "id": "watch",
+        "positioning": "Luxury / watches vertical fashion lifestyle theme",
+        "sectionDepth": "curated"
+      }
+    ],
+    "dashboardThemePacks": ["horizon", "watch", "bloom", "makeup", "studio", "volt"],
+    "createThemeSectionGroups": [
+      "Banners (hero variants, slideshows, split showcase, marquee)",
+      "Collections (grid, carousel, editorial, bento, spotlight links)",
+      "Products (featured collection/product, hotspots, recommended, highlights)",
+      "Storytelling (editorial, video, image compare, logo, blog posts)",
+      "Text (FAQ, rich text, multicolumn, pull quote, marquee, icons)",
+      "Forms (contact, email signup)",
+      "Layout (divider, custom section/liquid)",
+      "Header / Footer / announcement / policies links"
+    ]
+  },
+
+  "merchantAdminNavMap": {
+    "source": "codiic/src/components/Sidebar.tsx + SettingsSidebar.tsx + App.tsx",
+    "mainNav": [
+      "Home",
+      "Orders → Drafts, Abandoned Carts",
+      "Products → Collections, Inventory, Purchase orders, Transfers (+ Gift cards via routes/search)",
+      "Customers → Segments (+ Companies B2B routes)",
+      "Marketing → Campaigns, Attribution, Automations",
+      "Discounts",
+      "Content → Files, Menus, Blog posts, Contact submissions, Newsletter subscriptions",
+      "Markets → Catalogs",
+      "Analytics → Reports, Live View",
+      "Online Store → Themes, Pages, Preference",
+      "Tag Management",
+      "Vendors",
+      "Settings"
+    ],
+    "settingsNav": [
+      "General",
+      "Plan",
+      "Billing",
+      "Users (Roles, Security)",
+      "Payments",
+      "Checkout",
+      "Customer Accounts",
+      "Shipping and delivery",
+      "Taxes and duties",
+      "Locations",
+      "Markets",
+      "Domains",
+      "Customer Events",
+      "Notifications",
+      "Languages",
+      "Customer Privacy",
+      "Policies"
+    ]
+  },
+
+  "indiaCommerceSnapshot": {
+    "currencyDefault": "INR",
+    "marketBootstrap": "India market with INR + en-IN",
+    "timezoneHint": "Asia/Kolkata defaults in general settings",
+    "paymentsLive": ["UPI", "COD", "Bank transfer"],
+    "paymentsRoadmapCatalog": ["Razorpay", "Stripe", "PayPal", "Cashfree", "PhonePe", "PayU", "CCAvenue", "Instamojo"],
+    "tax": ["GST", "IGST", "include tax in price", "tax on shipping"],
+    "opsMessagingInProduct": "Taxes page notes India-only operations currently"
+  },
+
+  "onboardingJourney": {
+    "auth": ["Email register/login", "Google OAuth"],
+    "onboarding": ["Goals", "Payment/plan onboarding screens"],
+    "emptyDashboardCards": [
+      {
+        "title": "Add your first product",
+        "cta": "Add product",
+        "route": "/products/new"
+      },
+      {
+        "title": "Choose your store design",
+        "cta": "Choose theme",
+        "route": "/themes/all-themes"
+      },
+      {
+        "title": "Set up payments",
+        "cta": "Activate payments",
+        "route": "/settings/payments"
+      },
+      {
+        "title": "Name your store",
+        "cta": "Add name",
+        "route": "/settings/general"
+      },
+      {
+        "title": "Get a custom domain",
+        "cta": "Set up domain",
+        "eyebrow": "Get ₹2,000 back",
+        "route": "/settings/domains"
+      },
+      {
+        "title": "Review shipping rates",
+        "cta": "Review rates",
+        "route": "/settings/shipping-and-delivery"
+      }
+    ]
+  },
+
+  "landingPageContentHints": {
+    "heroThemes": [
+      "Launch your Indian online store in minutes",
+      "Shopify-like power. India-native payments & tax.",
+      "Design, sell, and scale—from one Codiic dashboard"
+    ],
+    "sectionIdeas": [
+      {
+        "section": "Design your store",
+        "points": ["Theme packs", "Create Theme builder", "Live preview", "Checkout branding"]
+      },
+      {
+        "section": "Sell anything",
+        "points": ["Products & variants", "Collections", "Gift cards", "Markets & catalogs"]
+      },
+      {
+        "section": "Get paid the India way",
+        "points": ["UPI + UTR verify", "COD", "Bank transfer", "GST-ready"]
+      },
+      {
+        "section": "Run operations",
+        "points": ["Orders & fulfillment", "Multi-location inventory", "Transfers", "Purchase orders"]
+      },
+      {
+        "section": "Grow",
+        "points": ["Discounts suite", "Automations", "Blogs & SEO", "Pixels", "Abandoned carts"]
+      },
+      {
+        "section": "Own your brand online",
+        "points": ["Free subdomain", "Custom domain", "Policies", "Customer accounts"]
+      }
+    ],
+    "socialProofAngles": [
+      "Full merchant OS (not just a website builder)",
+      "Themes render on the same storefront customers use",
+      "Staff roles & permissions for growing teams"
+    ],
+    "ctaIdeas": [
+      "Start free / Create your store",
+      "Explore themes",
+      "See pricing"
+    ],
+    "existingMarketingSitePages": {
+      "folder": "codiic website/",
+      "pagesPresent": [
+        "index",
+        "features",
+        "price",
+        "demo",
+        "enterprise",
+        "automation",
+        "affiliate",
+        "blog",
+        "faq",
+        "help-center",
+        "how-we-work",
+        "careers",
+        "contact",
+        "signin",
+        "signup",
+        "privacy"
+      ],
+      "note": "A static marketing site already exists; this JSON is for deeper accurate feature/content refresh"
+    }
+  },
+
+  "claimCheatsheet": {
+    "safeToClaimBoldly": [
+      "Hosted multi-tenant ecommerce platform",
+      "Merchant admin for products, orders, customers, content, markets",
+      "Visual theme creator + installable React theme packs",
+      "Hosted storefront with cart, checkout, accounts, SEO",
+      "India payments: UPI, COD, bank transfer",
+      "India tax: GST/IGST configuration",
+      "Custom domains + free subdomain",
+      "Discounts (product/order/BXGY/free shipping)",
+      "Marketing automations builder",
+      "Blogs, pages, menus, policies",
+      "Inventory locations, transfers, purchase orders, gift cards",
+      "Staff permissions / roles",
+      "S3-backed theme & media uploads"
+    ],
+    "claimCarefully": [
+      "Abandoned cart recovery (exists as ops UI; not necessarily full email automation recovery product)",
+      "Draft orders (UI strong; confirm backend completeness)",
+      "Analytics Reports / Live View (nav present)",
+      "Third-party payment providers listed in UI as coming soon / catalog",
+      "SMS marketing (option flags exist; no SMS provider wired)",
+      "Platform Domain/Ticket/Live Support consoles (some mock)"
+    ],
+    "doNotClaim": [
+      "Live Razorpay/Stripe/PayPal charge processing via SDK today",
+      "Native Shiprocket / UPS label purchasing API",
+      "Calendly as a core Codiic product feature (merchant UI can embed Calendly links; not a platform integration product)",
+      "WAVE SVG section dividers as current storefront feature",
+      "Brand name Ziplofy as the product"
+    ]
+  },
+
+  "techStackSummary": {
+    "frontend": "React 19 + TypeScript + Vite + Tailwind",
+    "backend": "Express + MongoDB + JWT",
+    "assets": "AWS S3",
+    "email": "Nodemailer (Gmail SMTP path)",
+    "realtime": "Socket.IO",
+    "themes": "React remote packs + Create Theme composer; Liquid rendering utilities also exist on server",
+    "richEditors": ["TipTap", "GrapesJS", "Monaco", "React Flow"]
+  },
+
+  "glossaryForWriters": [
+    {
+      "term": "Merchant dashboard / admin",
+      "meaning": "codiic app where store owners run the business"
+    },
+    {
+      "term": "Storefront",
+      "meaning": "render-store public shop experienced by customers"
+    },
+    {
+      "term": "Theme pack",
+      "meaning": "Installable React theme (Horizon, Watch, etc.) with sections schema"
+    },
+    {
+      "term": "Create Theme",
+      "meaning": "No-code visual theme builder inside the dashboard"
+    },
+    {
+      "term": "Market",
+      "meaning": "Geographic selling region (default India) with currency/locale/catalog links"
+    },
+    {
+      "term": "Catalog",
+      "meaning": "Assortment/pricing grouping attachable to markets"
+    },
+    {
+      "term": "UTR",
+      "meaning": "Unique Transaction Reference — customer proof for UPI/bank transfer that merchants verify"
+    },
+    {
+      "term": "Codiic Admin",
+      "meaning": "Internal platform console (admin/), not the merchant store admin"
+    },
+    {
+      "term": "Codiix",
+      "meaning": "In-product AI assistant spelling"
+    }
+  ]
+}

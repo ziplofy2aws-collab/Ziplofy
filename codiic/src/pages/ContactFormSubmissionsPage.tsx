@@ -2,23 +2,21 @@ import {
   ArrowsUpDownIcon,
   ChatBubbleLeftRightIcon,
   ChevronDownIcon,
-  ChevronUpIcon,
+  ChevronRightIcon,
   EnvelopeIcon,
   InboxIcon,
   MagnifyingGlassIcon,
   PhoneIcon,
-  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import {
   adminListCardClass,
   adminListFilterBarClass,
   adminListFilterChipClass,
-  adminListFooterLinkClass,
   adminListPageInnerClass,
   adminListPageShellClass,
-  adminListPrimaryButtonClass,
   adminListSearchInputClass,
 } from '../components/admin-list-ui';
 import StoreAccessRestrictedBanner from '../components/StoreAccessRestrictedBanner';
@@ -67,21 +65,6 @@ function formatRelativeDate(iso: string): string {
   }
 }
 
-function formatFullDate(iso: string): string {
-  try {
-    return new Date(iso).toLocaleString(undefined, {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  } catch {
-    return iso;
-  }
-}
-
 function statusLabel(status: ContactFormSubmissionStatus): string {
   if (status === 'pending') return 'Pending';
   if (status === 'read') return 'Read';
@@ -89,7 +72,7 @@ function statusLabel(status: ContactFormSubmissionStatus): string {
 }
 
 function statusClass(status: ContactFormSubmissionStatus): string {
-  if (status === 'pending') return 'bg-admin-fill text-admin-text';
+  if (status === 'pending') return 'bg-[#fef3d0] text-[#6b5500]';
   if (status === 'read') return 'bg-[#cdfee1] text-[#0c5132]';
   return 'bg-admin-secondary text-admin-text-secondary';
 }
@@ -136,7 +119,7 @@ function StatCard({
 }) {
   const valueClass =
     tone === 'pending'
-      ? 'text-admin-text'
+      ? 'text-[#6b5500]'
       : tone === 'read'
         ? 'text-[#0c5132]'
         : tone === 'spam'
@@ -154,13 +137,13 @@ function StatCard({
 }
 
 export const ContactFormSubmissionsPage = () => {
+  const navigate = useNavigate();
   const { activeStoreId } = useStore();
   const { submissions, loading, fetchSubmissionsByStoreId } = useContactFormSubmissions();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [statusOpen, setStatusOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const statusRef = useRef<HTMLDivElement | null>(null);
@@ -227,15 +210,6 @@ export const ContactFormSubmissionsPage = () => {
 
     return rows;
   }, [submissions, searchQuery, statusFilter, sortOrder]);
-
-  const expandedSubmission = useMemo(
-    () => filteredSubmissions.find((row) => row._id === expandedId) ?? null,
-    [expandedId, filteredSubmissions]
-  );
-
-  const toggleExpanded = (id: string) => {
-    setExpandedId((current) => (current === id ? null : id));
-  };
 
   return (
     <div className={adminListPageShellClass}>
@@ -362,27 +336,16 @@ export const ContactFormSubmissionsPage = () => {
             </div>
           ) : (
             <div>
-              {filteredSubmissions.map((submission) => {
-                const expanded = expandedId === submission._id;
-                return (
-                  <SubmissionCard
-                    key={submission._id}
-                    submission={submission}
-                    expanded={expanded}
-                    onToggle={() => toggleExpanded(submission._id)}
-                  />
-                );
-              })}
+              {filteredSubmissions.map((submission) => (
+                <SubmissionCard
+                  key={submission._id}
+                  submission={submission}
+                  onOpen={() => navigate(`/content/contact-submissions/${submission._id}`)}
+                />
+              ))}
             </div>
           )}
         </div>
-
-        {expandedSubmission ? (
-          <SubmissionDetailPanel
-            submission={expandedSubmission}
-            onClose={() => setExpandedId(null)}
-          />
-        ) : null}
       </div>
     </div>
   );
@@ -390,20 +353,16 @@ export const ContactFormSubmissionsPage = () => {
 
 function SubmissionCard({
   submission,
-  expanded,
-  onToggle,
+  onOpen,
 }: {
   submission: ContactFormSubmission;
-  expanded: boolean;
-  onToggle: () => void;
+  onOpen: () => void;
 }) {
   return (
     <button
       type="button"
-      onClick={onToggle}
-      className={`flex w-full cursor-pointer items-start gap-4 border-b border-admin-divider bg-admin-surface px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-admin-row-hover ${
-        expanded ? 'bg-admin-row-hover' : ''
-      }`}
+      onClick={onOpen}
+      className="flex w-full cursor-pointer items-start gap-4 border-b border-admin-divider bg-admin-surface px-4 py-4 text-left transition-colors last:border-b-0 hover:bg-admin-row-hover"
     >
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-admin-secondary text-[13px] font-semibold text-admin-text-secondary">
         {initials(submission.name)}
@@ -439,117 +398,9 @@ function SubmissionCard({
       </div>
 
       <div className="shrink-0 pt-1 text-admin-text-subdued">
-        {expanded ? (
-          <ChevronUpIcon className="h-4 w-4" aria-hidden />
-        ) : (
-          <ChevronDownIcon className="h-4 w-4" aria-hidden />
-        )}
+        <ChevronRightIcon className="h-4 w-4" aria-hidden />
       </div>
     </button>
-  );
-}
-
-function SubmissionDetailPanel({
-  submission,
-  onClose,
-}: {
-  submission: ContactFormSubmission;
-  onClose: () => void;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/20 backdrop-blur-[1px]">
-      <button
-        type="button"
-        aria-label="Close submission details"
-        className="absolute inset-0"
-        onClick={onClose}
-      />
-      <aside className="relative z-10 flex h-full w-full max-w-md flex-col border-l border-admin-border bg-admin-surface shadow-2xl">
-        <div className="flex items-start justify-between gap-3 border-b border-admin-border px-5 py-4">
-          <div className="min-w-0">
-            <p className="text-[12px] font-medium uppercase tracking-wide text-admin-text-subdued">
-              Submission details
-            </p>
-            <h2 className="mt-1 truncate text-[18px] font-semibold text-admin-text">
-              {submission.name}
-            </h2>
-            <p className="mt-1 text-[12px] text-admin-text-secondary">
-              {formatFullDate(submission.createdAt)}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-admin-border text-admin-text-secondary transition-colors hover:bg-admin-row-hover"
-          >
-            <XMarkIcon className="h-4 w-4" aria-hidden />
-          </button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 py-4">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-admin-secondary text-[14px] font-semibold text-admin-text-secondary">
-              {initials(submission.name)}
-            </div>
-            <div>
-              <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[12px] font-medium ${statusClass(submission.status)}`}
-              >
-                {statusLabel(submission.status)}
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <DetailField label="Email">
-              <a
-                href={`mailto:${submission.email}`}
-                className={`text-[13px] font-medium ${adminListFooterLinkClass}`}
-              >
-                {submission.email}
-              </a>
-            </DetailField>
-
-            {submission.phone ? (
-              <DetailField label="Phone">
-                <a
-                  href={`tel:${submission.phone}`}
-                  className={`text-[13px] font-medium ${adminListFooterLinkClass}`}
-                >
-                  {submission.phone}
-                </a>
-              </DetailField>
-            ) : null}
-
-            <DetailField label="Message">
-              <p className="whitespace-pre-wrap text-[13px] leading-relaxed text-admin-text-secondary">
-                {submission.message}
-              </p>
-            </DetailField>
-          </div>
-        </div>
-
-        <div className="border-t border-admin-border px-5 py-4">
-          <a
-            href={`mailto:${submission.email}?subject=Re: Your contact form message`}
-            className={`inline-flex w-full justify-center ${adminListPrimaryButtonClass}`}
-          >
-            Reply by email
-          </a>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function DetailField({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-admin-border bg-admin-secondary/60 px-4 py-3">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-admin-text-subdued">
-        {label}
-      </p>
-      <div className="mt-1.5">{children}</div>
-    </div>
   );
 }
 

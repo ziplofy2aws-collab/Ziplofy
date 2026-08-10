@@ -20,24 +20,24 @@ const FreeShippingTable: React.FC<FreeShippingTableProps> = ({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200/70 bg-gray-50/40 shadow-sm ring-1 ring-black/[0.02]">
+    <div className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-100">
-          <thead className="bg-gray-50/80">
+        <table className="min-w-full divide-y divide-admin-divider">
+          <thead className="bg-admin-table-header">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Code / Title</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Method</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Country Selection</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Exclude Rates</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Rate Limit</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Eligibility</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Min Requirement</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Combinations</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Created</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Code / Title</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Method</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Country Selection</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Exclude Rates</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Rate Limit</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Eligibility</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Min Requirement</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Combinations</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Status</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Created</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="bg-admin-surface divide-y divide-admin-divider">
             {discounts.map((d) => {
               const codeOrTitle = d.method === 'discount-code' ? d.discountCode : d.title;
               const minReq = d.minimumPurchase === 'minimum-amount'
@@ -49,19 +49,19 @@ const FreeShippingTable: React.FC<FreeShippingTableProps> = ({
               return (
                 <tr
                   key={d._id}
-                  className="hover:bg-blue-50/50 cursor-pointer transition-colors"
+                  className="hover:bg-admin-row-hover cursor-pointer transition-colors"
                   onClick={() => handleRowClick(d._id)}
                 >
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{codeOrTitle || '-'}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.method}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.countrySelection}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.excludeShippingRates ? 'Yes' : 'No'}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.excludeShippingRates ? (d.shippingRateLimit ?? '-') : '-'}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.eligibility}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{minReq}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{combos}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.status || 'active'}</td>
-                  <td className="px-4 py-3 text-[13px] text-gray-900">{d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '-'}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{codeOrTitle || '-'}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.method}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.countrySelection}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.excludeShippingRates ? 'Yes' : 'No'}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.excludeShippingRates ? (d.shippingRateLimit ?? '-') : '-'}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.eligibility}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{minReq}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{combos}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.status || 'active'}</td>
+                  <td className="px-4 py-3 text-[13px] text-admin-text">{d.createdAt ? new Date(d.createdAt).toLocaleDateString() : '-'}</td>
                 </tr>
               );
             })}

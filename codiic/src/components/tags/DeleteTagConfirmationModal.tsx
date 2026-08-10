@@ -1,4 +1,5 @@
 import React from 'react';
+import { adminListSecondaryButtonClass } from '../admin-list-ui';
 import Modal from '../Modal';
 
 interface DeleteTagConfirmationModalProps {
@@ -18,31 +19,29 @@ const DeleteTagConfirmationModal: React.FC<DeleteTagConfirmationModalProps> = ({
     <Modal
       open={isOpen}
       onClose={onCancel}
-      title="Confirm Delete"
+      title="Delete tag"
       maxWidth="sm"
       actions={
         <>
-          <button
-            onClick={onCancel}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            No
+          <button type="button" onClick={onCancel} className={adminListSecondaryButtonClass}>
+            Cancel
           </button>
           <button
+            type="button"
             onClick={onConfirm}
-            className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors"
+            className="inline-flex items-center rounded-lg bg-red-600 px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-red-700"
           >
-            Yes
+            Delete
           </button>
         </>
       }
     >
-      <p className="text-sm text-gray-700">
-        Are you sure you want to delete <span className="font-medium">{tagName}</span> tag?
+      <p className="text-[13px] text-admin-text-secondary">
+        Are you sure you want to delete{' '}
+        <span className="font-semibold text-admin-text">{tagName}</span>? This can’t be undone.
       </p>
     </Modal>
   );
 };
 
 export default DeleteTagConfirmationModal;
-

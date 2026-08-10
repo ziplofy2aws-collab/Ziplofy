@@ -6,9 +6,16 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ProductDescriptionInput from '../components/products/ProductDescriptionInput';
+import {
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from '../components/admin-list-ui';
 import PageAddedBanner from '../components/store-pages/PageAddedBanner';
 import StorePageFormPageSkeleton from '../components/store-pages/StorePageFormPageSkeleton';
 import { useStorePages } from '../contexts/store-page.context';
@@ -35,15 +42,21 @@ function PageCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-gray-200/80 bg-white shadow-sm">
-      <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
-        <h2 className="text-[13px] font-medium text-gray-800">{title}</h2>
+    <section className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
+      <div className="flex items-center justify-between gap-3 border-b border-admin-divider bg-admin-table-header px-4 py-2.5">
+        <h2 className="text-[13px] font-semibold text-admin-text">{title}</h2>
         {action}
       </div>
       <div className="p-4">{children}</div>
     </section>
   );
 }
+
+const fieldLabelClass = 'mb-1.5 block text-[12px] font-medium text-admin-text-secondary';
+const fieldInputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface py-1.5 pl-3 pr-9 text-[13px] font-normal text-admin-text placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const radioClass =
+  'h-3.5 w-3.5 border-admin-border text-admin-text focus:ring-[#005bd3]/30';
 
 export default function OnlineStorePageCreatePage() {
   const navigate = useNavigate();
@@ -71,8 +84,6 @@ export default function OnlineStorePageCreatePage() {
     [title, activeStoreId, loading, loadingPage]
   );
 
-  // Create + edit share this component (React often reuses the instance), so pick up
-  // the "just created" flag on every navigation — not only on first mount.
   useEffect(() => {
     const fromPending = consumePageJustCreated(pageId);
     const fromState = readPageJustCreated(location.state);
@@ -98,7 +109,6 @@ export default function OnlineStorePageCreatePage() {
       setMetaDescription('');
       setUrlHandle('');
       setVisibility('hidden');
-      setThemeTemplate('default');
     }
   }, [pageId]);
 
@@ -226,19 +236,19 @@ export default function OnlineStorePageCreatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={`${adminListPageInnerClass} py-5`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <nav className="flex min-w-0 items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
             <Link
               to="/online-store/pages"
-              className="inline-flex items-center gap-1 font-normal text-gray-500 transition-colors hover:text-gray-700"
+              className={`inline-flex items-center gap-1 font-medium ${adminListFooterLinkClass}`}
             >
               <DocumentTextIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
               Pages
             </Link>
-            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-300" aria-hidden />
-            <span className="truncate font-normal text-gray-700">
+            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-admin-text-subdued" aria-hidden />
+            <span className="truncate font-medium text-admin-text">
               {editing ? title || 'Edit page' : 'Add page'}
             </span>
           </nav>
@@ -246,15 +256,12 @@ export default function OnlineStorePageCreatePage() {
 
         {pageAddedBanner}
 
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-          <div className="flex flex-col gap-3">
-            <section className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+          <div className="flex flex-col gap-4">
+            <section className="rounded-xl border border-admin-border bg-admin-surface p-4 sm:p-5">
               <div className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="store-page-title"
-                    className="mb-1 block text-xs font-normal text-gray-500"
-                  >
+                  <label htmlFor="store-page-title" className={fieldLabelClass}>
                     Title
                   </label>
                   <div className="relative">
@@ -264,17 +271,17 @@ export default function OnlineStorePageCreatePage() {
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="e.g. About us, sizing chart, FAQ"
-                      className="w-full rounded-md border border-gray-200 py-1.5 pl-3 pr-9 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                      className={fieldInputClass}
                     />
                     <SparklesIcon
-                      className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300"
+                      className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-text-subdued"
                       aria-hidden
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-normal text-gray-500">Content</label>
+                  <label className={fieldLabelClass}>Content</label>
                   <ProductDescriptionInput
                     value={content}
                     onChange={setContent}
@@ -302,29 +309,29 @@ export default function OnlineStorePageCreatePage() {
             />
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             <PageCard
               title="Visibility"
-              action={<CalendarDaysIcon className="h-4 w-4 text-gray-400" aria-hidden />}
+              action={<CalendarDaysIcon className="h-4 w-4 text-admin-text-subdued" aria-hidden />}
             >
-              <div className="space-y-2">
-                <label className="flex cursor-pointer items-center gap-2 text-[13px] font-normal text-gray-700">
+              <div className="space-y-2.5">
+                <label className="flex cursor-pointer items-center gap-2 text-[13px] text-admin-text">
                   <input
                     type="radio"
                     name="page-visibility"
                     checked={visibility === 'visible'}
                     onChange={() => setVisibility('visible')}
-                    className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                    className={radioClass}
                   />
                   Visible
                 </label>
-                <label className="flex cursor-pointer items-center gap-2 text-[13px] font-normal text-gray-700">
+                <label className="flex cursor-pointer items-center gap-2 text-[13px] text-admin-text">
                   <input
                     type="radio"
                     name="page-visibility"
                     checked={visibility === 'hidden'}
                     onChange={() => setVisibility('hidden')}
-                    className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                    className={radioClass}
                   />
                   Hidden
                 </label>
@@ -333,23 +340,31 @@ export default function OnlineStorePageCreatePage() {
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-5 flex flex-wrap items-center justify-end gap-2 border-t border-admin-divider pt-4">
           {editing ? (
             <button
               type="button"
               onClick={() => void handleDelete()}
               disabled={loading || loadingPage}
-              className="mr-auto inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-[13px] font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mr-auto inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-admin-surface px-3 py-1.5 text-[13px] font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <TrashIcon className="h-3.5 w-3.5" />
               Delete page
             </button>
-          ) : null}
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate('/online-store/pages')}
+              className={`${adminListSecondaryButtonClass} mr-auto`}
+            >
+              Cancel
+            </button>
+          )}
           <button
             type="button"
             onClick={() => void handleSave()}
             disabled={!canSave}
-            className="inline-flex min-w-22 items-center justify-center rounded-lg px-4 py-1.5 text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 enabled:bg-blue-600 enabled:text-white enabled:hover:bg-blue-700"
+            className={adminListPrimaryButtonClass}
           >
             {loading ? 'Saving…' : 'Save'}
           </button>

@@ -32,8 +32,17 @@ import {
   type MenuItemDraft,
 } from '../utils/store-menu-draft.util';
 import { collectionPath, pagePath, productPath } from '../utils/storefront-paths';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPrimaryButtonClass,
+  adminListSearchInputClass,
+} from '../components/admin-list-ui';
 
 export { createMenuItem, slugifyMenuHandle } from '../utils/store-menu-draft.util';
+
+const fieldLabelClass = 'mb-1.5 block text-[12px] font-medium text-admin-text-secondary';
+const fieldInputClass = adminListSearchInputClass;
 
 type LinkPickerOption = {
   id: string;
@@ -266,22 +275,22 @@ function LinkPickerDropdown({
       style={usePortal ? portalStyle ?? undefined : undefined}
       className={
         usePortal
-          ? 'overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg'
-          : 'absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-gray-200 bg-white py-1 shadow-lg'
+          ? 'overflow-y-auto rounded-xl border border-admin-border bg-admin-surface py-1 shadow-lg'
+          : 'absolute left-0 right-0 top-full z-20 mt-1 max-h-[min(320px,50vh)] overflow-y-auto rounded-xl border border-admin-border bg-admin-surface py-1 shadow-lg'
       }
     >
       {view !== 'root' ? (
         <>
-          <div className="flex items-center justify-between gap-2 border-b border-gray-100 px-2 py-2">
+          <div className="flex items-center justify-between gap-2 border-b border-admin-divider px-2 py-2">
             <button
               type="button"
               onClick={() => setView('root')}
-              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-sm font-medium text-gray-700 hover:bg-gray-100"
+              className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[13px] font-medium text-admin-text hover:bg-admin-row-hover"
             >
               <ArrowLeftIcon className="h-4 w-4" />
               Back
             </button>
-            <span className="text-xs text-gray-500">
+            <span className="text-[12px] text-admin-text-secondary">
               {view === 'collections'
                 ? collectionsLoading
                   ? 'Loading…'
@@ -298,7 +307,9 @@ function LinkPickerDropdown({
 
           {view === 'collections' ? (
             collectionsLoading ? (
-              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading collections…</p>
+              <p className="px-3 py-4 text-center text-[13px] text-admin-text-secondary">
+                Loading collections…
+              </p>
             ) : (
               <>
                 <button
@@ -310,9 +321,9 @@ function LinkPickerDropdown({
                       linkType: 'all-collections',
                     })
                   }
-                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
                 >
-                  <TagIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                  <TagIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" />
                   <span className="min-w-0 flex-1 truncate">All collections</span>
                 </button>
                 {filteredCollections.map((collection) => (
@@ -327,80 +338,86 @@ function LinkPickerDropdown({
                         collectionId: collection._id,
                       })
                     }
-                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
+                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
                   >
                     {collection.imageUrl ? (
                       <img
                         src={collection.imageUrl}
                         alt=""
-                        className="h-8 w-8 shrink-0 rounded object-cover bg-gray-100"
+                        className="h-8 w-8 shrink-0 rounded object-cover bg-admin-secondary"
                       />
                     ) : (
-                      <PhotoIcon className="h-5 w-5 shrink-0 text-gray-400" />
+                      <PhotoIcon className="h-5 w-5 shrink-0 text-admin-text-subdued" />
                     )}
                     <span className="min-w-0 flex-1 truncate">{collection.title}</span>
                   </button>
                 ))}
                 {filteredCollections.length === 0 ? (
-                  <p className="px-3 py-3 text-center text-sm text-gray-500">No collections found</p>
+                  <p className="px-3 py-3 text-center text-[13px] text-admin-text-secondary">
+                    No collections found
+                  </p>
                 ) : null}
               </>
             )
           ) : view === 'products' ? (
             productsLoading ? (
-              <p className="px-3 py-4 text-center text-sm text-gray-500">Loading products…</p>
+              <p className="px-3 py-4 text-center text-[13px] text-admin-text-secondary">
+                Loading products…
+              </p>
             ) : (
               <>
-              <button
-                type="button"
-                onClick={() =>
-                  pickAndClose({
-                    link: '/collections/all',
-                    label: 'All products',
-                    linkType: 'all-products',
-                  })
-                }
-                className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
-              >
-                <TagIcon className="h-5 w-5 shrink-0 text-gray-500" />
-                <span className="min-w-0 flex-1 truncate">All products</span>
-              </button>
-              {filteredProducts.map((product) => {
-                const imageUrl = product.imageUrls?.[0];
-                return (
-                  <button
-                    key={product._id}
-                    type="button"
-                    onClick={() =>
-                      pickAndClose({
-                        link: productLinkPath(product),
-                        label: product.title,
-                        linkType: 'specific-product',
-                        productId: product._id,
-                      })
-                    }
-                    className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt=""
-                        className="h-8 w-8 shrink-0 rounded object-cover bg-gray-100"
-                      />
-                    ) : (
-                      <PhotoIcon className="h-5 w-5 shrink-0 text-gray-400" />
-                    )}
-                    <span className="min-w-0 flex-1 truncate">{product.title}</span>
-                  </button>
-                );
-              })}
-              {filteredProducts.length === 0 ? (
-                <p className="px-3 py-3 text-center text-sm text-gray-500">No products found</p>
-              ) : null}
+                <button
+                  type="button"
+                  onClick={() =>
+                    pickAndClose({
+                      link: '/collections/all',
+                      label: 'All products',
+                      linkType: 'all-products',
+                    })
+                  }
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
+                >
+                  <TagIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" />
+                  <span className="min-w-0 flex-1 truncate">All products</span>
+                </button>
+                {filteredProducts.map((product) => {
+                  const imageUrl = product.imageUrls?.[0];
+                  return (
+                    <button
+                      key={product._id}
+                      type="button"
+                      onClick={() =>
+                        pickAndClose({
+                          link: productLinkPath(product),
+                          label: product.title,
+                          linkType: 'specific-product',
+                          productId: product._id,
+                        })
+                      }
+                      className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
+                    >
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt=""
+                          className="h-8 w-8 shrink-0 rounded object-cover bg-admin-secondary"
+                        />
+                      ) : (
+                        <PhotoIcon className="h-5 w-5 shrink-0 text-admin-text-subdued" />
+                      )}
+                      <span className="min-w-0 flex-1 truncate">{product.title}</span>
+                    </button>
+                  );
+                })}
+                {filteredProducts.length === 0 ? (
+                  <p className="px-3 py-3 text-center text-[13px] text-admin-text-secondary">
+                    No products found
+                  </p>
+                ) : null}
               </>
             )
           ) : pagesLoading ? (
-            <p className="px-3 py-4 text-center text-sm text-gray-500">Loading pages…</p>
+            <p className="px-3 py-4 text-center text-[13px] text-admin-text-secondary">Loading pages…</p>
           ) : (
             <>
               {filteredPages.map((page) => (
@@ -414,17 +431,17 @@ function LinkPickerDropdown({
                       linkType: 'custom',
                     })
                   }
-                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
                 >
-                  <DocumentTextIcon className="h-5 w-5 shrink-0 text-gray-500" />
+                  <DocumentTextIcon className="h-5 w-5 shrink-0 text-admin-text-secondary" />
                   <span className="min-w-0 flex-1 truncate">{page.title}</span>
-                  <span className="max-w-[45%] truncate text-xs text-gray-400">
+                  <span className="max-w-[45%] truncate text-[12px] text-admin-text-subdued">
                     /pages/{page.urlHandle}
                   </span>
                 </button>
               ))}
               {filteredPages.length === 0 ? (
-                <p className="px-3 py-3 text-center text-sm text-gray-500">No pages found</p>
+                <p className="px-3 py-3 text-center text-[13px] text-admin-text-secondary">No pages found</p>
               ) : null}
             </>
           )}
@@ -432,7 +449,9 @@ function LinkPickerDropdown({
       ) : (
         LINK_PICKER_SECTIONS.map((section) => (
           <div key={section.id} className="py-1">
-            <p className="px-3 py-1.5 text-xs font-semibold text-gray-500">{section.title}</p>
+            <p className="px-3 py-1.5 text-[12px] font-semibold text-admin-text-secondary">
+              {section.title}
+            </p>
             {section.options.map((opt) => {
               const Icon = opt.icon;
               return (
@@ -464,12 +483,12 @@ function LinkPickerDropdown({
                             : undefined,
                     });
                   }}
-                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm text-gray-800 hover:bg-gray-100"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] text-admin-text hover:bg-admin-row-hover"
                 >
-                  <Icon className="h-5 w-5 shrink-0 text-gray-500" />
+                  <Icon className="h-5 w-5 shrink-0 text-admin-text-secondary" />
                   <span className="min-w-0 flex-1 truncate">{opt.label}</span>
                   {opt.hasChildren ? (
-                    <ChevronRightIcon className="h-4 w-4 shrink-0 text-gray-400" aria-hidden />
+                    <ChevronRightIcon className="h-4 w-4 shrink-0 text-admin-text-subdued" aria-hidden />
                   ) : null}
                 </button>
               );
@@ -504,11 +523,11 @@ export function MenuItemRow({
   const linkInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+    <div className="rounded-xl border border-admin-border bg-admin-surface p-3">
       <div className="flex items-start gap-2 sm:gap-3">
         <button
           type="button"
-          className="mt-8 shrink-0 cursor-grab rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 active:cursor-grabbing"
+          className="mt-7 shrink-0 cursor-grab rounded-lg p-1 text-admin-text-subdued hover:bg-admin-row-hover hover:text-admin-text active:cursor-grabbing"
           aria-label="Reorder menu item"
         >
           <Bars3Icon className="h-5 w-5" />
@@ -516,18 +535,18 @@ export function MenuItemRow({
 
         <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-800">Label</label>
+            <label className={fieldLabelClass}>Label</label>
             <input
               type="text"
               value={item.label}
               onChange={(e) => onChange({ label: e.target.value })}
               placeholder="e.g., About us"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className={fieldInputClass}
             />
           </div>
 
           <div className="relative" ref={linkFieldRef}>
-            <label className="mb-1 block text-sm font-medium text-gray-800">Link</label>
+            <label className={fieldLabelClass}>Link</label>
             <input
               ref={linkInputRef}
               type="text"
@@ -543,7 +562,7 @@ export function MenuItemRow({
               }
               onFocus={() => setLinkPickerOpen(true)}
               placeholder="Search or paste link"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className={fieldInputClass}
             />
             <LinkPickerDropdown
               open={linkPickerOpen}
@@ -575,11 +594,11 @@ export function MenuItemRow({
           </div>
         </div>
 
-        <div className="mt-7 flex shrink-0 items-center gap-1">
+        <div className="mt-6 flex shrink-0 items-center gap-1">
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+            className="rounded-lg p-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover hover:text-admin-text"
             aria-label="Confirm menu item"
           >
             <CheckIcon className="h-5 w-5" />
@@ -587,7 +606,7 @@ export function MenuItemRow({
           <button
             type="button"
             onClick={onRemove}
-            className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600"
+            className="rounded-lg p-2 text-admin-text-secondary transition-colors hover:bg-admin-row-hover hover:text-red-600"
             aria-label="Remove menu item"
           >
             <TrashIcon className="h-5 w-5" />
@@ -661,24 +680,24 @@ export const ContentMenuCreatePage = () => {
 
   return (
     <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color">
-      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-        <nav className="mb-5 flex items-center gap-2 text-sm" aria-label="Breadcrumb">
+      <div className="mx-auto max-w-3xl px-4 py-5 sm:px-6">
+        <nav className="mb-5 flex items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
           <Link
             to="/content/menus"
-            className="inline-flex items-center gap-1.5 font-medium text-gray-600 hover:text-gray-900"
+            className={`inline-flex items-center gap-1 font-medium ${adminListFooterLinkClass}`}
           >
-            <Bars3Icon className="h-4 w-4" />
+            <Bars3Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
             Menus
           </Link>
-          <ChevronRightIcon className="h-4 w-4 text-gray-400" aria-hidden />
-          <span className="font-semibold text-gray-900">Add menu</span>
+          <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-admin-text-subdued" aria-hidden />
+          <span className="font-medium text-admin-text">Add menu</span>
         </nav>
 
-        <div className="space-y-4">
-          <section className="rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-4">
+          <section className={`${adminListCardClass} p-4 sm:p-5`}>
             <div className="space-y-4">
               <div>
-                <label htmlFor={nameInputId} className="mb-1.5 block text-sm font-semibold text-gray-900">
+                <label htmlFor={nameInputId} className={fieldLabelClass}>
                   Name
                 </label>
                 <input
@@ -687,22 +706,22 @@ export const ContentMenuCreatePage = () => {
                   value={menuName}
                   onChange={(e) => setMenuName(e.target.value)}
                   placeholder="e.g., Sidebar menu"
-                  className="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className={fieldInputClass}
                 />
               </div>
-              <p className="text-sm text-gray-600">
-                <span className="font-medium text-gray-800">Handle:</span>{' '}
-                <span className="text-gray-500">{displayHandle || '—'}</span>
+              <p className="text-[13px] text-admin-text-secondary">
+                <span className="font-medium text-admin-text">Handle:</span>{' '}
+                <span className="text-admin-text-subdued">{displayHandle || '—'}</span>
               </p>
             </div>
           </section>
 
-          <section className="rounded-2xl border border-gray-200/80 bg-white shadow-sm">
-            <div className="border-b border-gray-100 px-5 py-4 sm:px-6">
-              <h2 className="text-sm font-semibold text-gray-900">Menu items</h2>
+          <section className={adminListCardClass}>
+            <div className="border-b border-admin-border bg-admin-table-header px-4 py-3 sm:px-5">
+              <h2 className="text-[13px] font-semibold text-admin-text">Menu items</h2>
             </div>
 
-            <div className="space-y-3 p-4 sm:p-5">
+            <div className="flex flex-col gap-3 p-4 sm:p-5">
               {items.map((item) => (
                 <MenuItemRow
                   key={item.id}
@@ -717,7 +736,7 @@ export const ContentMenuCreatePage = () => {
               <button
                 type="button"
                 onClick={addMenuItem}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-4 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50/50 hover:border-blue-200"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-admin-border bg-admin-fill/40 px-4 py-3.5 text-[13px] font-medium text-[#005bd3] transition-colors hover:bg-admin-row-hover"
               >
                 <PlusCircleIcon className="h-5 w-5" />
                 Add menu item
@@ -726,12 +745,12 @@ export const ContentMenuCreatePage = () => {
           </section>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="mt-5 flex justify-end">
           <button
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="inline-flex min-w-[7rem] items-center justify-center rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-800 disabled:opacity-60"
+            className={`${adminListPrimaryButtonClass} min-w-[7rem] justify-center px-5 py-2`}
           >
             {saving ? 'Saving…' : 'Save'}
           </button>

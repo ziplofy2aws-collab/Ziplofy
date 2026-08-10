@@ -2,6 +2,12 @@ import { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { Bars3Icon, ChevronRightIcon, PlusCircleIcon } from '@heroicons/react/24/outline';
 import { Link, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import {
+  adminListCardClass,
+  adminListFooterLinkClass,
+  adminListPrimaryButtonClass,
+  adminListSearchInputClass,
+} from '../components/admin-list-ui';
 import { useStore } from '../contexts/store.context';
 import { useStoreMenus } from '../contexts/store-menu.context';
 import {
@@ -15,56 +21,59 @@ import {
   slugifyMenuHandle,
 } from './ContentMenuCreatePage';
 
+const fieldLabelClass = 'mb-1.5 block text-[12px] font-medium text-admin-text-secondary';
+const fieldInputClass = adminListSearchInputClass;
+
 function MenuEditSkeleton() {
   return (
     <div className="animate-pulse" aria-busy="true" aria-label="Loading menu">
-      <div className="space-y-4">
-        <section className="rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex flex-col gap-4">
+        <section className={`${adminListCardClass} p-4 sm:p-5`}>
           <div className="space-y-4">
             <div>
-              <div className="mb-1.5 h-4 w-12 rounded bg-gray-200" />
-              <div className="h-10 w-full rounded-xl bg-gray-100" />
+              <div className="mb-1.5 h-3 w-10 rounded bg-admin-fill" />
+              <div className="h-9 w-full rounded-lg bg-admin-secondary" />
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-3.5 w-14 rounded bg-gray-200" />
-              <div className="h-3.5 w-28 rounded bg-gray-100" />
+              <div className="h-3.5 w-14 rounded bg-admin-fill" />
+              <div className="h-3.5 w-28 rounded bg-admin-secondary" />
             </div>
           </div>
         </section>
 
-        <section className="rounded-2xl border border-gray-200/80 bg-white shadow-sm">
-          <div className="border-b border-gray-100 px-5 py-4 sm:px-6">
-            <div className="h-4 w-24 rounded bg-gray-200" />
+        <section className={adminListCardClass}>
+          <div className="border-b border-admin-border bg-admin-table-header px-4 py-3 sm:px-5">
+            <div className="h-3.5 w-20 rounded bg-admin-fill" />
           </div>
-          <div className="space-y-3 p-4 sm:p-5">
+          <div className="flex flex-col gap-3 p-4 sm:p-5">
             {[0, 1, 2].map((row) => (
-              <div key={row} className="rounded-xl border border-gray-200 bg-white p-3 shadow-sm">
+              <div key={row} className="rounded-xl border border-admin-border bg-admin-surface p-3">
                 <div className="flex items-start gap-2 sm:gap-3">
-                  <div className="mt-8 h-5 w-5 shrink-0 rounded bg-gray-100" />
+                  <div className="mt-7 h-5 w-5 shrink-0 rounded bg-admin-secondary" />
                   <div className="grid min-w-0 flex-1 gap-3 sm:grid-cols-2">
                     <div>
-                      <div className="mb-1 h-4 w-12 rounded bg-gray-200" />
-                      <div className="h-9 w-full rounded-lg bg-gray-100" />
+                      <div className="mb-1.5 h-3 w-10 rounded bg-admin-fill" />
+                      <div className="h-9 w-full rounded-lg bg-admin-secondary" />
                     </div>
                     <div>
-                      <div className="mb-1 h-4 w-10 rounded bg-gray-200" />
-                      <div className="h-9 w-full rounded-lg bg-gray-100" />
+                      <div className="mb-1.5 h-3 w-8 rounded bg-admin-fill" />
+                      <div className="h-9 w-full rounded-lg bg-admin-secondary" />
                     </div>
                   </div>
-                  <div className="mt-7 flex shrink-0 items-center gap-1">
-                    <div className="h-9 w-9 rounded-lg bg-gray-100" />
-                    <div className="h-9 w-9 rounded-lg bg-gray-100" />
+                  <div className="mt-6 flex shrink-0 items-center gap-1">
+                    <div className="h-9 w-9 rounded-lg bg-admin-secondary" />
+                    <div className="h-9 w-9 rounded-lg bg-admin-secondary" />
                   </div>
                 </div>
               </div>
             ))}
-            <div className="h-[52px] w-full rounded-xl border border-gray-200 bg-gray-50/80" />
+            <div className="h-[52px] w-full rounded-lg border border-dashed border-admin-border bg-admin-fill/40" />
           </div>
         </section>
       </div>
 
-      <div className="mt-6 flex justify-end">
-        <div className="h-10 w-28 rounded-full bg-gray-200" />
+      <div className="mt-5 flex justify-end">
+        <div className="h-9 w-28 rounded-lg bg-admin-fill" />
       </div>
     </div>
   );
@@ -156,7 +165,7 @@ export const ContentMenuEditPage = () => {
 
   if (!menuId) {
     return (
-      <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color p-8 text-center text-sm text-gray-500">
+      <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color p-8 text-center text-[13px] text-admin-text-secondary">
         Menu not found.
       </div>
     );
@@ -164,28 +173,30 @@ export const ContentMenuEditPage = () => {
 
   return (
     <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color">
-      <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
-        <nav className="mb-5 flex items-center gap-2 text-sm" aria-label="Breadcrumb">
+      <div className="mx-auto max-w-3xl px-4 py-5 sm:px-6">
+        <nav className="mb-5 flex items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
           <Link
             to="/content/menus"
-            className="inline-flex items-center gap-1.5 font-medium text-gray-600 hover:text-gray-900"
+            className={`inline-flex items-center gap-1 font-medium ${adminListFooterLinkClass}`}
           >
-            <Bars3Icon className="h-4 w-4" />
+            <Bars3Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
             Menus
           </Link>
-          <ChevronRightIcon className="h-4 w-4 text-gray-400" aria-hidden />
-          <span className="font-semibold text-gray-900">{displayHandle || menuName || 'Menu'}</span>
+          <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-admin-text-subdued" aria-hidden />
+          <span className="truncate font-medium text-admin-text">
+            {displayHandle || menuName || 'Menu'}
+          </span>
         </nav>
 
         {!loaded && loading ? (
           <MenuEditSkeleton />
         ) : (
           <>
-            <div className="space-y-4">
-              <section className="rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex flex-col gap-4">
+              <section className={`${adminListCardClass} p-4 sm:p-5`}>
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor={nameInputId} className="mb-1.5 block text-sm font-semibold text-gray-900">
+                    <label htmlFor={nameInputId} className={fieldLabelClass}>
                       Name
                     </label>
                     <input
@@ -194,22 +205,22 @@ export const ContentMenuEditPage = () => {
                       value={menuName}
                       onChange={(e) => setMenuName(e.target.value)}
                       placeholder="e.g., Sidebar menu"
-                      className="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                      className={fieldInputClass}
                     />
                   </div>
-                  <p className="text-sm text-gray-600">
-                    <span className="font-medium text-gray-800">Handle:</span>{' '}
-                    <span className="text-gray-500">{displayHandle || '—'}</span>
+                  <p className="text-[13px] text-admin-text-secondary">
+                    <span className="font-medium text-admin-text">Handle:</span>{' '}
+                    <span className="text-admin-text-subdued">{displayHandle || '—'}</span>
                   </p>
                 </div>
               </section>
 
-              <section className="rounded-2xl border border-gray-200/80 bg-white shadow-sm">
-                <div className="border-b border-gray-100 px-5 py-4 sm:px-6">
-                  <h2 className="text-sm font-semibold text-gray-900">Menu items</h2>
+              <section className={adminListCardClass}>
+                <div className="border-b border-admin-border bg-admin-table-header px-4 py-3 sm:px-5">
+                  <h2 className="text-[13px] font-semibold text-admin-text">Menu items</h2>
                 </div>
 
-                <div className="space-y-3 p-4 sm:p-5">
+                <div className="flex flex-col gap-3 p-4 sm:p-5">
                   {items.map((item) => (
                     <MenuItemRow
                       key={item.id}
@@ -224,7 +235,7 @@ export const ContentMenuEditPage = () => {
                   <button
                     type="button"
                     onClick={addMenuItem}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-gray-50/80 px-4 py-4 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-50/50 hover:border-blue-200"
+                    className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-admin-border bg-admin-fill/40 px-4 py-3.5 text-[13px] font-medium text-[#005bd3] transition-colors hover:bg-admin-row-hover"
                   >
                     <PlusCircleIcon className="h-5 w-5" />
                     Add menu item
@@ -233,12 +244,12 @@ export const ContentMenuEditPage = () => {
               </section>
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-5 flex justify-end">
               <button
                 type="button"
                 onClick={handleSave}
                 disabled={saving || !loaded}
-                className="inline-flex min-w-[7rem] items-center justify-center rounded-full bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-gray-800 disabled:opacity-60"
+                className={`${adminListPrimaryButtonClass} min-w-[7rem] justify-center px-5 py-2`}
               >
                 {saving ? 'Saving…' : 'Save'}
               </button>

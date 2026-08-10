@@ -44,39 +44,39 @@ const DiscountValueLimitsCard: React.FC<DiscountValueLimitsCardProps> = ({
   ];
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Value & limits</h2>
+        <h2 className="text-[13px] font-semibold text-admin-text mb-4">Value & limits</h2>
         <div className="space-y-5">
           <div>
-            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Discount value</h3>
+            <h3 className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-3">Discount value</h3>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {valueRows.map(({ label, value: v }) => (
                 <div key={label}>
-                  <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="mt-0.5 text-[13px] text-gray-900">{v}</dd>
+                  <dt className="text-xs text-admin-text-secondary">{label}</dt>
+                  <dd className="mt-0.5 text-[13px] text-admin-text">{v}</dd>
                 </div>
               ))}
             </dl>
           </div>
-          <div className="border-t border-gray-100 pt-4">
-            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Usage limits</h3>
+          <div className="border-t border-admin-divider pt-4">
+            <h3 className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-3">Usage limits</h3>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {limitRows.map(({ label, value: v }) => (
                 <div key={label}>
-                  <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="mt-0.5 text-[13px] text-gray-900">{v}</dd>
+                  <dt className="text-xs text-admin-text-secondary">{label}</dt>
+                  <dd className="mt-0.5 text-[13px] text-admin-text">{v}</dd>
                 </div>
               ))}
             </dl>
           </div>
-          <div className="border-t border-gray-100 pt-4">
-            <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Can combine with</h3>
+          <div className="border-t border-admin-divider pt-4">
+            <h3 className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-3">Can combine with</h3>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {comboRows.map(({ label, value: v }) => (
                 <div key={label}>
-                  <dt className="text-xs text-gray-500">{label}</dt>
-                  <dd className="mt-0.5 text-[13px] text-gray-900">{v}</dd>
+                  <dt className="text-xs text-admin-text-secondary">{label}</dt>
+                  <dd className="mt-0.5 text-[13px] text-admin-text">{v}</dd>
                 </div>
               ))}
             </dl>

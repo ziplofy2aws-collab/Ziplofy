@@ -106,8 +106,8 @@ const FreeShippingDetailsPage: React.FC = () => {
   if (!discount) {
     return id && loading ? (
       <div className={`${discountPageShellClass} flex min-h-[60vh] flex-col items-center justify-center gap-3`}>
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-700" />
-        <p className="text-[13px] text-gray-500">Loading discount…</p>
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-admin-border border-t-admin-text" />
+        <p className="text-[13px] text-admin-text-secondary">Loading discount…</p>
       </div>
     ) : (
       <DiscountNotFound />
@@ -214,43 +214,43 @@ const FreeShippingDetailsPage: React.FC = () => {
             >
                 {ordersLoading ? (
                   <div className="flex justify-center py-8">
-                    <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-admin-text-subdued border-t-transparent rounded-full animate-spin" />
                   </div>
                 ) : ordersData && ordersData.data.length > 0 ? (
                   <div className="space-y-4">
                     <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
+                      <table className="min-w-full divide-y divide-admin-divider">
                         <thead>
-                          <tr className="bg-gray-50">
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Customer</th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Order</th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Total</th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Used at</th>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                          <tr className="bg-admin-table-header">
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">Customer</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">Order</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">Total</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">Used at</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary uppercase">Actions</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-admin-divider">
                           {ordersData.data.map((row: FreeShippingDiscountUsageOrder, idx: number) => (
-                            <tr key={idx} className="hover:bg-gray-50/50">
-                              <td className="px-4 py-3 text-sm text-gray-900">
+                            <tr key={idx} className="hover:bg-admin-row-hover/50">
+                              <td className="px-4 py-3 text-sm text-admin-text">
                                 {row.customer ? (
                                   <span>
                                     {[row.customer.firstName, row.customer.lastName].filter(Boolean).join(' ').trim() || '—'}
                                     {row.customer.email && (
-                                      <span className="block text-gray-500 text-xs">{row.customer.email}</span>
+                                      <span className="block text-admin-text-secondary text-xs">{row.customer.email}</span>
                                     )}
                                   </span>
                                 ) : '—'}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-900">
+                              <td className="px-4 py-3 text-sm text-admin-text">
                                 {row.order ? (
                                   <span className="font-mono text-xs">#{String(row.order._id).slice(-8)}</span>
                                 ) : '—'}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-900">
+                              <td className="px-4 py-3 text-sm text-admin-text">
                                 {row.order ? formatINR(row.order.total) : '—'}
                               </td>
-                              <td className="px-4 py-3 text-sm text-gray-500">
+                              <td className="px-4 py-3 text-sm text-admin-text-secondary">
                                 {row.usage?.usedAt
                                   ? new Date(row.usage.usedAt).toLocaleString()
                                   : '—'}
@@ -260,7 +260,7 @@ const FreeShippingDetailsPage: React.FC = () => {
                                   <button
                                     type="button"
                                     onClick={() => navigate(`/orders/${row.order!._id}`)}
-                                    className="text-[13px] font-medium text-gray-700 hover:text-gray-900"
+                                    className="text-[13px] font-medium text-admin-text hover:text-admin-text"
                                   >
                                     View order
                                   </button>
@@ -272,13 +272,13 @@ const FreeShippingDetailsPage: React.FC = () => {
                       </table>
                     </div>
                     {ordersData.pagination && ordersData.pagination.totalItems > ordersData.pagination.itemsPerPage && (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-admin-text-secondary">
                         Showing {ordersData.data.length} of {ordersData.pagination.totalItems} orders
                       </p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500 py-6 text-center">No orders have used this discount yet.</p>
+                  <p className="text-sm text-admin-text-secondary py-6 text-center">No orders have used this discount yet.</p>
                 )}
             </DiscountDetailsSection>
           </div>

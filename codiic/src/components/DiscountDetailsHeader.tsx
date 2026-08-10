@@ -35,7 +35,7 @@ const DiscountDetailsHeader: React.FC<DiscountDetailsHeaderProps> = ({
       <button
         type="button"
         onClick={onBack}
-        className="mb-3 flex items-center gap-2 text-sm font-normal text-gray-400 transition-colors hover:text-gray-600"
+        className="mb-3 flex items-center gap-2 text-[13px] font-medium text-[#005bd3] transition-colors hover:underline"
       >
         <ArrowLeftIcon className="h-4 w-4" aria-hidden />
         Back to discounts
@@ -43,15 +43,15 @@ const DiscountDetailsHeader: React.FC<DiscountDetailsHeaderProps> = ({
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="truncate text-lg font-semibold text-gray-900">{displayName}</h1>
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-[12px] text-gray-500">
+          <h1 className="truncate text-lg font-semibold text-admin-text">{displayName}</h1>
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-[12px] text-admin-text-secondary">
             <span className="capitalize">{method.replace('-', ' ')}</span>
-            <span className="text-gray-300">·</span>
-            <span className="font-medium text-gray-700">{value}</span>
-            <span className="text-gray-300">·</span>
+            <span className="text-admin-text-subdued">·</span>
+            <span className="font-medium text-admin-text">{value}</span>
+            <span className="text-admin-text-subdued">·</span>
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                isActive ? 'bg-[#cdfee1] text-[#0c5132]' : 'bg-[#fef3d0] text-[#6b5500]'
               }`}
             >
               {statusLabel}

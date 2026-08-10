@@ -43,28 +43,28 @@ const AmountOffProductsTable: React.FC<AmountOffProductsTableProps> = ({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200/70 bg-gray-50/40 shadow-sm ring-1 ring-black/[0.02]">
+    <div className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-100">
-          <thead className="bg-gray-50/80">
+        <table className="min-w-full divide-y divide-admin-divider">
+          <thead className="bg-admin-table-header">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Code / Title</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Method</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Value</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Applies to</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Eligibility</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Min Purchase</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Min Qty</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Product Disc.</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Order Disc.</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Shipping Disc.</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Total Uses Limit</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Limit Total Uses</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600">Created</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Code / Title</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Method</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Value</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Applies to</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Eligibility</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Min Purchase</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Min Qty</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Product Disc.</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Order Disc.</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Shipping Disc.</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Total Uses Limit</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Limit Total Uses</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Status</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-admin-text-secondary">Created</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-100">
+          <tbody className="bg-admin-surface divide-y divide-admin-divider">
             {discounts.map((d) => {
               const value = d.valueType === 'percentage'
                 ? `${d.percentage ?? 0}%`
@@ -73,23 +73,23 @@ const AmountOffProductsTable: React.FC<AmountOffProductsTableProps> = ({
               return (
                 <tr
                   key={d._id}
-                  className="hover:bg-blue-50/50 cursor-pointer transition-colors"
+                  className="hover:bg-admin-row-hover cursor-pointer transition-colors"
                   onClick={() => handleRowClick(d._id)}
                 >
-                  <td className="px-4 py-3 text-sm text-gray-900">{codeOrTitle || '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.method}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{value}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.appliesTo}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.eligibility}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.minimumPurchase || '-'}{d.minimumPurchase === 'minimum-amount' && d.minimumAmount !== undefined ? ` (₹${d.minimumAmount})` : ''}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.minimumQuantity ?? '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{boolToYesNo(d.productDiscounts)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{boolToYesNo(d.orderDiscounts)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{boolToYesNo(d.shippingDiscounts)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.totalUsesLimit ?? '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{boolToYesNo(d.limitTotalUses)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{d.status || 'active'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{new Date(d.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{codeOrTitle || '-'}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.method}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{value}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.appliesTo}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.eligibility}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.minimumPurchase || '-'}{d.minimumPurchase === 'minimum-amount' && d.minimumAmount !== undefined ? ` (₹${d.minimumAmount})` : ''}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.minimumQuantity ?? '-'}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{boolToYesNo(d.productDiscounts)}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{boolToYesNo(d.orderDiscounts)}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{boolToYesNo(d.shippingDiscounts)}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.totalUsesLimit ?? '-'}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{boolToYesNo(d.limitTotalUses)}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{d.status || 'active'}</td>
+                  <td className="px-4 py-3 text-sm text-admin-text">{new Date(d.createdAt).toLocaleDateString()}</td>
                 </tr>
               );
             })}

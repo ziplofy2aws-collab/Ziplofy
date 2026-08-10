@@ -14,10 +14,10 @@ const DiscountDetailsSection: React.FC<DiscountDetailsSectionProps> = ({
 }) => {
   return (
     <section className={discountCardClass}>
-      <div className={`border-b border-gray-100 ${discountCardBodyClass} pb-3`}>
+      <div className={`border-b border-admin-divider bg-admin-table-header ${discountCardBodyClass} pb-3`}>
         <h2 className={discountSectionTitleClass}>{title}</h2>
         {description ? (
-          <p className="mt-0.5 text-[12px] font-normal text-gray-500">{description}</p>
+          <p className="mt-0.5 text-[12px] font-normal text-admin-text-secondary">{description}</p>
         ) : null}
       </div>
       <div className={discountCardBodyClass}>{children}</div>

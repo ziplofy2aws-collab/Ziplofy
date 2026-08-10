@@ -411,7 +411,7 @@ export const ContentFilesPage = () => {
       <p className="mb-4 text-[13px] text-admin-text-secondary">
         {uploads.length} file{uploads.length === 1 ? '' : 's'} in your library
       </p>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 items-start gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {uploads.map((upload, index) => {
           const previewUrl = resolveUploadPreviewUrl(upload);
           const name = fileNameFromStorageKey(upload.key);
@@ -420,23 +420,23 @@ export const ContentFilesPage = () => {
           return (
             <div
               key={upload._id}
-              className="group relative flex cursor-pointer flex-col overflow-hidden rounded-lg border border-admin-border bg-admin-secondary transition-colors hover:bg-admin-row-hover"
+              className="group relative flex w-full flex-col overflow-hidden rounded-lg border border-admin-border bg-admin-surface transition-colors hover:border-admin-text-subdued"
             >
               <button
                 type="button"
                 onClick={() => openViewer(index)}
-                className="relative flex aspect-square items-center justify-center bg-admin-secondary text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005bd3] focus-visible:ring-inset"
+                className="relative aspect-square w-full shrink-0 overflow-hidden bg-admin-secondary text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#005bd3] focus-visible:ring-inset"
                 aria-label={`View ${name}`}
               >
                 {previewUrl ? (
                   <img
                     src={previewUrl}
                     alt={name}
-                    className="h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="flex flex-col items-center gap-1 p-3 text-admin-text-subdued">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 p-3 text-admin-text-subdued">
                     {isImageStorageKey(upload.key) ? (
                       <PhotoIcon className="h-10 w-10" />
                     ) : (
@@ -458,7 +458,7 @@ export const ContentFilesPage = () => {
               >
                 <TrashIcon className="h-4 w-4" />
               </button>
-              <div className="border-t border-admin-divider bg-admin-surface p-2">
+              <div className="shrink-0 border-t border-admin-divider bg-admin-surface p-2">
                 <p className="truncate text-xs font-medium text-admin-text" title={name}>
                   {name}
                 </p>

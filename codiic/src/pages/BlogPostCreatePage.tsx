@@ -9,6 +9,13 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import {
+  adminListFooterLinkClass,
+  adminListPageInnerClass,
+  adminListPageShellClass,
+  adminListPrimaryButtonClass,
+  adminListSecondaryButtonClass,
+} from '../components/admin-list-ui';
 import ProductDescriptionInput from '../components/products/ProductDescriptionInput';
 import BlogTagsInput from '../components/tags/BlogTagsInput';
 import {
@@ -28,25 +35,28 @@ function BlogPostCard({
   title,
   action,
   children,
-  className = '',
 }: {
   title: string;
   action?: React.ReactNode;
   children: React.ReactNode;
-  className?: string;
 }) {
   return (
-    <section
-      className={`rounded-lg border border-gray-200/80 bg-white shadow-sm ${className}`.trim()}
-    >
-      <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
-        <h2 className="text-[13px] font-medium text-gray-800">{title}</h2>
+    <section className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
+      <div className="flex items-center justify-between gap-3 border-b border-admin-divider bg-admin-table-header px-4 py-2.5">
+        <h2 className="text-[13px] font-semibold text-admin-text">{title}</h2>
         {action}
       </div>
       <div className="p-4">{children}</div>
     </section>
   );
 }
+
+const fieldLabelClass = 'mb-1.5 block text-[12px] font-medium text-admin-text-secondary';
+const fieldInputClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface py-1.5 pl-3 pr-9 text-[13px] font-normal text-admin-text placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const fieldInputPlainClass =
+  'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const radioClass = 'h-3.5 w-3.5 border-admin-border text-admin-text focus:ring-[#005bd3]/30';
 
 export const BlogPostCreatePage = () => {
   const navigate = useNavigate();
@@ -149,39 +159,33 @@ export const BlogPostCreatePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+    <div className={adminListPageShellClass}>
+      <div className={`${adminListPageInnerClass} py-5`}>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <nav className="flex min-w-0 items-center gap-1.5 text-[13px]" aria-label="Breadcrumb">
             <Link
               to="/content/articles"
-              className="inline-flex items-center gap-1 font-normal text-gray-500 transition-colors hover:text-gray-700"
+              className={`inline-flex items-center gap-1 font-medium ${adminListFooterLinkClass}`}
             >
               <PencilSquareIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
               Blog posts
             </Link>
-            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-gray-300" aria-hidden />
-            <span className="truncate font-normal text-gray-700">Add blog post</span>
+            <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-admin-text-subdued" aria-hidden />
+            <span className="truncate font-medium text-admin-text">Add blog post</span>
           </nav>
 
-          <Link
-            to="/content/blogs"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-600 transition-colors hover:bg-gray-50"
-          >
-            <PencilSquareIcon className="h-3.5 w-3.5" />
+          <Link to="/content/blogs" className={adminListSecondaryButtonClass}>
+            <PencilSquareIcon className="mr-1.5 h-3.5 w-3.5" />
             Manage blogs
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-          <div className="flex flex-col gap-3">
-            <section className="rounded-lg border border-gray-200/80 bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+          <div className="flex flex-col gap-4">
+            <section className="rounded-xl border border-admin-border bg-admin-surface p-4 sm:p-5">
               <div className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="blog-post-title"
-                    className="mb-1 block text-xs font-normal text-gray-500"
-                  >
+                  <label htmlFor="blog-post-title" className={fieldLabelClass}>
                     Title
                   </label>
                   <div className="relative">
@@ -191,17 +195,17 @@ export const BlogPostCreatePage = () => {
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="e.g., Blog about your latest products or deals"
-                      className="w-full rounded-md border border-gray-200 py-1.5 pl-3 pr-9 text-[13px] font-normal text-gray-700 placeholder:text-gray-400 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                      className={fieldInputClass}
                     />
                     <SparklesIcon
-                      className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-300"
+                      className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-admin-text-subdued"
                       aria-hidden
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-normal text-gray-500">Content</label>
+                  <label className={fieldLabelClass}>Content</label>
                   <ProductDescriptionInput
                     value={content}
                     onChange={setContent}
@@ -213,13 +217,13 @@ export const BlogPostCreatePage = () => {
               </div>
             </section>
 
-            <section className="rounded-lg border border-gray-200/80 bg-white shadow-sm">
-              <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-2.5">
-                <h2 className="text-[13px] font-medium text-gray-800">Excerpt</h2>
+            <section className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">
+              <div className="flex items-center justify-between gap-3 border-b border-admin-divider bg-admin-table-header px-4 py-2.5">
+                <h2 className="text-[13px] font-semibold text-admin-text">Excerpt</h2>
                 <button
                   type="button"
                   onClick={() => setExcerptEditing((value) => !value)}
-                  className="rounded-md p-1 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+                  className="rounded-lg p-1 text-admin-text-subdued transition-colors hover:bg-admin-row-hover hover:text-admin-text"
                   aria-expanded={excerptEditing}
                   aria-label={excerptEditing ? 'Close excerpt editor' : 'Edit excerpt'}
                 >
@@ -229,14 +233,14 @@ export const BlogPostCreatePage = () => {
 
               <div className="p-4">
                 {!excerptEditing ? (
-                  <p className="text-[13px] font-normal text-gray-500">
+                  <p className="text-[13px] text-admin-text-secondary">
                     {excerptEmpty
                       ? 'Add a summary of the post to appear on your home page or blog.'
                       : excerpt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()}
                   </p>
                 ) : (
                   <div className="space-y-3">
-                    <p className="text-[13px] font-normal text-gray-500">
+                    <p className="text-[13px] text-admin-text-secondary">
                       Add a summary of the post to appear on your home page or blog.
                     </p>
                     <ProductDescriptionInput
@@ -268,31 +272,29 @@ export const BlogPostCreatePage = () => {
             />
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             <BlogPostCard
               title="Visibility"
-              action={
-                <CalendarDaysIcon className="h-4 w-4 text-gray-400" aria-hidden />
-              }
+              action={<CalendarDaysIcon className="h-4 w-4 text-admin-text-subdued" aria-hidden />}
             >
               <div className="space-y-2">
-                <label className="flex cursor-pointer items-center gap-2 text-[13px] font-normal text-gray-700">
+                <label className="flex cursor-pointer items-center gap-2 text-[13px] text-admin-text">
                   <input
                     type="radio"
                     name="blog-visibility"
                     checked={visibility === 'visible'}
                     onChange={() => setVisibility('visible')}
-                    className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                    className={radioClass}
                   />
                   Visible
                 </label>
-                <label className="flex cursor-pointer items-center gap-2 text-[13px] font-normal text-gray-700">
+                <label className="flex cursor-pointer items-center gap-2 text-[13px] text-admin-text">
                   <input
                     type="radio"
                     name="blog-visibility"
                     checked={visibility === 'hidden'}
                     onChange={() => setVisibility('hidden')}
-                    className="h-3.5 w-3.5 border-gray-300 text-blue-600 focus:ring-blue-500/30"
+                    className={radioClass}
                   />
                   Hidden
                 </label>
@@ -302,7 +304,7 @@ export const BlogPostCreatePage = () => {
             <BlogPostCard title="Image">
               {featuredImageUrl ? (
                 <div className="space-y-2">
-                  <div className="relative overflow-hidden rounded-md border border-gray-200">
+                  <div className="relative overflow-hidden rounded-lg border border-admin-border">
                     <img
                       src={featuredImageUrl}
                       alt="Blog post featured"
@@ -320,21 +322,21 @@ export const BlogPostCreatePage = () => {
                   <button
                     type="button"
                     onClick={() => setImagePickerOpen(true)}
-                    className="text-[12px] font-normal text-blue-600 hover:text-blue-700"
+                    className={`text-[12px] font-medium ${adminListFooterLinkClass}`}
                   >
                     Change image
                   </button>
                 </div>
               ) : (
-                <div className="flex min-h-[140px] flex-col items-center justify-center rounded-md border border-dashed border-gray-200 bg-gray-50/60 px-4 py-6 text-center">
+                <div className="flex min-h-[140px] flex-col items-center justify-center rounded-lg border border-dashed border-admin-border bg-admin-fill/40 px-4 py-6 text-center">
                   <button
                     type="button"
                     onClick={() => setImagePickerOpen(true)}
-                    className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 transition-colors hover:bg-gray-50"
+                    className={adminListSecondaryButtonClass}
                   >
                     Add image
                   </button>
-                  <p className="mt-2 text-[12px] font-normal text-gray-400">
+                  <p className="mt-2 text-[12px] text-admin-text-subdued">
                     Choose from your store files or upload a new image
                   </p>
                 </div>
@@ -344,10 +346,7 @@ export const BlogPostCreatePage = () => {
             <BlogPostCard title="Organization">
               <div className="space-y-3">
                 <div>
-                  <label
-                    htmlFor="blog-author"
-                    className="mb-1 block text-xs font-normal text-gray-500"
-                  >
+                  <label htmlFor="blog-author" className={fieldLabelClass}>
                     Author
                   </label>
                   <input
@@ -355,21 +354,18 @@ export const BlogPostCreatePage = () => {
                     type="text"
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
-                    className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-[13px] font-normal text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                    className={fieldInputPlainClass}
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="blog-select"
-                    className="mb-1 block text-xs font-normal text-gray-500"
-                  >
+                  <label htmlFor="blog-select" className={fieldLabelClass}>
                     Blog
                   </label>
                   <select
                     id="blog-select"
                     value={blogId}
                     onChange={(e) => setBlogId(e.target.value)}
-                    className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-[13px] font-normal text-gray-700 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200"
+                    className={fieldInputPlainClass}
                   >
                     {blogs.length === 0 ? (
                       <option value="">No blogs available</option>
@@ -393,12 +389,12 @@ export const BlogPostCreatePage = () => {
           </div>
         </div>
 
-        <div className="mt-4 flex justify-end">
+        <div className="mt-5 flex justify-end">
           <button
             type="button"
             onClick={() => void handleSave()}
             disabled={!canSave}
-            className="inline-flex min-w-22 items-center justify-center rounded-lg px-4 py-1.5 text-[13px] font-medium transition-colors disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400 enabled:bg-blue-600 enabled:text-white enabled:hover:bg-blue-700"
+            className={adminListPrimaryButtonClass}
           >
             {saving ? 'Saving…' : 'Save'}
           </button>

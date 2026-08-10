@@ -37,7 +37,7 @@ const Tabs: React.FC<TabsProps> = ({
   }
 
   return (
-    <div className="flex gap-1 border-b border-gray-200/80 overflow-x-auto" role="tablist">
+    <div className="flex gap-1 overflow-x-auto border-b border-admin-border" role="tablist">
       {tabs.map((t) => (
         <TabButton
           key={t.id}

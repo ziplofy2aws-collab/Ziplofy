@@ -1,5 +1,6 @@
 import { CubeIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { tagDeleteButtonClass, tagIconBubbleClass, tagTableRowClass } from './tag-management-ui';
 
 interface Tag {
   _id: string;
@@ -13,20 +14,20 @@ interface ProductTypeItemProps {
 
 const ProductTypeItem: React.FC<ProductTypeItemProps> = ({ tag, onDeleteClick }) => {
   return (
-    <tr className="transition-colors hover:bg-gray-50/60">
-      <td className="px-5 py-4 sm:px-6">
+    <tr className={tagTableRowClass}>
+      <td className="px-5 py-3 sm:px-6">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+          <span className={tagIconBubbleClass}>
             <CubeIcon className="h-4 w-4" aria-hidden />
           </span>
-          <span className="font-medium text-gray-900">{tag.name}</span>
+          <span className="text-[13px] font-medium text-admin-text">{tag.name}</span>
         </div>
       </td>
-      <td className="px-4 py-4 text-right">
+      <td className="px-4 py-3 text-right">
         <button
           type="button"
           onClick={() => onDeleteClick(tag)}
-          className="inline-flex rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+          className={tagDeleteButtonClass}
           aria-label={`Delete product type ${tag.name}`}
         >
           <TrashIcon className="h-5 w-5" />

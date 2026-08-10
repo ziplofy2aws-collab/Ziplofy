@@ -45,11 +45,11 @@ function TargetBlock({
 }) {
   return (
     <div>
-      <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">{title}</h3>
+      <h3 className="text-xs font-medium text-admin-text-secondary uppercase tracking-wide mb-2">{title}</h3>
       {chips.length > 0 ? (
         <ChipList items={chips} />
       ) : (
-        <p className="text-sm text-gray-400">{emptyLabel}</p>
+        <p className="text-sm text-admin-text-subdued">{emptyLabel}</p>
       )}
     </div>
   );
@@ -94,9 +94,9 @@ const DiscountTargetsCard: React.FC<DiscountTargetsCardProps> = ({
         : [];
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200/80 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-admin-border bg-admin-surface">
       <div className="px-5 py-4 sm:px-6 sm:py-5">
-        <h2 className="text-[13px] font-semibold text-gray-900 mb-4">Targets</h2>
+        <h2 className="text-[13px] font-semibold text-admin-text mb-4">Targets</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <TargetBlock title="Products" chips={productChips} />
           <TargetBlock title="Collections" chips={collectionChips} />

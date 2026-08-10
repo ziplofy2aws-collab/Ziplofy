@@ -32,7 +32,7 @@ const DiscountFormHeader: React.FC<DiscountFormHeaderProps> = ({
         <button
           type="button"
           onClick={onBack}
-          className="mb-3 flex items-center gap-2 text-sm font-normal text-gray-400 transition-colors hover:text-gray-600"
+          className="mb-3 flex items-center gap-2 text-[13px] font-medium text-[#005bd3] transition-colors hover:underline"
         >
           <ArrowLeftIcon className="h-4 w-4" aria-hidden />
           {backLabel}
@@ -40,7 +40,7 @@ const DiscountFormHeader: React.FC<DiscountFormHeaderProps> = ({
       ) : null}
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="truncate text-lg font-semibold text-gray-900">{title}</h1>
+        <h1 className="truncate text-lg font-semibold text-admin-text">{title}</h1>
 
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           {actions}

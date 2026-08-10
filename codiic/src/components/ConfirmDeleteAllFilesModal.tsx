@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { adminListSecondaryButtonClass } from './admin-list-ui';
 import Modal from './Modal';
 
 export const DELETE_ALL_FILES_CONFIRM_PHRASE = 'yes delete all files';
@@ -31,7 +32,7 @@ const ConfirmDeleteAllFilesModal: React.FC<ConfirmDeleteAllFilesModalProps> = ({
     <Modal
       open={isOpen}
       onClose={deleting ? () => undefined : onClose}
-      title={<span className="text-red-600">Delete all files</span>}
+      title="Delete all files"
       maxWidth="sm"
       actions={
         <>
@@ -39,7 +40,7 @@ const ConfirmDeleteAllFilesModal: React.FC<ConfirmDeleteAllFilesModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={deleting}
-            className="px-3 py-1.5 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
+            className={adminListSecondaryButtonClass}
           >
             Cancel
           </button>
@@ -47,35 +48,37 @@ const ConfirmDeleteAllFilesModal: React.FC<ConfirmDeleteAllFilesModalProps> = ({
             type="button"
             onClick={onConfirm}
             disabled={deleting || !phraseMatches}
-            className="px-3 py-1.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center rounded-lg bg-red-600 px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {deleting ? 'Deleting…' : 'Delete all files'}
           </button>
         </>
       }
     >
-      <div className="space-y-4 text-sm">
-        <p className="text-gray-900">
+      <div className="space-y-4">
+        <p className="text-[13px] text-admin-text-secondary">
           This permanently deletes{' '}
-          <strong>
+          <span className="font-semibold text-admin-text">
             {fileCount} file{fileCount === 1 ? '' : 's'}
-          </strong>{' '}
-          from storage and the database. This cannot be undone.
+          </span>{' '}
+          from storage and the database. This can’t be undone.
         </p>
         <div className="space-y-2">
-          <label htmlFor="delete-all-files-confirm" className="block text-gray-700">
-            Type <span className="font-semibold text-gray-900">{DELETE_ALL_FILES_CONFIRM_PHRASE}</span>{' '}
+          <label htmlFor="delete-all-files-confirm" className="block text-[13px] text-admin-text-secondary">
+            Type{' '}
+            <span className="font-semibold text-admin-text">{DELETE_ALL_FILES_CONFIRM_PHRASE}</span>{' '}
             to confirm
           </label>
           <input
             id="delete-all-files-confirm"
             type="text"
             autoComplete="off"
+            autoFocus
             value={confirmationText}
             onChange={(event) => setConfirmationText(event.target.value)}
             disabled={deleting}
             placeholder={DELETE_ALL_FILES_CONFIRM_PHRASE}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500 disabled:opacity-50"
+            className="w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued focus:border-red-500 focus:outline-none focus:ring-1 focus:ring-red-500/30 disabled:opacity-50"
           />
         </div>
       </div>
