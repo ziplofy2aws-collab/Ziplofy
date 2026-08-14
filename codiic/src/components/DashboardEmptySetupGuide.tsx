@@ -12,7 +12,7 @@ type SetupCardProps = {
   ctaLabel: string;
   onClick: () => void;
   illustration: React.ReactNode;
-  eyebrow?: string;
+  done?: boolean;
   className?: string;
 };
 
@@ -22,16 +22,20 @@ function SetupCard({
   ctaLabel,
   onClick,
   illustration,
-  eyebrow,
+  done = false,
   className = '',
 }: SetupCardProps) {
   return (
     <div className={`${cardShell} ${className}`.trim()}>
       <div className="relative z-[1] min-w-0">
-        {eyebrow ? (
-          <p className="mb-1 text-[12px] font-medium text-admin-text-secondary">{eyebrow}</p>
-        ) : null}
-        <h3 className="text-[17px] font-semibold tracking-tight text-admin-text sm:text-lg">{title}</h3>
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-[17px] font-semibold tracking-tight text-admin-text sm:text-lg">{title}</h3>
+          {done ? (
+            <span className="shrink-0 rounded-full bg-[#cdfee1] px-2 py-0.5 text-[11px] font-semibold text-[#0d6b38]">
+              Done
+            </span>
+          ) : null}
+        </div>
         <p className="mt-1.5 max-w-[34ch] text-[13px] leading-5 text-admin-text-secondary">{description}</p>
       </div>
 
@@ -41,7 +45,7 @@ function SetupCard({
 
       <div className="relative z-[1] mt-auto">
         <button type="button" onClick={onClick} className={ctaClass}>
-          {ctaLabel}
+          {done ? 'View' : ctaLabel}
         </button>
       </div>
     </div>
@@ -131,57 +135,15 @@ function NameTagIllustration() {
   );
 }
 
-function DomainIllustration() {
-  return (
-    <div className="relative flex h-[130px] w-full max-w-[240px] items-center justify-center">
-      <div
-        className="absolute inset-2 rounded-lg opacity-60"
-        style={{
-          backgroundImage:
-            'linear-gradient(#e3e3e3 1px, transparent 1px), linear-gradient(90deg, #e3e3e3 1px, transparent 1px)',
-          backgroundSize: '16px 16px',
-        }}
-        aria-hidden
-      />
-      <div className="relative z-[1] flex w-[200px] items-center gap-2 rounded-full border border-admin-border bg-admin-surface px-3 py-2.5 shadow-md">
-        <span className="h-3.5 w-3.5 rounded-full border-2 border-admin-text-subdued" />
-        <span className="truncate text-[12px] text-admin-text-secondary">.codiic.com</span>
-      </div>
-      <div
-        className="absolute bottom-4 right-8 h-0 w-0 border-l-[10px] border-r-[6px] border-t-[16px] border-l-transparent border-r-transparent border-t-admin-text"
-        aria-hidden
-      />
-    </div>
-  );
-}
-
-function ShippingIllustration() {
-  return (
-    <div className="relative flex h-[140px] w-full max-w-[260px] items-center justify-end pr-2">
-      <div className="absolute left-0 top-1/2 h-10 w-28 -translate-y-1/2 rounded-md border border-admin-border bg-admin-surface shadow-sm">
-        <div className="m-1.5 h-6 rounded-sm bg-admin-secondary" />
-      </div>
-      <div className="relative z-[1] h-24 w-28 rounded-md border border-admin-border bg-[#fafafa] shadow-md">
-        <div className="absolute -top-1 left-2 right-2 h-3 rounded-t-md border border-admin-border bg-admin-secondary" />
-        <div className="absolute left-2 top-5 rounded bg-[#1b5e3b] px-1.5 py-0.5 text-[7px] font-bold text-white">
-          READY
-        </div>
-        <div className="absolute right-2 top-5 rounded-full bg-[#fef3d0] px-1.5 py-0.5 text-[7px] font-bold text-[#6b5500]">
-          SHIP
-        </div>
-        <div className="absolute bottom-3 left-2 right-2 h-8 rounded border border-dashed border-admin-border bg-white" />
-      </div>
-    </div>
-  );
-}
-
 export type DashboardEmptySetupGuideProps = {
   onAddProduct: () => void;
   onChooseTheme: () => void;
   onSetupPayments: () => void;
   onNameStore: () => void;
-  onSetupDomain: () => void;
-  onReviewShipping: () => void;
+  hasProduct?: boolean;
+  hasChosenTheme?: boolean;
+  hasPaymentMethod?: boolean;
+  hasCustomStoreName?: boolean;
 };
 
 export default function DashboardEmptySetupGuide({
@@ -189,8 +151,10 @@ export default function DashboardEmptySetupGuide({
   onChooseTheme,
   onSetupPayments,
   onNameStore,
-  onSetupDomain,
-  onReviewShipping,
+  hasProduct = false,
+  hasChosenTheme = false,
+  hasPaymentMethod = false,
+  hasCustomStoreName = false,
 }: DashboardEmptySetupGuideProps) {
   return (
     <section aria-label="Store setup guide" className="space-y-4">
@@ -201,6 +165,7 @@ export default function DashboardEmptySetupGuide({
           ctaLabel="Add product"
           onClick={onAddProduct}
           illustration={<ProductIllustration />}
+          done={hasProduct}
         />
         <SetupCard
           title="Choose your store design"
@@ -208,16 +173,15 @@ export default function DashboardEmptySetupGuide({
           ctaLabel="Choose theme"
           onClick={onChooseTheme}
           illustration={<ThemeIllustration />}
+          done={hasChosenTheme}
         />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <SetupCard
           title="Set up payments"
           description="Choose a payment provider to let customers pay by card or digital wallet."
           ctaLabel="Activate payments"
           onClick={onSetupPayments}
           illustration={<PaymentsIllustration />}
+          done={hasPaymentMethod}
         />
         <SetupCard
           title="Name your store"
@@ -225,25 +189,7 @@ export default function DashboardEmptySetupGuide({
           ctaLabel="Add name"
           onClick={onNameStore}
           illustration={<NameTagIllustration />}
-        />
-        <SetupCard
-          eyebrow="Get ₹2,000 back"
-          title="Get a custom domain"
-          description="Give your store a branded URL that's easy to find, trust, and remember."
-          ctaLabel="Set up domain"
-          onClick={onSetupDomain}
-          illustration={<DomainIllustration />}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <SetupCard
-          title="Review shipping rates"
-          description="Look over the defaults set up for you based on your location."
-          ctaLabel="Review rates"
-          onClick={onReviewShipping}
-          illustration={<ShippingIllustration />}
-          className="min-h-[240px] sm:min-h-[260px]"
+          done={hasCustomStoreName}
         />
       </div>
     </section>

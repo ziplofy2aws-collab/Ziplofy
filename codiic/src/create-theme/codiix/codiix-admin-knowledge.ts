@@ -289,10 +289,13 @@ export const CODIX_ADMIN_INTENTS: CodiixIntent[] = [
     keywords: ['analytics', 'reports', 'report', 'live view', 'stats', 'metrics'],
     phrases: ['where are analytics', 'open reports', 'live view'],
     answer:
-      '**Analytics** is in the sidebar:\n\n' +
-      '• **Reports** (`/analytics/reports`)\n' +
+      '**Analytics** is in the sidebar (`/analytics`):\n\n' +
+      '• **Products** (`/analytics/products`) — SKUs, vendors, catalog mix\n' +
+      '• **Inventory** (`/analytics/inventory`) — on-hand, committed, cover\n' +
+      '• **Customer** (`/analytics/customers`) — customer analytics\n' +
+      '• **Content / CRM** (`/analytics/content`) — newsletter, forms, blog, pages\n' +
       '• **Live View** (`/analytics/live-view`)\n\n' +
-      'Say **“take me to analytics”** or **“open reports”**.',
+      'Say **“take me to analytics”**.',
   },
   {
     id: 'admin-settings',
@@ -477,15 +480,43 @@ export const CODIX_ADMIN_NAV: CodiixAdminNavTarget[] = [
     id: 'analytics',
     label: 'Analytics',
     path: '/analytics',
-    keywords: ['analytics'],
-    phrases: ['take me to analytics', 'open analytics'],
+    keywords: ['analytics', 'reports', 'report'],
+    phrases: ['take me to analytics', 'open analytics', 'open reports'],
   },
   {
-    id: 'reports',
-    label: 'Reports',
-    path: '/analytics/reports',
-    keywords: ['reports', 'report'],
-    phrases: ['open reports', 'take me to reports'],
+    id: 'product-catalog-analytics',
+    label: 'Products & catalog analytics',
+    path: '/analytics/products',
+    keywords: ['product analytics', 'catalog analytics', 'sku analytics'],
+    phrases: ['open product analytics', 'take me to product analytics'],
+  },
+  {
+    id: 'inventory-analytics',
+    label: 'Inventory analytics',
+    path: '/analytics/inventory',
+    keywords: ['inventory analytics', 'stock analytics', 'on hand', 'days of cover'],
+    phrases: ['open inventory analytics', 'take me to inventory analytics'],
+  },
+  {
+    id: 'customer-analytics',
+    label: 'Customer analytics',
+    path: '/analytics/customers',
+    keywords: ['customer analytics', 'customers analytics'],
+    phrases: ['open customer analytics', 'take me to customer analytics'],
+  },
+  {
+    id: 'content-crm-analytics',
+    label: 'Content / CRM analytics',
+    path: '/analytics/content',
+    keywords: ['content analytics', 'crm analytics', 'newsletter analytics'],
+    phrases: ['open content analytics', 'take me to content analytics'],
+  },
+  {
+    id: 'live-view',
+    label: 'Live view',
+    path: '/analytics/live-view',
+    keywords: ['live view', 'live analytics'],
+    phrases: ['open live view', 'take me to live view'],
   },
   {
     id: 'settings',

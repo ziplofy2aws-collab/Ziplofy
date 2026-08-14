@@ -42,7 +42,17 @@ export default defineConfig({
   preview: {
     port: 5180,
     host: true,
-    allowedHosts: ['preview.codiic.com', '.codiic.com', 'localhost','www.ziplofy.com'],
+    // Vite preview host check is separate from `server.allowedHosts`.
+    // Leading-dot entries allow apex + all subdomains (www.ziplofy.com, etc.).
+    // Restart `vite preview` after changing this — config is not hot-reloaded for host checks.
+    allowedHosts: [
+      'localhost',
+      'preview.codiic.com',
+      '.codiic.com',
+      'ziplofy.com',
+      '.ziplofy.com',
+      'www.ziplofy.com',
+    ],
     proxy: {
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),
@@ -56,6 +66,10 @@ export default defineConfig({
     },
   },
   build: {
+    commonjsOptions: {
+      include: [/node_modules/, /cookie/],
+      transformMixedEsModules: true,
+    },
     rollupOptions: {
       /** Blob-loaded themes import these URLs at runtime; Rollup must not drop their exports. */
       preserveEntrySignatures: 'exports-only',
@@ -97,20 +111,65 @@ export default defineConfig({
   },
   resolve: {
     /** Single React instance for host app + @codiic/create-theme (avoids preview hook crashes). */
-    dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom'],
+    dedupe: [
+      'react',
+      'react-dom',
+      'react-router',
+      'react-router-dom',
+      'cookie',
+      'set-cookie-parser',
+    ],
     alias: {
       '@': path.resolve(__dirname, 'src'),
       '@render-store/sdk': path.resolve(__dirname, 'src/sdk/index.ts'),
       '@codiic/create-theme': path.resolve(__dirname, '../codiic/src/create-theme'),
+      /**
+       * Pin React to render-store's install so @codiic/create-theme (outside root)
+       * and the host share one copy. Point at the package dir (not the CJS .js file)
+       * so Vite can pick the correct exports condition.
+       */
+      react: path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+      /**
+       * react-router imports named exports from CJS packages (`cookie`, `set-cookie-parser`).
+       * Vite can serve those raw CJS files without named ESM exports — shims fix that.
+       */
+      cookie: path.resolve(__dirname, 'src/shims/cookie.ts'),
+      'set-cookie-parser': path.resolve(__dirname, 'src/shims/set-cookie-parser.ts'),
+      /**
+       * Prefer ESM build. `needsInterop` on the CJS/prebundle path made Vite do
+       * `default["Toaster"]` where default is the toast() function → Toaster undefined.
+       */
+      'react-hot-toast': path.resolve(__dirname, 'node_modules/react-hot-toast/dist/index.mjs'),
     },
   },
   optimizeDeps: {
-    include: ['@heroicons/react/24/outline', '@heroicons/react/24/solid'],
+    include: [
+      '@heroicons/react/24/outline',
+      '@heroicons/react/24/solid',
+      'qrcode',
+      'react',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
+      'react-dom',
+      'react-dom/client',
+      'react-hot-toast',
+      'goober',
+    ],
+    /**
+     * Leave react-router on native ESM so cookie / set-cookie-parser aliases apply.
+     * Prebundling it previously produced a missing react-router.js optimize-deps entry.
+     */
+    exclude: ['react-router', 'react-router-dom'],
   },
   server: {
     host: true,
     cors: true,
     allowedHosts: true,
+    fs: {
+      // @codiic/create-theme is aliased to ../codiic/src/create-theme
+      allow: [path.resolve(__dirname), path.resolve(__dirname, '..')],
+    },
     proxy: {
       '/api': createDevProxy(),
       '/uploads': createDevProxy(),

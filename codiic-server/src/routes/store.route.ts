@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createStore,
+  getStoreSetupStatus,
   getStoresByUserId,
   getStoresByUserParam,
   updateStore
@@ -17,6 +18,8 @@ storeRouter.get("/my-stores", getStoresByUserId);
 
 // Get stores for a specific user (super-admin/support-admin only)
 storeRouter.get("/user/:userId", getStoresByUserParam);
+
+storeRouter.get("/:id/setup-status", getStoreSetupStatus);
 
 // Create a new store
 storeRouter.post("/", createStore);

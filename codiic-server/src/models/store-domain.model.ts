@@ -4,7 +4,7 @@ export type StoreDomainType = 'connected';
 export type StoreDomainStatus = 'pending' | 'verifying' | 'active' | 'failed';
 
 export interface IDnsInstruction {
-  type: 'CNAME' | 'A' | 'TXT';
+  type: 'CNAME' | 'ALIAS' | 'A' | 'TXT';
   host: string;
   value: string;
   purpose: string;
@@ -26,7 +26,7 @@ export interface IStoreDomain extends Document {
 
 const dnsInstructionSchema = new Schema<IDnsInstruction>(
   {
-    type: { type: String, enum: ['CNAME', 'A', 'TXT'], required: true },
+    type: { type: String, enum: ['CNAME', 'ALIAS', 'A', 'TXT'], required: true },
     host: { type: String, required: true },
     value: { type: String, required: true },
     purpose: { type: String, required: true },

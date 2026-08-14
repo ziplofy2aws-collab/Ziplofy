@@ -25,6 +25,7 @@ import { StorefrontContactFormProvider } from './contexts/storefront-contact-for
 import { StorefrontNewsletterProvider } from './contexts/storefront-newsletter.context';
 import { PaymentProvider } from './contexts/payment.context';
 import { ProductOffersProvider } from './contexts/product-offers.context';
+import { StorefrontLiveSessionPresence } from './components/StorefrontLiveSessionPresence';
 
 type StorefrontProvidersProps = {
   children: ReactNode;
@@ -39,6 +40,7 @@ export const StorefrontProviders = ({ children }: StorefrontProvidersProps) => (
       <PaymentProvider>
         <StorefrontProductVariantProvider>
           <StorefrontCartProvider>
+            <StorefrontLiveSessionPresence />
             <StorefrontOrderProvider>
               <StorefrontContactFormProvider>
               <StorefrontNewsletterProvider>

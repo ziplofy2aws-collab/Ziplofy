@@ -110,7 +110,10 @@ const NAV: NavItem[] = [
     icon: ChartBarIcon,
     path: '/analytics',
     children: [
-      { text: 'Reports', path: '/analytics/reports' },
+      { text: 'Products', path: '/analytics/products' },
+      { text: 'Inventory', path: '/analytics/inventory' },
+      { text: 'Customer', path: '/analytics/customers' },
+      { text: 'Content / CRM', path: '/analytics/content' },
       { text: 'Live View', path: '/analytics/live-view' },
     ],
   },

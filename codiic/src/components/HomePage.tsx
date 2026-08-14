@@ -1,33 +1,31 @@
 import { GlobeAltIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InlineWidget } from 'react-calendly';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useProducts } from '../contexts/product.context';
 import { useSocket } from '../contexts/socket.context';
 import { useStore } from '../contexts/store.context';
 import { useStoreSubdomain } from '../contexts/storeSubdomain.context';
 import { useUserContext } from '../contexts/user.context';
+import { useStoreSetupStatus } from '../hooks/useStoreSetupStatus';
 import { SocketEventType } from '../types/event.types';
+import { markStoreThemeChosen } from '../utils/store-setup-theme.util';
 import CustomizeDomainCard from './CustomizeDomainCard';
 import DashboardContent from './DashboardContent';
 import DashboardEmptySetupGuide from './DashboardEmptySetupGuide';
 import DashboardUpgradeBanner from './DashboardUpgradeBanner';
-import GettingStartedPage from './GettingStartedPage';
 import OnboardingTour from './OnboardingTour';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [showCalendlyModal, setShowCalendlyModal] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'getting-started'>('dashboard');
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
 
   const { socket } = useSocket();
   const { loggedInUser } = useUserContext();
   const { activeStoreId } = useStore();
   const { storeSubdomain, getByStoreId } = useStoreSubdomain();
-  const { products, loading: productsLoading, fetchProductsByStoreId } = useProducts();
+  const { status: setupStatus, loading: setupLoading } = useStoreSetupStatus(activeStoreId);
 
   useEffect(() => {
     if (activeStoreId) {
@@ -35,13 +33,11 @@ export default function HomePage() {
     }
   }, [activeStoreId, getByStoreId]);
 
-  useEffect(() => {
-    if (activeStoreId) {
-      void fetchProductsByStoreId(activeStoreId);
-    }
-  }, [activeStoreId, fetchProductsByStoreId]);
-
-  const isEmptyStore = !productsLoading && products.length === 0;
+  const isSetupComplete =
+    setupStatus.hasProduct &&
+    setupStatus.hasPaymentMethod &&
+    setupStatus.hasCustomStoreName &&
+    setupStatus.hasChosenTheme;
   const storefrontHref = storeSubdomain?.url?.trim() || undefined;
 
   // Tour is now only shown when user clicks "Show Tour" button in navbar
@@ -86,36 +82,14 @@ export default function HomePage() {
     setShowCalendlyModal(true);
   }, []);
 
-  // Handle step clicks in Getting Started page
-  const handleStepClick = useCallback((stepId: string) => {
-    switch (stepId) {
-      case 'items':
-        navigate('/products');
-        break;
-      case 'theme':
-        navigate('/themes/all-themes');
-        break;
-      case 'domain':
-        navigate('/settings/domains');
-        break;
-      case 'shipping':
-        navigate('/settings/shipping-and-delivery');
-        break;
-      case 'payment':
-        navigate('/settings/payments');
-        break;
-      default:
-        console.log('Step clicked:', stepId);
-    }
-  }, [navigate]);
-
   const handleEmptySetupAddProduct = useCallback(() => {
     navigate('/products/new');
   }, [navigate]);
 
   const handleEmptySetupChooseTheme = useCallback(() => {
+    markStoreThemeChosen(activeStoreId);
     navigate('/themes/all-themes');
-  }, [navigate]);
+  }, [activeStoreId, navigate]);
 
   const handleEmptySetupPayments = useCallback(() => {
     navigate('/settings/payments');
@@ -123,37 +97,6 @@ export default function HomePage() {
 
   const handleEmptySetupNameStore = useCallback(() => {
     navigate('/settings/general');
-  }, [navigate]);
-
-  const handleEmptySetupDomain = useCallback(() => {
-    navigate('/settings/domains');
-  }, [navigate]);
-
-  const handleEmptySetupShipping = useCallback(() => {
-    navigate('/settings/shipping-and-delivery');
-  }, [navigate]);
-
-  // Handle improvement item clicks in Getting Started page
-  const handleImprovementClick = useCallback((itemId: string) => {
-    switch (itemId) {
-      case 'taxes':
-        navigate('/settings/taxes-and-duties');
-        break;
-      case 'collections':
-        navigate('/products/collections');
-        break;
-      case 'coupons':
-        navigate('/discounts');
-        break;
-      case 'shipping':
-        navigate('/settings/shipping-and-delivery');
-        break;
-      case 'digital-downloads':
-        navigate('/settings/digital-downloads');
-        break;
-      default:
-        console.log('Improvement item clicked:', itemId);
-    }
   }, [navigate]);
 
   // Get the assigned developer's Calendly URL - memoized to prevent re-renders
@@ -269,12 +212,12 @@ export default function HomePage() {
           <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
               <h1 className="text-[20px] font-semibold tracking-tight text-admin-text sm:text-2xl">
-                {isEmptyStore
+                {!isSetupComplete
                   ? `Welcome${userName !== 'User' ? `, ${userName}` : ''}`
                   : `Welcome back${userName !== 'User' ? `, ${userName}` : ''}`}
               </h1>
               <p className="mt-1.5 text-[13px] text-admin-text-secondary">
-                {isEmptyStore
+                {!isSetupComplete
                   ? "Let's get your store ready to sell."
                   : "Here's what's happening with your store today."}
               </p>
@@ -292,78 +235,38 @@ export default function HomePage() {
             ) : null}
           </div>
 
-          <div className="mb-8 space-y-6">
+          <div className="mb-8">
             <DashboardUpgradeBanner />
-
-            {/* Tabs — Shopify-style gray selected chip */}
-            <div
-              className="inline-flex w-fit items-center gap-0.5 rounded-xl border border-admin-border bg-admin-surface p-1"
-              role="tablist"
-              aria-label="Home sections"
-            >
-              {(['dashboard', 'getting-started'] as const).map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  role="tab"
-                  aria-selected={activeTab === tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`${
-                    activeTab === tab
-                      ? 'text-admin-text'
-                      : 'text-admin-text-secondary hover:bg-admin-row-hover hover:text-admin-text'
-                  } relative rounded-lg px-4 py-1.5 text-[13px] font-semibold outline-none transition focus-visible:ring-2 focus-visible:ring-[#005bd3]/30`}
-                  style={{ WebkitTapHighlightColor: 'transparent' }}
-                >
-                  {activeTab === tab && (
-                    <motion.span
-                      layoutId="home-tab-bubble"
-                      className="absolute inset-0 z-0 bg-admin-fill"
-                      style={{ borderRadius: 8 }}
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
-                    />
-                  )}
-                  <span className="relative z-10">
-                    {tab === 'dashboard' ? 'Dashboard' : 'Getting started'}
-                  </span>
-                </button>
-              ))}
-            </div>
           </div>
 
-          {/* Content */}
-          {activeTab === 'dashboard' ? (
-            <div key="dashboard" className="flex flex-col gap-6 animate-tab-fade">
-              {productsLoading ? (
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                  {[0, 1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="min-h-[280px] animate-pulse rounded-xl border border-admin-border bg-admin-surface"
-                    />
-                  ))}
-                </div>
-              ) : isEmptyStore ? (
-                <DashboardEmptySetupGuide
-                  onAddProduct={handleEmptySetupAddProduct}
-                  onChooseTheme={handleEmptySetupChooseTheme}
-                  onSetupPayments={handleEmptySetupPayments}
-                  onNameStore={handleEmptySetupNameStore}
-                  onSetupDomain={handleEmptySetupDomain}
-                  onReviewShipping={handleEmptySetupShipping}
-                />
-              ) : (
-                <>
-                  <DashboardContent />
-                  <CustomizeDomainCard />
-                </>
-              )}
-            </div>
-          ) : (
-            <div key="getting-started" className="animate-tab-fade">
-              <GettingStartedPage onStepClick={handleStepClick} onImprovementClick={handleImprovementClick} />
-            </div>
-          )}
+          <div className="flex flex-col gap-6">
+            {setupLoading ? (
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="min-h-[280px] animate-pulse rounded-xl border border-admin-border bg-admin-surface"
+                  />
+                ))}
+              </div>
+            ) : !isSetupComplete ? (
+              <DashboardEmptySetupGuide
+                onAddProduct={handleEmptySetupAddProduct}
+                onChooseTheme={handleEmptySetupChooseTheme}
+                onSetupPayments={handleEmptySetupPayments}
+                onNameStore={handleEmptySetupNameStore}
+                hasProduct={setupStatus.hasProduct}
+                hasChosenTheme={setupStatus.hasChosenTheme}
+                hasPaymentMethod={setupStatus.hasPaymentMethod}
+                hasCustomStoreName={setupStatus.hasCustomStoreName}
+              />
+            ) : (
+              <>
+                <DashboardContent />
+                <CustomizeDomainCard />
+              </>
+            )}
+          </div>
         </div>
       </div>
 

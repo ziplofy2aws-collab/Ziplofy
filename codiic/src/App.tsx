@@ -2,7 +2,7 @@
 import React, { lazy, Suspense } from "react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "react-hot-toast";
-import { Route, BrowserRouter as Router, Routes, useLocation, Navigate, useParams } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation, Navigate, useParams, Outlet } from "react-router-dom";
 
 // Import axios config early to ensure interceptors are set up before any requests
 import "./config/axios.config";
@@ -23,6 +23,7 @@ import { CustomerProvider } from "./contexts/customer.context";
 import { ProductTagsProvider } from "./contexts/product-tags.context";
 import { SocketProvider } from "./contexts/socket.context";
 import { StoreProvider } from "./contexts/store.context";
+import { AnalyticsProvider } from "./contexts/analytics.context";
 import { UserProvider } from "./contexts/user.context";
 import { AwsUploadProvider } from "./contexts/aws-upload.context";
 import { StoreCloudStorageProvider } from "./contexts/store-cloud-storage.context";
@@ -46,6 +47,11 @@ const StoreThemeConfigEditor = lazy(() => import("./pages/themes/StoreThemeConfi
 const ThemeLayoutEditor = lazy(() => import("./pages/themes/ThemeLayoutEditor"));
 const CreateThemePage = lazy(() => import("./create-theme/CreateThemePage"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
+const AnalyticsCustomersPage = lazy(() => import("./pages/AnalyticsCustomersPage"));
+const AnalyticsContentPage = lazy(() => import("./pages/AnalyticsContentPage"));
+const AnalyticsProductsPage = lazy(() => import("./pages/AnalyticsProductsPage"));
+const AnalyticsInventoryPage = lazy(() => import("./pages/AnalyticsInventoryPage"));
+const AnalyticsLiveViewPage = lazy(() => import("./pages/AnalyticsLiveViewPage"));
 const CreateOrderPage = lazy(() => import("./pages/CreateOrderPage"));
 const CustomerDetailsPage = lazy(() => import("./pages/CustomerDetailsPage"));
 const CustomerSegmentDetailsPage = lazy(() => import("./pages/CustomerSegmentDetailsPage"));
@@ -352,9 +358,11 @@ const AdminApp: React.FC = () => {
     isThemeCreator ||
     isCheckoutProfileEditor;
   const isSettings = location.pathname.startsWith('/settings');
+  const isLiveView = location.pathname === '/analytics/live-view';
   const showNavbar = !isFullScreen;
   const showSidebar = !isFullScreen && !isSettings && !isThemeCreator && !isCheckoutProfileEditor;
-  const lockMainScroll = location.pathname === '/products/inventory';
+  const lockMainScroll =
+    location.pathname === '/products/inventory' || isLiveView;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
@@ -367,7 +375,7 @@ const AdminApp: React.FC = () => {
           className={[
             "flex-1 overflow-x-hidden antialiased text-gray-900 transition-[margin-left] duration-300 ease-out",
             lockMainScroll ? "flex flex-col overflow-hidden" : "overflow-y-auto",
-            isFullScreen || isSettings
+            isFullScreen || isSettings || isLiveView
               ? "bg-transparent p-0"
               : "bg-page-background-color p-4 sm:p-6 lg:p-8",
           ]
@@ -485,7 +493,22 @@ const AdminApp: React.FC = () => {
             <Route path="/markets/catalogs/new" element={<MarketsCatalogsNewPage />} />
             <Route path="/markets/catalogs/:id" element={<MarketsCatalogDetailsPage />} />
             <Route path="/markets/:id" element={<MarketDetailsPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route
+              path="/analytics"
+              element={
+                <AnalyticsProvider>
+                  <Outlet />
+                </AnalyticsProvider>
+              }
+            >
+              <Route index element={<AnalyticsPage />} />
+              <Route path="reports" element={<Navigate to="/analytics" replace />} />
+              <Route path="customers" element={<AnalyticsCustomersPage />} />
+              <Route path="content" element={<AnalyticsContentPage />} />
+              <Route path="products" element={<AnalyticsProductsPage />} />
+              <Route path="inventory" element={<AnalyticsInventoryPage />} />
+              <Route path="live-view" element={<AnalyticsLiveViewPage />} />
+            </Route>
             <Route path="/tag-management" element={<TagManagement />} />
             <Route path="/tag-management/customer-tags" element={<CustomerTagsPage />} />
             <Route path="/tag-management/product-tags" element={<ProductTagsPage />} />

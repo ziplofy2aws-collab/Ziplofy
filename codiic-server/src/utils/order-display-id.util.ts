@@ -33,16 +33,32 @@ export async function allocateStoreOrderId(
     ((maxSeqDoc?.orderSequence as number | undefined) ?? DEFAULT_START - 1) + 1
   );
 
-  await GeneralSettings.findOneAndUpdate(
-    { storeId: sid, $or: [{ nextOrderNumber: { $exists: false } }, { nextOrderNumber: { $lt: minNext } }] },
-    { $set: { nextOrderNumber: minNext } },
+  // Ensure one settings doc per store. Never upsert with a filter that can miss
+  // an existing row — that inserts a second doc and trips unique storeId.
+  await GeneralSettings.updateOne(
+    { storeId: sid },
+    {
+      $setOnInsert: {
+        storeId: sid,
+        nextOrderNumber: minNext,
+      },
+    },
     { upsert: true, setDefaultsOnInsert: true }
+  );
+
+  // Raise the counter floor if orders already consumed higher numbers.
+  await GeneralSettings.updateOne(
+    {
+      storeId: sid,
+      $or: [{ nextOrderNumber: { $exists: false } }, { nextOrderNumber: { $lt: minNext } }],
+    },
+    { $set: { nextOrderNumber: minNext } }
   );
 
   const updated = await GeneralSettings.findOneAndUpdate(
     { storeId: sid },
     { $inc: { nextOrderNumber: 1 } },
-    { new: true, upsert: true, setDefaultsOnInsert: true }
+    { new: true }
   );
 
   if (!updated) {

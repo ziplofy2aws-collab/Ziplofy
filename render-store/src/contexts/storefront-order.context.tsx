@@ -3,6 +3,7 @@ import { axiosi } from '../config/axios.config';
 import type { StorefrontProductVariant } from './product-variant.context';
 import toast from 'react-hot-toast';
 import { useStorefrontAuth } from './storefront-auth.context';
+import { markCustomerPurchased } from '../utils/live-visitor.util';
 
 export interface CustomerAddress {
   _id: string;
@@ -121,7 +122,7 @@ export const StorefrontOrderProvider: React.FC<{ children: React.ReactNode }> = 
   const [orders, setOrders] = useState<StorefrontOrder[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { registerLogoutCallback } = useStorefrontAuth();
+  const { registerLogoutCallback, user } = useStorefrontAuth();
 
   const clearOrders = useCallback(() => {
     setOrders([]);
@@ -142,16 +143,23 @@ export const StorefrontOrderProvider: React.FC<{ children: React.ReactNode }> = 
       if (!res.data.success) throw new Error('Create order failed');
       const created = res.data.data;
       setOrders(prev => [created, ...prev]);
+      const fromOrder =
+        typeof created?.customerId === 'object' && created.customerId && '_id' in created.customerId
+          ? String((created.customerId as Customer)._id)
+          : undefined;
+      const purchasedId = fromOrder ?? user?._id;
+      if (purchasedId) markCustomerPurchased(purchasedId);
       toast.success('Order placed successfully');
       return created;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Create order failed';
       setError(msg);
+      toast.error(msg);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?._id]);
 
   const getOrdersByCustomerId = useCallback(async (customerId: string): Promise<StorefrontOrder[]> => {
     try {
@@ -159,8 +167,10 @@ export const StorefrontOrderProvider: React.FC<{ children: React.ReactNode }> = 
       setError(null);
       const res = await axiosi.get<GetOrdersResponse>(`/storefront/orders/customer/${customerId}`);
       if (!res.data.success) throw new Error('Fetch orders failed');
-      setOrders(res.data.data || []);
-      return res.data.data || [];
+      const list = res.data.data || [];
+      setOrders(list);
+      if (list.length > 0) markCustomerPurchased(customerId);
+      return list;
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Fetch orders failed';
       setError(msg);

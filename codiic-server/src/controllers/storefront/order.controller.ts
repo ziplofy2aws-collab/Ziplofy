@@ -8,15 +8,11 @@ import {
   AmountOffOrderDiscountUsage,
   AmountOffProductsDiscount,
   AmountOffProductsDiscountUsage,
-  Store,
-  ProductVariant,
 } from '../../models';
 import { FreeShippingDiscount } from '../../models/discount/free-shipping-discount-model/free-shipping-discount.model';
 import { FreeShippingDiscountUsage } from '../../models/discount/free-shipping-discount-model/free-shipping-discount-usage.model';
 import { BuyXGetYDiscount } from '../../models/discount/buy-x-get-y-discount-model/buy-x-get-y-discount.model';
 import { BuyXGetYDiscountUsage } from '../../models/discount/buy-x-get-y-discount-model/buy-x-get-y-discount-usage.model';
-import { LocationModel } from '../../models/location/location.model';
-import { InventoryLevelModel } from '../../models/inventory-level/inventory-level.model';
 import {
   CheckoutSettings,
   RECOMMENDED_ADD_TO_CART_LIMIT,
@@ -26,6 +22,12 @@ import { getOrderConfirmationEmailBody, getOrderConfirmationEmailSubject, sendEm
 import { allocateStoreOrderId } from '../../utils/order-display-id.util';
 import { computeStoreOrderTax } from '../../utils/store-tax.util';
 import { Country } from '../../models/country/country.model';
+import {
+  commitInventoryForOrderItems,
+  releaseInventoryForOrderItems,
+} from '../../services/inventory/commit-order-inventory.service';
+import { io } from '../../index';
+import { emitLiveOrderPlaced } from '../../socket/presence/emit-live-commerce';
 
 function roundOrderMoney(n: number): number {
   return Math.round((n + Number.EPSILON) * 100) / 100;
@@ -151,48 +153,63 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
     }
   }
 
-  // Create order with store prefix/suffix from General Settings
-  const { sequence, displayOrderId } = await allocateStoreOrderId(storeId);
+  // Reserve inventory (committed↑ / available↓) before creating the order.
+  // If order persistence fails afterward, release the reservation and roll back the order.
+  let reservedLocationId: Types.ObjectId | null = null;
+  let createdOrderId: Types.ObjectId | null = null;
+  try {
+    const { locationId } = await commitInventoryForOrderItems({
+      storeId,
+      items: items.map((item) => ({
+        productVariantId: item.productVariantId,
+        quantity: item.quantity,
+      })),
+    });
+    reservedLocationId = locationId;
 
-  const shippingCountry = await Country.findById(shippingAddress.countryId).select('name iso2').lean();
-  const computedTax = await computeStoreOrderTax({
-    storeId,
-    subtotal,
-    shippingCost: shippingCost || 0,
-    countryId: shippingAddress.countryId,
-    countryNameOrIso: shippingCountry?.iso2 || shippingCountry?.name,
-    stateNameOrCode: shippingAddress.state,
-  });
-  const resolvedTax = computedTax.tax;
-  const resolvedTotal = roundOrderMoney(subtotal + (shippingCost || 0) + resolvedTax);
+    // Create order with store prefix/suffix from General Settings
+    const { sequence, displayOrderId } = await allocateStoreOrderId(storeId);
 
-  const order = await Order.create({
-    storeId: new Types.ObjectId(storeId),
-    customerId: new Types.ObjectId(user._id),
-    shippingAddressId: new Types.ObjectId(shippingAddressId),
-    billingAddressId: billingAddressId ? new Types.ObjectId(billingAddressId) : undefined,
-    orderSequence: sequence,
-    displayOrderId,
-    paymentMethod: paymentMethod || undefined,
-    paymentStatus: 'unpaid',
-    subtotal,
-    tax: resolvedTax,
-    shippingCost: shippingCost || 0,
-    total: resolvedTotal,
-    notes: notes || undefined,
-    status: 'pending',
-  });
+    const shippingCountry = await Country.findById(shippingAddress.countryId).select('name iso2').lean();
+    const computedTax = await computeStoreOrderTax({
+      storeId,
+      subtotal,
+      shippingCost: shippingCost || 0,
+      countryId: shippingAddress.countryId,
+      countryNameOrIso: shippingCountry?.iso2 || shippingCountry?.name,
+      stateNameOrCode: shippingAddress.state,
+    });
+    const resolvedTax = computedTax.tax;
+    const resolvedTotal = roundOrderMoney(subtotal + (shippingCost || 0) + resolvedTax);
 
-  // Create order items
-  const orderItems = await OrderItem.insertMany(
-    items.map((item) => ({
-      orderId: order._id,
-      productVariantId: new Types.ObjectId(item.productVariantId),
-      quantity: item.quantity,
-      price: item.price,
-      total: item.total,
-    }))
-  );
+    const order = await Order.create({
+      storeId: new Types.ObjectId(storeId),
+      customerId: new Types.ObjectId(user._id),
+      shippingAddressId: new Types.ObjectId(shippingAddressId),
+      billingAddressId: billingAddressId ? new Types.ObjectId(billingAddressId) : undefined,
+      orderSequence: sequence,
+      displayOrderId,
+      paymentMethod: paymentMethod || undefined,
+      paymentStatus: 'unpaid',
+      subtotal,
+      tax: resolvedTax,
+      shippingCost: shippingCost || 0,
+      total: resolvedTotal,
+      notes: notes || undefined,
+      status: 'pending',
+    });
+    createdOrderId = order._id as Types.ObjectId;
+
+    // Create order items
+    const orderItems = await OrderItem.insertMany(
+      items.map((item) => ({
+        orderId: order._id,
+        productVariantId: new Types.ObjectId(item.productVariantId),
+        quantity: item.quantity,
+        price: item.price,
+        total: item.total,
+      }))
+    );
 
   // Create amount-off-product discount usage if such a discount was applied
   if (amountOffProductDiscountId && mongoose.Types.ObjectId.isValid(amountOffProductDiscountId)) {
@@ -359,6 +376,10 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
       hsCode: 0,
       isInventoryTrackingEnabled: 0,
     },
+    populate: {
+      path: 'productId',
+      select: 'title',
+    },
   });
 
   // Send order confirmation email to customer (non-blocking - don't fail order if email fails)
@@ -406,6 +427,42 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
     }
   }
 
+  try {
+    const liveLineItems = populatedOrderItems.map((item: any) => {
+      const variant = item.productVariantId;
+      const product =
+        variant && typeof variant === 'object' && variant.productId && typeof variant.productId === 'object'
+          ? variant.productId
+          : null;
+      const productId = product?._id
+        ? String(product._id)
+        : variant?.productId
+          ? String(variant.productId)
+          : variant?._id
+            ? String(variant._id)
+            : String(item.productVariantId);
+      const title =
+        (product && typeof product.title === 'string' && product.title.trim()) ||
+        (typeof variant?.sku === 'string' && variant.sku.trim()) ||
+        'Product';
+      return {
+        productId,
+        title,
+        sales: Number(item.total) || 0,
+        units: Number(item.quantity) || 0,
+      };
+    });
+
+    emitLiveOrderPlaced(io, {
+      storeId: String(storeId),
+      salesAmount: order.subtotal,
+      orderId: String(order._id),
+      lineItems: liveLineItems,
+    });
+  } catch (liveErr) {
+    console.error('Failed to emit live commerce update:', liveErr);
+  }
+
   res.status(201).json({
     success: true,
     data: {
@@ -414,6 +471,31 @@ export const createOrder = asyncErrorHandler(async (req: Request, res: Response)
     },
     message: 'Order created successfully',
   });
+  } catch (err) {
+    if (createdOrderId) {
+      try {
+        await OrderItem.deleteMany({ orderId: createdOrderId });
+        await Order.findByIdAndDelete(createdOrderId);
+      } catch (rollbackErr) {
+        console.error('Failed to roll back order after create failure:', rollbackErr);
+      }
+    }
+    if (reservedLocationId) {
+      try {
+        await releaseInventoryForOrderItems({
+          storeId,
+          locationId: reservedLocationId,
+          items: items.map((item) => ({
+            productVariantId: item.productVariantId,
+            quantity: item.quantity,
+          })),
+        });
+      } catch (releaseErr) {
+        console.error('Failed to release inventory after order failure:', releaseErr);
+      }
+    }
+    throw err;
+  }
 });
 
 export const getOrdersByCustomerId = asyncErrorHandler(async (req: Request, res: Response) => {

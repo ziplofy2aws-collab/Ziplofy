@@ -16,7 +16,7 @@ export enum RoleType {
 // Extend Socket.IO Socket to include user
 declare module "socket.io" {
   interface Socket {
-    user?: SecureUserInfo & {superAdmin?:boolean}
+    user?: SecureUserInfo & { superAdmin?: boolean; storefront?: boolean };
   }
 }
 // Extend Express Request to include user

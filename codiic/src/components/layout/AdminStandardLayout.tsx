@@ -20,7 +20,7 @@ function isImmersiveOrFullWidthPath(pathname: string): boolean {
 
 /** Pages that fill the main pane and own their own scroll (no page-level scroll). */
 function isViewportLockedPath(pathname: string): boolean {
-  return pathname === '/products/inventory';
+  return pathname === '/products/inventory' || pathname === '/analytics/live-view';
 }
 
 const AdminStandardLayout: React.FC = () => {

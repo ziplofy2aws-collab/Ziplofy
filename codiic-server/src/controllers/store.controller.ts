@@ -3,12 +3,18 @@ import mongoose from "mongoose";
 import { GeneralSettings } from "../models/general-settings/general-settings.model";
 import { NotificationSettings } from "../models/notification-settings/notification-settings.model";
 import { LocationModel } from "../models/location/location.model";
+import { StorePaymentProvider } from "../models/payment-provider/store-payment-provider.model";
+import { Product } from "../models/product/product.model";
 import { StoreCustomTheme } from "../models/store-custom-theme/store-custom-theme.model";
 import { IStore, Store } from "../models/store/store.model";
 import { Subdomain } from "../models/subdomain.model";
+import { User } from "../models/user.model";
 import { assignDefaultCatalogThemeToStore } from "../utils/assign-default-catalog-theme.util";
 import { assignDefaultPackagingToStore } from "../utils/assign-default-packaging.util";
+import { hasCustomStoreName } from "../utils/store-setup-status.util";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
+
+const MANUAL_PAYMENT_KEYS = ["bank_transfer", "upi_id", "cod"] as const;
 
 // Create a new store
 export const createStore = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -154,6 +160,56 @@ export const getStoresByUserParam = asyncErrorHandler(async (req: Request, res: 
     success: true,
     data: stores,
     count: stores.length,
+  });
+});
+
+export const getStoreSetupStatus = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const userId = req.user?.id;
+  const isSuperAdmin = Boolean(req.user?.superAdmin);
+
+  if (!id || !mongoose.isValidObjectId(id)) {
+    throw new CustomError("Valid store id is required", 400);
+  }
+
+  const store = await Store.findById(id).select("storeName userId").lean();
+  if (!store) {
+    throw new CustomError("Store not found", 404);
+  }
+  if (!isSuperAdmin && userId && store.userId.toString() !== userId) {
+    throw new CustomError("Store not found", 404);
+  }
+
+  const owner =
+    (await User.findById(store.userId).select("name email").lean()) ??
+    (req.user ? { name: req.user.name, email: req.user.email } : null);
+
+  const [generalSettings, productCount, paymentCount] = await Promise.all([
+    GeneralSettings.findOne({ storeId: store._id }).select("storeName").lean(),
+    Product.countDocuments({ storeId: store._id, isDeleted: { $ne: true } }),
+    StorePaymentProvider.countDocuments({
+      storeId: store._id,
+      status: "active",
+      providerKey: { $in: [...MANUAL_PAYMENT_KEYS] },
+    }),
+  ]);
+
+  const hasProduct = productCount > 0;
+  const hasPaymentMethod = paymentCount > 0;
+  const namedStore = hasCustomStoreName({
+    storeName: store.storeName,
+    generalStoreName: generalSettings?.storeName,
+    owner: owner ?? undefined,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {
+      hasProduct,
+      hasPaymentMethod,
+      hasCustomStoreName: namedStore,
+      setupComplete: hasProduct && hasPaymentMethod && namedStore,
+    },
   });
 });
 
