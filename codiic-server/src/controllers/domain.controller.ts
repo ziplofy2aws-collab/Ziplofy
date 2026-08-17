@@ -4,9 +4,16 @@ import { config } from '../config';
 import { StoreDomain } from '../models/store-domain.model';
 import { Subdomain } from '../models/subdomain.model';
 import {
+  deleteCloudflareCustomHostname,
+  ensureCloudflareCustomHostname,
+  isCloudflareCustomHostnameConfigured,
+  refreshCloudflareSslStatus,
+} from '../services/domain/cloudflare-custom-hostname.service';
+import {
   assertValidCustomHostname,
   buildDnsInstructions,
   generateVerificationToken,
+  mergeDnsInstructions,
   normalizeHostname,
   verifyDomainDns,
 } from '../services/domain/domain.service';
@@ -34,16 +41,60 @@ async function getStoreSubdomainOrThrow(storeId: string) {
   return mapping;
 }
 
+async function provisionCloudflareHostname(doc: InstanceType<typeof StoreDomain>) {
+  if (!isCloudflareCustomHostnameConfigured()) {
+    doc.sslStatus = 'not_configured';
+    doc.sslError = null;
+    return;
+  }
+
+  try {
+    const cf = await ensureCloudflareCustomHostname(
+      doc.hostname,
+      doc.cloudflareCustomHostnameId,
+    );
+    doc.cloudflareCustomHostnameId = cf.id;
+    doc.sslStatus = cf.sslStatus;
+    doc.sslError = cf.sslError;
+    doc.dnsInstructions = mergeDnsInstructions(doc.dnsInstructions || [], cf.ownershipRecords);
+  } catch (err) {
+    doc.sslStatus = 'error';
+    doc.sslError = (err as Error)?.message || 'Failed to provision Cloudflare SSL';
+  }
+}
+
 /** GET /api/domains/store/:storeId */
 export const listStoreDomains = asyncErrorHandler(async (req: Request, res: Response) => {
   const { storeId } = req.params as { storeId: string };
   const mapping = await getStoreSubdomainOrThrow(storeId);
 
   const connected = await StoreDomain.find({ storeId: mapping.storeId })
-    .sort({ createdAt: -1 })
-    .lean();
+    .sort({ createdAt: -1 });
 
-  const hasActivePrimary = connected.some((d) => d.isPrimary && d.status === 'active');
+  // Refresh pending Cloudflare SSL statuses so the admin UI can show HTTPS progress.
+  if (isCloudflareCustomHostnameConfigured()) {
+    await Promise.all(
+      connected.map(async (doc) => {
+        if (!doc.cloudflareCustomHostnameId) return;
+        if (doc.sslStatus === 'active') return;
+        try {
+          const cf = await refreshCloudflareSslStatus({
+            hostname: doc.hostname,
+            cloudflareCustomHostnameId: doc.cloudflareCustomHostnameId,
+          });
+          if (!cf) return;
+          doc.sslStatus = cf.sslStatus;
+          doc.sslError = cf.sslError;
+          await doc.save();
+        } catch {
+          /* keep last known sslStatus */
+        }
+      }),
+    );
+  }
+
+  const lean = connected.map((d) => d.toObject());
+  const hasActivePrimary = lean.some((d) => d.isPrimary && d.status === 'active');
 
   const data = [
     {
@@ -57,8 +108,11 @@ export const listStoreDomains = asyncErrorHandler(async (req: Request, res: Resp
       verificationToken: null as string | null,
       lastError: null as string | null,
       verifiedAt: null as Date | null,
+      sslStatus: 'active' as const,
+      sslError: null as string | null,
+      cloudflareCustomHostnameId: null as string | null,
     },
-    ...connected.map((d) => ({
+    ...lean.map((d) => ({
       id: String(d._id),
       hostname: d.hostname,
       type: d.type,
@@ -69,6 +123,9 @@ export const listStoreDomains = asyncErrorHandler(async (req: Request, res: Resp
       verificationToken: d.verificationToken,
       lastError: d.lastError ?? null,
       verifiedAt: d.verifiedAt ?? null,
+      sslStatus: d.sslStatus ?? 'not_configured',
+      sslError: d.sslError ?? null,
+      cloudflareCustomHostnameId: d.cloudflareCustomHostnameId ?? null,
     })),
   ];
 
@@ -101,6 +158,7 @@ export const connectDomain = asyncErrorHandler(async (req: Request, res: Respons
     existing.dnsInstructions = buildDnsInstructions(hostname, token, mapping.subdomain);
     existing.status = 'pending';
     existing.lastError = null;
+    await provisionCloudflareHostname(existing);
     await existing.save();
 
     return res.status(200).json({
@@ -121,7 +179,7 @@ export const connectDomain = asyncErrorHandler(async (req: Request, res: Respons
   const verificationToken = generateVerificationToken();
   const dnsInstructions = buildDnsInstructions(hostname, verificationToken, mapping.subdomain);
 
-  const doc = await StoreDomain.create({
+  const doc = new StoreDomain({
     storeId: mapping.storeId,
     hostname,
     type: 'connected',
@@ -129,12 +187,18 @@ export const connectDomain = asyncErrorHandler(async (req: Request, res: Respons
     isPrimary: false,
     verificationToken,
     dnsInstructions,
+    sslStatus: 'not_configured',
   });
+
+  await provisionCloudflareHostname(doc);
+  await doc.save();
 
   return res.status(201).json({
     success: true,
     data: doc,
-    message: 'Domain saved. Add the DNS records below, then verify.',
+    message: isCloudflareCustomHostnameConfigured()
+      ? 'Domain saved. Add the DNS records below (including Cloudflare SSL records), then verify.'
+      : 'Domain saved. Add the DNS records below, then verify.',
   });
 });
 
@@ -184,6 +248,9 @@ export const verifyDomain = asyncErrorHandler(async (req: Request, res: Response
     { $set: { isPrimary: false } }
   );
 
+  // DNS ownership OK → ensure Cloudflare Custom Hostname / SSL is provisioned via API.
+  await provisionCloudflareHostname(doc);
+
   doc.status = 'active';
   doc.isPrimary = true;
   doc.verifiedAt = new Date();
@@ -193,13 +260,28 @@ export const verifyDomain = asyncErrorHandler(async (req: Request, res: Response
   mapping.customDomain = doc.hostname;
   await mapping.save();
 
+  const httpsReady = doc.sslStatus === 'active' || doc.sslStatus === 'not_configured';
+
   return res.status(200).json({
     success: true,
     data: {
       domain: doc,
       dns: result.observed,
+      ssl: {
+        status: doc.sslStatus,
+        error: doc.sslError,
+        httpsReady,
+        provider: isCloudflareCustomHostnameConfigured() ? 'cloudflare' : 'none',
+      },
     },
-    message: 'Domain verified and connected',
+    message:
+      doc.sslStatus === 'active'
+        ? 'Domain verified. HTTPS is active via Cloudflare.'
+        : doc.sslStatus === 'pending'
+          ? 'Domain verified. Cloudflare is still issuing the SSL certificate.'
+          : doc.sslStatus === 'error'
+            ? 'Domain verified, but Cloudflare SSL provisioning failed. Check sslError.'
+            : 'Domain verified and connected',
   });
 });
 
@@ -218,6 +300,14 @@ export const disconnectDomain = asyncErrorHandler(async (req: Request, res: Resp
     storeId: mapping.storeId,
   });
   if (!doc) throw new CustomError('Domain not found', 404);
+
+  if (doc.cloudflareCustomHostnameId && isCloudflareCustomHostnameConfigured()) {
+    try {
+      await deleteCloudflareCustomHostname(doc.cloudflareCustomHostnameId);
+    } catch {
+      /* continue disconnect even if CF delete fails */
+    }
+  }
 
   const clearedCustom =
     mapping.customDomain === doc.hostname ||

@@ -11,9 +11,11 @@ export async function reconcileInstalledThemesIndexes(): Promise<void> {
     const coll = InstalledThemes.collection;
     const indexes = await coll.indexes();
     for (const idx of indexes) {
+      // key name is stored in encryption format here 
       const key = idx.key as Record<string, number>;
       const keyNames = Object.keys(key);
       const isStoreOnlyUnique =
+      // todo: i need to update this from here okay!!
         idx.unique === true &&
         keyNames.length === 1 &&
         keyNames[0] === "store" &&

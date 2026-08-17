@@ -2,6 +2,12 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export type StoreDomainType = 'connected';
 export type StoreDomainStatus = 'pending' | 'verifying' | 'active' | 'failed';
+export type StoreDomainSslStatus =
+  | 'not_configured'
+  | 'pending'
+  | 'active'
+  | 'error'
+  | 'deleted';
 
 export interface IDnsInstruction {
   type: 'CNAME' | 'ALIAS' | 'A' | 'TXT';
@@ -18,6 +24,9 @@ export interface IStoreDomain extends Document {
   isPrimary: boolean;
   verificationToken: string;
   dnsInstructions: IDnsInstruction[];
+  cloudflareCustomHostnameId?: string | null;
+  sslStatus?: StoreDomainSslStatus;
+  sslError?: string | null;
   verifiedAt?: Date | null;
   lastError?: string | null;
   createdAt?: Date;
@@ -74,6 +83,21 @@ const storeDomainSchema = new Schema<IStoreDomain>(
     dnsInstructions: {
       type: [dnsInstructionSchema],
       default: [],
+    },
+    cloudflareCustomHostnameId: {
+      type: String,
+      default: null,
+      index: true,
+    },
+    sslStatus: {
+      type: String,
+      enum: ['not_configured', 'pending', 'active', 'error', 'deleted'],
+      default: 'not_configured',
+      index: true,
+    },
+    sslError: {
+      type: String,
+      default: null,
     },
     verifiedAt: {
       type: Date,

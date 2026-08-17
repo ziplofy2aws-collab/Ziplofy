@@ -37,12 +37,20 @@ export function generateVerificationToken(): string {
   return `codiic-verify-${crypto.randomBytes(16).toString('hex')}`;
 }
 
-/** CNAME / A target merchants should point at. Prefer store subdomain; optional env override. */
+/** CNAME / A target merchants should point at. Prefer Cloudflare SaaS target when set. */
 export function platformDnsTarget(storeSubdomain: string): {
   cnameTarget: string;
   aTargets: string[];
 } {
-  const envTarget = (process.env.DOMAIN_PLATFORM_TARGET || '').trim().toLowerCase().replace(/\.$/, '');
+  // Cloudflare for SaaS CNAME target (recommended) or any other platform edge.
+  const envTarget = (
+    process.env.CLOUDFLARE_SAAS_CNAME_TARGET ||
+    process.env.DOMAIN_PLATFORM_TARGET ||
+    ''
+  )
+    .trim()
+    .toLowerCase()
+    .replace(/\.$/, '');
   const suffix = config.storeRenderMicroserviceUrlSuffix.replace(/^\./, '');
   const storeTarget = `${storeSubdomain}.${suffix}`.toLowerCase().replace(/\.$/, '');
 
@@ -53,6 +61,35 @@ export function platformDnsTarget(storeSubdomain: string): {
     .filter(Boolean);
 
   return { cnameTarget, aTargets };
+}
+
+export function mergeDnsInstructions(
+  base: IDnsInstruction[],
+  extras: Array<{
+    type: string;
+    host: string;
+    value: string;
+    purpose: string;
+  }>,
+): IDnsInstruction[] {
+  const merged = [...base];
+  const seen = new Set(base.map((row) => `${row.type}:${row.host}:${row.value}`));
+
+  for (const extra of extras) {
+    const type = extra.type.toUpperCase();
+    if (type !== 'CNAME' && type !== 'ALIAS' && type !== 'A' && type !== 'TXT') continue;
+    const key = `${type}:${extra.host}:${extra.value}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    merged.push({
+      type: type as IDnsInstruction['type'],
+      host: extra.host,
+      value: extra.value,
+      purpose: extra.purpose,
+    });
+  }
+
+  return merged;
 }
 
 export function buildDnsInstructions(
