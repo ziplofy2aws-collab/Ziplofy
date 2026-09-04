@@ -6,6 +6,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { asyncErrorHandler, CustomError } from '../utils/error.utils';
 import { awsBucket as bucketName, awsRegion, s3Client } from '../utils/s3-client';
 import { stagingThemeFileKey } from '../utils/theme-s3-ingest';
+import { informaticStagingPrefix, informaticStagingThemeFileKey } from '../utils/informatic-theme-s3-ingest';
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   'image/jpeg',
@@ -107,9 +108,14 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     assetKind?: 'zip' | 'thumbnail' | 'reactJs' | 'reactCss' | 'themeSchema' | 'themeDefaultConfig' | 'themeManifest' | 'themeFile';
     relativePath?: string;
     expiresInSeconds?: number;
+    /** catalog (default) = ecommerce themes; informatic = content themes for webpanel */
+    themePipeline?: 'catalog' | 'informatic';
   };
 
   const { sessionId, fileName, fileType, assetKind, expiresInSeconds = 900 } = body;
+  const isInformatic = body.themePipeline === 'informatic';
+  const stagingRoot = isInformatic ? 'informatic-themes/staging' : 'themes/staging';
+  const stagingSessionPrefix = (uid: string, sid: string) => `${stagingRoot}/${uid}/${sid}/`;
 
   if (!sessionId || typeof sessionId !== 'string' || !/^[a-zA-Z0-9-]{8,80}$/.test(sessionId)) {
     throw new CustomError(
@@ -165,7 +171,9 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
       throw new CustomError('Unsupported fileType for themeFile upload.', 400);
     }
     const ct = fileType.trim() || 'application/octet-stream';
-    const key = stagingThemeFileKey(userId, sessionId, rp);
+    const key = isInformatic
+      ? informaticStagingThemeFileKey(userId, sessionId, rp)
+      : stagingThemeFileKey(userId, sessionId, rp);
     const command = new PutObjectCommand({
       Bucket: awsBucket,
       Key: key,
@@ -203,7 +211,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
       contentType = 'application/zip';
     }
     const base = sanitizeFilename(path.basename(fileName, ext)) || 'liquid-theme';
-    const key = `themes/staging/${userId}/${sessionId}/${base}${ext}`;
+    const key = `${stagingSessionPrefix(userId, sessionId)}${base}${ext}`;
     const command = new PutObjectCommand({
       Bucket: awsBucket,
       Key: key,
@@ -233,7 +241,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     }
     const extension = ext || (fileType.includes('png') ? '.png' : fileType.includes('webp') ? '.webp' : '.jpg');
     const base = sanitizeFilename(path.basename(fileName, ext)) || 'thumbnail';
-    const key = `themes/staging/${userId}/${sessionId}/thumb-${randomUUID()}-${base}${extension}`;
+    const key = `${stagingSessionPrefix(userId, sessionId)}thumb-${randomUUID()}-${base}${extension}`;
     const command = new PutObjectCommand({
       Bucket: awsBucket,
       Key: key,
@@ -266,7 +274,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     if (!THEME_JS_MIMES.has(ct)) {
       throw new CustomError('Unsupported JavaScript MIME type for reactJs.', 400);
     }
-    const key = `themes/staging/${userId}/${sessionId}/remote-theme-${randomUUID()}.js`;
+    const key = `${stagingSessionPrefix(userId, sessionId)}remote-theme-${randomUUID()}.js`;
     const command = new PutObjectCommand({
       Bucket: awsBucket,
       Key: key,
@@ -303,7 +311,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
           : 'theme.manifest.json';
     let ct = (fileType && fileType.trim()) || 'application/json';
     if (ct === 'application/octet-stream') ct = 'application/json';
-    const key = `themes/staging/${userId}/${sessionId}/${fixedName}`;
+    const key = `${stagingSessionPrefix(userId, sessionId)}${fixedName}`;
     const command = new PutObjectCommand({
       Bucket: awsBucket,
       Key: key,
@@ -336,7 +344,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
   if (!THEME_CSS_MIMES.has(ctCss)) {
     throw new CustomError('Unsupported CSS MIME type.', 400);
   }
-  const key = `themes/staging/${userId}/${sessionId}/remote-theme-${randomUUID()}.css`;
+  const key = `${stagingSessionPrefix(userId, sessionId)}remote-theme-${randomUUID()}.css`;
   const command = new PutObjectCommand({
     Bucket: awsBucket,
     Key: key,

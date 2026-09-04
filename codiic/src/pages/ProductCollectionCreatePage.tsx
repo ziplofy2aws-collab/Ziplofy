@@ -34,6 +34,7 @@ import {
   productFormPageClass,
   productFormSectionTitleClass,
 } from '../components/products/product-form-appearance';
+import { adminContentColumnClass } from '../components/layout/admin-page-width';
 import { type Collection, useCollections } from '../contexts/collection.context';
 import { useProducts } from '../contexts/product.context';
 import { useStore } from '../contexts/store.context';
@@ -403,7 +404,7 @@ export const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
 
   return (
     <div className={isSheet ? 'bg-page-background-color' : productFormPageClass(FORM_APPEARANCE)}>
-      <div className={isSheet ? 'px-4 py-4 sm:px-6' : 'mx-auto max-w-[1500px] px-3 py-4 sm:px-4'}>
+      <div className={isSheet ? 'px-4 py-4 sm:px-6' : `${adminContentColumnClass} py-4`}>
         <CollectionFormHeader
           mode="create"
           title={form.title}

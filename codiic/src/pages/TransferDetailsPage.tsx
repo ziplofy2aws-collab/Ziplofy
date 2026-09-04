@@ -125,7 +125,7 @@ const TransferDetailsPage: React.FC = () => {
   if (!transfer) {
     return (
       <div className={productFormPageClass(TRANSFER_FORM_APPEARANCE)}>
-        <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+        <div className="mx-auto max-w-[1000px] py-4">
           <TransferFormHeader title="Transfer not found" onBack={handleBack} />
           <div className="rounded-lg border border-gray-200/50 bg-white px-6 py-16 text-center">
             <p className="text-[15px] font-semibold text-gray-900">Transfer not found</p>
@@ -154,7 +154,7 @@ const TransferDetailsPage: React.FC = () => {
 
   return (
     <div className={productFormPageClass(TRANSFER_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <TransferFormHeader
           title={formatTransferLabel(transfer._id)}
           status={transfer.status}

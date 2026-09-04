@@ -75,7 +75,7 @@ const GiftCardsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <GiftCardsPageHeader />
 
         {error ? (

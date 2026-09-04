@@ -5,6 +5,8 @@ import {
   ArrowsUpDownIcon,
   EnvelopeIcon,
 } from "@heroicons/react/24/outline";
+import { adminContentColumnClass } from "../../components/layout/admin-page-width";
+
 interface AutomationTemplate {
   id: string;
   title: string;
@@ -93,7 +95,7 @@ const AutomationTemplatesPage: React.FC = () => {
     <div className="min-h-screen bg-page-background-color">
         {/* Header */}
         <div className="border-b border-gray-200 px-4 py-3">
-          <div className="max-w-7xl mx-auto">
+          <div className={adminContentColumnClass}>
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-medium text-gray-900">Automation templates</h1>
               <button
@@ -107,7 +109,7 @@ const AutomationTemplatesPage: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <div className="max-w-7xl mx-auto py-6 px-4">
+        <div className={`${adminContentColumnClass} py-6`}>
           {/* Search and Filter Bar */}
           <div className="flex gap-2 items-center flex-wrap mb-4">
             <div className="relative flex-1 min-w-[200px]">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { adminContentColumnClass } from './admin-page-width';
 
 /**
  * Wraps most admin routes with a centered max-width column so pages look consistent
@@ -32,14 +33,14 @@ const AdminStandardLayout: React.FC = () => {
 
   if (isViewportLockedPath(pathname)) {
     return (
-      <div className="mx-auto flex h-full min-h-0 w-full max-w-[1440px] flex-1 flex-col overflow-hidden">
+      <div className={`${adminContentColumnClass} flex h-full min-h-0 flex-1 flex-col overflow-hidden`}>
         <Outlet />
       </div>
     );
   }
 
   return (
-    <div className="mx-auto w-full max-w-[1440px]">
+    <div className={adminContentColumnClass}>
       <Outlet />
     </div>
   );

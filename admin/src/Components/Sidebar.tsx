@@ -71,6 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, activeItem, onSelec
     hasViewPermission("Developer") ||
     hasViewPermission("Developer", "Dev Admin") ||
     hasViewPermission("Developer", "Theme Developer") ||
+    hasViewPermission("Developer", "Informatic Themes") ||
     hasViewPermission("Developer", "Support Developer") ||
     hasViewPermission("Developer", "Hire Developer Requests");
 
@@ -245,6 +246,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, activeItem, onSelec
                   >
                     <span className="dot">•</span>
                     <span>Theme Developer</span>
+                  </li>
+                )}
+                {(hasViewPermission("Developer", "Informatic Themes") ||
+                  hasViewPermission("Developer", "Theme Developer")) && (
+                  <li
+                    className={activeItem === "Informatic Themes" ? "active" : ""}
+                    onClick={() => onSelect && onSelect("Informatic Themes")}
+                  >
+                    <span className="dot">•</span>
+                    <span>Informatic Themes</span>
                   </li>
                 )}
                 {hasViewPermission("Developer", "Support Developer") && (

@@ -24,6 +24,8 @@ export interface GenerateThemeAssetSignedUrlPayload {
   /** Path within the selected theme folder (required when assetKind is themeFile). */
   relativePath?: string;
   expiresInSeconds?: number;
+  /** catalog (default) = ecommerce; informatic = webpanel content themes */
+  themePipeline?: 'catalog' | 'informatic';
 }
 
 export interface ImageSignedUrlData {
@@ -64,7 +66,12 @@ interface AwsUploadContextType {
   lastSignedUrlData: ImageSignedUrlData | null;
   generateImageUploadSignedUrl: (payload: GenerateImageSignedUrlPayload) => Promise<ImageSignedUrlData>;
   generateThemeAssetSignedUrl: (payload: GenerateThemeAssetSignedUrlPayload) => Promise<ImageSignedUrlData>;
-  uploadFileToSignedUrl: (signedUrl: string, file: File, contentType: string) => Promise<void>;
+  uploadFileToSignedUrl: (
+    signedUrl: string,
+    file: File,
+    contentType: string,
+    options?: { onProgress?: (loaded: number, total: number) => void }
+  ) => Promise<void>;
   uploadImageWithSignedUrl: (
     file: File,
     options?: { folder?: string; expiresInSeconds?: number }
@@ -133,23 +140,75 @@ export const AwsUploadProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 
   const uploadFileToSignedUrl = useCallback(
-    async (signedUrl: string, file: File, contentType: string): Promise<void> => {
+    async (
+      signedUrl: string,
+      file: File,
+      contentType: string,
+      options?: { onProgress?: (loaded: number, total: number) => void }
+    ): Promise<void> => {
       const ct = contentType || file.type || 'application/octet-stream';
-      try {
+      const onProgress = options?.onProgress;
+
+      const putWithFetch = async () => {
         const uploadResponse = await fetch(signedUrl, {
           method: 'PUT',
           mode: 'cors',
-          headers: {
-            'Content-Type': ct,
-          },
+          headers: { 'Content-Type': ct },
           body: file,
         });
-
         if (!uploadResponse.ok) {
           const detail = (await uploadResponse.text().catch(() => '')).slice(0, 500);
           throw new Error(
             `S3 PUT failed HTTP ${uploadResponse.status} ${uploadResponse.statusText}. ${detail || '(empty body)'}`
           );
+        }
+      };
+
+      const putWithXhr = () =>
+        new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('PUT', signedUrl, true);
+          xhr.setRequestHeader('Content-Type', ct);
+
+          if (onProgress) {
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                onProgress(event.loaded, event.total);
+              } else if (file.size > 0) {
+                onProgress(event.loaded, file.size);
+              }
+            };
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              if (onProgress && file.size > 0) onProgress(file.size, file.size);
+              resolve();
+              return;
+            }
+            reject(
+              new Error(
+                `S3 PUT failed HTTP ${xhr.status} ${xhr.statusText}. ${(xhr.responseText || '').slice(0, 500)}`
+              )
+            );
+          };
+
+          xhr.onerror = () => {
+            reject(
+              new Error(
+                'S3 upload failed (network/CORS). Confirm your Origin is in the bucket CORS AllowedOrigins.'
+              )
+            );
+          };
+
+          xhr.send(file);
+        });
+
+      try {
+        if (onProgress) {
+          await putWithXhr();
+        } else {
+          await putWithFetch();
         }
       } catch (err: unknown) {
         const isTypeFailedFetch =

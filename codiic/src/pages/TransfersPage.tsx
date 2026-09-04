@@ -61,7 +61,7 @@ const TransfersPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-[1000px]">
         <TransfersPageHeader />
 
         <div className="overflow-hidden rounded-xl border border-admin-border bg-admin-surface">

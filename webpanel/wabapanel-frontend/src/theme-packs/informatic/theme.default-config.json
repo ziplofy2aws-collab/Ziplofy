@@ -1,0 +1,1293 @@
+{
+  "settings": {
+    "colors": {
+      "primary": "#0f172a",
+      "accent": "#2563eb",
+      "background": "#ffffff",
+      "text": "#0f172a",
+      "surface": "#f8fafc",
+      "muted": "#64748b"
+    },
+    "typography": {
+      "fontFamily": "\"Poppins\", system-ui, sans-serif",
+      "fontFamilyBody": "\"Inter\", system-ui, sans-serif"
+    },
+    "buttons": {
+      "primary": {
+        "background": "#2563eb",
+        "text": "#ffffff",
+        "border": "#2563eb",
+        "borderThickness": 0,
+        "cornerRadius": 10,
+        "font": "body",
+        "textCase": "default"
+      },
+      "secondary": {
+        "background": "transparent",
+        "text": "#0f172a",
+        "border": "#cbd5e1",
+        "borderThickness": 1,
+        "cornerRadius": 10,
+        "font": "body",
+        "textCase": "default"
+      }
+    },
+    "logo": {
+      "defaultUrl": "",
+      "faviconUrl": "",
+      "desktopHeight": 36,
+      "mobileHeight": 28
+    },
+    "whatsappWidget": {
+      "enabled": false,
+      "phone": "",
+      "message": "Hi! I have a question about your website.",
+      "greeting": "Need help? Chat with us"
+    },
+    "email": {
+      "host": "",
+      "port": "587",
+      "encryption": "tls",
+      "user": "",
+      "password": "",
+      "from": "",
+      "fromName": ""
+    },
+    "contact": {
+      "title": "Contact Us",
+      "email": "",
+      "phone": "",
+      "address": ""
+    },
+    "socialLinks": {
+      "facebook": "",
+      "twitter": "",
+      "instagram": "",
+      "linkedin": "",
+      "youtube": ""
+    }
+  },
+  "layout_order": {
+    "header": [
+      "announcement_bar",
+      "header"
+    ],
+    "footer": [
+      "footer"
+    ]
+  },
+  "sections": {
+    "announcement_bar": {
+      "id": "announcement_bar",
+      "type": "announcement-bar",
+      "enabled": true,
+      "settings": {
+        "enabled": true,
+        "backgroundColor": "#0f172a",
+        "textColor": "#ffffff"
+      },
+      "blocks": {
+        "announcement": {
+          "type": "announcement",
+          "settings": {
+            "text": "Launch week: Informatic — the content theme built for brand launches.",
+            "link": "/features",
+            "linkLabel": "See what's inside"
+          }
+        }
+      },
+      "block_order": [
+        "announcement"
+      ]
+    },
+    "header": {
+      "id": "header",
+      "type": "header",
+      "enabled": true,
+      "settings": {
+        "backgroundColor": "#ffffff",
+        "textColor": "#0f172a",
+        "ctaLabel": "Get started",
+        "ctaUrl": "/contact"
+      },
+      "blocks": {
+        "logo": {
+          "type": "logo",
+          "settings": {
+            "imageUrl": "",
+            "text": "Informatic"
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "menu": "main-menu",
+            "items": [
+              {
+                "label": "Home",
+                "href": "/"
+              },
+              {
+                "label": "About",
+                "href": "/about"
+              },
+              {
+                "label": "Features",
+                "href": "/features"
+              },
+              {
+                "label": "Pricing",
+                "href": "/pricing"
+              },
+              {
+                "label": "Blog",
+                "href": "/blog"
+              },
+              {
+                "label": "Contact",
+                "href": "/contact"
+              }
+            ]
+          }
+        }
+      },
+      "block_order": [
+        "logo",
+        "menu"
+      ]
+    },
+    "footer": {
+      "id": "footer",
+      "type": "footer",
+      "enabled": true,
+      "settings": {
+        "backgroundColor": "#0f172a",
+        "textColor": "#e2e8f0"
+      },
+      "blocks": {
+        "brand": {
+          "type": "brand",
+          "settings": {
+            "title": "Informatic",
+            "blurb": "A dense Informatic theme for brand launches — heroes, stories, proof, and photography slots without a storefront."
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-explore",
+            "items": [
+              {
+                "label": "Features",
+                "href": "/features"
+              },
+              {
+                "label": "Pricing",
+                "href": "/pricing"
+              },
+              {
+                "label": "Blog",
+                "href": "/blog"
+              },
+              {
+                "label": "Contact",
+                "href": "/contact"
+              }
+            ]
+          }
+        },
+        "legal": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-legal",
+            "items": [
+              {
+                "label": "Privacy",
+                "href": "/privacy"
+              },
+              {
+                "label": "Terms",
+                "href": "/terms"
+              },
+              {
+                "label": "FAQ",
+                "href": "/faq"
+              }
+            ]
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "heading": "Follow us",
+            "facebook": "",
+            "twitter": "",
+            "instagram": "",
+            "linkedin": "",
+            "youtube": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand",
+        "menu",
+        "legal",
+        "social"
+      ]
+    }
+  },
+  "templates": {
+    "index": {
+      "sections": {
+        "hero": {
+          "type": "hero",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Now launching",
+            "heading": "Introduce your brand with a homepage that feels finished",
+            "subheading": "Informatic is a dense content theme for product launches — hero photography, feature stories, social proof, and a clear path to contact.",
+            "badge": "Brand launch ready",
+            "primaryLabel": "Start free",
+            "primaryUrl": "/contact",
+            "secondaryLabel": "Explore features",
+            "secondaryUrl": "/features",
+            "mediaImageUrl": "",
+            "mediaLabel": "Hero visual",
+            "backgroundColor": "",
+            "textColor": "",
+            "primaryCtaBackground": "#2563eb",
+            "primaryCtaText": "#ffffff",
+            "primaryCtaBorder": "#2563eb",
+            "primaryCtaBorderThickness": 0,
+            "primaryCtaCornerRadius": 12,
+            "primaryCtaFont": "body",
+            "primaryCtaTextCase": "default",
+            "secondaryCtaBackground": "rgba(255,255,255,0.72)",
+            "secondaryCtaText": "#0f172a",
+            "secondaryCtaBorder": "#cbd5e1",
+            "secondaryCtaBorderThickness": 1,
+            "secondaryCtaCornerRadius": 12,
+            "secondaryCtaFont": "body",
+            "secondaryCtaTextCase": "default"
+          }
+        },
+        "logo_cloud": {
+          "type": "logo-cloud",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Trusted by modern teams",
+            "backgroundColor": "#ffffff",
+            "textColor": ""
+          },
+          "blocks": {
+            "l1": {
+              "type": "logo-item",
+              "settings": {
+                "name": "Northwind"
+              }
+            },
+            "l2": {
+              "type": "logo-item",
+              "settings": {
+                "name": "Orbit Labs"
+              }
+            },
+            "l3": {
+              "type": "logo-item",
+              "settings": {
+                "name": "Clearpath"
+              }
+            },
+            "l4": {
+              "type": "logo-item",
+              "settings": {
+                "name": "Helio"
+              }
+            },
+            "l5": {
+              "type": "logo-item",
+              "settings": {
+                "name": "Kinetic"
+              }
+            },
+            "l6": {
+              "type": "logo-item",
+              "settings": {
+                "name": "Vertex"
+              }
+            }
+          },
+          "block_order": [
+            "l1",
+            "l2",
+            "l3",
+            "l4",
+            "l5",
+            "l6"
+          ]
+        },
+        "features_grid": {
+          "type": "features-grid",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Platform",
+            "heading": "Everything a new brand needs on day one",
+            "subheading": "Dense marketing sections with clear image slots — swap photography when your assets are ready.",
+            "backgroundColor": "#f8fafc",
+            "textColor": ""
+          },
+          "blocks": {
+            "f1": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Launch-ready hero",
+                "body": "Eyebrow, headline, dual CTAs, and a tall visual frame for brand photography.",
+                "icon": "01",
+                "mediaImageUrl": ""
+              }
+            },
+            "f2": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Storytelling splits",
+                "body": "Pair narrative copy with large image placeholders for product or lifestyle shots.",
+                "icon": "02",
+                "mediaImageUrl": ""
+              }
+            },
+            "f3": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Social proof",
+                "body": "Logo cloud, metrics, and testimonials with portrait slots built in.",
+                "icon": "03",
+                "mediaImageUrl": ""
+              }
+            },
+            "f4": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Visual gallery",
+                "body": "A mosaic of image frames for campaign stills and UI screenshots.",
+                "icon": "04",
+                "mediaImageUrl": ""
+              }
+            },
+            "f5": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Editable chrome",
+                "body": "Announcement, header, and footer menus merchants can rewrite without code.",
+                "icon": "05",
+                "mediaImageUrl": ""
+              }
+            },
+            "f6": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Content pages",
+                "body": "About, blog, FAQ, pricing, and contact templates for the full brand site.",
+                "icon": "06",
+                "mediaImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "f1",
+            "f2",
+            "f3",
+            "f4",
+            "f5",
+            "f6"
+          ]
+        },
+        "split_feature": {
+          "type": "split-feature",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Product story",
+            "heading": "A homepage that sells your brand",
+            "body": "Lead with a sharp narrative, then support it with visual proof — product shots, workspace photos, or campaign art merchants can swap in seconds.",
+            "point1": "Crystal-clear value proposition above the fold",
+            "point2": "Image slots ready for launch photography",
+            "point3": "CTAs that route visitors to contact or pricing",
+            "mediaImageUrl": "",
+            "mediaLabel": "Feature image",
+            "layout": "default",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        },
+        "stats_band": {
+          "type": "stats-band",
+          "enabled": true,
+          "settings": {
+            "heading": "Built for brands that ship",
+            "backgroundColor": "#0f172a",
+            "textColor": "#ffffff"
+          },
+          "blocks": {
+            "s1": {
+              "type": "stat-item",
+              "settings": {
+                "value": "12k+",
+                "label": "Sites launched"
+              }
+            },
+            "s2": {
+              "type": "stat-item",
+              "settings": {
+                "value": "98%",
+                "label": "Editor satisfaction"
+              }
+            },
+            "s3": {
+              "type": "stat-item",
+              "settings": {
+                "value": "4.9★",
+                "label": "Average rating"
+              }
+            },
+            "s4": {
+              "type": "stat-item",
+              "settings": {
+                "value": "2 min",
+                "label": "To first publish"
+              }
+            }
+          },
+          "block_order": [
+            "s1",
+            "s2",
+            "s3",
+            "s4"
+          ]
+        },
+        "split_feature_b": {
+          "type": "split-feature",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "How it feels",
+            "heading": "Dense where it matters, calm where it counts",
+            "body": "Every section earns its place: proof, visuals, and a final call to action — without the clutter of a storefront theme.",
+            "point1": "Structured sections merchants recognize instantly",
+            "point2": "Consistent text, image, and button editing contracts",
+            "point3": "Built for Informatic content sites — not carts",
+            "mediaImageUrl": "",
+            "mediaLabel": "Lifestyle image",
+            "layout": "reverse",
+            "backgroundColor": "#f8fafc",
+            "textColor": ""
+          }
+        },
+        "testimonials": {
+          "type": "testimonials",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Customer love",
+            "heading": "What early teams are saying",
+            "subheading": "Real voices for a brand that is just getting started — replace with your own quotes and portraits.",
+            "backgroundColor": "#f8fafc",
+            "textColor": ""
+          },
+          "blocks": {
+            "t1": {
+              "type": "testimonial",
+              "settings": {
+                "quote": "We launched our brand site in an afternoon. The hero and feature layouts already felt like a real product homepage.",
+                "name": "Maya Chen",
+                "role": "Founder, Orbit Labs",
+                "avatarImageUrl": ""
+              }
+            },
+            "t2": {
+              "type": "testimonial",
+              "settings": {
+                "quote": "Image placeholders made it obvious where photography belongs. Our designer dropped assets in without touching layout.",
+                "name": "Jordan Ellis",
+                "role": "Brand lead, Clearpath",
+                "avatarImageUrl": ""
+              }
+            },
+            "t3": {
+              "type": "testimonial",
+              "settings": {
+                "quote": "Finally a content theme that looks premium out of the box — dense enough for a launch, calm enough for a marketing site.",
+                "name": "Sam Rivera",
+                "role": "CMO, Helio",
+                "avatarImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "t1",
+            "t2",
+            "t3"
+          ]
+        },
+        "media_gallery": {
+          "type": "media-gallery",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "In the wild",
+            "heading": "Show the brand, not just the words",
+            "subheading": "Drop campaign stills, product UI, or lifestyle shots into these frames.",
+            "backgroundColor": "#ffffff",
+            "textColor": ""
+          },
+          "blocks": {
+            "g1": {
+              "type": "gallery-item",
+              "settings": {
+                "title": "Hero campaign",
+                "caption": "Wide brand film still",
+                "mediaImageUrl": ""
+              }
+            },
+            "g2": {
+              "type": "gallery-item",
+              "settings": {
+                "title": "Product UI",
+                "caption": "Dashboard or editor shot",
+                "mediaImageUrl": ""
+              }
+            },
+            "g3": {
+              "type": "gallery-item",
+              "settings": {
+                "title": "Team & culture",
+                "caption": "Workspace photography",
+                "mediaImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "g1",
+            "g2",
+            "g3"
+          ]
+        },
+        "cta_band": {
+          "type": "cta-band",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Get started",
+            "heading": "Your brand story deserves a real homepage",
+            "subheading": "Customize every section in the Informatic editor — swap images, rewrite copy, and publish.",
+            "primaryLabel": "Talk to us",
+            "primaryUrl": "/contact",
+            "secondaryLabel": "See pricing",
+            "secondaryUrl": "/pricing",
+            "backgroundColor": "#0f172a",
+            "textColor": "#ffffff",
+            "primaryCtaBackground": "#ffffff",
+            "primaryCtaText": "#0f172a",
+            "primaryCtaBorder": "#ffffff",
+            "primaryCtaBorderThickness": 0,
+            "primaryCtaCornerRadius": 12,
+            "primaryCtaFont": "body",
+            "primaryCtaTextCase": "default",
+            "secondaryCtaBackground": "transparent",
+            "secondaryCtaText": "#ffffff",
+            "secondaryCtaBorder": "rgba(255,255,255,0.28)",
+            "secondaryCtaBorderThickness": 1,
+            "secondaryCtaCornerRadius": 12,
+            "secondaryCtaFont": "body",
+            "secondaryCtaTextCase": "default"
+          }
+        }
+      },
+      "section_order": [
+        "hero",
+        "logo_cloud",
+        "features_grid",
+        "split_feature",
+        "stats_band",
+        "split_feature_b",
+        "testimonials",
+        "media_gallery",
+        "cta_band"
+      ]
+    },
+    "about": {
+      "sections": {
+        "content": {
+          "type": "rich-text",
+          "enabled": true,
+          "settings": {
+            "heading": "About Informatic",
+            "body": "We help teams publish clear information sites — company stories, product explainers, and knowledge hubs — without building an online store.\n\nInformatic ships with dense brand-launch sections, editable menus, and photography placeholders ready for your assets.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        },
+        "features_grid": {
+          "type": "features-grid",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Why us",
+            "heading": "Why teams choose Informatic",
+            "subheading": "Clear defaults, consistent contracts, and room to grow into CMS-driven content.",
+            "backgroundColor": "",
+            "textColor": ""
+          },
+          "blocks": {
+            "f1": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Fast to launch",
+                "body": "Start from sensible marketing copy and customize in minutes.",
+                "icon": "01",
+                "mediaImageUrl": ""
+              }
+            },
+            "f2": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Editor parity",
+                "body": "Text, image, button, and container controls match catalog themes.",
+                "icon": "02",
+                "mediaImageUrl": ""
+              }
+            },
+            "f3": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Content-ready",
+                "body": "Blog, FAQ, and legal templates wired for live APIs when you connect them.",
+                "icon": "03",
+                "mediaImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "f1",
+            "f2",
+            "f3"
+          ]
+        },
+        "stats_band": {
+          "type": "stats-band",
+          "enabled": true,
+          "settings": {
+            "heading": "Numbers from early adopters",
+            "backgroundColor": "#0f172a",
+            "textColor": "#ffffff"
+          },
+          "blocks": {
+            "s1": {
+              "type": "stat-item",
+              "settings": {
+                "value": "12k+",
+                "label": "Sites launched"
+              }
+            },
+            "s2": {
+              "type": "stat-item",
+              "settings": {
+                "value": "98%",
+                "label": "Editor satisfaction"
+              }
+            },
+            "s3": {
+              "type": "stat-item",
+              "settings": {
+                "value": "4.9★",
+                "label": "Average rating"
+              }
+            },
+            "s4": {
+              "type": "stat-item",
+              "settings": {
+                "value": "2 min",
+                "label": "To first publish"
+              }
+            }
+          },
+          "block_order": [
+            "s1",
+            "s2",
+            "s3",
+            "s4"
+          ]
+        },
+        "testimonials": {
+          "type": "testimonials",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Customer love",
+            "heading": "What early teams are saying",
+            "subheading": "Replace these quotes and portraits with your own launch stories.",
+            "backgroundColor": "#f8fafc",
+            "textColor": ""
+          },
+          "blocks": {
+            "t1": {
+              "type": "testimonial",
+              "settings": {
+                "quote": "We launched our brand site in an afternoon. The hero and feature layouts already felt like a real product homepage.",
+                "name": "Maya Chen",
+                "role": "Founder, Orbit Labs",
+                "avatarImageUrl": ""
+              }
+            },
+            "t2": {
+              "type": "testimonial",
+              "settings": {
+                "quote": "Image placeholders made it obvious where photography belongs. Our designer dropped assets in without touching layout.",
+                "name": "Jordan Ellis",
+                "role": "Brand lead, Clearpath",
+                "avatarImageUrl": ""
+              }
+            },
+            "t3": {
+              "type": "testimonial",
+              "settings": {
+                "quote": "Finally a content theme that looks premium out of the box — dense enough for a launch, calm enough for a marketing site.",
+                "name": "Sam Rivera",
+                "role": "CMO, Helio",
+                "avatarImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "t1",
+            "t2",
+            "t3"
+          ]
+        }
+      },
+      "section_order": [
+        "content",
+        "features_grid",
+        "stats_band",
+        "testimonials"
+      ]
+    },
+    "features": {
+      "sections": {
+        "hero": {
+          "type": "hero",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Capabilities",
+            "heading": "Everything you need to publish a brand site",
+            "subheading": "Heroes, storytelling splits, social proof, galleries, pricing, and contact — all editable from the Informatic sidebar.",
+            "badge": "No commerce required",
+            "primaryLabel": "View pricing",
+            "primaryUrl": "/pricing",
+            "secondaryLabel": "Read the blog",
+            "secondaryUrl": "/blog",
+            "mediaImageUrl": "",
+            "mediaLabel": "Product visual",
+            "backgroundColor": "#f8fafc",
+            "textColor": "",
+            "primaryCtaBackground": "",
+            "primaryCtaText": "",
+            "primaryCtaBorder": "",
+            "primaryCtaBorderThickness": 0,
+            "primaryCtaCornerRadius": 10,
+            "primaryCtaFont": "body",
+            "primaryCtaTextCase": "default",
+            "secondaryCtaBackground": "",
+            "secondaryCtaText": "",
+            "secondaryCtaBorder": "",
+            "secondaryCtaBorderThickness": 0,
+            "secondaryCtaCornerRadius": 10,
+            "secondaryCtaFont": "body",
+            "secondaryCtaTextCase": "default"
+          }
+        },
+        "features_grid": {
+          "type": "features-grid",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Toolkit",
+            "heading": "Built-in sections for a brand launch",
+            "subheading": "Mix heroes, splits, proof, galleries, pricing, FAQs, and contact on any Informatic page.",
+            "backgroundColor": "#f8fafc",
+            "textColor": ""
+          },
+          "blocks": {
+            "f1": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Hero sections",
+                "body": "Eyebrow, headline, subcopy, dual CTAs, and hero media.",
+                "icon": "01",
+                "mediaImageUrl": ""
+              }
+            },
+            "f2": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Story splits",
+                "body": "Image + narrative layouts for brand chapters.",
+                "icon": "02",
+                "mediaImageUrl": ""
+              }
+            },
+            "f3": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Proof blocks",
+                "body": "Stats, logos, and testimonials for launch credibility.",
+                "icon": "03",
+                "mediaImageUrl": ""
+              }
+            },
+            "f4": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Media gallery",
+                "body": "Large photography frames for campaigns.",
+                "icon": "04",
+                "mediaImageUrl": ""
+              }
+            },
+            "f5": {
+              "type": "feature-item",
+              "settings": {
+                "title": "Pricing tables",
+                "body": "Three-plan layouts with per-plan button styling.",
+                "icon": "05",
+                "mediaImageUrl": ""
+              }
+            },
+            "f6": {
+              "type": "feature-item",
+              "settings": {
+                "title": "FAQ accordions",
+                "body": "Question blocks merchants can expand over time.",
+                "icon": "06",
+                "mediaImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "f1",
+            "f2",
+            "f3",
+            "f4",
+            "f5",
+            "f6"
+          ]
+        },
+        "split_feature": {
+          "type": "split-feature",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Product story",
+            "heading": "A homepage that sells your brand",
+            "body": "Lead with a sharp narrative, then support it with visual proof — product shots, workspace photos, or campaign art merchants can swap in seconds.",
+            "point1": "Crystal-clear value proposition above the fold",
+            "point2": "Image slots ready for launch photography",
+            "point3": "CTAs that route visitors to contact or pricing",
+            "mediaImageUrl": "",
+            "mediaLabel": "Feature image",
+            "layout": "default",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        },
+        "media_gallery": {
+          "type": "media-gallery",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Visual system",
+            "heading": "Photography slots across the site",
+            "subheading": "Every major section reserves space for brand imagery.",
+            "backgroundColor": "#ffffff",
+            "textColor": ""
+          },
+          "blocks": {
+            "g1": {
+              "type": "gallery-item",
+              "settings": {
+                "title": "Hero campaign",
+                "caption": "Wide brand film still",
+                "mediaImageUrl": ""
+              }
+            },
+            "g2": {
+              "type": "gallery-item",
+              "settings": {
+                "title": "Product UI",
+                "caption": "Dashboard or editor shot",
+                "mediaImageUrl": ""
+              }
+            },
+            "g3": {
+              "type": "gallery-item",
+              "settings": {
+                "title": "Team & culture",
+                "caption": "Workspace photography",
+                "mediaImageUrl": ""
+              }
+            }
+          },
+          "block_order": [
+            "g1",
+            "g2",
+            "g3"
+          ]
+        },
+        "cta_band": {
+          "type": "cta-band",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Get started",
+            "heading": "Your brand story deserves a real homepage",
+            "subheading": "Customize every section in the Informatic editor — swap images, rewrite copy, and publish.",
+            "primaryLabel": "Talk to us",
+            "primaryUrl": "/contact",
+            "secondaryLabel": "See pricing",
+            "secondaryUrl": "/pricing",
+            "backgroundColor": "#0f172a",
+            "textColor": "#ffffff",
+            "primaryCtaBackground": "#ffffff",
+            "primaryCtaText": "#0f172a",
+            "primaryCtaBorder": "#ffffff",
+            "primaryCtaBorderThickness": 0,
+            "primaryCtaCornerRadius": 12,
+            "primaryCtaFont": "body",
+            "primaryCtaTextCase": "default",
+            "secondaryCtaBackground": "transparent",
+            "secondaryCtaText": "#ffffff",
+            "secondaryCtaBorder": "rgba(255,255,255,0.28)",
+            "secondaryCtaBorderThickness": 1,
+            "secondaryCtaCornerRadius": 12,
+            "secondaryCtaFont": "body",
+            "secondaryCtaTextCase": "default"
+          }
+        }
+      },
+      "section_order": [
+        "hero",
+        "features_grid",
+        "split_feature",
+        "media_gallery",
+        "cta_band"
+      ]
+    },
+    "pricing": {
+      "sections": {
+        "pricing": {
+          "type": "pricing",
+          "enabled": true,
+          "settings": {
+            "heading": "Simple pricing",
+            "subheading": "Pick a plan that fits your content site. Upgrade when your team grows.",
+            "backgroundColor": "",
+            "textColor": ""
+          },
+          "blocks": {
+            "p1": {
+              "type": "pricing-plan",
+              "settings": {
+                "name": "Starter",
+                "price": "$19/mo",
+                "blurb": "Landing pages, blog, and contact.",
+                "ctaLabel": "Start",
+                "ctaUrl": "/contact",
+                "ctaBackground": "",
+                "ctaText": "",
+                "ctaBorder": "",
+                "ctaBorderThickness": 0,
+                "ctaCornerRadius": 10,
+                "ctaFont": "body",
+                "ctaTextCase": "default"
+              }
+            },
+            "p2": {
+              "type": "pricing-plan",
+              "settings": {
+                "name": "Growth",
+                "price": "$49/mo",
+                "blurb": "More pages, FAQs, and team seats.",
+                "ctaLabel": "Start",
+                "ctaUrl": "/contact",
+                "ctaBackground": "",
+                "ctaText": "",
+                "ctaBorder": "",
+                "ctaBorderThickness": 0,
+                "ctaCornerRadius": 10,
+                "ctaFont": "body",
+                "ctaTextCase": "default"
+              }
+            },
+            "p3": {
+              "type": "pricing-plan",
+              "settings": {
+                "name": "Scale",
+                "price": "$99/mo",
+                "blurb": "Advanced content workflows and support.",
+                "ctaLabel": "Talk to us",
+                "ctaUrl": "/contact",
+                "ctaBackground": "",
+                "ctaText": "",
+                "ctaBorder": "",
+                "ctaBorderThickness": 0,
+                "ctaCornerRadius": 10,
+                "ctaFont": "body",
+                "ctaTextCase": "default"
+              }
+            }
+          },
+          "block_order": [
+            "p1",
+            "p2",
+            "p3"
+          ]
+        },
+        "cta_band": {
+          "type": "cta-band",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Get started",
+            "heading": "Your brand story deserves a real homepage",
+            "subheading": "Customize every section in the Informatic editor — swap images, rewrite copy, and publish.",
+            "primaryLabel": "Talk to us",
+            "primaryUrl": "/contact",
+            "secondaryLabel": "See pricing",
+            "secondaryUrl": "/pricing",
+            "backgroundColor": "#0f172a",
+            "textColor": "#ffffff",
+            "primaryCtaBackground": "#ffffff",
+            "primaryCtaText": "#0f172a",
+            "primaryCtaBorder": "#ffffff",
+            "primaryCtaBorderThickness": 0,
+            "primaryCtaCornerRadius": 12,
+            "primaryCtaFont": "body",
+            "primaryCtaTextCase": "default",
+            "secondaryCtaBackground": "transparent",
+            "secondaryCtaText": "#ffffff",
+            "secondaryCtaBorder": "rgba(255,255,255,0.28)",
+            "secondaryCtaBorderThickness": 1,
+            "secondaryCtaCornerRadius": 12,
+            "secondaryCtaFont": "body",
+            "secondaryCtaTextCase": "default"
+          }
+        }
+      },
+      "section_order": [
+        "pricing",
+        "cta_band"
+      ]
+    },
+    "blog_list": {
+      "sections": {
+        "blog_list": {
+          "type": "blog-list",
+          "enabled": true,
+          "settings": {
+            "heading": "From the blog",
+            "subheading": "Articles and updates from your team — loaded from the content API when connected."
+          }
+        }
+      },
+      "section_order": [
+        "blog_list"
+      ]
+    },
+    "blog_post": {
+      "sections": {
+        "content": {
+          "type": "blog-post",
+          "enabled": true,
+          "settings": {
+            "heading": "Article title",
+            "body": "Blog post body will load from the host blog API when connected. In Dev Editor mode this is demo copy from theme config.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "page": {
+      "sections": {
+        "content": {
+          "type": "custom-page",
+          "enabled": true,
+          "settings": {
+            "heading": "Page title",
+            "body": "Custom page content will load from your store pages when connected.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "contact": {
+      "sections": {
+        "contact": {
+          "type": "contact",
+          "enabled": true,
+          "settings": {
+            "formId": "",
+            "formName": "",
+            "heading": "Contact us",
+            "subheading": "Send a message — we usually reply within one business day.",
+            "primaryLabel": "Send message",
+            "backgroundColor": "",
+            "textColor": "",
+            "primaryCtaBackground": "#2563eb",
+            "primaryCtaText": "#ffffff",
+            "primaryCtaBorder": "#2563eb",
+            "primaryCtaBorderThickness": 0,
+            "primaryCtaCornerRadius": 10,
+            "primaryCtaFont": "body",
+            "primaryCtaTextCase": "default"
+          }
+        }
+      },
+      "section_order": [
+        "contact"
+      ]
+    },
+    "faq": {
+      "sections": {
+        "faq": {
+          "type": "faq",
+          "enabled": true,
+          "settings": {
+            "heading": "Frequently asked questions",
+            "backgroundColor": "",
+            "textColor": ""
+          },
+          "blocks": {
+            "q1": {
+              "type": "faq-item",
+              "settings": {
+                "question": "Is Informatic an e-commerce theme?",
+                "answer": "No — Informatic is for content and information websites. Product, collection, cart, and checkout templates belong to catalog themes."
+              }
+            },
+            "q2": {
+              "type": "faq-item",
+              "settings": {
+                "question": "Can I edit navigation menus?",
+                "answer": "Yes. Header and footer menus use the same editable site menu contract as catalog store themes."
+              }
+            }
+          },
+          "block_order": [
+            "q1",
+            "q2"
+          ]
+        }
+      },
+      "section_order": [
+        "faq"
+      ]
+    },
+    "privacy": {
+      "sections": {
+        "content": {
+          "type": "store-policy",
+          "enabled": true,
+          "settings": {
+            "heading": "Privacy policy",
+            "body": "Publish your privacy policy in Online Store → Policies. Until then, this placeholder copy is shown in the theme editor.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "terms": {
+      "sections": {
+        "content": {
+          "type": "store-policy",
+          "enabled": true,
+          "settings": {
+            "heading": "Terms of service",
+            "body": "Publish your terms of service in Online Store → Policies. Until then, this placeholder copy is shown in the theme editor.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "return_refund": {
+      "sections": {
+        "content": {
+          "type": "store-policy",
+          "enabled": true,
+          "settings": {
+            "heading": "Return and refund policy",
+            "body": "Publish your return and refund policy in Online Store → Policies.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "contact_info": {
+      "sections": {
+        "content": {
+          "type": "store-policy",
+          "enabled": true,
+          "settings": {
+            "heading": "Contact information",
+            "body": "Contact information is required for EU sales. Publish it in Online Store → Policies.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "404": {
+      "sections": {
+        "content": {
+          "type": "rich-text",
+          "enabled": true,
+          "settings": {
+            "heading": "Page not found",
+            "body": "The page you requested does not exist. Try the home page, blog, or search.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    },
+    "search": {
+      "sections": {
+        "content": {
+          "type": "rich-text",
+          "enabled": true,
+          "settings": {
+            "heading": "Search",
+            "body": "Search results for articles and pages will appear here when the content search API is connected.",
+            "backgroundColor": "",
+            "textColor": ""
+          }
+        }
+      },
+      "section_order": [
+        "content"
+      ]
+    }
+  }
+}

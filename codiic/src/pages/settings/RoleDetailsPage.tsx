@@ -107,7 +107,7 @@ const RoleDetailsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title={roleName || 'Role'}
           description="Edit name, description, and permissions for this role."

@@ -162,6 +162,23 @@ export async function readS3JsonObject<T = Record<string, unknown>>(key: string)
   }
 }
 
+/** Read a UTF-8 text object from S3 (e.g. index.html for theme preview). */
+export async function readS3Utf8Object(key: string): Promise<string | null> {
+  try {
+    const res = await s3Client.send(new GetObjectCommand({ Bucket: awsBucket, Key: key }));
+    const body = res.Body;
+    if (!body) return null;
+    const chunks: Buffer[] = [];
+    const rs = body as Readable;
+    for await (const chunk of rs) {
+      chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+    }
+    return Buffer.concat(chunks).toString('utf8');
+  } catch {
+    return null;
+  }
+}
+
 export function publicObjectUrlForKey(key: string): string {
   return `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
 }

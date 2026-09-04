@@ -1,0 +1,6 @@
+node_modules/
+
+# Windows reserved device name files (accidentally created; break `git add`)
+nul
+**/nul
+

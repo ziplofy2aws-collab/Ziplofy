@@ -1,0 +1,40 @@
+module.exports = {
+  apps: [
+    {
+      name: 'wabapanel-api',
+      script: '/var/www/wabapanel-express/src/server.js',
+      cwd: '/var/www/wabapanel-express',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 5000,
+        FRONTEND_URL: 'https://crm-360.codiic.com',
+        BACKEND_URL: 'https://crm-backend.codiic.com',
+        API_URL: 'https://crm-backend.codiic.com',
+        ADMIN_URL: 'https://crm-360.codiic.com',
+        CORS_ORIGINS: 'https://crm-360.codiic.com',
+      },
+      watch: false,
+      autorestart: true,
+      max_restarts: 5,
+      restart_delay: 3000,
+    },
+    {
+      name: 'wabapanel-app',
+      script: '/var/www/wabapanel-frontend/start.sh',
+      cwd: '/var/www/wabapanel-frontend',
+      interpreter: '/bin/bash',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 3002,
+        NEXT_PUBLIC_SITE_URL: 'https://crm-360.codiic.com',
+        NEXT_PUBLIC_API_URL: 'https://crm-backend.codiic.com/api',
+        NEXT_PUBLIC_SOCKET_URL: 'https://crm-backend.codiic.com',
+        INTERNAL_API_URL: 'http://127.0.0.1:5000/api',
+      },
+      watch: false,
+      autorestart: true,
+      max_restarts: 5,
+      restart_delay: 3000,
+    },
+  ],
+};

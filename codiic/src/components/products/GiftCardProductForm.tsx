@@ -90,7 +90,7 @@ export const GiftCardProductForm: React.FC<GiftCardProductFormProps> = ({
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         {onBack ? (
           <button
             type="button"

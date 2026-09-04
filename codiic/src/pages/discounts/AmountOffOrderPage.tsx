@@ -207,7 +207,7 @@ const AmountOffOrderPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <DiscountFormHeader
             title={editId ? 'Edit amount off order' : 'Amount off order'}

@@ -28,7 +28,7 @@ const DataSharingOptOutPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title="Data sharing opt-out page"
           description="Data sharing opt-out allows customers in specific regions to opt out of data sharing."

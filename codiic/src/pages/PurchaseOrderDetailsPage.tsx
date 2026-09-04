@@ -104,7 +104,7 @@ export default function PurchaseOrderDetailsPage() {
   if (!po) {
     return (
       <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
-        <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+        <div className="mx-auto max-w-[1000px] py-4">
           <PurchaseOrderFormHeader title="Purchase order not found" onBack={handleBack} />
           <div className="rounded-lg border border-gray-200/50 bg-white px-6 py-16 text-center">
             <p className="text-[15px] font-semibold text-gray-900">Purchase order not found</p>
@@ -125,7 +125,7 @@ export default function PurchaseOrderDetailsPage() {
 
   return (
     <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <PurchaseOrderFormHeader
           title={formatPurchaseOrderLabel(po._id)}
           status={po.status}

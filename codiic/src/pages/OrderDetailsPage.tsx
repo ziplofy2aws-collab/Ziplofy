@@ -209,7 +209,7 @@ const OrderDetailsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-4 py-5 sm:px-6">
+      <div className="mx-auto max-w-[1000px] py-5">
         <OrderDetailsHeader
           order={order}
           onBack={() => navigate('/orders')}

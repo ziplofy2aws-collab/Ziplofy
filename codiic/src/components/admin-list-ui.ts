@@ -1,8 +1,10 @@
 /** Shared Shopify-style list chrome for Products family list pages. */
 
+import { adminContentColumnClass } from './layout/admin-page-width';
+
 export const adminListPageShellClass = 'w-full';
 
-export const adminListPageInnerClass = 'mx-auto max-w-[1200px]';
+export const adminListPageInnerClass = adminContentColumnClass;
 
 export const adminListCardClass =
   'overflow-hidden rounded-xl border border-admin-border bg-admin-surface';

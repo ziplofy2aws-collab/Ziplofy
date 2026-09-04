@@ -145,7 +145,7 @@ const DiscountsPage: React.FC = () => {
 
   return (
     <div className={adminListPageShellClass}>
-      <div className={`${adminListPageInnerClass} max-w-[1400px] pb-8`}>
+      <div className={`${adminListPageInnerClass} pb-8`}>
         <DiscountsPageHeader
           onCreateDiscount={handleCreateDiscount}
           activeCount={activeCount}

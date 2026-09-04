@@ -1,5 +1,7 @@
 /** Shared Admin chrome tokens for discount create/edit/detail pages. */
 
+import { adminContentColumnClass } from '../layout/admin-page-width';
+
 export const discountInputClass =
   'w-full rounded-lg border border-admin-border bg-admin-surface px-3 py-1.5 text-[13px] font-normal text-admin-text transition-colors placeholder:text-admin-text-subdued focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
 
@@ -27,7 +29,7 @@ export const discountRadioClass =
 
 export const discountPageShellClass = 'w-full';
 
-export const discountPageContainerClass = 'mx-auto max-w-[1200px] px-3 py-5 sm:px-4';
+export const discountPageContainerClass = `${adminContentColumnClass} py-5`;
 
 export const discountDetailFieldLabelClass = 'text-[12px] text-admin-text-secondary';
 

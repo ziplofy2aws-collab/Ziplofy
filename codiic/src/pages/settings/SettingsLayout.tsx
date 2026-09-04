@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ADMIN_SIDEBAR_WIDTH } from '../../components/admin-sidebar';
+import { adminContentColumnClass } from '../../components/layout/admin-page-width';
 import SettingsSidebar from '../../components/SettingsSidebar';
 
 const NAVBAR_HEIGHT = 56; // keep consistent with main Navbar (h-14 = 56px)
@@ -33,7 +34,7 @@ const SettingsLayout: React.FC = () => {
           width: `calc(100% - ${ADMIN_SIDEBAR_WIDTH}px)`,
         }}
       >
-        <div className="mx-auto w-full max-w-[1280px]">
+        <div className={adminContentColumnClass}>
           <Outlet />
         </div>
       </main>

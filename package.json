@@ -1,1 +1,17 @@
-{}
+{
+  "name": "merged-ziplofy",
+  "private": true,
+  "type": "module",
+  "description": "Codiic monorepo — interactive dev launcher",
+  "scripts": {
+    "dev": "node dev-launcher.mjs",
+    "start": "node dev-launcher.mjs",
+    "launcher": "node dev-launcher.mjs"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

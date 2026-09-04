@@ -142,7 +142,7 @@ const CustomerEventsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6">
         <SettingsHero
           title="Customer events"
           description="Manage pixels and integrations that collect customer event data from your store."

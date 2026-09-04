@@ -14,6 +14,7 @@ import { SocketProvider } from "./contexts/socket.context";
 import { SupportDevelopersProvider } from "./contexts/supportdeveloper.context";
 import { AwsUploadProvider } from "./contexts/aws-upload.context";
 import { ThemesProvider } from "./contexts/themes.context";
+import { InformaticThemesProvider } from "./contexts/informatic-themes.context";
 
 const App = () => {
   const AuthedApp = () => {
@@ -77,6 +78,7 @@ const App = () => {
       <ThemeProvider>
         <AdminAuthProvider>
           <ThemesProvider>
+            <InformaticThemesProvider>
             <AwsUploadProvider>
               <NotificationsProvider>
                 <SocketProvider>
@@ -88,6 +90,7 @@ const App = () => {
                 </SocketProvider>
               </NotificationsProvider>
             </AwsUploadProvider>
+            </InformaticThemesProvider>
           </ThemesProvider>
         </AdminAuthProvider>
       </ThemeProvider>

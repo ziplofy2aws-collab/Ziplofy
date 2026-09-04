@@ -1,9 +1,9 @@
 import React from 'react';
 import { adminListCardClass } from '../admin-list-ui';
+import { adminContentColumnClass } from '../layout/admin-page-width';
 
 /** Standard max width + vertical rhythm for content inside Settings layout `<Outlet />`. */
-export const SETTINGS_PAGE_CONTAINER_CLASS =
-  'mx-auto flex w-full max-w-[1200px] flex-col gap-6';
+export const SETTINGS_PAGE_CONTAINER_CLASS = `${adminContentColumnClass} flex flex-col gap-6`;
 
 type SettingsCalloutProps = {
   variant?: 'info' | 'warning' | 'neutral';

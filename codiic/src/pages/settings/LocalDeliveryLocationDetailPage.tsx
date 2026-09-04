@@ -141,7 +141,7 @@ const LocalDeliveryLocationDetailPage: React.FC = () => {
   if (!location) {
     return (
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
           <p className="text-sm text-gray-900">Location not found</p>
         </div>
       </div>
@@ -150,7 +150,7 @@ const LocalDeliveryLocationDetailPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         {/* Header */}
         <div className="flex items-center gap-3 mb-4 border-b border-gray-200 pb-4">
           <button

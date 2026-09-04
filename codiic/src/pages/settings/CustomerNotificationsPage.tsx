@@ -140,7 +140,7 @@ const CustomerNotificationsPage: React.FC = () => {
   if (!categoryId) {
     return (
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
           <p className="text-sm text-gray-900">Notification category not found.</p>
         </div>
       </div>
@@ -150,7 +150,7 @@ const CustomerNotificationsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
           <div className="flex justify-center mt-8">
             <div className="w-6 h-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
           </div>
@@ -161,7 +161,7 @@ const CustomerNotificationsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title={categoryName}
           description="Manage how and when notifications are sent for this category."

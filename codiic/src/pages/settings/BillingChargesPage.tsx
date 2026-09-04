@@ -10,7 +10,7 @@ const BillingChargesPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title="Charges"
           description="View and export your billing charges by date, bill number, or type."

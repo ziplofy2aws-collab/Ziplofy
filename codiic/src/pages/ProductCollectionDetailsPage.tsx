@@ -491,7 +491,7 @@ const ProductCollectionDetailsPage: React.FC = () => {
   if (!collection) {
     return (
       <div className={productFormPageClass(FORM_APPEARANCE)}>
-        <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+        <div className="mx-auto max-w-[1000px] py-4">
           <button
             type="button"
             onClick={handleBack}
@@ -521,7 +521,7 @@ const ProductCollectionDetailsPage: React.FC = () => {
 
   return (
     <div className={productFormPageClass(FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         {showCollectionAddedBanner ? (
           <CollectionAddedBanner
             collectionTitle={form.title || collection.title || 'Collection'}

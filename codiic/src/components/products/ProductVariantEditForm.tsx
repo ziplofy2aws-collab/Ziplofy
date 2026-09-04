@@ -51,7 +51,7 @@ export const ProductVariantEditForm: React.FC<ProductVariantEditFormProps> = ({
 
   return (
     <div className={productFormPageClass(FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <ProductFormHeader
           mode="edit"
           title={variantTitle}

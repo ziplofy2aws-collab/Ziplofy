@@ -44,7 +44,7 @@ const LocationsSettings: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6">
         <SettingsHero
           title="Locations"
           description="Manage where you stock inventory, fulfill orders, and offer pickup or local delivery."

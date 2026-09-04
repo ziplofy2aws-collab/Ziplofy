@@ -4,7 +4,7 @@ import { productFormPageClass } from './product-form-appearance';
 const ProductFormPageSkeleton: React.FC = () => {
   return (
     <div className={productFormPageClass('minimal')} aria-busy="true" aria-label="Loading">
-      <div className="mx-auto max-w-[1500px] animate-pulse px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] animate-pulse py-4">
         <div className="mb-4 h-4 w-28 rounded bg-gray-200" />
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="space-y-2">

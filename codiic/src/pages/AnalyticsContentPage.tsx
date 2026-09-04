@@ -338,7 +338,7 @@ const AnalyticsContentPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto max-w-[1400px] pb-8">
+      <div className="mx-auto max-w-[1000px] pb-8">
         <header className="mb-4">
           <div className="mb-3 flex items-center gap-2">
             <DocumentTextIcon className="h-5 w-5 text-admin-text-secondary" aria-hidden />

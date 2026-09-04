@@ -149,7 +149,7 @@ const AbandonedCartDetailsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto flex min-h-[360px] max-w-[1400px] items-center justify-center px-3 py-4 sm:px-4">
+        <div className="mx-auto flex min-h-[360px] max-w-[1000px] items-center justify-center py-4">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-200 border-t-gray-900" />
         </div>
       </div>
@@ -159,7 +159,7 @@ const AbandonedCartDetailsPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+        <div className="mx-auto max-w-[1000px] py-4">
           <div className="flex min-h-[280px] flex-col items-center justify-center text-center">
             <p className="text-[13px] text-red-600">{error}</p>
             <div className="mt-4 flex gap-3">
@@ -187,7 +187,7 @@ const AbandonedCartDetailsPage: React.FC = () => {
   if (!selectedCart) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+        <div className="mx-auto max-w-[1000px] py-4">
           <button
             type="button"
             onClick={handleBack}
@@ -223,7 +223,7 @@ const AbandonedCartDetailsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <button
           type="button"
           onClick={handleBack}

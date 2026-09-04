@@ -58,7 +58,7 @@ const ShipmentNewPage: React.FC = () => {
 
   return (
     <div className={productFormPageClass(TRANSFER_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <TransferFormHeader
           title={`Create shipment ${transferId ? formatTransferLabel(transferId) : ''}`}
           subtitle={`${totalUnits} unit${totalUnits === 1 ? '' : 's'} to ship`}

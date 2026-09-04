@@ -4,7 +4,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 export const ContentUrlRedirectsPage = () => {
   return (
     <div className="min-h-[calc(100vh-48px)] w-full bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1000px] py-6">
         <header className="mb-6 flex flex-wrap items-start justify-between gap-4 rounded-2xl border border-gray-200/80 bg-gradient-to-b from-white to-blue-50/20 px-5 py-5 shadow-sm sm:px-6">
           <div className="min-w-0 pl-3 border-l-4 border-blue-500/70">
             <Link

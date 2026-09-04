@@ -1,3 +1,5 @@
+import { adminContentColumnClass } from '../layout/admin-page-width';
+
 export type ProductFormAppearance = 'default' | 'minimal';
 
 export function productFormCardClass(
@@ -77,17 +79,13 @@ export function productFormHelperTextClass(
 }
 
 export function productFormFlowMaxWidthClass(
-  appearance: ProductFormAppearance = 'default'
+  _appearance: ProductFormAppearance = 'default'
 ): string {
-  return appearance === 'minimal'
-    ? 'mx-auto max-w-[1120px] px-3 py-4 sm:px-4'
-    : 'mx-auto max-w-[1500px] px-3 py-4 sm:px-4';
+  return `${adminContentColumnClass} py-4`;
 }
 
 export function productFormStickyBarInnerClass(
-  appearance: ProductFormAppearance = 'default'
+  _appearance: ProductFormAppearance = 'default'
 ): string {
-  return appearance === 'minimal'
-    ? 'mx-auto flex max-w-[1120px] items-center justify-between gap-3 px-3 py-3 sm:px-4'
-    : 'mx-auto flex max-w-[1500px] items-center justify-between gap-3 px-3 py-3 sm:px-4';
+  return `${adminContentColumnClass} flex items-center justify-between gap-3 px-3 py-3 sm:px-4`;
 }

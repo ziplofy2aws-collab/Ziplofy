@@ -193,7 +193,7 @@ const NewTransferPage: React.FC = () => {
 
   return (
     <div className={productFormPageClass(TRANSFER_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <TransferFormHeader
           title="Create transfer"
           backLabel="Back to transfers"

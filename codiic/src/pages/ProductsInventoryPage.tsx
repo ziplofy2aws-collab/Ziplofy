@@ -192,7 +192,7 @@ const ProductsInventoryPage: React.FC = () => {
   // Height is locked by App main + AdminStandardLayout for this route.
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="mx-auto flex min-h-0 w-full max-w-[1200px] flex-1 flex-col">
+      <div className="mx-auto flex min-h-0 w-full max-w-[1000px] flex-1 flex-col">
         <InventoryPageHeader />
 
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border border-admin-border bg-admin-surface">

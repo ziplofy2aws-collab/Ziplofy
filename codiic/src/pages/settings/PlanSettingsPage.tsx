@@ -34,7 +34,7 @@ const PlanSettingsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-6">
         <SettingsHero
           title="Plan"
           description="Manage your plan, trial, and subscriptions."

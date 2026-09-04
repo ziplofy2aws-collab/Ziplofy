@@ -128,7 +128,7 @@ const EditNotificationOptionPage: React.FC = () => {
   if (!categoryId || !categorySlug) {
     return (
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
           <Box sx={{ maxWidth: 1200, mx: 'auto', py: 0 }}>
             <Typography>Notification category not found.</Typography>
           </Box>
@@ -140,7 +140,7 @@ const EditNotificationOptionPage: React.FC = () => {
   if (!currentOption) {
     return (
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
           <Box sx={{ maxWidth: 1200, mx: 'auto', py: 0 }}>
             <Typography>Loading...</Typography>
           </Box>
@@ -151,7 +151,7 @@ const EditNotificationOptionPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <Box sx={{ maxWidth: 1200, mx: 'auto', py: 0, width: '100%' }}>
       {/* Breadcrumbs */}
       <Breadcrumbs

@@ -58,7 +58,7 @@ export default function MetaobjectsPage(): JSX.Element {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <RectangleStackIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />

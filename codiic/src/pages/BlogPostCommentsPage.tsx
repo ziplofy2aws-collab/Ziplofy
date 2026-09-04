@@ -328,7 +328,7 @@ export const BlogPostCommentsPage = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1200px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <nav
           className="mb-3 flex min-w-0 flex-wrap items-center gap-1.5 text-[13px]"
           aria-label="Breadcrumb"

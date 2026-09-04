@@ -288,7 +288,7 @@ const PurchaseOrderNewPage: React.FC = () => {
 
   return (
     <div className={productFormPageClass(PO_FORM_APPEARANCE)}>
-      <div className="mx-auto max-w-[1500px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <PurchaseOrderFormHeader
           title="Create purchase order"
           backLabel="Back to purchase orders"

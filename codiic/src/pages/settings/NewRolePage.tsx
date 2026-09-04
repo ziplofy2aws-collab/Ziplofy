@@ -60,7 +60,7 @@ const NewRolePage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title="Create role"
           description="Name the role and pick the permissions staff should have."

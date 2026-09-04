@@ -261,7 +261,7 @@ const GiftCardDetailPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+        <div className="max-w-[1000px] mx-auto py-4">
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
             {error}
           </div>
@@ -279,7 +279,7 @@ const GiftCardDetailPage: React.FC = () => {
   if (!giftCard) {
     return (
       <div className="min-h-screen bg-page-background-color">
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+        <div className="max-w-[1000px] mx-auto py-4">
           <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg text-sm mb-4">
             Gift card not found
           </div>
@@ -296,7 +296,7 @@ const GiftCardDetailPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+      <div className="max-w-[1000px] mx-auto py-4">
         <GiftCardDetailHeader
           onBack={handleBack}
           onDeactivate={handleDeactivate}

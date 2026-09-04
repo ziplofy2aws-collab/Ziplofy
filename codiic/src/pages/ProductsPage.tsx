@@ -77,7 +77,7 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="mx-auto max-w-[1200px]">
+      <div className="mx-auto max-w-[1000px]">
         <ProductsPageHeader />
 
         {/* White surface on #f1f1f1 canvas — same pop hierarchy as Shopify */}

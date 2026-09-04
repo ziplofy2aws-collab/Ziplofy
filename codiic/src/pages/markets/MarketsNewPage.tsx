@@ -12,7 +12,7 @@ const MarketsNewPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+      <div className="max-w-[1000px] mx-auto py-4">
         <div className="mb-6">
           <button
             onClick={handleBack}

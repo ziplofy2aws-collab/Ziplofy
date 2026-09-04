@@ -103,7 +103,7 @@ const LocationDetailsPage: React.FC = () => {
   if (!location) {
     return (
       <div className="w-full">
-        <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+        <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
           <h2 className="text-lg font-semibold text-gray-900">Location not found</h2>
           <button
             type="button"
@@ -130,7 +130,7 @@ const LocationDetailsPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title={
             <span className="inline-flex flex-wrap items-center gap-2">

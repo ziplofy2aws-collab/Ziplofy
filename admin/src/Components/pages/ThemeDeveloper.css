@@ -1212,9 +1212,20 @@
   color: var(--td-primary);
 }
 
-.themeUpload-body {
+.themeUpload-form {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--td-card);
+}
+
+.themeUpload-body,
+.themeUpload-scroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -1222,7 +1233,8 @@
   background: var(--td-card);
 }
 
-.themeUpload-body label {
+.themeUpload-body label,
+.themeUpload-scroll label {
   font-size: 13px;
   font-weight: 600;
   color: var(--td-text);
@@ -1232,7 +1244,10 @@
 
 .themeUpload-body input,
 .themeUpload-body select,
-.themeUpload-body textarea {
+.themeUpload-body textarea,
+.themeUpload-scroll input,
+.themeUpload-scroll select,
+.themeUpload-scroll textarea {
   padding: 12px 16px;
   border: 1px solid var(--td-border);
   border-radius: 10px;
@@ -1245,17 +1260,23 @@
 
 .themeUpload-body input:hover,
 .themeUpload-body select:hover,
-.themeUpload-body textarea:hover {
+.themeUpload-body textarea:hover,
+.themeUpload-scroll input:hover,
+.themeUpload-scroll select:hover,
+.themeUpload-scroll textarea:hover {
   background: #fff;
   border-color: #cbd5e1;
 }
 
 .themeUpload-body input::placeholder,
-.themeUpload-body textarea::placeholder {
+.themeUpload-body textarea::placeholder,
+.themeUpload-scroll input::placeholder,
+.themeUpload-scroll textarea::placeholder {
   color: #94a3b8;
 }
 
-.themeUpload-body select {
+.themeUpload-body select,
+.themeUpload-scroll select {
   cursor: pointer;
   appearance: none;
   background-color: #fafbfc;
@@ -1265,18 +1286,21 @@
   padding-right: 42px;
 }
 
-.themeUpload-body .themeUpload-description {
+.themeUpload-body .themeUpload-description,
+.themeUpload-scroll .themeUpload-description {
   min-height: 140px;
   resize: vertical;
 }
 
-.themeUpload-body input[type="file"] {
+.themeUpload-body input[type="file"],
+.themeUpload-scroll input[type="file"] {
   padding: 10px 14px;
   font-size: 13px;
   background: #fff;
 }
 
-.themeUpload-body input[type="file"]::-webkit-file-upload-button {
+.themeUpload-body input[type="file"]::-webkit-file-upload-button,
+.themeUpload-scroll input[type="file"]::-webkit-file-upload-button {
   padding: 10px 18px;
   margin-right: 14px;
   border: 1px solid var(--td-border);
@@ -1289,7 +1313,8 @@
   transition: all 0.2s ease;
 }
 
-.themeUpload-body input[type="file"]::-webkit-file-upload-button:hover {
+.themeUpload-body input[type="file"]::-webkit-file-upload-button:hover,
+.themeUpload-scroll input[type="file"]::-webkit-file-upload-button:hover {
   background: linear-gradient(180deg, var(--z-primary-surface) 0%, #e0e7ff 100%);
   border-color: var(--td-accent);
   color: var(--z-primary);
@@ -1297,7 +1322,10 @@
 
 .themeUpload-body input:focus,
 .themeUpload-body select:focus,
-.themeUpload-body textarea:focus {
+.themeUpload-body textarea:focus,
+.themeUpload-scroll input:focus,
+.themeUpload-scroll select:focus,
+.themeUpload-scroll textarea:focus {
   border-color: var(--z-primary);
   outline: none;
   box-shadow: 0 0 0 3px rgba(38, 101, 247, 0.12);
@@ -1309,6 +1337,13 @@
   padding: 18px 24px;
   border-top: 1px solid var(--td-border);
   background: var(--td-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.themeUpload-progress--footer {
+  margin-bottom: 0;
 }
 
 .themeUpload-submit {
@@ -1465,8 +1500,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  max-height: 220px;
+  max-height: 160px;
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: rgba(255, 255, 255, 0.92);
 }
 
@@ -1676,7 +1712,8 @@
     border-radius: 16px 16px 0 0;
   }
 
-  .themeUpload-body {
+  .themeUpload-body,
+  .themeUpload-scroll {
     padding: 20px;
   }
 

@@ -113,7 +113,7 @@ const UsersSecurityPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title="Security"
           description="Manage collaborator access and security codes for your store."

@@ -72,7 +72,7 @@ const NewLocationForm: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="max-w-[1200px] mx-auto w-full flex flex-col gap-6">
+      <div className="max-w-[1000px] mx-auto w-full flex flex-col gap-6">
         <SettingsHero
           title="Add location"
           description="Add a new store location with address and fulfillment options."

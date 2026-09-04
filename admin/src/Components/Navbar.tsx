@@ -22,6 +22,7 @@ import RaiseTask from "./pages/RaiseTask";
 import RolesPermission from "./pages/RolesPermission";
 import SupportDeveloper from "./pages/SupportDeveloper";
 import ThemeDeveloper from "./pages/ThemeDeveloper";
+import InformaticThemeDeveloper from "./pages/InformaticThemeDeveloper";
 import ThemeEditPage from "./pages/ThemeEditPage";
 import Ticket from "./pages/Ticket";
 import Profile from "./pages/Profile";
@@ -40,6 +41,7 @@ type MenuItem =
   | "Membership Plan"
   | "Dev Admin"
   | "Theme Developer"
+  | "Informatic Themes"
   | "Support Developer"
   | "Hire Developer Requests"
   | "Activity Logs"
@@ -207,6 +209,7 @@ const Navbar = () => {
             {activeMenu === "Membership Plan" && <MembershipPlan />}
             {activeMenu === "Dev Admin" && <DevAdmin />}
             {activeMenu === "Theme Developer" && <ThemeDeveloper />}
+            {activeMenu === "Informatic Themes" && <InformaticThemeDeveloper />}
             {activeMenu === "Support Developer" && <SupportDeveloper />}
             {activeMenu === "Hire Developer Requests" && <DevRequests />}
             {activeMenu === "Activity Logs" && <ActivityLogs />}

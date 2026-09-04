@@ -50,7 +50,7 @@ const CreateDraftOrderPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="mx-auto max-w-[1400px] px-3 py-4 sm:px-4">
+      <div className="mx-auto max-w-[1000px] py-4">
         <div className="mb-4 flex min-w-0 items-center gap-2">
           <PencilSquareIcon className="h-5 w-5 shrink-0 text-gray-500" aria-hidden />
           <h1 className="text-lg font-semibold text-gray-900">Create order</h1>

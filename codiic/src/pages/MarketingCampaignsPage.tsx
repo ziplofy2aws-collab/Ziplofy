@@ -18,7 +18,7 @@ const MarketingCampaignsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-page-background-color">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 py-4">
+      <div className="max-w-[1000px] mx-auto py-4">
         {/* Page header */}
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">Campaigns</h1>
