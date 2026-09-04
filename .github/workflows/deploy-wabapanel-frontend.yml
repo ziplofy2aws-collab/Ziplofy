@@ -1,0 +1,90 @@
+# Required GitHub Secrets:
+#   WABAPANEL_FRONTEND_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 52.221.89.22 (crm-360.codiic.com)
+# SSH user (hardcoded): ubuntu
+# Deploy path (hardcoded): /var/www/wabapanel-frontend
+# Public URL: https://crm-360.codiic.com (port 3002 behind nginx)
+#
+# NOTE: Keep .env.production on the server (gitignored). Ensure remote-themes/informatic
+# is available next to the deploy layout if the Informatic theme editor is used
+# (next.config resolves ../../remote-themes from the app folder).
+
+name: Deploy wabapanel-frontend to EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'webpanel/wabapanel-frontend/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: webpanel/wabapanel-frontend/package-lock.json
+
+      - name: Install dependencies (verify lockfile)
+        working-directory: webpanel/wabapanel-frontend
+        run: npm ci
+
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.WABAPANEL_FRONTEND_EC2_SSH_KEY }}
+          REMOTE_HOST: 52.221.89.22
+          REMOTE_USER: ubuntu
+          TARGET: /var/www/wabapanel-frontend
+        with:
+          source: 'webpanel/wabapanel-frontend/'
+          exclude: 'node_modules,.next,.env.development'
+
+      - name: Install, build, and restart PM2 on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 52.221.89.22
+          username: ubuntu
+          key: ${{ secrets.WABAPANEL_FRONTEND_EC2_SSH_KEY }}
+          script: |
+            set -e
+            if [ -f "$HOME/.nvm/nvm.sh" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              . "$NVM_DIR/nvm.sh"
+            fi
+            if command -v fnm >/dev/null 2>&1; then
+              eval "$(fnm env)"
+            fi
+            [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
+            echo "Using node: $(command -v node) ($(node -v))"
+            cd /var/www/wabapanel-frontend
+            npm ci
+            export NODE_ENV=production
+            # Prefer server .env.production; fall back to known production URLs.
+            export NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL:-https://crm-360.codiic.com}"
+            export NEXT_PUBLIC_API_URL="${NEXT_PUBLIC_API_URL:-https://crm-backend.codiic.com/api}"
+            export NEXT_PUBLIC_SOCKET_URL="${NEXT_PUBLIC_SOCKET_URL:-https://crm-backend.codiic.com}"
+            export INTERNAL_API_URL="${INTERNAL_API_URL:-http://127.0.0.1:5000/api}"
+            export NEXT_PUBLIC_STOREFRONT_PROTOCOL="${NEXT_PUBLIC_STOREFRONT_PROTOCOL:-https}"
+            export NEXT_PUBLIC_STOREFRONT_HOST_SUFFIX="${NEXT_PUBLIC_STOREFRONT_HOST_SUFFIX:-.crm-360.codiic.com}"
+            if [ -f .env.production ]; then
+              set -a
+              # shellcheck disable=SC1091
+              . ./.env.production
+              set +a
+            fi
+            npm run build
+            if pm2 describe wabapanel-app >/dev/null 2>&1; then
+              pm2 restart wabapanel-app --update-env
+            else
+              pm2 start npm --name wabapanel-app -- start -- -p 3002
+            fi
+            pm2 save

@@ -1,0 +1,78 @@
+# Required GitHub Secrets:
+#   WEBPANEL_STORE_RENDERER_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+# EC2 host (hardcoded): 52.77.118.136 (webpanel storefront / store-renderer)
+# SSH user (hardcoded): ubuntu
+# Deploy path (hardcoded): /var/www/webpanel-store-renderer
+# Preview port: 3003 (behind nginx / wildcard host *.crm-360.codiic.com)
+#
+# NOTE: vite aliases @informatic-theme to ../../remote-themes/informatic.
+# Keep remote-themes available on the server relative to this deploy path,
+# or place a copy/symlink so the production build can resolve theme sources.
+
+name: Deploy webpanel-store-renderer to EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'webpanel/webpanel-store-renderer/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: webpanel/webpanel-store-renderer/package-lock.json
+
+      - name: Install dependencies (verify lockfile)
+        working-directory: webpanel/webpanel-store-renderer
+        run: npm ci
+
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.WEBPANEL_STORE_RENDERER_EC2_SSH_KEY }}
+          REMOTE_HOST: 52.77.118.136
+          REMOTE_USER: ubuntu
+          TARGET: /var/www/webpanel-store-renderer
+        with:
+          source: 'webpanel/webpanel-store-renderer/'
+          exclude: 'node_modules,dist'
+
+      - name: Install, build, and restart PM2 on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 52.77.118.136
+          username: ubuntu
+          key: ${{ secrets.WEBPANEL_STORE_RENDERER_EC2_SSH_KEY }}
+          script: |
+            set -e
+            if [ -f "$HOME/.nvm/nvm.sh" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              . "$NVM_DIR/nvm.sh"
+            fi
+            if command -v fnm >/dev/null 2>&1; then
+              eval "$(fnm env)"
+            fi
+            [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
+            echo "Using node: $(command -v node) ($(node -v))"
+            cd /var/www/webpanel-store-renderer
+            npm ci
+            export VITE_PROXY_TARGET="${VITE_PROXY_TARGET:-https://crm-backend.codiic.com}"
+            export WEBPANEL_API_UPSTREAM="${WEBPANEL_API_UPSTREAM:-https://crm-backend.codiic.com}"
+            npm run build
+            if pm2 describe webpanel-store-renderer >/dev/null 2>&1; then
+              pm2 restart webpanel-store-renderer --update-env
+            else
+              pm2 start npm --name webpanel-store-renderer -- run preview
+            fi
+            pm2 save
