@@ -15,7 +15,7 @@ interface SystemSettings {
   whatsapp: { enableEmbeddedSignup: boolean; enableManualSignup: boolean; apiVersion: string; webhookVerifyToken: string; appId: string; appSecret: string; configId: string; businessId: string; };
   facebook: { appId: string; appSecret: string; webhookUrl: string; };
   email: { host: string; port: string; user: string; password: string; from: string; fromName: string; encryption: string; templates: Record<string, { enabled: boolean; subject: string; body: string }>; };
-  google: { clientId: string; clientSecret: string; analyticsId: string; };
+  google: { enabled: boolean; clientId: string; clientSecret: string; analyticsId: string; };
   aws: { accessKeyId: string; secretAccessKey: string; region: string; bucket: string; };
   limits: { maxFileSize: string; maxGroupSize: string; maxBroadcastSize: string; };
   wallet: { enabled: boolean; minTopUp: string; maxTopUp: string; };
@@ -29,7 +29,7 @@ const defaultSettings: SystemSettings = {
   whatsapp: { enableEmbeddedSignup: false, enableManualSignup: true, apiVersion: 'v21.0', webhookVerifyToken: '', appId: '', appSecret: '', configId: '', businessId: '' },
   facebook: { appId: '', appSecret: '', webhookUrl: '' },
   email: { host: '', port: '587', user: '', password: '', from: '', fromName: '', encryption: 'tls', templates: {} },
-  google: { clientId: '', clientSecret: '', analyticsId: '' },
+  google: { enabled: false, clientId: '', clientSecret: '', analyticsId: '' },
   aws: { accessKeyId: '', secretAccessKey: '', region: 'ap-south-1', bucket: '' },
   limits: { maxFileSize: '16', maxGroupSize: '256', maxBroadcastSize: '10000' },
   wallet: { enabled: true, minTopUp: '100', maxTopUp: '100000' },
@@ -235,6 +235,34 @@ export default function AdminSettingsPage() {
           </div>
         </Card>
       </div>
+    )},
+    { key: 'google', label: 'Google Auth', content: (
+      <Card>
+        <div className="space-y-4 max-w-lg">
+          <p className="text-sm text-gray-500">
+            Enable Sign in with Google on the login and signup pages. Create an OAuth 2.0 Web client in{' '}
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer" className="text-emerald-700 underline">
+              Google Cloud Console
+            </a>
+            , then add your panel URL (e.g. <code className="text-xs bg-gray-100 px-1 rounded">http://localhost:3002</code>) under Authorized JavaScript origins.
+          </p>
+          <button
+            type="button"
+            onClick={() => updateField('google', 'enabled', !settings.google.enabled)}
+            className="flex items-center justify-between w-full p-3 border border-gray-200 rounded-lg text-left"
+          >
+            <span>
+              <span className="block text-sm font-medium text-gray-900">Enable Google Sign-In</span>
+              <span className="block text-xs text-gray-500">Show Continue with Google on auth pages</span>
+            </span>
+            {settings.google.enabled ? <ToggleRight className="w-8 h-8 text-emerald-500 shrink-0" /> : <ToggleLeft className="w-8 h-8 text-gray-400 shrink-0" />}
+          </button>
+          <Input label="Google Client ID" value={settings.google.clientId} onChange={e => updateField('google', 'clientId', e.target.value)} placeholder="xxxx.apps.googleusercontent.com" />
+          <Input label="Google Client Secret (optional)" type="password" value={settings.google.clientSecret} onChange={e => updateField('google', 'clientSecret', e.target.value)} placeholder="Only needed for server OAuth code flow" />
+          <Input label="Google Analytics / API Key (optional)" value={settings.google.analyticsId} onChange={e => updateField('google', 'analyticsId', e.target.value)} />
+          <Button onClick={() => handleSave('google')} loading={saving} icon={<Save className="w-4 h-4" />}>Save</Button>
+        </div>
+      </Card>
     )},
     { key: 'aws', label: 'AWS S3', content: (
       <Card>

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, Suspense, useMemo } from 'react';
+import React, { useState, useEffect, Suspense, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
@@ -10,15 +10,31 @@ import useBranding from '@/lib/useBranding';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { isAxiosError } from 'axios';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 const TRUSTED = ['Adani', 'Tata', 'Godrej', 'Asian Paints', 'CEAT', 'Sobha', 'Physics Wallah', 'Vivo'];
+
+function authErrorMessage(err: unknown, fallback: string) {
+  if (isAxiosError(err)) {
+    const data = err.response?.data as { message?: string; code?: string } | undefined;
+    if (data?.message) return data.message;
+    if (!err.response) {
+      if (err.code === 'ECONNABORTED') return 'Server took too long to respond. Please try again.';
+      return 'Cannot reach the server. Check your connection and try again.';
+    }
+    if (err.response.status >= 500) return 'Server error. Please try again in a moment.';
+  }
+  return fallback;
+}
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, loadUser } = useAuthStore();
+  const { login, loginWithGoogle, loadUser } = useAuthStore();
   const brand = useBranding();
   const brandName = brand.name || 'Codiic Panel';
+  const submittingRef = useRef(false);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,8 +47,8 @@ function LoginForm() {
   const [blockRemaining, setBlockRemaining] = useState(0);
 
   const canSubmit = useMemo(
-    () => !!(email.trim() && password.length >= 1) && !blocked,
-    [email, password, blocked],
+    () => !!(email.trim() && password.length >= 1) && !blocked && !loading,
+    [email, password, blocked, loading],
   );
 
   const redirectAfterLogin = () => {
@@ -82,10 +98,11 @@ function LoginForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!canSubmit || submittingRef.current) return;
+    submittingRef.current = true;
     setLoading(true);
     try {
-      const result = await login(email, password);
+      const result = await login(email.trim().toLowerCase(), password);
       if (result && result.requires2FA) {
         setTwoFA({ method: result.method || 'app', challengeToken: result.challengeToken || '' });
         toast.success(result.method === 'email' ? 'Code sent to your email' : 'Enter your authenticator code');
@@ -94,32 +111,70 @@ function LoginForm() {
       toast.success('Login successful!');
       redirectAfterLogin();
     } catch (err: unknown) {
-      const error = err as { response?: { status?: number; data?: { message?: string; code?: string } } };
-      if (error.response?.status === 429 || error.response?.data?.code === 'LOGIN_BLOCKED') {
+      const status = isAxiosError(err) ? err.response?.status : undefined;
+      const data = isAxiosError(err)
+        ? (err.response?.data as { message?: string; code?: string; retryAfterSec?: number } | undefined)
+        : undefined;
+      if (status === 429 || data?.code === 'LOGIN_BLOCKED') {
+        const secs = Number(data?.retryAfterSec) || 5 * 60;
         setBlocked(true);
-        setBlockRemaining(5 * 60);
-        toast.error(error.response?.data?.message || 'Too many attempts. Login temporarily blocked.');
+        setBlockRemaining(secs);
+        toast.error(data?.message || 'Too many attempts. Login temporarily blocked.');
       } else {
-        if (error.response?.data?.code === 'EMAIL_NOT_VERIFIED') setNeedsVerification(true);
-        toast.error(error.response?.data?.message || 'Login failed');
+        if (data?.code === 'EMAIL_NOT_VERIFIED') setNeedsVerification(true);
+        toast.error(authErrorMessage(err, 'Login failed'));
       }
     } finally {
+      submittingRef.current = false;
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async (credential: string) => {
+    if (submittingRef.current || blocked) return;
+    submittingRef.current = true;
+    setLoading(true);
+    try {
+      const result = await loginWithGoogle(credential);
+      if (result && result.requires2FA) {
+        setTwoFA({ method: result.method || 'app', challengeToken: result.challengeToken || '' });
+        toast.success(result.method === 'email' ? 'Code sent to your email' : 'Enter your authenticator code');
+        return;
+      }
+      toast.success('Login successful!');
+      redirectAfterLogin();
+    } catch (err: unknown) {
+      const status = isAxiosError(err) ? err.response?.status : undefined;
+      const data = isAxiosError(err)
+        ? (err.response?.data as { message?: string; code?: string; retryAfterSec?: number } | undefined)
+        : undefined;
+      if (status === 429 || data?.code === 'LOGIN_BLOCKED') {
+        const secs = Number(data?.retryAfterSec) || 5 * 60;
+        setBlocked(true);
+        setBlockRemaining(secs);
+        toast.error(data?.message || 'Too many attempts. Login temporarily blocked.');
+      } else {
+        toast.error(authErrorMessage(err, 'Google sign-in failed'));
+      }
+    } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   };
 
   const handle2FASubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!twoFA) return;
+    if (!twoFA || submittingRef.current) return;
+    submittingRef.current = true;
     setLoading(true);
     try {
       await useAuthStore.getState().complete2FALogin(twoFA.challengeToken, code.trim());
       toast.success('Login successful!');
       redirectAfterLogin();
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Invalid code');
+      toast.error(authErrorMessage(err, 'Invalid code'));
     } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   };
@@ -129,17 +184,17 @@ function LoginForm() {
     try {
       await authApi.twoFactorLoginResend(twoFA.challengeToken);
       toast.success('New code sent to your email');
-    } catch {
-      toast.error('Could not resend code');
+    } catch (err: unknown) {
+      toast.error(authErrorMessage(err, 'Could not resend code'));
     }
   };
 
   const handleResend = async () => {
     try {
-      await authApi.resendVerification(email);
+      await authApi.resendVerification(email.trim().toLowerCase());
       toast.success('Verification email sent. Please check your inbox.');
-    } catch {
-      toast.error('Could not send verification email');
+    } catch (err: unknown) {
+      toast.error(authErrorMessage(err, 'Could not send verification email'));
     }
   };
 
@@ -372,6 +427,13 @@ function LoginForm() {
                     {blocked ? `Blocked (${fmt(blockRemaining)})` : 'Continue'}
                   </button>
                 </form>
+
+                <GoogleSignInButton
+                  text="continue_with"
+                  disabled={loading || blocked}
+                  onCredential={handleGoogle}
+                  onError={(msg) => toast.error(msg)}
+                />
 
                 <p className="mt-6 text-center">
                   <Link href="/auth/forgot-password" className="text-sm font-semibold text-emerald-700 hover:text-emerald-800 hover:underline">

@@ -1,5 +1,5 @@
 'use client';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -9,6 +9,8 @@ import {
 import useBranding from '@/lib/useBranding';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
+import { isAxiosError } from 'axios';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 const FEATURES = [
   {
@@ -29,6 +31,19 @@ const FEATURES = [
 ];
 
 const TRUSTED = ['StyleKart', 'CityCare', 'GrowthLab', 'NovaRetail'];
+
+function authErrorMessage(err: unknown, fallback: string) {
+  if (isAxiosError(err)) {
+    const data = err.response?.data as { message?: string } | undefined;
+    if (data?.message) return data.message;
+    if (!err.response) {
+      if (err.code === 'ECONNABORTED') return 'Server took too long to respond. Please try again.';
+      return 'Cannot reach the server. Check your connection and try again.';
+    }
+    if (err.response.status >= 500) return 'Server error. Please try again in a moment.';
+  }
+  return fallback;
+}
 
 function Field({
   label, type = 'text', value, onChange, right, required, autoComplete,
@@ -67,8 +82,9 @@ function Field({
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register } = useAuthStore();
+  const { register, loginWithGoogle } = useAuthStore();
   const brand = useBranding();
+  const submittingRef = useRef(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -81,8 +97,8 @@ export default function RegisterPage() {
 
   const brandName = brand.name || 'Codiic Panel';
   const canSubmit = useMemo(
-    () => !!(name.trim() && email.trim() && phone.trim() && password && confirmPassword && password === confirmPassword && password.length >= 6),
-    [name, email, phone, password, confirmPassword],
+    () => !!(name.trim() && email.trim() && phone.trim() && password && confirmPassword && password === confirmPassword && password.length >= 6) && !loading,
+    [name, email, phone, password, confirmPassword, loading],
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -91,13 +107,14 @@ export default function RegisterPage() {
       toast.error('Passwords do not match');
       return;
     }
-    if (!canSubmit) return;
+    if (!canSubmit || submittingRef.current) return;
+    submittingRef.current = true;
     setLoading(true);
     try {
       const fullPhone = phone.replace(/\D/g, '').startsWith('91')
         ? `+${phone.replace(/\D/g, '')}`
         : `+91${phone.replace(/\D/g, '')}`;
-      const needsVerification = await register(name.trim(), email.trim(), password, fullPhone);
+      const needsVerification = await register(name.trim(), email.trim().toLowerCase(), password, fullPhone);
       if (needsVerification) {
         setVerificationSent(true);
         return;
@@ -105,9 +122,30 @@ export default function RegisterPage() {
       toast.success('Account created!');
       router.push('/client/dashboard');
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error.response?.data?.message || 'Registration failed');
+      toast.error(authErrorMessage(err, 'Registration failed'));
     } finally {
+      submittingRef.current = false;
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async (credential: string) => {
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setLoading(true);
+    try {
+      const result = await loginWithGoogle(credential);
+      if (result && result.requires2FA) {
+        toast.success('Enter your two-factor code on the login page');
+        router.push('/auth/login');
+        return;
+      }
+      toast.success('Account ready!');
+      router.push('/client/dashboard');
+    } catch (err: unknown) {
+      toast.error(authErrorMessage(err, 'Google sign-up failed'));
+    } finally {
+      submittingRef.current = false;
       setLoading(false);
     }
   };
@@ -311,6 +349,13 @@ export default function RegisterPage() {
                 Start Your FREE FOREVER Plan
               </button>
             </form>
+
+            <GoogleSignInButton
+              text="signup_with"
+              disabled={loading}
+              onCredential={handleGoogle}
+              onError={(msg) => toast.error(msg)}
+            />
 
             <p className="mt-5 text-center text-xs text-[#667085]">
               By continuing you agree to our{' '}
