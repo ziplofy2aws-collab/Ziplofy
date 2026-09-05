@@ -10,7 +10,8 @@
 /coverage
 
 # next.js
-/.next/
+# Track .next build output for deploy, but never commit webpack cache (GitHub 100MB limit)
+/.next/cache/
 /out/
 
 # production

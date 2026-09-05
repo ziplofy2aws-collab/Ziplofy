@@ -1,0 +1,10 @@
+User-Agent: *
+Allow: /
+Disallow: /admin
+Disallow: /client
+Disallow: /api/
+Disallow: /auth/reset-password
+Disallow: /pay
+
+Host: https://crm-360.codiic.com
+Sitemap: https://crm-360.codiic.com/sitemap.xml
