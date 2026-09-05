@@ -45,6 +45,7 @@ export interface WhatsAppConfig {
   businessAccountId: string;
   accessToken: string;
   phoneNumber: string;
+  displayPhoneNumber?: string;
   displayName: string;
   qualityRating: string;
   webhookSecret: string;

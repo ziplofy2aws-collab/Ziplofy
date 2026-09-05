@@ -445,12 +445,12 @@ export default function InformaticThemeEditor() {
     });
   }, []);
 
-  const handleTreeSelect = useCallback((nextPanel: Panel, _nodeId: string) => {
+  const handleTreeSelect = useCallback((nextPanel: Panel) => {
     if (nextPanel.kind === 'theme-settings') return;
     setPanel(nextPanel);
-    setSelectedNodeId(panelToPreviewNodeId(nextPanel, pageId));
+    setSelectedNodeId(panelToPreviewNodeId(nextPanel));
     setSettingsSheetOpen(true);
-  }, [pageId]);
+  }, []);
 
   const toggleTreeExpand = useCallback((id: string) => {
     setTreeExpanded((prev) => ({ ...prev, [id]: !prev[id] }));

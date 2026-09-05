@@ -24,7 +24,7 @@ export function TemplatePreviewPickerShell({
 }: TemplatePreviewPickerShellProps) {
   return (
     <div
-      ref={rootRef}
+      ref={rootRef as RefObject<HTMLDivElement>}
       className="relative border-b border-[#e8e9eb] bg-gradient-to-b from-white to-[#f8f9fa] px-3 py-3.5"
     >
       <div className="mb-2 flex items-center justify-between gap-2">

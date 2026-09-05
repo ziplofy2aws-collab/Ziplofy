@@ -80,7 +80,8 @@ export function remapCatalogSettingsFields(
     .filter((field) => field.path || field.pathSuffix)
     .map((field) => {
       const path = field.path || `${prefix}.${field.pathSuffix}`;
-      const { pathSuffix: _omit, ...rest } = field;
+      const { pathSuffix, ...rest } = field;
+      void pathSuffix;
       return { ...rest, path } as EditorFieldDef;
     });
 }

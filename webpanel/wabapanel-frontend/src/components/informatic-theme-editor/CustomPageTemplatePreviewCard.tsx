@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, ChevronLeft, ChevronRight, ExternalLink, FileText, Plus, Search } from 'lucide-react';
+import { ExternalLink, FileText, Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import { storePageApi, type StorePageItem } from '@/lib/store-page';
 import {

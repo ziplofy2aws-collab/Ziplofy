@@ -60,6 +60,9 @@ export function InformaticPagePicker({ storeId, value, onChange }: Props) {
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
+    return () => {
+      cancelled = true;
+    };
   }, [storeId]);
 
   useEffect(() => {

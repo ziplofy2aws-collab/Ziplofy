@@ -4,7 +4,6 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useEffect } from 'react';
 import type { EditorFieldDef, InformaticThemeSchema } from '@/lib/informatic-theme/load-static-pack';
 
-const SHOPIFY_BLUE = '#005bd3';
 const SIDEBAR_BASE_PADDING = 12;
 const SIDEBAR_DEPTH_STEP = 12;
 
@@ -307,7 +306,7 @@ export function defaultExpandedTreeIds(
   return expanded;
 }
 
-function panelToPreviewNodeId(panel: Panel, pageId: string): string {
+function panelToPreviewNodeId(panel: Panel): string {
   if (panel.kind === 'layout') return `layout:${panel.sectionId}`;
   if (panel.kind === 'layout-block') return `sections.${panel.sectionId}.blocks.${panel.blockId}`;
   if (panel.kind === 'section') return `layout:${panel.sectionId}`;

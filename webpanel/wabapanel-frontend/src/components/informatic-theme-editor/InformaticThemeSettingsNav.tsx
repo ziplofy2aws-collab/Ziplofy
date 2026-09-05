@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useState, type ReactNode } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { getConfigPath, setConfigPath } from '@/lib/informatic-theme/load-static-pack';
 import { InformaticImageField } from '@/components/store-media/InformaticImageField';
@@ -224,15 +224,6 @@ function LogoHeightField({
         </div>
       </div>
       {helper ? <p className="text-[12px] leading-relaxed text-gray-600">{helper}</p> : null}
-    </div>
-  );
-}
-
-function SettingRow({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="grid grid-cols-[1fr_minmax(0,1.2fr)] items-center gap-3 py-1.5">
-      <span className="text-[13px] text-gray-800">{label}</span>
-      <div className="min-w-0">{children}</div>
     </div>
   );
 }

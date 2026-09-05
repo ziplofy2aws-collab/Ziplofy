@@ -30,7 +30,7 @@ export default function InformaticThemeLivePreviewPage() {
       .then((pack) => {
         if (cancelled) return;
         setConfig(pack.config);
-        setThemeName(pack.themeName || 'Informatic theme');
+        setThemeName(String(pack.manifest?.name || 'Informatic theme'));
       })
       .catch((e) => {
         if (cancelled) return;

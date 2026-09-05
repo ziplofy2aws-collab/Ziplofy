@@ -9,7 +9,6 @@ import {
   ArrowUp,
   ArrowUpDown,
   FileText,
-  Loader2,
   Plus,
   Search,
 } from 'lucide-react';

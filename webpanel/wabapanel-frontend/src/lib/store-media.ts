@@ -187,9 +187,11 @@ export const storeMediaApi = {
   delete: (storeId: string, mediaId: string) =>
     api.delete<{ success: boolean }>(`/stores/${storeId}/media/${mediaId}`),
   deleteAll: (storeId: string) =>
-    api.delete<{ success: boolean; data?: { deletedFromS3: number; deletedFromDatabase: number } }>(
-      `/stores/${storeId}/media/all`
-    ),
+    api.delete<{
+      success: boolean;
+      message?: string;
+      data?: { deletedFromS3: number; deletedFromDatabase: number };
+    }>(`/stores/${storeId}/media/all`),
   checkAwsStatus: () =>
     api.get<{ success: boolean; data: { configured: boolean; bucket?: string; region?: string } }>(
       '/aws/status'

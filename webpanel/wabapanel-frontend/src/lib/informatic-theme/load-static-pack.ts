@@ -78,10 +78,15 @@ export async function loadStaticInformaticThemePack(): Promise<InformaticThemePa
       import('@/theme-packs/informatic/theme.default-config.json'),
       import('@/theme-packs/informatic/theme.manifest.json'),
     ]);
-    schema = (s as { default?: InformaticThemeSchema }).default ?? (s as InformaticThemeSchema);
-    config = (c as { default?: Record<string, unknown> }).default ?? (c as Record<string, unknown>);
+    schema =
+      (s as unknown as { default?: InformaticThemeSchema }).default ??
+      (s as unknown as InformaticThemeSchema);
+    config =
+      (c as unknown as { default?: Record<string, unknown> }).default ??
+      (c as unknown as Record<string, unknown>);
     manifest =
-      (m as { default?: Record<string, unknown> }).default ?? (m as Record<string, unknown>);
+      (m as unknown as { default?: Record<string, unknown> }).default ??
+      (m as unknown as Record<string, unknown>);
   }
 
   if (!schema || !config) {
