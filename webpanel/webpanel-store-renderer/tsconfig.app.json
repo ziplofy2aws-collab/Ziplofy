@@ -25,7 +25,11 @@
       "@/*": ["./src/*"],
       "@informatic-theme": ["../../remote-themes/informatic/src/index.ts"],
       "@informatic-theme/*": ["../../remote-themes/informatic/src/*"],
-      "@render-store/sdk": ["../../remote-themes/informatic/src/sdk-shim.tsx"]
+      "@render-store/sdk": ["../../remote-themes/informatic/src/sdk-shim.tsx"],
+      "react": ["./node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["./node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/client": ["./node_modules/@types/react-dom/client.d.ts"]
     }
   },
   "include": ["src"]
