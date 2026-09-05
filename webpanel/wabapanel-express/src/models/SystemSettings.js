@@ -97,8 +97,9 @@ const systemSettingsSchema = new mongoose.Schema({
     contactForm: { enabled: { type: Boolean, default: true }, subject: { type: String, default: 'New Contact Form Submission - {{appName}}' }, body: { type: String, default: '<h2>New Contact Form Submission</h2><p>Name: {{contactName}}<br/>Email: {{contactEmail}}<br/>Phone: {{contactPhone}}<br/>Message: {{contactMessage}}</p>' } },
   },
 
-  // Google
+  // Google Sign-In (OAuth web client)
   google: {
+    enabled: { type: Boolean, default: false },
     clientId: { type: String, default: '' },
     clientSecret: { type: String, default: '' },
     apiKey: { type: String, default: '' },

@@ -13,6 +13,7 @@ interface AuthState {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<{ requires2FA?: boolean; method?: string; challengeToken?: string } | void>;
+  loginWithGoogle: (credential: string) => Promise<{ requires2FA?: boolean; method?: string; challengeToken?: string } | void>;
   complete2FALogin: (challengeToken: string, code: string) => Promise<void>;
   adminLogin: (email: string, password: string) => Promise<{ requires2FA?: boolean; method?: string; challengeToken?: string } | void>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<boolean>;
@@ -33,6 +34,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: async (email, password) => {
     const res = await authApi.login({ email, password });
+    if (res.data.requires2FA) {
+      return { requires2FA: true, method: res.data.method, challengeToken: res.data.challengeToken };
+    }
+    const { token, user, workspaces } = res.data.data;
+    localStorage.setItem('token', token);
+    if (user.currentWorkspace?._id) localStorage.setItem('workspaceId', user.currentWorkspace._id);
+    connectSocket(token);
+    if (user.currentWorkspace?._id) joinWorkspace(user.currentWorkspace._id);
+    set({
+      token, user, workspaces: workspaces || [],
+      currentWorkspace: user.currentWorkspace || null,
+      isAuthenticated: true, isLoading: false,
+    });
+  },
+
+  loginWithGoogle: async (credential) => {
+    const res = await authApi.googleLogin(credential);
     if (res.data.requires2FA) {
       return { requires2FA: true, method: res.data.method, challengeToken: res.data.challengeToken };
     }
@@ -91,7 +109,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   register: async (name, email, password, phone) => {
     const res = await authApi.register({ name, email, password, phone });
     if (res.data.requiresVerification) return true;
-    const { token, user, workspace } = res.data.data;
+    const { token, user } = res.data.data;
+    const workspace =
+      res.data.data.workspace ||
+      user?.currentWorkspace ||
+      (Array.isArray(res.data.data.workspaces) ? res.data.data.workspaces[0] : null) ||
+      null;
     localStorage.setItem('token', token);
     if (workspace?._id) localStorage.setItem('workspaceId', workspace._id);
     connectSocket(token);

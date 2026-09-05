@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api',
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
+  timeout: 30000,
 });
 
 api.interceptors.request.use((config) => {
@@ -27,7 +28,7 @@ api.interceptors.response.use(
   (res) => res,
   (error) => {
     const reqUrl = (error.config && error.config.url) || '';
-    const isAuthRequest = /\/auth\/(login|admin\/login|register)/.test(reqUrl);
+    const isAuthRequest = /\/auth\/(login|admin\/login|register|google)/.test(reqUrl);
     if (error.response?.status === 401 && !isAuthRequest) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
@@ -50,6 +51,8 @@ export const pushApi = {
 // Auth
 export const authApi = {
   login: (data: { email: string; password: string }) => api.post('/auth/login', data),
+  googleLogin: (credential: string) => api.post('/auth/google', { credential }),
+  googleConfig: () => api.get('/auth/google/config'),
   adminLogin: (data: { email: string; password: string }) => api.post('/auth/admin/login', data),
   register: (data: { name: string; email: string; password: string; phone?: string }) => api.post('/auth/register', data),
   getMe: () => api.get('/auth/me'),

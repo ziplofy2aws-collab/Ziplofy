@@ -346,6 +346,7 @@ const getSettings = async (req, res) => {
         templates: settings.emailTemplates || {},
       },
       google: {
+        enabled: settings.google?.enabled === true,
         clientId: settings.google?.clientId || '',
         clientSecret: settings.google?.clientSecret || '',
         analyticsId: settings.google?.apiKey || '',
@@ -452,6 +453,7 @@ const updateSettings = async (req, res) => {
         },
         google: () => {
           if (!settings.google) settings.google = {};
+          if (data.enabled !== undefined) settings.google.enabled = !!data.enabled;
           if (data.clientId !== undefined) settings.google.clientId = data.clientId;
           if (data.clientSecret !== undefined) settings.google.clientSecret = data.clientSecret;
           if (data.analyticsId !== undefined) settings.google.apiKey = data.analyticsId;

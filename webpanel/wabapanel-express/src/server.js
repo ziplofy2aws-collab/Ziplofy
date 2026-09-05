@@ -210,6 +210,11 @@ app.get('/api/public/branding', async (req, res) => {
       logo: apiUploads(s && s.logo), favicon: apiUploads(s && s.favicon), loginBg: apiUploads(s && s.loginBg),
       primaryColor: (s && s.primaryColor) || '#059669',
       primaryFont: (s && s.primaryFont) || 'Inter',
+      googleAuth: (() => {
+        const clientId = (s && s.google && s.google.clientId) || process.env.GOOGLE_CLIENT_ID || '';
+        const enabled = !!(clientId && ((s && s.google && s.google.enabled === true) || (!!process.env.GOOGLE_CLIENT_ID && !(s && s.google && s.google.enabled === false))));
+        return { enabled, clientId: enabled ? clientId : '' };
+      })(),
     } });
   } catch (e) { res.status(500).json({ success: false }); }
 });

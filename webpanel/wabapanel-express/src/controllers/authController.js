@@ -4,6 +4,7 @@ const Plan = require('../models/Plan');
 const generateToken = require('../utils/generateToken');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const { sendTemplateEmail, sendRawEmail, isTemplateEnabled } = require('../services/systemMailer');
 
 const getAppUrl = async (req) => {
@@ -27,6 +28,72 @@ const getAppUrl = async (req) => {
 };
 
 const JWT_SECRET = () => process.env.JWT_SECRET || 'default_jwt_secret';
+
+const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
+
+async function resolveGoogleClientId() {
+  const SystemSettings = require('../models/SystemSettings');
+  const settings = await SystemSettings.findOne().lean();
+  const fromSettings = settings?.google?.clientId?.trim() || '';
+  const fromEnv = String(process.env.GOOGLE_CLIENT_ID || '').trim();
+  const enabled = settings?.google?.enabled === true || (!!fromEnv && settings?.google?.enabled !== false);
+  const clientId = fromSettings || fromEnv;
+  return { enabled: !!(enabled && clientId), clientId };
+}
+
+async function verifyGoogleCredential(credential, clientId) {
+  const client = new OAuth2Client(clientId);
+  const ticket = await client.verifyIdToken({ idToken: credential, audience: clientId });
+  const payload = ticket.getPayload();
+  if (!payload?.email) {
+    const err = new Error('Google account email is required');
+    err.status = 400;
+    throw err;
+  }
+  if (payload.email_verified === false) {
+    const err = new Error('Google email is not verified');
+    err.status = 400;
+    throw err;
+  }
+  return payload;
+}
+
+async function issueSessionForUser(user, req) {
+  if (user.twoFactorEnabled) {
+    if (user.twoFactorMethod === 'email') await issueEmailOTP(user);
+    return {
+      success: true,
+      requires2FA: true,
+      method: user.twoFactorMethod || 'app',
+      challengeToken: generateChallengeToken(user._id),
+      message: user.twoFactorMethod === 'email'
+        ? 'Verification code sent to your email'
+        : 'Enter the code from your authenticator app',
+    };
+  }
+
+  user.lastLogin = new Date();
+  await user.save();
+
+  try {
+    const memberWs = await Workspace.find({ 'members.user': user._id, owner: { $ne: user._id } }).select('_id').limit(3);
+    const ownerNotify = require('../services/ownerNotify');
+    for (const w of memberWs) ownerNotify.agentLogin(w._id, user).catch(() => {});
+  } catch (e) { /* noop */ }
+
+  try {
+    const ip = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || '';
+    const ownerWs = await Workspace.find({ owner: user._id }).select('_id').limit(5);
+    const ownerNotify = require('../services/ownerNotify');
+    for (const w of ownerWs) ownerNotify.newDeviceLogin(w._id, user, ip).catch(() => {});
+  } catch (_e) { /* noop */ }
+
+  const data = await buildLoginResponse(user);
+  data.user.permissions = user.permissions || [];
+  data.user.allowedChannels = user.allowedChannels || [];
+  data.user.inboxScope = user.inboxScope || 'all';
+  return { success: true, data };
+}
 
 // Short-lived token that only proves password step passed; used for the 2FA challenge.
 const generateChallengeToken = (userId) =>
@@ -89,7 +156,12 @@ const buildLoginResponse = async (user) => {
 // @POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { name, email, password, phone } = req.body;
+    const { name, password, phone } = req.body;
+    const email = normalizeEmail(req.body.email);
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -163,6 +235,8 @@ const register = async (req, res) => {
           currentWorkspace: workspace,
           plan: freePlan,
         },
+        workspace,
+        workspaces: [workspace],
         token,
       },
     });
@@ -174,7 +248,8 @@ const register = async (req, res) => {
 // @POST /api/auth/login
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const { password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
@@ -263,10 +338,137 @@ const login = async (req, res) => {
   }
 };
 
+// @POST /api/auth/google
+const googleLogin = async (req, res) => {
+  try {
+    const credential = String(req.body?.credential || '').trim();
+    if (!credential) {
+      return res.status(400).json({ success: false, message: 'Google credential is required' });
+    }
+
+    const { enabled, clientId } = await resolveGoogleClientId();
+    if (!enabled || !clientId) {
+      return res.status(503).json({ success: false, message: 'Google sign-in is not configured' });
+    }
+
+    let payload;
+    try {
+      payload = await verifyGoogleCredential(credential, clientId);
+    } catch (verifyErr) {
+      const status = verifyErr.status || 401;
+      return res.status(status).json({
+        success: false,
+        message: verifyErr.message || 'Invalid Google token',
+      });
+    }
+
+    const email = normalizeEmail(payload.email);
+    const googleId = String(payload.sub || '');
+    const name = String(payload.name || email.split('@')[0] || 'User').trim();
+    const avatar = String(payload.picture || '');
+
+    let user = null;
+    if (googleId) user = await User.findOne({ googleId });
+    if (!user) user = await User.findOne({ email });
+
+    let isNewUser = false;
+
+    if (!user) {
+      let freePlan = await Plan.findOne({ price: 0, status: 'active' });
+      user = await User.create({
+        name,
+        email,
+        password: crypto.randomBytes(32).toString('hex'),
+        avatar,
+        role: 'vendor',
+        plan: freePlan?._id,
+        walletBillingExempt: true,
+        emailVerified: true,
+        authProvider: 'google',
+        googleId,
+      });
+
+      require('../services/adminNotify')
+        .notifyAdmin('New user signup (Google)', ['Name: ' + user.name, 'Email: ' + user.email], '/admin/vendors')
+        .catch(() => {});
+
+      const workspace = await Workspace.create({
+        name,
+        owner: user._id,
+        members: [{ user: user._id, role: 'owner' }],
+      });
+      user.currentWorkspace = workspace._id;
+      await user.save();
+
+      try {
+        const { createDefaultStoreForNewUser } = require('../utils/webpanelStoreBootstrap');
+        await createDefaultStoreForNewUser(user, workspace);
+      } catch (storeErr) {
+        console.error('[googleLogin] Failed to create default webpanel store:', storeErr?.message || storeErr);
+      }
+
+      isNewUser = true;
+    } else {
+      if (user.status !== 'active') {
+        return res.status(403).json({ success: false, message: 'Account is suspended' });
+      }
+      let dirty = false;
+      if (googleId && user.googleId !== googleId) {
+        user.googleId = googleId;
+        dirty = true;
+      }
+      if (user.authProvider !== 'google' && !user.password) {
+        user.authProvider = 'google';
+        dirty = true;
+      } else if (!user.authProvider) {
+        user.authProvider = user.googleId ? 'google' : 'local';
+        dirty = true;
+      }
+      if (avatar && !user.avatar) {
+        user.avatar = avatar;
+        dirty = true;
+      }
+      if (user.emailVerified === false) {
+        user.emailVerified = true;
+        dirty = true;
+      }
+      if (dirty) await user.save();
+    }
+
+    const result = await issueSessionForUser(user, req);
+    if (result.requires2FA) return res.json(result);
+    return res.json({ ...result, isNewUser });
+  } catch (error) {
+    console.error('[googleLogin]', error);
+    res.status(500).json({ success: false, message: error.message || 'Google sign-in failed' });
+  }
+};
+
+// @GET /api/auth/google/config — public client id for GIS button
+const googleAuthConfig = async (req, res) => {
+  try {
+    const { enabled, clientId } = await resolveGoogleClientId();
+    res.json({
+      success: true,
+      data: {
+        enabled: !!(enabled && clientId),
+        clientId: enabled && clientId ? clientId : '',
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @POST /api/auth/admin/login
 const adminLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const { password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Please provide email and password' });
+    }
 
     const user = await User.findOne({ email, role: { $in: ['admin', 'super_admin', 'vendor'] } });
 
@@ -483,7 +685,8 @@ const changePassword = async (req, res) => {
 // @POST /api/auth/forgot-password
 const forgotPassword = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const email = normalizeEmail(req.body.email);
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ success: false, message: 'No user with that email' });
@@ -587,7 +790,8 @@ const verifyEmail = async (req, res) => {
 // @POST /api/auth/resend-verification
 const resendVerification = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const email = normalizeEmail(req.body.email);
+    const user = await User.findOne({ email });
     if (!user || user.emailVerified !== false) {
       return res.json({ success: true, message: 'If the account needs verification, a new email has been sent.' });
     }
@@ -720,7 +924,7 @@ const switchWorkspace = async (req, res) => {
 };
 
 module.exports = {
-  register, login, adminLogin, getMe, updateProfile,
+  register, login, googleLogin, googleAuthConfig, adminLogin, getMe, updateProfile,
   changePassword, forgotPassword, resetPassword, resetPasswordFromBody, switchWorkspace,
   verifyEmail, resendVerification,
   loginVerify2FA, resendLoginOTP,
