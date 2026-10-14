@@ -14,6 +14,7 @@ declare global {
       JWT_EXPIRE?: string;
       JWT_COOKIE_EXPIRE?: string;
       ACCESS_TOKEN_SECRET?: string;
+      GATEWAY_SSO_SECRET?: string;
       
       // Email Configuration
       EMAIL_PASSWORD?: string;

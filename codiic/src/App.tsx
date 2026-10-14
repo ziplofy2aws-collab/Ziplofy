@@ -11,6 +11,7 @@ import { frontendEnv } from "./config/env";
 import AuthProvider from "./contexts/auth.context";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import SsoPage from "./pages/SsoPage";
 import OnboardingGoalsPage from "./pages/onboarding/OnboardingGoalsPage";
 import OnboardingPaymentPage from "./pages/onboarding/OnboardingPaymentPage";
 import AdminStandardLayout from "./components/layout/AdminStandardLayout";
@@ -338,6 +339,7 @@ const AdminApp: React.FC = () => {
   const isAuthRoute =
     location.pathname === '/login' ||
     location.pathname === '/register' ||
+    location.pathname === '/sso' ||
     location.pathname.startsWith('/onboarding');
   const isCodeFullScreen = location.pathname.startsWith('/themes/code-fullscreen/');
   const isBuilderFullScreen = location.pathname.startsWith('/themes/builder');
@@ -398,6 +400,7 @@ const AdminApp: React.FC = () => {
             {/* Authentication (merged in from the former standalone client app) */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/sso" element={<SsoPage />} />
             <Route path="/onboarding" element={<OnboardingGoalsPage />} />
             <Route path="/onboarding/payment" element={<OnboardingPaymentPage />} />
             <Route element={<AdminStandardLayout />}>

@@ -57,7 +57,7 @@ function getInitials(name: string) {
 
 export default function Header({ isAdmin, variant = "default" }: HeaderProps = {}) {
   const shopify = variant === "shopify";
-  const { user, workspaces, currentWorkspace, switchWorkspace, logout } = useAuthStore();
+  const { user, workspaces, currentWorkspace, switchWorkspace, logout, features } = useAuthStore();
   const {
     stores,
     activeStoreId,
@@ -82,7 +82,8 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
   const langRef = useRef<HTMLDivElement>(null);
 
   const showWallet = !isAdmin && user?.role !== "super_admin" && user?.role !== "admin";
-  const canManageStores = showWallet && user?.role === "vendor";
+  const canManageStores =
+    showWallet && user?.role === "vendor" && features.onlineStore !== false;
   const activeStore = stores.find((s) => s._id === activeStoreId) || stores[0] || null;
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import Button from '@/components/ui/Button';
 import { adminApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 
-interface FeatureDef { key: string; label: string; path: string; group?: string; addon?: boolean }
+interface FeatureDef { key: string; label: string; path: string; group?: string; addon?: boolean; optIn?: boolean }
 interface Vendor {
   _id: string;
   name: string;
@@ -37,11 +37,14 @@ export default function FeatureControlsPage() {
 
   useEffect(() => { load(); }, []);
 
+  const isGranted = (f: FeatureDef, overrides?: Record<string, boolean>) =>
+    (f.addon || f.optIn) ? overrides?.[f.key] === true : overrides?.[f.key] !== false;
+
   const openVendor = (v: Vendor) => {
     setSelected(v);
     const map: Record<string, boolean> = {};
-    // Add-ons are off until explicitly granted; base features are on unless disabled.
-    for (const f of catalog) map[f.key] = f.addon ? v.featureOverrides?.[f.key] === true : v.featureOverrides?.[f.key] !== false;
+    // Add-ons and opt-in modules (clinic) are off until explicitly granted; base features are on unless disabled.
+    for (const f of catalog) map[f.key] = isGranted(f, v.featureOverrides);
     setToggles(map);
   };
 
@@ -57,7 +60,7 @@ export default function FeatureControlsPage() {
   };
 
   const disabledCount = (v: Vendor) =>
-    catalog.filter(f => (f.addon ? v.featureOverrides?.[f.key] !== true : v.featureOverrides?.[f.key] === false)).length;
+    catalog.filter(f => !isGranted(f, v.featureOverrides)).length;
 
   const filtered = vendors.filter(v => {
     const q = search.trim().toLowerCase();

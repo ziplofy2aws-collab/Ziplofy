@@ -14,6 +14,7 @@ if (NODE_ENV === 'development') {
             "http://localhost:5173",
             "http://localhost:5174",
             "http://localhost:3000",
+            "http://localhost:3010",
             
             // Allow any subdomain of localhost:5173 (e.g., foo.localhost:5173)
             /^http:\/\/([a-z0-9-]+\.)*localhost:5173$/i,
@@ -35,6 +36,7 @@ if (NODE_ENV === 'development') {
             "https://auth.codiic.com",
             "https://dashboard.codiic.com",
             "https://admin.codiic.com",
+            "https://accounts.codiic.com",
             "https://preview.codiic.com",
         ],
         clientUrl: "https://dashboard.codiic.com",

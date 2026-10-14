@@ -27,6 +27,7 @@ const {
   getStorefrontLeadGenForm,
   submitStorefrontLeadGenForm,
 } = require('../controllers/webpanelStorefrontLeadGenFormController');
+const { getStorefrontClinic } = require('../controllers/webpanelStorefrontClinicController');
 
 const router = express.Router();
 
@@ -45,5 +46,6 @@ router.get('/:storeId/policies/:policyType', getStorefrontPolicyByType);
 router.post('/:storeId/contact-form-submissions', createStorefrontContactSubmission);
 router.get('/:storeId/lead-gen-forms/:formId', getStorefrontLeadGenForm);
 router.post('/:storeId/lead-gen-forms/:formId/submit', submitStorefrontLeadGenForm);
+router.get('/:storeId/clinic', getStorefrontClinic);
 
 module.exports = router;

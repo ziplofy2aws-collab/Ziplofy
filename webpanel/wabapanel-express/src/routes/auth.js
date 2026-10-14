@@ -7,7 +7,9 @@ const {
   verifyEmail, resendVerification,
   loginVerify2FA, resendLoginOTP,
   get2FAStatus, setup2FA, verify2FA, resendSetupOTP, disable2FA,
+  getClientModules, updateClientModules,
 } = require('../controllers/authController');
+const { exchangeGatewaySso } = require('../controllers/gatewaySsoController');
 
 const LOGIN_WINDOW_MS = 5 * 60 * 1000;
 const OTP_WINDOW_MS = 10 * 60 * 1000;
@@ -67,10 +69,13 @@ const otpLimiter = rateLimit({
 router.post('/register', otpLimiter, register);
 router.post('/login', loginLimiter, login);
 router.post('/google', loginLimiter, googleLogin);
+router.post('/sso/exchange', loginLimiter, exchangeGatewaySso);
 router.get('/google/config', googleAuthConfig);
 router.post('/admin/login', loginLimiter, adminLogin);
 router.post('/admin-login', loginLimiter, adminLogin);
 router.get('/me', protect, getMe);
+router.get('/modules', protect, getClientModules);
+router.put('/modules', protect, updateClientModules);
 router.put('/profile', protect, updateProfile);
 router.put('/change-password', protect, changePassword);
 router.post('/forgot-password', otpLimiter, forgotPassword);

@@ -94,6 +94,24 @@ const CODIIC_APPS = [
   },
 ];
 
+/** @type {AppDef[]} */
+const GATEWAY_APPS = [
+  {
+    id: 'gateway-server',
+    label: 'Gateway API',
+    hint: 'port 3011',
+    dir: 'gateway-server',
+    script: 'dev',
+  },
+  {
+    id: 'gateway',
+    label: 'Gateway UI',
+    hint: 'port 3010 — unified login + onboarding',
+    dir: 'gateway',
+    script: 'dev',
+  },
+];
+
 /** Webpanel stack + Codiic Admin (theme uploads, Informatic themes, etc.) */
 const WEBPANEL_PLUS_APPS = [
   ...WEBPANEL_APPS,
@@ -116,9 +134,11 @@ const APP_PORTS = {
   codiic: [3000],
   admin: [5173, 5174],
   'render-store': [5180],
+  'gateway-server': [3011],
+  gateway: [3010],
 };
 
-const ALL_DEV_PORTS = [5000, 5001, 3000, 3002, 3003, 3004, 5173, 5174, 5180];
+const ALL_DEV_PORTS = [5000, 5001, 3000, 3002, 3003, 3004, 3010, 3011, 5173, 5174, 5180];
 
 /** @type {WorkspaceGroup[]} */
 const WORKSPACES = [
@@ -133,6 +153,12 @@ const WORKSPACES = [
     label: 'Codiic Platform',
     description: 'Server API, merchant UI, admin panel, render-store SDK',
     apps: CODIIC_APPS,
+  },
+  {
+    id: 'gateway',
+    label: 'Accounts Gateway',
+    description: 'Unified login + service/industry onboarding (ports 3010 / 3011)',
+    apps: GATEWAY_APPS,
   },
 ];
 
@@ -855,6 +881,11 @@ async function pickWorkspace() {
           description: 'Starts all four Codiic platform dev servers',
         },
         {
+          name: color('⚡  Gateway (API + login UI)', '33'),
+          value: 'gateway-all',
+          description: 'Starts gateway-server (3011) and gateway UI (3010)',
+        },
+        {
           name: color('🧹  Free stuck dev ports', '33'),
           value: 'free-ports',
           description: 'Kill orphan listeners on 5000, 5001, 3000–3004, 5173–5174, 5180',
@@ -902,6 +933,11 @@ async function pickWorkspace() {
 
     if (choice === 'codiic-all') {
       startMultipleApps(CODIIC_APPS, 'Codiic Platform');
+      return;
+    }
+
+    if (choice === 'gateway-all') {
+      startMultipleApps(GATEWAY_APPS, 'Accounts Gateway');
       return;
     }
 

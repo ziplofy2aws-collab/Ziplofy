@@ -3,17 +3,14 @@ import { axiosi } from '../config/axios.config';
 import {
   goToOnboarding,
   isOnboardingComplete,
+  markOnboardingComplete,
   setAuthUserId,
 } from '../utils/onboarding.util';
 
-const AUTH_ROUTES = ['/login', '/register'];
+const AUTH_ROUTES = ['/login', '/register', '/sso'];
 
 function isPublicAuthPath(pathname: string): boolean {
   return AUTH_ROUTES.includes(pathname) || pathname.startsWith('/onboarding');
-}
-
-function isOnboardingPath(pathname: string): boolean {
-  return pathname.startsWith('/onboarding');
 }
 
 interface UserContextType {
@@ -29,6 +26,7 @@ export interface SecureUserInfo {
   name: string;
   accessToken: string;
   assignedSupportDeveloperId: string;
+  onboardingStatus?: string;
   assignedSupportDeveloperDetails?:{
     name:string
     email:string
@@ -71,9 +69,12 @@ export const UserProvider = ({ children }:{children: React.ReactNode}) => {
       const user = data && typeof data === 'object' && 'data' in data ? data.data : (data as SecureUserInfo);
       setLoggedInUser(user);
       setAuthUserId(user.id);
+      if (user.onboardingStatus === 'completed' || user.onboardingStatus === 'skipped') {
+        markOnboardingComplete(user.id);
+      }
 
       // If setup details were never finished, send them through onboarding again.
-      if (!isOnboardingComplete(user.id) && !isOnboardingPath(window.location.pathname)) {
+      if (!isOnboardingComplete(user.id) && !isPublicAuthPath(window.location.pathname)) {
         goToOnboarding();
       }
     } catch (err: any) {

@@ -52,6 +52,17 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }, [isLoading, isAuthenticated, user, router]);
 
   useEffect(() => {
+    if (isLoading || !isAuthenticated || !user) return;
+    const staffType = (user as unknown as { staffType?: string })?.staffType;
+    if (staffType === 'doctor' && pathname === '/client/dashboard') {
+      router.replace('/client/clinic/queue');
+    }
+    if (staffType === 'teacher' && pathname === '/client/dashboard') {
+      router.replace('/client/edtech/overview');
+    }
+  }, [isLoading, isAuthenticated, user, pathname, router]);
+
+  useEffect(() => {
     if (isLoading || !isAuthenticated) return;
     const apiBase = (process.env.NEXT_PUBLIC_API_URL || 'https://api.wabapanel.com/api').replace(/\/api$/, '');
     fetch(apiBase + '/api/maintenance-status')

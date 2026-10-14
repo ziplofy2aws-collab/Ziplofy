@@ -13,6 +13,18 @@ import { assignDefaultPackagingToStore } from './assign-default-packaging.util';
 
 type NewUser = Pick<ICodiicUser, '_id' | 'name' | 'email'>;
 
+export type StoreBootstrapOptions = {
+  storeName?: string;
+  industry?: string;
+  industryKind?: 'ecommerce' | 'service' | '';
+};
+
+function padDescription(text: string): string {
+  const trimmed = text.trim();
+  if (trimmed.length >= 10) return trimmed.slice(0, 500);
+  return `${trimmed} online store.`.slice(0, 500);
+}
+
 
 /**
  * Creates the default India market (+ includes and settings) for a newly created store.
@@ -83,12 +95,18 @@ async function createDefaultMarket(storeId: mongoose.Types.ObjectId): Promise<vo
 /**
  * Creates a default store (and its default location) for a new user.
  */
-async function createDefaultStore(user: NewUser): Promise<mongoose.Types.ObjectId> {
+async function createDefaultStore(
+  user: NewUser,
+  options?: StoreBootstrapOptions
+): Promise<{ storeId: mongoose.Types.ObjectId; storeName: string }> {
   const displayName = user.name || user.email?.split('@')[0] || 'User';
+  const storeName = (options?.storeName || `${displayName}'s Store`).trim().slice(0, 100);
   const defaultStore = await Store.create({
     userId: user._id,
-    storeName: `${displayName}'s Store`,
-    storeDescription: `Welcome to ${displayName}'s store! This is your default store where you can start selling your products.`,
+    storeName,
+    storeDescription: padDescription(`Welcome to ${storeName}! This is your store.`),
+    industry: options?.industry || '',
+    industryKind: options?.industryKind || '',
   });
 
   const defaultLocation = await LocationModel.create({
@@ -113,20 +131,23 @@ async function createDefaultStore(user: NewUser): Promise<mongoose.Types.ObjectI
   await defaultStore.save();
 
   console.log(`Default store created for user ${user.email}: ${defaultStore.storeName}`);
-  return defaultStore._id;
+  return { storeId: defaultStore._id, storeName };
 }
 
 /**
  * Creates default resources for a newly registered user (store, settings, market, subdomain).
  * Used by both the email/password register and Google sign-up flows.
  */
-export const createDefaultResourcesForNewUser = async (user: NewUser): Promise<void> => {
-  const storeId = await createDefaultStore(user);
-  const displayName = user.name || user.email?.split('@')[0] || 'store';
+export const createDefaultResourcesForNewUser = async (
+  user: NewUser,
+  options?: StoreBootstrapOptions
+): Promise<{ storeId: mongoose.Types.ObjectId; subdomain: string }> => {
+  const { storeId, storeName } = await createDefaultStore(user, options);
+  const slugSource = storeName || user.name || user.email?.split('@')[0] || 'store';
 
   await GeneralSettings.create({
     storeId,
-    storeName: `${displayName}'s Store`,
+    storeName,
     storeEmail: user.email,
   });
 
@@ -149,11 +170,12 @@ export const createDefaultResourcesForNewUser = async (user: NewUser): Promise<v
     console.warn('Failed to create default packaging for new user store:', (e as Error)?.message);
   }
 
-  const slugBase = displayName
+  const slugBase = slugSource
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/^-+|-+$/g, '') || 'store';
   const suffix = Math.random().toString(36).slice(2, 6);
   const subdomain = `${slugBase}-${suffix}`;
   await Subdomain.create({ storeId, subdomain });
+  return { storeId, subdomain };
 };

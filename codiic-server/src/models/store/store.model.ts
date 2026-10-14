@@ -27,6 +27,10 @@ export interface IStore {
   appliedCustomThemeId?: mongoose.Types.ObjectId | null;
   storeCode?: string;
   defaultLocation?: mongoose.Types.ObjectId;
+  /** Gateway onboarding industry slug, e.g. fashion. */
+  industry?: string;
+  /** Gateway onboarding bucket. */
+  industryKind?: 'ecommerce' | 'service' | '';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -90,6 +94,16 @@ const storeSchema = new Schema<IStore & Document>({
     ref: 'Location',
     default: null,
     index: true
+  },
+  industry: {
+    type: String,
+    trim: true,
+    default: '',
+  },
+  industryKind: {
+    type: String,
+    enum: ['ecommerce', 'service', ''],
+    default: '',
   },
 }, {
   timestamps: true,

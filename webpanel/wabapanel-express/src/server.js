@@ -106,6 +106,7 @@ app.use(platform.maintenanceGuard);
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+app.post('/api/internal/gateway/provision-vendor', require('./controllers/gatewaySsoController').provisionVendor);
 app.use('/api/stores', require('./routes/webpanelStores'));
 app.use('/api/aws', require('./routes/webpanelAws'));
 app.use('/api/informatic-themes', require('./routes/informaticThemes'));
@@ -136,6 +137,8 @@ app.get('/s/:code', redirectShortLink);
 
 app.use('/api/short-links', require('./routes/shortLinks'));
 app.use('/api/appointments', require('./routes/appointments'));
+app.use('/api/clinic', require('./routes/clinic'));
+app.use('/api/edtech', require('./routes/edtech'));
 app.use('/api/teams', require('./routes/teams'));
 app.use('/api/payments', require('./routes/payments'));
 app.use('/api/upload', require('./routes/upload'));
@@ -365,18 +368,36 @@ app.get("/api/public/booking/:slug", async (req, res) => {
   try {
     const BookingSettings = require("./models/BookingSettings");
     const Workspace = require("./models/Workspace");
+    const ClinicDoctor = require("./models/ClinicDoctor");
+    const bookingService = require("./services/bookingService");
     const s = await BookingSettings.findOne({ slug: req.params.slug, enabled: true }).lean();
     if (!s) return res.status(404).json({ success: false, message: "Booking page not found" });
     const ws = await Workspace.findById(s.workspace).select("name").lean();
-    const days = (s.weekly || []).map((w) => Array.isArray(w) && w.length > 0);
-    const overrides = {};
+    const doctorId = req.query.doctor || "";
+    let days = (s.weekly || []).map((w) => Array.isArray(w) && w.length > 0);
+    let overrides = {};
     for (const o of (s.overrides || [])) {
       overrides[o.date] = !o.unavailable && (o.windows || []).length > 0;
     }
+    let slotDuration = s.slotDuration;
+    if (doctorId) {
+      const resolved = await bookingService.resolveDoctorSchedule(s.workspace, s, doctorId);
+      if (resolved) {
+        const meta = bookingService.publicAvailabilityMeta(resolved);
+        days = meta.days;
+        overrides = meta.overrides;
+        slotDuration = meta.slotDuration;
+      }
+    }
+    const doctors = await ClinicDoctor.find({ workspace: s.workspace, active: true })
+      .select("name specialty qualifications consultationMins photo bio room")
+      .sort("name")
+      .lean();
     res.json({ success: true, data: {
-      title: s.title, description: s.description, slotDuration: s.slotDuration,
+      title: s.title, description: s.description, slotDuration,
       advanceDays: s.advanceDays, timezone: s.timezone, days, overrides,
       workspaceName: ws ? ws.name : "",
+      doctors,
     } });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
@@ -389,8 +410,10 @@ app.get("/api/public/booking/:slug/slots", async (req, res) => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return res.status(400).json({ success: false, message: "date (YYYY-MM-DD) required" });
     const s = await BookingSettings.findOne({ slug: req.params.slug, enabled: true });
     if (!s) return res.status(404).json({ success: false, message: "Booking page not found" });
-    const slots = await bookingService.slotsForDate(s.workspace, s, date);
-    res.json({ success: true, data: { date, slotDuration: s.slotDuration, slots } });
+    const doctorId = req.query.doctor || null;
+    const slots = await bookingService.slotsForDate(s.workspace, s, date, doctorId);
+    const resolved = await bookingService.resolveDoctorSchedule(s.workspace, s, doctorId);
+    res.json({ success: true, data: { date, slotDuration: (resolved && resolved.slotDuration) || s.slotDuration, slots } });
   } catch (e) { res.status(500).json({ success: false, message: e.message }); }
 });
 
@@ -400,28 +423,41 @@ app.post("/api/public/booking/:slug", async (req, res) => {
     const bookingService = require("./services/bookingService");
     const Appointment = require("./models/Appointment");
     const Contact = require("./models/Contact");
+    const ClinicDoctor = require("./models/ClinicDoctor");
     const crypto = require("crypto");
     const s = await BookingSettings.findOne({ slug: req.params.slug, enabled: true });
     if (!s) return res.status(404).json({ success: false, message: "Booking page not found" });
-    const { name, phone, email, date, start, notes } = req.body || {};
+    const { name, phone, email, date, start, notes, doctor } = req.body || {};
     if (!name || !phone || !date || !start) return res.status(400).json({ success: false, message: "name, phone, date and start are required" });
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return res.status(400).json({ success: false, message: "invalid date" });
-    const chk = await bookingService.verifySlot(s.workspace, s, date, start);
+    let doctorId = doctor || null;
+    let doctorDoc = null;
+    if (doctorId) {
+      doctorDoc = await ClinicDoctor.findOne({ _id: doctorId, workspace: s.workspace, active: { $ne: false } });
+      if (!doctorDoc) return res.status(400).json({ success: false, message: "Selected doctor is not available" });
+    }
+    const chk = await bookingService.verifySlot(s.workspace, s, date, start, doctorId);
     if (!chk.ok) return res.status(400).json({ success: false, message: chk.message });
     let contact = null;
     try {
       const digits = String(phone).replace(/\D/g, "");
       if (digits) contact = await Contact.findOne({ workspace: s.workspace, phone: { $regex: digits.slice(-10) + "$" } }).select("_id");
+      if (!contact && digits) {
+        contact = await Contact.create({ workspace: s.workspace, name, phone: digits, email: email || "", source: "form" });
+      }
     } catch (e) { /* optional */ }
     const cancelToken = crypto.randomBytes(12).toString("hex");
+    const duration = (doctorDoc && doctorDoc.consultationMins) || s.slotDuration;
+    const titleDoctor = doctorDoc ? `Dr. ${doctorDoc.name} — ` : "";
     const appt = await Appointment.create({
       workspace: s.workspace,
-      title: `${s.title} — ${name}`,
+      title: `${titleDoctor}${s.title} — ${name}`,
       contact: contact ? contact._id : undefined,
       contactName: name, contactPhone: phone, contactEmail: email || "",
       date: new Date(date + "T00:00:00"),
-      startTime: start, endTime: chk.end, duration: s.slotDuration,
+      startTime: start, endTime: chk.end, duration,
       status: "scheduled", notes: notes || "", type: "booking",
+      doctor: doctorId || undefined,
       metadata: { publicBooking: true, cancelToken },
     });
     try { bookingService.notifyBooking(s, appt); } catch (e) { /* notify is best-effort */ }

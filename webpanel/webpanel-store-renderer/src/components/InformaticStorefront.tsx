@@ -13,6 +13,7 @@ import { InformaticBlogPostRoute } from '@/components/InformaticBlogPostRoute';
 import { InformaticCustomPageRoute } from '@/components/InformaticCustomPageRoute';
 import { InformaticPolicyRoute } from '@/components/InformaticPolicyRoute';
 import { InformaticRootCustomPageRoute } from '@/components/InformaticRootCustomPageRoute';
+import { ClinicBookCta, ClinicBookPage, ClinicDoctorsPage } from '@/components/ClinicDoctorsPage';
 
 function withStoreBranding(
   base: Record<string, unknown>,
@@ -131,10 +132,13 @@ function ThemeRoutes({ contract }: { contract: ThemeContract }) {
           }
         />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/doctors" element={<ClinicDoctorsPage />} />
+        <Route path="/book" element={<ClinicBookPage />} />
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/:slug" element={<InformaticRootCustomPageRoute />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      <ClinicBookCta />
     </BrowserRouter>
   );
 }

@@ -56,7 +56,10 @@ function LoginForm() {
     let saved = '';
     try { saved = sessionStorage.getItem('postLoginRedirect') || ''; sessionStorage.removeItem('postLoginRedirect'); } catch { /* */ }
     const isAdmin = u?.role === 'admin' || u?.role === 'super_admin';
+    const staffType = (u as { staffType?: string } | null)?.staffType;
     if (saved && (isAdmin || !saved.startsWith('/admin'))) router.push(saved);
+    else if (staffType === 'doctor') router.push('/client/clinic/queue');
+    else if (staffType === 'teacher') router.push('/client/edtech/overview');
     else router.push(isAdmin ? '/admin/dashboard' : '/client/dashboard');
   };
 
@@ -70,12 +73,7 @@ function LoginForm() {
       localStorage.setItem('token', token);
       loadUser().then(() => {
         toast.success('Logged in successfully');
-        const u = useAuthStore.getState().user;
-        let saved = '';
-        try { saved = sessionStorage.getItem('postLoginRedirect') || ''; sessionStorage.removeItem('postLoginRedirect'); } catch { /* */ }
-        const isAdmin = u?.role === 'admin' || u?.role === 'super_admin';
-        if (saved && (isAdmin || !saved.startsWith('/admin'))) router.push(saved);
-        else router.push(isAdmin ? '/admin/dashboard' : '/client/dashboard');
+        redirectAfterLogin();
       }).catch(() => {
         toast.error('Token expired or invalid');
         localStorage.removeItem('token');

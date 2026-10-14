@@ -17,10 +17,21 @@ interface AuthState {
   complete2FALogin: (challengeToken: string, code: string) => Promise<void>;
   adminLogin: (email: string, password: string) => Promise<{ requires2FA?: boolean; method?: string; challengeToken?: string } | void>;
   register: (name: string, email: string, password: string, phone?: string) => Promise<boolean>;
+  acceptSsoSession: (payload: {
+    token: string;
+    user: User;
+    workspaces?: Workspace[];
+    features?: Record<string, boolean>;
+  }) => void;
   logout: () => void;
   loadUser: () => Promise<void>;
   switchWorkspace: (workspaceId: string) => Promise<void>;
   updateUser: (data: Partial<User>) => void;
+  applyServiceChoices: (payload: {
+    selectedModules: string[];
+    features: Record<string, boolean>;
+    industry?: string;
+  }) => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -127,6 +138,26 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return false;
   },
 
+  acceptSsoSession: ({ token, user, workspaces = [], features = {} }) => {
+    localStorage.setItem('token', token);
+    const workspace =
+      user?.currentWorkspace ||
+      (Array.isArray(workspaces) ? workspaces[0] : null) ||
+      null;
+    if (workspace?._id) localStorage.setItem('workspaceId', workspace._id);
+    connectSocket(token);
+    if (workspace?._id) joinWorkspace(workspace._id);
+    set({
+      token,
+      user,
+      workspaces: workspace ? [workspace, ...workspaces.filter((w) => w._id !== workspace._id)] : workspaces,
+      currentWorkspace: workspace,
+      features,
+      isAuthenticated: true,
+      isLoading: false,
+    });
+  },
+
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('workspaceId');
@@ -175,5 +206,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   updateUser: (data) => {
     const user = get().user;
     if (user) set({ user: { ...user, ...data } });
+  },
+
+  applyServiceChoices: ({ selectedModules, features, industry }) => {
+    const user = get().user;
+    if (!user) {
+      set({ features });
+      return;
+    }
+    set({
+      features,
+      user: {
+        ...user,
+        featureOverrides: {
+          ...((user as unknown as { featureOverrides?: Record<string, unknown> }).featureOverrides || {}),
+          selectedModules,
+          industry,
+        },
+      } as User,
+    });
   },
 }));

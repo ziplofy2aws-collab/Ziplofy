@@ -1,9 +1,10 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'next/navigation';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
 import axios from 'axios';
 import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, User, Phone, Mail } from 'lucide-react';
 
+interface Doctor { _id: string; name: string; specialty?: string; photo?: string; consultationMins?: number; }
 interface Config {
   title: string;
   description: string;
@@ -13,6 +14,7 @@ interface Config {
   days: boolean[];
   overrides?: Record<string, boolean>;
   workspaceName: string;
+  doctors?: Doctor[];
 }
 interface Slot { start: string; end: string; capacity: number; remaining: number; available: boolean; }
 
@@ -22,7 +24,16 @@ const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 
 const DOW = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 export default function PublicBookingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-gray-500">Loading…</div>}>
+      <PublicBookingInner />
+    </Suspense>
+  );
+}
+
+function PublicBookingInner() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
   const [config, setConfig] = useState<Config | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,23 +49,30 @@ export default function PublicBookingPage() {
   const [error, setError] = useState('');
   const [cancelling, setCancelling] = useState(false);
   const [cancelled, setCancelled] = useState(false);
+  const [doctorId, setDoctorId] = useState(searchParams.get('doctor') || '');
 
   useEffect(() => {
     if (!slug) return;
-    axios.get(`${apiBase()}/public/booking/${slug}`)
-      .then(res => { if (res.data.success) setConfig(res.data.data); else setNotFound(true); })
+    axios.get(`${apiBase()}/public/booking/${slug}`, { params: doctorId ? { doctor: doctorId } : {} })
+      .then(res => {
+        if (res.data.success) {
+          setConfig(res.data.data);
+          const list = res.data.data.doctors || [];
+          if (!doctorId && list.length === 1) setDoctorId(list[0]._id);
+        } else setNotFound(true);
+      })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, doctorId]);
 
   const loadSlots = useCallback((date: string) => {
     setSlotsLoading(true);
     setSlots([]);
-    axios.get(`${apiBase()}/public/booking/${slug}/slots`, { params: { date } })
+    axios.get(`${apiBase()}/public/booking/${slug}/slots`, { params: { date, ...(doctorId ? { doctor: doctorId } : {}) } })
       .then(res => { if (res.data.success) setSlots(res.data.data.slots || []); })
       .catch(() => setSlots([]))
       .finally(() => setSlotsLoading(false));
-  }, [slug]);
+  }, [slug, doctorId]);
 
   const selectDate = (date: string) => {
     setSelectedDate(date);
@@ -71,6 +89,7 @@ export default function PublicBookingPage() {
       const res = await axios.post(`${apiBase()}/public/booking/${slug}`, {
         name: formVals.name, phone: formVals.phone, email: formVals.email, notes: formVals.notes,
         date: selectedDate, start: selectedSlot.start,
+        ...(doctorId ? { doctor: doctorId } : {}),
       });
       if (res.data.success) setConfirmed(res.data.data);
       else setError(res.data.message || 'Booking failed');
@@ -153,6 +172,21 @@ export default function PublicBookingPage() {
             <h1 className="text-xl font-bold text-gray-900 mt-1">{config.title}</h1>
             {config.description && <p className="text-sm text-gray-500 mt-2">{config.description}</p>}
             <div className="flex items-center gap-2 text-sm text-gray-500 mt-4"><Clock className="w-4 h-4" /> {config.slotDuration} min</div>
+            {(config.doctors || []).length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-medium text-gray-500 mb-1">Doctor</p>
+                <select
+                  value={doctorId}
+                  onChange={(e) => { setDoctorId(e.target.value); setSelectedDate(''); setSelectedSlot(null); setSlots([]); }}
+                  className="w-full border rounded-lg text-sm px-2 py-2"
+                >
+                  <option value="">Select doctor</option>
+                  {config.doctors!.map((d) => (
+                    <option key={d._id} value={d._id}>Dr. {d.name}{d.specialty ? ` · ${d.specialty}` : ''}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             {selectedSlot && selectedDate && (
               <div className="flex items-center gap-2 text-sm text-emerald-700 mt-2 font-medium"><Calendar className="w-4 h-4" /> {new Date(selectedDate + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })} · {selectedSlot.start}</div>
             )}

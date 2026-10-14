@@ -13,7 +13,7 @@ export interface ICodiicUser {
   name: string;
   email: string;
   hashedPassword?: string;
-  provider: 'local' | 'google';
+  provider: 'local' | 'google' | 'gateway';
   googleId?: string;
   role: mongoose.Types.ObjectId;
   status: 'Active' | 'Inactive' | 'Pending';
@@ -36,7 +36,7 @@ const codiicUserSchema: Schema<ICodiicUser & Document> = new mongoose.Schema(
     name: { type: String, trim: true, required: true },
     email: { type: String, unique: true, required: true, lowercase: true, index: true },
     hashedPassword: { type: String },
-    provider: { type: String, enum: ['local', 'google'] as const, default: 'local' },
+    provider: { type: String, enum: ['local', 'google', 'gateway'] as const, default: 'local' },
     googleId: { type: String },
     role: { type: Schema.Types.ObjectId, ref: 'Role', required: true },
     status: {

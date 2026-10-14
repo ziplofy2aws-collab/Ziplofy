@@ -157,6 +157,22 @@ router.get('/invoices/:id/pdf', admin.getInvoicePdf);
 // Vendor Detail
 router.get('/vendors/:id/detail', admin.getVendorDetail);
 
+// Clinic (platform admin — any vendor, no login-as)
+const adminClinic = require('../controllers/adminClinicController');
+router.get('/clinic', adminClinic.listClinics);
+router.put('/clinic/:vendorId/feature', adminClinic.setClinicFeature);
+router.get('/clinic/:vendorId/doctors/:id', adminClinic.getDoctor);
+router.put('/clinic/:vendorId/doctors/:id', adminClinic.updateDoctor);
+router.get('/clinic/:vendorId/patients/:contactId', adminClinic.getPatient);
+router.put('/clinic/:vendorId/patients/:contactId', adminClinic.updatePatient);
+router.get('/clinic/:vendorId', adminClinic.getClinic);
+
+const adminEdtech = require('../controllers/adminEdtechController');
+router.get('/edtech', adminEdtech.listInstitutes);
+router.put('/edtech/:vendorId/feature', adminEdtech.setEdtechFeature);
+router.put('/edtech/:vendorId/teachers/:id', adminEdtech.updateTeacher);
+router.get('/edtech/:vendorId', adminEdtech.getInstitute);
+
 // Blog
 router.get('/blog', admin.getBlogPosts);
 router.post('/blog', admin.createBlogPost);

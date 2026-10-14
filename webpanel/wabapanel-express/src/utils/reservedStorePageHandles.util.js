@@ -14,6 +14,8 @@ const RESERVED_STORE_PAGE_HANDLES = new Set([
   'pages',
   'return-refund',
   'contact-information',
+  'doctors',
+  'book',
 ]);
 
 function isReservedStorePageHandle(raw) {

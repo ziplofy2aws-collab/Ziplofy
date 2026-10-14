@@ -58,6 +58,8 @@ const webpanelStoreSchema = new mongoose.Schema(
       unique: true,
       sparse: true,
     },
+    industry: { type: String, trim: true, default: '' },
+    industryKind: { type: String, enum: ['ecommerce', 'service', ''], default: '' },
   },
   {
     timestamps: true,

@@ -11,6 +11,7 @@ export interface User {
   planExpiry: string;
   walletBalance: number;
   permissions: string[];
+  staffType?: '' | 'doctor' | 'receptionist';
   lastLogin: string;
   createdAt: string;
 }

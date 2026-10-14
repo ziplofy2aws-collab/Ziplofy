@@ -17,8 +17,8 @@ const formatDateIST = (date) => {
   });
 };
 
-// Check for time slot conflicts
-const checkTimeConflict = async (workspaceId, date, startTime, endTime, excludeId = null) => {
+// Check for time slot conflicts (per doctor when doctorId is set)
+const checkTimeConflict = async (workspaceId, date, startTime, endTime, excludeId = null, doctorId = null) => {
   const dateObj = new Date(date);
   const dayStart = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
   const dayEnd = new Date(dayStart.getTime() + 86400000);
@@ -29,6 +29,7 @@ const checkTimeConflict = async (workspaceId, date, startTime, endTime, excludeI
     status: { $in: ['scheduled', 'confirmed', 'rescheduled'] },
   };
   if (excludeId) query._id = { $ne: excludeId };
+  if (doctorId) query.doctor = doctorId;
 
   const existing = await Appointment.find(query);
   
@@ -48,7 +49,7 @@ const checkTimeConflict = async (workspaceId, date, startTime, endTime, excludeI
 
 const getAppointments = async (req, res) => {
   try {
-    const { page = 1, limit = 20, status, date } = req.query;
+    const { page = 1, limit = 20, status, date, doctor } = req.query;
     const query = { workspace: req.workspace._id };
     query.archived = req.query.archived === 'true' ? true : { $ne: true };
     if (status) query.status = status;
@@ -56,11 +57,18 @@ const getAppointments = async (req, res) => {
       const d = new Date(date);
       query.date = { $gte: d, $lt: new Date(d.getTime() + 86400000) };
     }
+    if (doctor) query.doctor = doctor;
+    if (req.user?.staffType === 'doctor') {
+      const ClinicDoctor = require('../models/ClinicDoctor');
+      const mine = await ClinicDoctor.findOne({ workspace: req.workspace._id, userId: req.user._id }).select('_id');
+      query.doctor = mine ? mine._id : { $in: [] };
+    }
 
     const total = await Appointment.countDocuments(query);
     const appointments = await Appointment.find(query)
       .populate('contact', 'name phone')
       .populate('assignedTo', 'name')
+      .populate('doctor', 'name specialty')
       .sort('date startTime')
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
@@ -75,7 +83,8 @@ const getAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findOne({ _id: req.params.id, workspace: req.workspace._id })
       .populate('contact', 'name phone')
-      .populate('assignedTo', 'name');
+      .populate('assignedTo', 'name')
+      .populate('doctor', 'name specialty');
     if (!appointment) return res.status(404).json({ success: false, message: 'Appointment not found' });
     res.json({ success: true, data: appointment });
   } catch (error) {
@@ -216,12 +225,14 @@ const createAppointment = async (req, res) => {
       const dateObj = new Date(req.body.date);
       const dayStart = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
       const dayEnd = new Date(dayStart.getTime() + 86400000);
-      const used = await Appointment.countDocuments({
+      const usedQuery = {
         workspace: req.workspace._id,
         date: { $gte: dayStart, $lt: dayEnd },
         startTime: req.body.startTime,
         status: { $in: ['scheduled', 'confirmed', 'rescheduled'] },
-      });
+      };
+      if (req.body.doctor) usedQuery.doctor = req.body.doctor;
+      const used = await Appointment.countDocuments(usedQuery);
       if (used >= cap) {
         return res.status(400).json({
           success: false,
@@ -286,7 +297,7 @@ const rescheduleAppointment = async (req, res) => {
 
     // Check for time slot conflict (exclude current appointment)
     const { conflict, conflictWith } = await checkTimeConflict(
-      req.workspace._id, date, startTime, endTime || appointment.endTime, appointment._id
+      req.workspace._id, date, startTime, endTime || appointment.endTime, appointment._id, appointment.doctor
     );
     if (conflict) {
       const conflictTime = conflictWith.startTime + '-' + conflictWith.endTime;
@@ -463,8 +474,10 @@ const getSlots = async (req, res) => {
     const date = String(req.query.date || '');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return res.status(400).json({ success: false, message: 'date (YYYY-MM-DD) required' });
     const s = await bookingService.getSettings(req.workspace._id);
-    const slots = await bookingService.slotsForDate(req.workspace._id, s, date);
-    res.json({ success: true, data: { date, slotDuration: s.slotDuration, slots } });
+    const doctorId = req.query.doctor || null;
+    const slots = await bookingService.slotsForDate(req.workspace._id, s, date, doctorId);
+    const resolved = await bookingService.resolveDoctorSchedule(req.workspace._id, s, doctorId);
+    res.json({ success: true, data: { date, slotDuration: (resolved && resolved.slotDuration) || s.slotDuration, slots } });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

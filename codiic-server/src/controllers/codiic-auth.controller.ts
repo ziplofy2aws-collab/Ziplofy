@@ -30,7 +30,7 @@ interface SecureUserInfo {
   isNewUser?: boolean;
 }
 
-const signAccessToken = (user: ICodiicUser): string => {
+export const signAccessToken = (user: ICodiicUser): string => {
   const payload = {
     uid: user._id.toString(),
     role: 'client',
@@ -39,7 +39,7 @@ const signAccessToken = (user: ICodiicUser): string => {
   return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: '7d' });
 };
 
-const toSecureUser = (user: ICodiicUser, accessToken: string): SecureUserInfo => ({
+export const toSecureUser = (user: ICodiicUser, accessToken: string): SecureUserInfo => ({
   id: user._id.toString(),
   email: user.email,
   role: 'client',

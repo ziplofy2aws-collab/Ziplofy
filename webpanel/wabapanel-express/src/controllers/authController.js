@@ -144,6 +144,8 @@ const buildLoginResponse = async (user) => {
       phone: user.phone,
       avatar: user.avatar,
       role: user.role,
+      staffType: user.staffType || '',
+      permissions: user.permissions || [],
       currentWorkspace: user.currentWorkspace,
       plan: user.plan,
       walletBalance: user.walletBalance,
@@ -923,10 +925,68 @@ const switchWorkspace = async (req, res) => {
   }
 };
 
+const getClientModules = async (req, res) => {
+  try {
+    const { publicCatalog, defaultLaunchModules } = require('../utils/gatewayModules');
+    const user = await User.findById(req.user._id).select('featureOverrides role');
+    if (user.role === 'agent') {
+      return res.status(403).json({ success: false, message: 'Only the workspace owner can choose services' });
+    }
+    const industry = user.featureOverrides?.industry || '';
+    const selected = Array.isArray(user.featureOverrides?.selectedModules)
+      ? user.featureOverrides.selectedModules
+      : defaultLaunchModules(industry);
+    return res.json({ success: true, data: publicCatalog(industry, selected) });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+const updateClientModules = async (req, res) => {
+  try {
+    const {
+      normalizeSelectedModules,
+      defaultLaunchModules,
+      featureOverridesForModules,
+      publicCatalog,
+    } = require('../utils/gatewayModules');
+    const { getOwnerFeatures } = require('../middleware/featureGate');
+    const user = await User.findById(req.user._id);
+    if (!user || user.role === 'agent') {
+      return res.status(403).json({ success: false, message: 'Only the workspace owner can choose services' });
+    }
+    const industry = user.featureOverrides?.industry || '';
+    const selectedModules = normalizeSelectedModules(
+      industry,
+      Array.isArray(req.body.selectedModules) ? req.body.selectedModules : defaultLaunchModules(industry)
+    );
+    user.featureOverrides = featureOverridesForModules(selectedModules, industry);
+    if (industry === 'healthcare') user.featureOverrides.clinic = true;
+    if (industry === 'education') user.featureOverrides.edtech = true;
+    user.markModified('featureOverrides');
+    await user.save();
+    const features = await getOwnerFeatures(user._id);
+    return res.json({
+      success: true,
+      data: {
+        ...publicCatalog(industry, selectedModules),
+        features,
+        featureOverrides: {
+          selectedModules,
+          industry,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   register, login, googleLogin, googleAuthConfig, adminLogin, getMe, updateProfile,
   changePassword, forgotPassword, resetPassword, resetPasswordFromBody, switchWorkspace,
   verifyEmail, resendVerification,
   loginVerify2FA, resendLoginOTP,
   get2FAStatus, setup2FA, verify2FA, resendSetupOTP, disable2FA,
+  getClientModules, updateClientModules,
 };

@@ -21,7 +21,7 @@ const iconBtn =
 const iconBtnDanger =
   'rounded-lg p-1.5 text-admin-text-subdued hover:bg-red-50 hover:text-red-600';
 
-interface Agent { _id: string; name: string; email: string; phone?: string; role: string; status: string; avatar?: string; lastActive?: string; conversationsHandled?: number; permissions?: string[]; allowedChannels?: string[]; inboxScope?: string; }
+interface Agent { _id: string; name: string; email: string; phone?: string; role: string; status: string; avatar?: string; lastActive?: string; conversationsHandled?: number; permissions?: string[]; allowedChannels?: string[]; inboxScope?: string; staffType?: string; }
 
 // Expandable permission tree: check a section to grant the whole menu, or expand
 // it to grant only specific sub-pages.
@@ -94,7 +94,7 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [showAgentModal, setShowAgentModal] = useState(false);
   const [showTeamModal, setShowTeamModal] = useState(false);
-  const [agentForm, setAgentForm] = useState({ name: '', email: '', password: '', role: 'agent' });
+  const [agentForm, setAgentForm] = useState({ name: '', email: '', password: '', role: 'agent', staffType: '' });
   const [agentPerms, setAgentPerms] = useState<string[]>([]);
   const [agentChans, setAgentChans] = useState<string[]>([]);
   const [agentScope, setAgentScope] = useState<string>('all');
@@ -102,6 +102,7 @@ export default function AgentsPage() {
   const [permEdit, setPermEdit] = useState<string[]>([]);
   const [chanEdit, setChanEdit] = useState<string[]>([]);
   const [scopeEdit, setScopeEdit] = useState<string>('all');
+  const [staffEdit, setStaffEdit] = useState<string>('');
   const [teamForm, setTeamForm] = useState({ name: '', description: '', members: [] as string[] });
   const [submitting, setSubmitting] = useState(false);
 
@@ -121,7 +122,7 @@ export default function AgentsPage() {
       await teamApi.addAgent({ ...agentForm, permissions: agentPerms, allowedChannels: agentChans, inboxScope: agentScope });
       toast.success('Agent added');
       setShowAgentModal(false);
-      setAgentForm({ name: '', email: '', password: '', role: 'agent' });
+      setAgentForm({ name: '', email: '', password: '', role: 'agent', staffType: '' });
       setAgentPerms([]); setAgentChans([]); setAgentScope('all');
       teamApi.listAgents().then(r => setAgents(r.data.data || []));
     } catch (err: unknown) {
@@ -158,7 +159,11 @@ export default function AgentsPage() {
         </div>
       </div>
     )},
-    { key: 'role', title: 'Role', render: (a: Agent) => <Badge variant={a.role === 'admin' ? 'info' : 'default'}>{a.role}</Badge> },
+    { key: 'role', title: 'Role', render: (a: Agent) => (
+      <Badge variant={a.role === 'admin' ? 'info' : 'default'}>
+        {a.staffType === 'doctor' ? 'Doctor' : a.staffType === 'receptionist' ? 'Receptionist' : a.staffType === 'teacher' ? 'Teacher' : a.role}
+      </Badge>
+    )},
     { key: 'status', title: 'Status', render: (a: Agent) => (
       <Badge variant={a.status === 'active' ? 'success' : 'default'}>{a.status || 'active'}</Badge>
     )},
@@ -168,7 +173,7 @@ export default function AgentsPage() {
     )},
     { key: 'actions', title: '', render: (a: Agent) => (
       <div className="flex gap-1">
-        <button type="button" title="Permissions — control which modules this agent can access" onClick={() => { setPermAgent(a); setPermEdit(a.permissions || []); setChanEdit(a.allowedChannels || []); setScopeEdit(a.inboxScope || 'all'); }}
+        <button type="button" title="Permissions — control which modules this agent can access" onClick={() => { setPermAgent(a); setPermEdit(a.permissions || []); setChanEdit(a.allowedChannels || []); setScopeEdit(a.inboxScope || 'all'); setStaffEdit(a.staffType || ''); }}
           className={iconBtn}><ShieldCheck className="h-4 w-4" /></button>
         <button type="button" title="Login as this agent" onClick={async () => {
           try {
@@ -212,7 +217,7 @@ export default function AgentsPage() {
             <Users className="h-4 w-4" />
             New Team
           </button>
-          <button type="button" className={primaryBtn} onClick={() => { setAgentForm({ name: '', email: '', password: '', role: 'agent' }); setAgentPerms([]); setAgentChans([]); setAgentScope('all'); setShowAgentModal(true); }}>
+          <button type="button" className={primaryBtn} onClick={() => { setAgentForm({ name: '', email: '', password: '', role: 'agent', staffType: '' }); setAgentPerms([]); setAgentChans([]); setAgentScope('all'); setShowAgentModal(true); }}>
             <UserPlus className="h-4 w-4" />
             Add Agent
           </button>
@@ -279,6 +284,17 @@ export default function AgentsPage() {
           <Input label="Name" value={agentForm.name} onChange={(e) => setAgentForm({ ...agentForm, name: e.target.value })} required />
           <Input label="Email" type="email" value={agentForm.email} onChange={(e) => setAgentForm({ ...agentForm, email: e.target.value })} required />
           <Input label="Password" type="password" value={agentForm.password} onChange={(e) => setAgentForm({ ...agentForm, password: e.target.value })} required />
+          <Select
+            label="Staff role"
+            value={agentForm.staffType}
+            onChange={(e) => setAgentForm({ ...agentForm, staffType: e.target.value })}
+            options={[
+              { value: '', label: 'Standard agent' },
+              { value: 'doctor', label: 'Doctor (own queue & consults)' },
+              { value: 'receptionist', label: 'Receptionist (patients, calendar, queue)' },
+              { value: 'teacher', label: 'Teacher (own batches & attendance)' },
+            ]}
+          />
           {agentForm.role === 'agent' && (
             <div className="rounded-lg border border-admin-border bg-[#f6f6f7]/40 p-3">
               <p className="mb-1 text-[12px] font-medium text-admin-text">Module Access (optional)</p>
@@ -336,12 +352,19 @@ export default function AgentsPage() {
           </div>
           <Select label="Chat visibility" value={scopeEdit} onChange={(e) => setScopeEdit(e.target.value)}
             options={[{ value: 'all', label: 'All chats' }, { value: 'assigned', label: 'Only chats assigned to this agent' }]} />
+          <Select label="Staff role" value={staffEdit} onChange={(e) => setStaffEdit(e.target.value)}
+            options={[
+              { value: '', label: 'Standard agent' },
+              { value: 'doctor', label: 'Doctor' },
+              { value: 'receptionist', label: 'Receptionist' },
+              { value: 'teacher', label: 'Teacher' },
+            ]} />
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" className={secondaryBtn} onClick={() => setPermAgent(null)}>Cancel</button>
             <button type="button" className={primaryBtn} onClick={async () => {
               if (!permAgent) return;
               try {
-                await teamApi.updateAgent(permAgent._id, { permissions: permEdit, allowedChannels: chanEdit, inboxScope: scopeEdit });
+                await teamApi.updateAgent(permAgent._id, { permissions: permEdit, allowedChannels: chanEdit, inboxScope: scopeEdit, staffType: staffEdit });
                 toast.success('Permissions updated — the agent will see the changes on next login or page refresh');
                 setPermAgent(null);
                 teamApi.listAgents().then(r => setAgents(r.data.data || []));

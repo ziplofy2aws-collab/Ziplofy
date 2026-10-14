@@ -10,7 +10,7 @@ import {
   Receipt, Settings, Kanban, CalendarCheck, ChevronDown, ChevronUp,
   Menu, X, LogOut, Database, FileDown, MessageCircle, ImageIcon, Wrench, BookOpen,
   Megaphone, Wallet, Palette, Brain, Plug, Sparkles, PiggyBank, Shield,
-  Puzzle, LifeBuoy, QrCode, History, PhoneCall, Paintbrush, Store, List, Scale,
+  Puzzle, LifeBuoy, QrCode, History, PhoneCall,   Paintbrush, Store, List, Scale, Stethoscope, ClipboardList, Pill, GraduationCap, LayoutGrid,
 } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebook, FaTelegram, FaEnvelope } from 'react-icons/fa';
 import { useAuthStore } from '@/stores/authStore';
@@ -120,6 +120,31 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: 'Clinic',
+    icon: <Stethoscope className="w-5 h-5" />,
+    children: [
+      { label: 'OPD Queue', href: '/client/clinic/queue', icon: <ClipboardList className="w-4 h-4" /> },
+      { label: 'Consult', href: '/client/clinic/consult', icon: <Pill className="w-4 h-4" /> },
+      { label: 'Doctors', href: '/client/clinic/doctors', icon: <Stethoscope className="w-4 h-4" /> },
+      { label: 'Patients', href: '/client/clinic/patients', icon: <Users className="w-4 h-4" /> },
+      { label: 'Calendar', href: '/client/clinic/calendar', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Clinic Settings', href: '/client/clinic/settings', icon: <Settings className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Edtech',
+    icon: <GraduationCap className="w-5 h-5" />,
+    children: [
+      { label: 'Institute', href: '/client/edtech/overview', icon: <LayoutDashboard className="w-4 h-4" /> },
+      { label: 'Courses', href: '/client/edtech/courses', icon: <BookOpen className="w-4 h-4" /> },
+      { label: 'Batches', href: '/client/edtech/batches', icon: <Layers className="w-4 h-4" /> },
+      { label: 'Students', href: '/client/edtech/students', icon: <Users className="w-4 h-4" /> },
+      { label: 'Teachers', href: '/client/edtech/teachers', icon: <GraduationCap className="w-4 h-4" /> },
+      { label: 'Attendance', href: '/client/edtech/attendance', icon: <ClipboardList className="w-4 h-4" /> },
+      { label: 'Edtech Settings', href: '/client/edtech/settings', icon: <Settings className="w-4 h-4" /> },
+    ],
+  },
+  {
     label: 'Leads & Commerce',
     icon: <ShoppingBag className="w-5 h-5" />,
     children: [
@@ -180,6 +205,7 @@ const navItems: NavItem[] = [
   { label: 'CTWA Ads', icon: <Megaphone className="w-5 h-5" />, href: '/client/ctwa-ads' },
   { label: 'Instagram Auto DM', icon: <FaInstagram className="w-5 h-5 text-pink-600" />, href: '/client/instagram-auto-dm' },
   { label: 'API & Developers', icon: <Plug className="w-5 h-5" />, href: '/client/api-docs' },
+  { label: 'Choose your services', icon: <LayoutGrid className="w-5 h-5" />, href: '/client/choose-services' },
   { label: 'Support', icon: <LifeBuoy className="w-5 h-5" />, href: '/client/support' },
   { label: 'User Guide', icon: <BookOpen className="w-5 h-5" />, href: '/client/user-guide' },
 ];
@@ -206,6 +232,12 @@ const ADMIN_FEATURE_MAP: Record<string, string> = {
   '/client/predefined-actions': 'predefinedActions',
   '/client/response-resources': 'responseResources',
   '/client/online-store/media-library': 'mediaLibrary',
+  '/client/online-store': 'onlineStore',
+  '/client/themes': 'onlineStore',
+  '/client/online-store/blogs': 'onlineStore',
+  '/client/online-store/pages': 'onlineStore',
+  '/client/online-store/menus': 'onlineStore',
+  '/client/online-store/policies': 'onlineStore',
   '/client/media-library': 'mediaLibrary',
   '/client/instagram-auto-dm': 'igAutoDm',
   '/client/chat-appearance': 'chatAppearance',
@@ -221,6 +253,20 @@ const ADMIN_FEATURE_MAP: Record<string, string> = {
   '/client/quick-replies': 'quickReplies',
   '/client/keywords': 'keywords',
   '/client/appointments': 'appointments',
+  '/client/clinic/queue': 'clinic',
+  '/client/clinic/consult': 'clinic',
+  '/client/clinic/doctors': 'clinic',
+  '/client/clinic/patients': 'clinic',
+  '/client/clinic/calendar': 'clinic',
+  '/client/clinic/settings': 'clinic',
+  '/client/edtech': 'edtech',
+  '/client/edtech/overview': 'edtech',
+  '/client/edtech/courses': 'edtech',
+  '/client/edtech/batches': 'edtech',
+  '/client/edtech/students': 'edtech',
+  '/client/edtech/teachers': 'edtech',
+  '/client/edtech/attendance': 'edtech',
+  '/client/edtech/settings': 'edtech',
   '/client/events': 'events',
   '/client/leads': 'leads',
   '/client/forms': 'forms',
@@ -244,6 +290,28 @@ const ADMIN_FEATURE_MAP: Record<string, string> = {
   '/client/api-docs': 'apiAccess',
 };
 
+// Gateway onboarding module id for each sidebar section. Sections not listed stay visible.
+const SECTION_MODULE: Record<string, string> = {
+  Analytics: 'analytics',
+  Inbox: 'inbox',
+  Campaigns: 'campaigns',
+  'Save Money': 'saveMoney',
+  Contacts: 'contacts',
+  'Lead CRM': 'leadCrm',
+  'Pipeline Board': 'pipeline',
+  Automation: 'automation',
+  Clinic: 'clinic',
+  Edtech: 'edtech',
+  'Leads & Commerce': 'commerce',
+  'Online Store': 'websiteBuilder',
+  Channels: 'channels',
+  Settings: 'settings',
+  'Subscription & Plans': 'billing',
+  'CTWA Ads': 'ctwaAds',
+  'Instagram Auto DM': 'igAutoDm',
+  'API & Developers': 'apiAccess',
+};
+
 // Section label -> permission module key (granular agent permissions)
 export const MODULE_KEY_MAP: Record<string, string> = {
   'Dashboard': 'dashboard',
@@ -257,6 +325,8 @@ export const MODULE_KEY_MAP: Record<string, string> = {
   'Campaigns': 'campaigns',
   'Save Money': 'campaigns',
   'Automation': 'automation',
+  'Clinic': 'clinic',
+  'Edtech': 'edtech',
   'Leads & Commerce': 'commerce',
   'Channels': 'channels',
   'Settings': 'settings',
@@ -276,6 +346,16 @@ export const PERMISSION_TREE = navItems
     moduleKey: MODULE_KEY_MAP[s.label],
     children: (s.children || []).map(c => ({ label: c.label, href: c.href })),
   }));
+
+const ALWAYS_ON_SECTIONS = new Set([
+  'Dashboard',
+  'Online Store',
+  'Settings',
+  'Subscription & Plans',
+  'Choose your services',
+  'Support',
+  'User Guide',
+]);
 
 export default function ClientSidebar() {
   const pathname = usePathname();
@@ -331,13 +411,26 @@ export default function ClientSidebar() {
     return (section.children || []).length > 0;
   }), [features]);
 
+  const selectedModules = (user as unknown as { featureOverrides?: { selectedModules?: string[] } })?.featureOverrides?.selectedModules;
+  const moduleNav = useMemo(() => {
+    if (!Array.isArray(selectedModules)) return unlockedNav;
+    return unlockedNav.filter((section) => {
+      if (ALWAYS_ON_SECTIONS.has(section.label)) return true;
+      if (section.label === 'Inbox' && selectedModules.includes('whatsapp')) return true;
+      if (section.label === 'Channels' && selectedModules.includes('whatsapp')) return true;
+      const moduleId = SECTION_MODULE[section.label];
+      if (!moduleId) return true;
+      return selectedModules.includes(moduleId);
+    });
+  }, [unlockedNav, selectedModules]);
+
   // Granular agent permissions: when an agent has module permissions set,
   // only the allowed modules are shown
   const perms = (user as unknown as { permissions?: string[] })?.permissions || [];
   const allowedCh = (user as unknown as { allowedChannels?: string[] })?.allowedChannels || [];
   const filteredNav = useMemo(() => {
     const permNav = (user?.role === 'agent' && perms.length > 0)
-      ? unlockedNav
+      ? moduleNav
           .filter(section => {
             const key = MODULE_KEY_MAP[section.label];
             if (!key) return true;
@@ -349,17 +442,55 @@ export default function ClientSidebar() {
             if (!key || perms.includes(key) || !section.children) return section;
             return { ...section, children: section.children.filter(c => perms.includes(c.href)) };
           })
-      : unlockedNav;
+      : moduleNav;
 
-    if (!(user?.role === 'agent' && allowedCh.length > 0)) return permNav;
-    return permNav.map(section => section.label !== 'Inbox' ? section : {
-      ...section,
-      children: (section.children || []).filter(item => {
-        const m = item.href.match(/channel=([a-z_]+)/);
-        return !m || allowedCh.includes(m[1]);
-      }),
-    }).filter(section => section.href ? true : (section.children || []).length > 0);
-  }, [unlockedNav, user?.role, perms, allowedCh]);
+    let next = permNav;
+    if (user?.role === 'agent' && allowedCh.length > 0) {
+      next = permNav.map(section => section.label !== 'Inbox' ? section : {
+        ...section,
+        children: (section.children || []).filter(item => {
+          const m = item.href.match(/channel=([a-z_]+)/);
+          return !m || allowedCh.includes(m[1]);
+        }),
+      }).filter(section => section.href ? true : (section.children || []).length > 0);
+    }
+    const staffType = (user as unknown as { staffType?: string })?.staffType;
+    if (staffType === 'doctor') {
+      return next
+        .filter((section) => section.label === 'Clinic')
+        .map((section) => ({
+          ...section,
+          children: (section.children || []).filter((c) =>
+            !['/client/clinic/doctors', '/client/clinic/settings'].includes(c.href)
+          ),
+        }));
+    }
+    if (staffType === 'teacher') {
+      return next
+        .filter((section) => section.label === 'Edtech')
+        .map((section) => ({
+          ...section,
+          children: (section.children || []).filter((c) =>
+            !['/client/edtech/teachers', '/client/edtech/settings', '/client/edtech/courses'].includes(c.href)
+          ),
+        }));
+    }
+    if (staffType === 'receptionist') {
+      return next
+        .filter((section) => section.label === 'Clinic' || section.label === 'Contacts' || section.label === 'Automation')
+        .map((section) => {
+          if (section.label === 'Automation') {
+            return { ...section, children: (section.children || []).filter((c) => c.href === '/client/appointments') };
+          }
+          if (section.label === 'Clinic') {
+            return { ...section, children: (section.children || []).filter((c) => c.href !== '/client/clinic/settings') };
+          }
+          return section;
+        })
+        .filter((section) => section.href ? true : (section.children || []).length > 0);
+    }
+    return next;
+  }, [moduleNav, user?.role, perms, allowedCh, user]);
 
   // Stable key so we only expand when the active section actually changes —
   // previously a fresh array every render caused setState → re-render forever

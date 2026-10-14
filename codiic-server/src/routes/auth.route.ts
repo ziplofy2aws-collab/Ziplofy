@@ -12,6 +12,7 @@ import {
 } from "../controllers/auth.controller";
 import { protect } from "../middlewares/auth.middleware";
 import { googleAuth, login, register, saveOnboarding } from "../controllers/codiic-auth.controller";
+import { exchangeGatewaySso } from "../controllers/gateway-sso.controller";
 
 export const authRouter = Router();
 
@@ -19,6 +20,7 @@ export const authRouter = Router();
 authRouter.post("/register", register);
 authRouter.post("/login", login);
 authRouter.post("/google", googleAuth);
+authRouter.post("/sso/exchange", exchangeGatewaySso);
 authRouter.put("/onboarding", protect, saveOnboarding);
 
 authRouter.get("/me", protect, getMe);

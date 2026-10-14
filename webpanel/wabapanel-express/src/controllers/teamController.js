@@ -76,7 +76,7 @@ const listAgents = async (req, res) => {
       }
       for (const c of candidateIds) if (!linkedSet.has(String(c))) ids.add(String(c));
     }
-    const users = await User.find({ _id: { $in: Array.from(ids) } }).select('name email avatar role permissions allowedChannels inboxScope');
+    const users = await User.find({ _id: { $in: Array.from(ids) } }).select('name email avatar role permissions allowedChannels inboxScope staffType');
     res.json({ success: true, data: users });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -87,7 +87,13 @@ const addAgent = async (req, res) => {
   try {
     const agentMsg = await checkPlanLimit(req, 'agents', 'User', { role: { $in: ['agent', 'user'] }, status: 'active' });
     if (agentMsg) return res.status(403).json({ success: false, message: agentMsg });
-    const { userId, teamId, name, email, password, role, permissions, allowedChannels, inboxScope } = req.body;
+    const { userId, teamId, name, email, password, role, permissions, allowedChannels, inboxScope, staffType } = req.body;
+
+    const resolvedStaff = staffType === 'doctor' || staffType === 'receptionist' || staffType === 'teacher' ? staffType : '';
+    let resolvedPerms = Array.isArray(permissions) ? permissions : [];
+    if (resolvedStaff === 'doctor' && resolvedPerms.length === 0) resolvedPerms = ['clinic'];
+    if (resolvedStaff === 'receptionist' && resolvedPerms.length === 0) resolvedPerms = ['clinic', 'contacts', 'automation'];
+    if (resolvedStaff === 'teacher' && resolvedPerms.length === 0) resolvedPerms = ['edtech'];
 
     // Create a new agent user when name/email/password provided
     if (!userId && email && password) {
@@ -97,9 +103,10 @@ const addAgent = async (req, res) => {
         name, email: email.toLowerCase(), password,
         role: 'agent', // vendors can only create agents; platform admin role is never assignable here
         status: 'active',
-        permissions: Array.isArray(permissions) ? permissions : [],
+        permissions: resolvedPerms,
         allowedChannels: Array.isArray(allowedChannels) ? allowedChannels : [],
         inboxScope: inboxScope === 'assigned' ? 'assigned' : 'all',
+        staffType: resolvedStaff,
         currentWorkspace: req.workspace._id,
       });
       // Add the agent as a workspace member so they log into this vendor's
@@ -113,7 +120,7 @@ const addAgent = async (req, res) => {
         const t = await Team.findOne({ _id: teamId, workspace: req.workspace._id });
         if (t && !t.members.includes(user._id)) { t.members.push(user._id); await t.save(); }
       }
-      return res.status(201).json({ success: true, data: { _id: user._id, name: user.name, email: user.email, role: user.role } });
+      return res.status(201).json({ success: true, data: { _id: user._id, name: user.name, email: user.email, role: user.role, staffType: user.staffType } });
     }
 
     const team = await Team.findOne({ _id: teamId || req.params.id, workspace: req.workspace._id });
@@ -289,15 +296,16 @@ module.exports = {
 // @PUT /api/teams/agents/:id — update an agent's role and module permissions
 async function updateAgent(req, res) {
   try {
-    const { role, permissions, allowedChannels, inboxScope } = req.body;
+    const { role, permissions, allowedChannels, inboxScope, staffType } = req.body;
     const update = {};
     if (Array.isArray(permissions)) update.permissions = permissions;
     if (Array.isArray(allowedChannels)) update.allowedChannels = allowedChannels;
     if (inboxScope === 'all' || inboxScope === 'assigned') update.inboxScope = inboxScope;
+    if (staffType === 'doctor' || staffType === 'receptionist' || staffType === 'teacher' || staffType === '') update.staffType = staffType;
     const user = await User.findOneAndUpdate(
       { _id: req.params.id, role: { $in: ['agent', 'admin', 'user'] } },
       update, { new: true }
-    ).select('name email role permissions allowedChannels inboxScope');
+    ).select('name email role permissions allowedChannels inboxScope staffType');
     if (!user) return res.status(404).json({ success: false, message: 'Agent not found' });
     res.json({ success: true, data: user });
   } catch (error) {

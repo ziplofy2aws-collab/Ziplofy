@@ -51,7 +51,7 @@ axiosi.interceptors.response.use(
       // we are already on an auth/onboarding route.
       const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
       const isAuthOrOnboarding =
-        pathname === '/login' || pathname === '/register' || pathname.startsWith('/onboarding');
+        pathname === '/login' || pathname === '/register' || pathname === '/sso' || pathname.startsWith('/onboarding');
       if (typeof window !== 'undefined' && !isAuthOrOnboarding) {
         window.location.href = '/login';
       }

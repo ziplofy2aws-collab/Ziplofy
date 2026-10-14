@@ -28,7 +28,7 @@ api.interceptors.response.use(
   (res) => res,
   (error) => {
     const reqUrl = (error.config && error.config.url) || '';
-    const isAuthRequest = /\/auth\/(login|admin\/login|register|google)/.test(reqUrl);
+    const isAuthRequest = /\/auth\/(login|admin\/login|register|google|sso\/exchange)/.test(reqUrl);
     if (error.response?.status === 401 && !isAuthRequest) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
@@ -52,6 +52,9 @@ export const pushApi = {
 export const authApi = {
   login: (data: { email: string; password: string }) => api.post('/auth/login', data),
   googleLogin: (credential: string) => api.post('/auth/google', { credential }),
+  ssoExchange: (ticket: string) => api.post('/auth/sso/exchange', { ticket }),
+  modules: () => api.get('/auth/modules'),
+  updateModules: (selectedModules: string[]) => api.put('/auth/modules', { selectedModules }),
   googleConfig: () => api.get('/auth/google/config'),
   adminLogin: (data: { email: string; password: string }) => api.post('/auth/admin/login', data),
   register: (data: { name: string; email: string; password: string; phone?: string }) => api.post('/auth/register', data),
@@ -434,7 +437,86 @@ export const appointmentApi = {
   cancel: (id: string) => api.post(`/appointments/${id}/cancel`),
   getAvailability: () => api.get('/appointments/availability'),
   updateAvailability: (data: object) => api.put('/appointments/availability', data),
-  getSlots: (date: string) => api.get('/appointments/slots', { params: { date } }),
+  getSlots: (date: string, doctor?: string) => api.get('/appointments/slots', { params: { date, ...(doctor ? { doctor } : {}) } }),
+};
+
+export const clinicApi = {
+  me: () => api.get('/clinic/me'),
+  doctors: {
+    list: (params?: Record<string, unknown>) => api.get('/clinic/doctors', { params }),
+    get: (id: string) => api.get(`/clinic/doctors/${id}`),
+    create: (data: object) => api.post('/clinic/doctors', data),
+    update: (id: string, data: object) => api.put(`/clinic/doctors/${id}`, data),
+    delete: (id: string) => api.delete(`/clinic/doctors/${id}`),
+    getSchedule: (id: string) => api.get(`/clinic/doctors/${id}/schedule`),
+    updateSchedule: (id: string, data: object) => api.put(`/clinic/doctors/${id}/schedule`, data),
+  },
+  patients: {
+    list: (params?: Record<string, unknown>) => api.get('/clinic/patients', { params }),
+    get: (id: string) => api.get(`/clinic/patients/${id}`),
+    upsert: (id: string, data: object) => api.put(`/clinic/patients/${id}`, data),
+    create: (data: object) => api.post('/clinic/patients', data),
+    archive: (id: string) => api.delete(`/clinic/patients/${id}`),
+    export: (params?: Record<string, unknown>) => api.get('/clinic/patients/export', { params, responseType: 'blob' }),
+  },
+  queue: {
+    list: (params?: Record<string, unknown>) => api.get('/clinic/queue', { params }),
+    checkIn: (data: object) => api.post('/clinic/queue/check-in', data),
+    callNext: (data: object) => api.post('/clinic/queue/call-next', data),
+    call: (id: string) => api.post(`/clinic/queue/${id}/call`),
+    skip: (id: string) => api.post(`/clinic/queue/${id}/skip`),
+    complete: (id: string) => api.post(`/clinic/queue/${id}/complete`),
+  },
+  visits: {
+    list: (params?: Record<string, unknown>) => api.get('/clinic/visits', { params }),
+    get: (id: string) => api.get(`/clinic/visits/${id}`),
+    update: (id: string, data: object) => api.put(`/clinic/visits/${id}`, data),
+    saveRx: (id: string, data: object) => api.post(`/clinic/visits/${id}/prescription`, data),
+    sendRx: (id: string) => api.post(`/clinic/visits/${id}/prescription/send`),
+  },
+  settings: {
+    get: () => api.get('/clinic/settings'),
+    update: (data: object) => api.put('/clinic/settings', data),
+  },
+};
+
+export const edtechApi = {
+  me: () => api.get('/edtech/me'),
+  dashboard: () => api.get('/edtech/dashboard'),
+  teachers: {
+    list: () => api.get('/edtech/teachers'),
+    create: (data: object) => api.post('/edtech/teachers', data),
+    update: (id: string, data: object) => api.put(`/edtech/teachers/${id}`, data),
+  },
+  courses: {
+    list: () => api.get('/edtech/courses'),
+    create: (data: object) => api.post('/edtech/courses', data),
+    update: (id: string, data: object) => api.put(`/edtech/courses/${id}`, data),
+  },
+  batches: {
+    list: (params?: Record<string, unknown>) => api.get('/edtech/batches', { params }),
+    create: (data: object) => api.post('/edtech/batches', data),
+    update: (id: string, data: object) => api.put(`/edtech/batches/${id}`, data),
+    enroll: (id: string, contactId: string) => api.post(`/edtech/batches/${id}/enroll`, { contactId }),
+  },
+  students: {
+    list: (params?: Record<string, unknown>) => api.get('/edtech/students', { params }),
+    get: (id: string) => api.get(`/edtech/students/${id}`),
+    create: (data: object) => api.post('/edtech/students', data),
+    update: (id: string, data: object) => api.put(`/edtech/students/${id}`, data),
+    archive: (id: string) => api.delete(`/edtech/students/${id}`),
+  },
+  enrollments: {
+    update: (id: string, data: object) => api.put(`/edtech/enrollments/${id}`, data),
+  },
+  attendance: {
+    get: (params: Record<string, unknown>) => api.get('/edtech/attendance', { params }),
+    save: (data: object) => api.put('/edtech/attendance', data),
+  },
+  settings: {
+    get: () => api.get('/edtech/settings'),
+    update: (data: object) => api.put('/edtech/settings', data),
+  },
 };
 
 // Integrations
@@ -710,6 +792,21 @@ export const adminApi = {
   updateSubscription: (id: string, data: object) => api.put(`/admin/subscriptions/${id}`, data),
   getFeatureControls: () => api.get('/admin/feature-controls'),
   updateFeatureControls: (vendorId: string, features: Record<string, boolean>) => api.put(`/admin/feature-controls/${vendorId}`, { features }),
+  clinic: {
+    list: () => api.get('/admin/clinic'),
+    get: (vendorId: string, params?: Record<string, unknown>) => api.get(`/admin/clinic/${vendorId}`, { params }),
+    setFeature: (vendorId: string, enabled: boolean) => api.put(`/admin/clinic/${vendorId}/feature`, { enabled }),
+    getDoctor: (vendorId: string, id: string) => api.get(`/admin/clinic/${vendorId}/doctors/${id}`),
+    updateDoctor: (vendorId: string, id: string, data: object) => api.put(`/admin/clinic/${vendorId}/doctors/${id}`, data),
+    getPatient: (vendorId: string, contactId: string) => api.get(`/admin/clinic/${vendorId}/patients/${contactId}`),
+    updatePatient: (vendorId: string, contactId: string, data: object) => api.put(`/admin/clinic/${vendorId}/patients/${contactId}`, data),
+  },
+  edtech: {
+    list: () => api.get('/admin/edtech'),
+    get: (vendorId: string) => api.get(`/admin/edtech/${vendorId}`),
+    setFeature: (vendorId: string, enabled: boolean) => api.put(`/admin/edtech/${vendorId}/feature`, { enabled }),
+    updateTeacher: (vendorId: string, id: string, data: object) => api.put(`/admin/edtech/${vendorId}/teachers/${id}`, data),
+  },
   getVendorAiAssignments: () => api.get('/admin/vendor-ai'),
   updateVendorAiAssignment: (vendorId: string, data: object) => api.put(`/admin/vendor-ai/${vendorId}`, data),
   pushKnowledge: (data: { vendorIds: string[]; articles: { title: string; content: string; category?: string }[] }) => api.post('/admin/push-knowledge', data),

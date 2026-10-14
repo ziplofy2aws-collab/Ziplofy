@@ -3,6 +3,41 @@ const Appointment = require('../models/Appointment');
 
 const toMin = (hhmm) => { const [h, m] = String(hhmm || '0:0').split(':').map(Number); return (h || 0) * 60 + (m || 0); };
 const toHHMM = (min) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+const mongoose = require('mongoose');
+
+async function resolveDoctorSchedule(workspaceId, settings, doctorId) {
+  if (!doctorId || !mongoose.Types.ObjectId.isValid(String(doctorId))) {
+    return {
+      weekly: settings.weekly,
+      overrides: settings.overrides,
+      slotDuration: settings.slotDuration,
+      maxPerSlot: settings.maxPerSlot,
+      doctor: null,
+    };
+  }
+  const ClinicDoctor = require('../models/ClinicDoctor');
+  const ClinicDoctorSchedule = require('../models/ClinicDoctorSchedule');
+  const doctor = await ClinicDoctor.findOne({ _id: doctorId, workspace: workspaceId, active: { $ne: false } });
+  if (!doctor) return null;
+  const sched = await ClinicDoctorSchedule.findOne({ workspace: workspaceId, doctor: doctorId });
+  return {
+    weekly: (sched && sched.weekly && sched.weekly.length) ? sched.weekly : settings.weekly,
+    overrides: (sched && sched.overrides) || [],
+    slotDuration: doctor.consultationMins || settings.slotDuration,
+    maxPerSlot: 1,
+    doctor,
+  };
+}
+
+function publicAvailabilityMeta(schedule) {
+  const weekly = schedule.weekly || [];
+  const days = weekly.map((w) => Array.isArray(w) && w.length > 0);
+  const overrides = {};
+  for (const o of (schedule.overrides || [])) {
+    overrides[o.date] = !o.unavailable && (o.windows || []).length > 0;
+  }
+  return { days, overrides, slotDuration: schedule.slotDuration };
+}
 
 // Get (or lazily create) the workspace booking settings.
 async function getSettings(workspaceId) {
@@ -25,7 +60,6 @@ function windowsForDate(settings, dateStr) {
   return (settings.weekly && settings.weekly[weekday]) || [];
 }
 
-// Build all candidate slots from a set of {start,end} windows.
 function slotsFromWindows(windows, slotDuration) {
   const dur = Math.max(5, slotDuration || 30);
   const out = [];
@@ -40,29 +74,35 @@ function slotsFromWindows(windows, slotDuration) {
   return out;
 }
 
-// Back-compat: candidate slots for a weekday from the weekly windows.
 function candidateSlots(settings, weekday) {
   return slotsFromWindows((settings.weekly && settings.weekly[weekday]) || [], settings.slotDuration);
 }
 
 // Available slots for a date string 'YYYY-MM-DD', subtracting booked capacity.
-async function slotsForDate(workspaceId, settings, dateStr) {
+// Optional doctorId scopes windows + conflicts to that doctor's calendar.
+async function slotsForDate(workspaceId, settings, dateStr, doctorId) {
+  const resolved = await resolveDoctorSchedule(workspaceId, settings, doctorId);
+  if (!resolved) return [];
   const d = new Date(dateStr + 'T00:00:00');
   if (isNaN(d.getTime())) return [];
-  const cands = slotsFromWindows(windowsForDate(settings, dateStr), settings.slotDuration);
+  const cands = slotsFromWindows(windowsForDate(resolved, dateStr), resolved.slotDuration);
   if (!cands.length) return [];
 
   const dayStart = new Date(dateStr + 'T00:00:00');
   const dayEnd = new Date(dateStr + 'T23:59:59');
-  const booked = await Appointment.find({
+  const bookedQuery = {
     workspace: workspaceId,
     date: { $gte: dayStart, $lte: dayEnd },
     status: { $nin: ['cancelled'] },
-  }).select('startTime').lean();
+  };
+  if (doctorId && mongoose.Types.ObjectId.isValid(String(doctorId))) {
+    bookedQuery.doctor = doctorId;
+  }
+  const booked = await Appointment.find(bookedQuery).select('startTime').lean();
   const counts = {};
   for (const b of booked) counts[b.startTime] = (counts[b.startTime] || 0) + 1;
 
-  const cap = Math.max(1, settings.maxPerSlot || 1);
+  const cap = Math.max(1, resolved.maxPerSlot || 1);
   const now = new Date();
   return cands.map((c) => {
     const used = counts[c.start] || 0;
@@ -73,8 +113,8 @@ async function slotsForDate(workspaceId, settings, dateStr) {
 }
 
 // Verify a specific slot is bookable (weekday window + capacity). Returns {ok, end, message}.
-async function verifySlot(workspaceId, settings, dateStr, startTime) {
-  const slots = await slotsForDate(workspaceId, settings, dateStr);
+async function verifySlot(workspaceId, settings, dateStr, startTime, doctorId) {
+  const slots = await slotsForDate(workspaceId, settings, dateStr, doctorId);
   const slot = slots.find((s) => s.start === startTime);
   if (!slot) return { ok: false, message: 'Selected time is not an available slot.' };
   if (!slot.available) return { ok: false, message: 'This slot is no longer available.' };
@@ -144,4 +184,4 @@ async function notifyBooking(settings, appt) {
   }
 }
 
-module.exports = { getSettings, slotsForDate, verifySlot, candidateSlots, slotsFromWindows, windowsForDate, genSlug, notifyBooking };
+module.exports = { getSettings, slotsForDate, verifySlot, candidateSlots, slotsFromWindows, windowsForDate, genSlug, notifyBooking, resolveDoctorSchedule, publicAvailabilityMeta };

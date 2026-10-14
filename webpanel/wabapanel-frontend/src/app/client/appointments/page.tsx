@@ -1,7 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit, Calendar, CalendarCheck, Clock, User, Phone, MapPin, CheckCircle, XCircle, AlertTriangle, MessageCircle, RefreshCw, Ban, List, ChevronLeft, ChevronRight, Settings, Copy, Check } from 'lucide-react';
-import { appointmentApi } from '@/lib/api';
+import { appointmentApi, clinicApi } from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
 import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
 import toast from 'react-hot-toast';
 
@@ -25,6 +26,7 @@ interface Appointment {
   type: string;
   location: string;
   createdAt: string;
+  doctor?: { _id: string; name?: string };
 }
 
 interface Win { start: string; end: string; }
@@ -71,7 +73,7 @@ export default function AppointmentsPage() {
   const [form, setForm] = useState({
     title: '', contactName: '', contactPhone: '', contactEmail: '',
     date: '', startTime: '10:00', endTime: '10:30', duration: 30,
-    status: 'scheduled', notes: '', type: 'general', location: '',
+    status: 'scheduled', notes: '', type: 'general', location: '', doctor: '',
   });
   const [showReschedule, setShowReschedule] = useState<string | null>(null);
   const [rescheduleForm, setRescheduleForm] = useState({ date: '', startTime: '10:00', endTime: '10:30' });
@@ -98,6 +100,9 @@ export default function AppointmentsPage() {
   // Slot picker (New Appointment)
   const [slots, setSlots] = useState<Slot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
+  const clinicOn = useAuthStore((s) => s.features.clinic === true);
+  const [doctors, setDoctors] = useState<Array<{ _id: string; name: string }>>([]);
+  const [doctorFilter, setDoctorFilter] = useState('');
 
   const dstr = (d: Date) => d.toISOString().split('T')[0];
   const applyQuick = (key: string) => {
@@ -149,19 +154,25 @@ export default function AppointmentsPage() {
     appointmentApi.list({
       limit: 200,
       ...(filter === 'archived' ? { archived: 'true' } : filter !== 'all' ? { status: filter } : {}),
+      ...(doctorFilter ? { doctor: doctorFilter } : {}),
     })
       .then(r => setAppointments(r.data.data || []))
       .catch(() => {})
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchAppointments(); }, [filter]);
+  useEffect(() => { fetchAppointments(); }, [filter, doctorFilter]);
+
+  useEffect(() => {
+    if (!clinicOn) return;
+    clinicApi.doctors.list({ active: 'true' }).then((r) => setDoctors(r.data.data || [])).catch(() => {});
+  }, [clinicOn]);
 
   const resetForm = () => {
     setForm({
       title: '', contactName: '', contactPhone: '', contactEmail: '',
       date: '', startTime: '10:00', endTime: '10:30', duration: 30,
-      status: 'scheduled', notes: '', type: 'general', location: '',
+      status: 'scheduled', notes: '', type: 'general', location: '', doctor: '',
     });
     setEditItem(null);
   };
@@ -267,6 +278,7 @@ export default function AppointmentsPage() {
       notes: apt.notes || '',
       type: apt.type || 'general',
       location: apt.location || '',
+      doctor: apt.doctor?._id || '',
     });
     setShowModal(true);
   };
@@ -385,12 +397,12 @@ export default function AppointmentsPage() {
     if (!showModal || editItem || !form.date) { setSlots([]); return; }
     let active = true;
     setSlotsLoading(true);
-    appointmentApi.getSlots(form.date)
+    appointmentApi.getSlots(form.date, form.doctor || undefined)
       .then(r => { if (active) setSlots(r.data.data?.slots || []); })
       .catch(() => { if (active) setSlots([]); })
       .finally(() => { if (active) setSlotsLoading(false); });
     return () => { active = false; };
-  }, [form.date, showModal, editItem]);
+  }, [form.date, form.doctor, showModal, editItem]);
 
   const pickSlot = (s: Slot) => setForm(f => ({ ...f, startTime: s.start, endTime: s.end }));
 
@@ -415,6 +427,12 @@ export default function AppointmentsPage() {
           <button type="button" onClick={openAvailability} className={secondaryBtn}>
             <Settings className="h-4 w-4" /> Availability
           </button>
+          {clinicOn && (
+            <select className="rounded-lg border border-admin-border bg-white px-2.5 py-1.5 text-[13px]" value={doctorFilter} onChange={(e) => setDoctorFilter(e.target.value)}>
+              <option value="">All doctors</option>
+              {doctors.map((d) => <option key={d._id} value={d._id}>Dr. {d.name}</option>)}
+            </select>
+          )}
           <button type="button" onClick={() => { resetForm(); setShowModal(true); }} className={primaryBtn}>
             <Plus className="h-4 w-4" /> New Appointment
           </button>
@@ -659,6 +677,15 @@ export default function AppointmentsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                 <input type="text" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-admin-text/20" placeholder="Meeting title" />
               </div>
+              {clinicOn && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Doctor</label>
+                  <select value={form.doctor} onChange={(e) => setForm({ ...form, doctor: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-sm">
+                    <option value="">Unassigned</option>
+                    {doctors.map((d) => <option key={d._id} value={d._id}>Dr. {d.name}</option>)}
+                  </select>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>

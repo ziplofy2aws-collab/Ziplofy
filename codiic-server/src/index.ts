@@ -12,6 +12,7 @@ import { domainRouter } from './routes/domain.route';
 import amountOffProductsDiscountRouter from './routes/amount-off-products-discount.route';
 import { assignedSupportDeveloperRouter } from './routes/assigned-support-developer.route';
 import { authRouter } from './routes/auth.route';
+import { provisionMerchant } from './controllers/gateway-sso.controller';
 import awsRouter from './routes/aws.route';
 import { blogRouter } from './routes/blog.route';
 import { blogPostRouter } from './routes/blog-post.route';
@@ -198,6 +199,7 @@ app.use(express.urlencoded({ extended: true }));
 // route middlewares
 app.use("/api/stores", storeRouter);
 app.use("/api/auth", authRouter);
+app.post("/api/internal/gateway/provision-merchant", provisionMerchant);
 app.use("/api/aws", awsRouter);
 app.use("/api/user", userRouter);
 app.use("/api/themes", themeRouter);

@@ -8,6 +8,7 @@ import { Role } from "../models/role.model";
 import { LoginOtp } from "../models/login-otp.model";
 import { EditVerificationOtp } from "../models/edit-verification-otp.model";
 import { PendingAdminUser } from "../models/pending-admin-user.model";
+import { CodiicUser } from "../models/codiic-user.model";
 import { sendEmail } from "../utils/email.utils";
 
 
@@ -37,7 +38,16 @@ export const getMe = asyncErrorHandler(async (req: Request, res: Response) => {
     };
     console.log("✅ User role with permissions attached:", roleName, "permissions count:", role.permissions?.length || 0);
   }
-  
+
+  try {
+    const platform = await CodiicUser.findById(req.user?.id).select("onboardingStatus");
+    if (platform?.onboardingStatus) {
+      (req.user as any).onboardingStatus = platform.onboardingStatus;
+    }
+  } catch {
+    /* ignore */
+  }
+
   res.status(200).json({
     success: true,
     data: req.user

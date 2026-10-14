@@ -6,6 +6,7 @@ const FEATURE_CATALOG = [
   { key: 'analytics', label: 'Analytics', path: '/client/analytics', group: 'Main' },
   { key: 'crm', label: 'Pipeline Board / CRM', path: '/client/pipelines', group: 'Main' },
   { key: 'mediaLibrary', label: 'Media Library', path: '/client/online-store/media-library', group: 'Main' },
+  { key: 'onlineStore', label: 'Online Store / Website Builder', path: '/client/online-store', group: 'Main' },
   { key: 'ctwaAds', label: 'CTWA Ads', path: '/client/ctwa-ads', group: 'Main' },
   { key: 'apiAccess', label: 'API & Developers', path: '/client/api-docs', group: 'Main' },
   // Inbox
@@ -38,6 +39,8 @@ const FEATURE_CATALOG = [
   { key: 'quickReplies', label: 'Quick Replies', path: '/client/quick-replies', group: 'Automation' },
   { key: 'keywords', label: 'Keyword Triggers', path: '/client/keywords', group: 'Automation' },
   { key: 'appointments', label: 'Appointments', path: '/client/appointments', group: 'Automation' },
+  { key: 'clinic', label: 'Clinic / Doctors', path: '/client/clinic/queue', group: 'Clinic', optIn: true },
+  { key: 'edtech', label: 'Edtech / Institute', path: '/client/edtech', group: 'Edtech', optIn: true },
   { key: 'tickets', label: 'Tickets', path: '/client/tickets', group: 'Automation' },
   { key: 'predefinedActions', label: 'Predefined Actions', path: '/client/predefined-actions', group: 'Automation' },
   // AI
@@ -61,6 +64,8 @@ const FEATURE_CATALOG = [
 const FEATURE_KEYS = FEATURE_CATALOG.map((f) => f.key);
 // Add-on keys are opt-in for clients; panel must also enable them in SystemSettings.addons.
 const ADDON_KEYS = new Set(FEATURE_CATALOG.filter((f) => f.addon).map((f) => f.key));
+// Industry / module flags that stay off until explicitly enabled (healthcare → clinic, education → edtech).
+const OPT_IN_KEYS = new Set(FEATURE_CATALOG.filter((f) => f.optIn).map((f) => f.key));
 
 // Defaults that previously came from the removed external store when locks were empty.
 // smartBroadcast was unlocked by default; igAutoDm stays off until an admin enables it.
@@ -95,6 +100,7 @@ const getOwnerFeatures = async (ownerId) => {
   const map = {};
   for (const key of FEATURE_KEYS) {
     if (ADDON_KEYS.has(key)) map[key] = panelAddons[key] === true && overrides[key] === true;
+    else if (OPT_IN_KEYS.has(key)) map[key] = overrides[key] === true;
     else map[key] = overrides[key] !== false;
   }
   return map;
@@ -115,6 +121,9 @@ const requireFeature = (key) => async (req, res, next) => {
         return res.status(403).json({ success: false, message: 'This add-on is not enabled for your account' });
       }
       return next();
+    }
+    if (OPT_IN_KEYS.has(key) && owner?.featureOverrides?.[key] !== true) {
+      return res.status(403).json({ success: false, message: 'This feature is not enabled for your account' });
     }
     if (owner?.featureOverrides?.[key] === false) {
       return res.status(403).json({ success: false, message: 'This feature has been disabled by the administrator' });
@@ -149,4 +158,4 @@ const grandfatherSmartBroadcast = async () => {
   console.log('[FeatureGate] Smart Broadcast grandfathered for existing accounts:', r.modifiedCount);
 };
 
-module.exports = { FEATURE_CATALOG, FEATURE_KEYS, ADDON_KEYS, getOwnerFeatures, getPanelAddons, requireFeature, grandfatherSmartBroadcast };
+module.exports = { FEATURE_CATALOG, FEATURE_KEYS, ADDON_KEYS, OPT_IN_KEYS, getOwnerFeatures, getPanelAddons, requireFeature, grandfatherSmartBroadcast };

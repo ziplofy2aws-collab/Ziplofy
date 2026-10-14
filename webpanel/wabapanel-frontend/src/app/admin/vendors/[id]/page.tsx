@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, MessageSquare, Users, Megaphone, MessageCircle, Wallet, CreditCard, LogIn, Mail, Calendar } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Users, Megaphone, MessageCircle, Wallet, CreditCard, LogIn, Mail, Calendar, Stethoscope, GraduationCap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -14,8 +14,11 @@ interface VendorDetail {
     companyName: string; website: string; gstNumber: string; address: string;
     plan?: { name: string; price: number; interval: string }; planExpiry?: string;
     walletBalance: number; createdAt: string; lastLogin?: string;
+    featureOverrides?: Record<string, boolean>;
   };
   stats: { totalMessages: number; messages30d: number; messages7d: number; totalContacts: number; totalCampaigns: number; totalConversations: number };
+  clinic?: { doctors: number; patients: number; visits: number } | null;
+  edtech?: { teachers: number; students: number; batches: number } | null;
   subscriptions: { _id: string; plan: { name: string; price: number; interval: string }; status: string; startDate: string; endDate: string | null }[];
   invoices: { _id: string; invoiceNumber: string; total: number; status: string; createdAt: string }[];
   walletTransactions: { _id: string; amount: number; type: string; description: string; createdAt: string }[];
@@ -49,7 +52,7 @@ export default function VendorDetailPage() {
   if (loading) return <div className="p-6 text-center text-gray-400">Loading...</div>;
   if (!data) return <div className="p-6 text-center text-gray-400">Vendor not found</div>;
 
-  const { vendor, stats } = data;
+  const { vendor, stats, clinic, edtech } = data;
 
   return (
     <div className="space-y-6">
@@ -88,6 +91,34 @@ export default function VendorDetailPage() {
           </Card>
         ))}
       </div>
+
+      {clinic && (
+        <Card className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold flex items-center gap-2"><Stethoscope className="w-4 h-4 text-emerald-600" /> Clinic</h3>
+            <Button size="sm" variant="outline" onClick={() => router.push(`/admin/clinic/${vendor._id}`)}>Manage</Button>
+          </div>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div><p className="text-2xl font-bold">{clinic.doctors}</p><p className="text-xs text-gray-500">Doctors</p></div>
+            <div><p className="text-2xl font-bold">{clinic.patients}</p><p className="text-xs text-gray-500">Patients</p></div>
+            <div><p className="text-2xl font-bold">{clinic.visits}</p><p className="text-xs text-gray-500">Visits</p></div>
+          </div>
+        </Card>
+      )}
+
+      {edtech && (
+        <Card className="p-5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold flex items-center gap-2"><GraduationCap className="w-4 h-4 text-emerald-600" /> Edtech</h3>
+            <Button size="sm" variant="outline" onClick={() => router.push(`/admin/edtech/${vendor._id}`)}>Manage</Button>
+          </div>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div><p className="text-2xl font-bold">{edtech.teachers}</p><p className="text-xs text-gray-500">Teachers</p></div>
+            <div><p className="text-2xl font-bold">{edtech.students}</p><p className="text-xs text-gray-500">Students</p></div>
+            <div><p className="text-2xl font-bold">{edtech.batches}</p><p className="text-xs text-gray-500">Batches</p></div>
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Subscriptions */}

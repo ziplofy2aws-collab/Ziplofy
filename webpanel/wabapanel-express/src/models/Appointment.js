@@ -15,6 +15,7 @@ const appointmentSchema = new mongoose.Schema({
   archived: { type: Boolean, default: false },
   notes: { type: String, default: '' },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'ClinicDoctor', default: null, index: true },
   reminderSent: { type: Boolean, default: false },
   reminder1hSent: { type: Boolean, default: false },
   reminder24hSent: { type: Boolean, default: false },

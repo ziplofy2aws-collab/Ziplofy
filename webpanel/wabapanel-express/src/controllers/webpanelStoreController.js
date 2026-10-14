@@ -183,6 +183,8 @@ const checkStoreSubdomain = async (req, res) => {
         status: store.status || 'active',
         storeCode: store.storeCode || null,
         appliedTheme: store.appliedTheme ? String(store.appliedTheme) : null,
+        industry: store.industry || '',
+        industryKind: store.industryKind || '',
       },
     });
   } catch (error) {

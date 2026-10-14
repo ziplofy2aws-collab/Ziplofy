@@ -41,12 +41,16 @@ async function createWebpanelStoreWithSubdomain({
   workspaceId = null,
   storeName,
   storeDescription,
+  industry = '',
+  industryKind = '',
 }) {
   const store = await WebpanelStore.create({
     userId,
     workspace: workspaceId || null,
     storeName: String(storeName).trim(),
     storeDescription: String(storeDescription).trim(),
+    industry: industry || '',
+    industryKind: industryKind || '',
   });
 
   let subdomainDoc = null;

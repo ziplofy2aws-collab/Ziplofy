@@ -1765,10 +1765,36 @@ const getVendorDetail = async (req, res) => {
     const subs = await Subscription.find({ vendor: vendor._id }).populate('plan', 'name price interval').sort('-createdAt').limit(5);
     const invoices = await Invoice.find({ vendor: vendor._id }).sort('-createdAt').limit(5);
     const walletTxns = await WalletTransaction.find({ user: vendor._id }).sort('-createdAt').limit(10);
+    let clinic = null;
+    if (vendor.featureOverrides?.clinic === true && wsIds.length) {
+      const ClinicDoctor = require('../models/ClinicDoctor');
+      const ClinicPatientProfile = require('../models/ClinicPatientProfile');
+      const ClinicVisit = require('../models/ClinicVisit');
+      const [doctors, patients, visits] = await Promise.all([
+        ClinicDoctor.countDocuments({ workspace: { $in: wsIds } }),
+        ClinicPatientProfile.countDocuments({ workspace: { $in: wsIds }, archived: { $ne: true } }),
+        ClinicVisit.countDocuments({ workspace: { $in: wsIds } }),
+      ]);
+      clinic = { doctors, patients, visits };
+    }
+    let edtech = null;
+    if (vendor.featureOverrides?.edtech === true && wsIds.length) {
+      const EdtechTeacher = require('../models/EdtechTeacher');
+      const EdtechStudentProfile = require('../models/EdtechStudentProfile');
+      const EdtechBatch = require('../models/EdtechBatch');
+      const [teachers, students, batches] = await Promise.all([
+        EdtechTeacher.countDocuments({ workspace: { $in: wsIds } }),
+        EdtechStudentProfile.countDocuments({ workspace: { $in: wsIds }, archived: { $ne: true } }),
+        EdtechBatch.countDocuments({ workspace: { $in: wsIds } }),
+      ]);
+      edtech = { teachers, students, batches };
+    }
     res.json({
       success: true, data: {
         vendor: vendor.toObject(),
         stats: { totalMessages, messages30d, messages7d, totalContacts, totalCampaigns, totalConversations },
+        clinic,
+        edtech,
         recentMessages, subscriptions: subs, invoices, walletTransactions: walletTxns,
       },
     });
@@ -2138,7 +2164,7 @@ const getFeatureControls = async (req, res) => {
 // @PUT /api/admin/feature-controls/:vendorId — body: { features: { key: bool } }
 const updateFeatureControls = async (req, res) => {
   try {
-    const { FEATURE_KEYS, ADDON_KEYS } = require('../middleware/featureGate');
+    const { FEATURE_KEYS, ADDON_KEYS, OPT_IN_KEYS } = require('../middleware/featureGate');
     const vendor = await User.findOne({ _id: req.params.vendorId, role: 'vendor' });
     if (!vendor) return res.status(404).json({ success: false, message: 'Vendor not found' });
     const incoming = req.body.features || {};
@@ -2146,11 +2172,12 @@ const updateFeatureControls = async (req, res) => {
     const changed = [];
     for (const key of FEATURE_KEYS) {
       if (typeof incoming[key] === 'boolean') {
-        // Add-ons are opt-in, so "on" has to be stored explicitly; base features default to on.
+        // Add-ons and industry modules (clinic) are opt-in, so "on" has to be stored explicitly.
         const isAddon = ADDON_KEYS.has(key);
-        const prev = isAddon ? overrides[key] === true : overrides[key] !== false;
+        const isOptIn = isAddon || OPT_IN_KEYS.has(key);
+        const prev = isOptIn ? overrides[key] === true : overrides[key] !== false;
         if (incoming[key]) {
-          if (isAddon) overrides[key] = true;
+          if (isOptIn) overrides[key] = true;
           else delete overrides[key];
         } else overrides[key] = false;
         if (prev !== incoming[key]) changed.push(`${key}=${incoming[key] ? 'on' : 'off'}`);

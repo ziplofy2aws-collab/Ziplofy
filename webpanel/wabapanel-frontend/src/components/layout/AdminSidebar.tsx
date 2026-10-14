@@ -9,7 +9,7 @@ import {
   FileText, Shield, Globe, Settings, Brain,
   Languages, DollarSign, Percent, Mail, ChevronDown, ChevronRight, Menu, X, LogOut,
   Store, Bell,
-  Search, PenSquare, Ticket, Megaphone, LifeBuoy, Activity, BookOpen, ToggleRight, Trash2,
+  Search, PenSquare, Ticket, Megaphone, LifeBuoy, Activity, BookOpen, ToggleRight, Trash2, Stethoscope, GraduationCap,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
 
@@ -29,6 +29,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, href: '/admin/dashboard' },
   { label: 'Vendors', icon: <Store className="w-5 h-5" />, href: '/admin/vendors' },
+  { label: 'Clinic', icon: <Stethoscope className="w-5 h-5" />, href: '/admin/clinic' },
+  { label: 'Edtech', icon: <GraduationCap className="w-5 h-5" />, href: '/admin/edtech' },
   { label: 'Feature Controls', icon: <ToggleRight className="w-5 h-5" />, href: '/admin/features' },
   { label: 'Data Cleanup', icon: <Trash2 className="w-5 h-5" />, href: '/admin/data-cleanup' },
   {

@@ -1,5 +1,11 @@
 // Sticky Navbar Behavior
 document.addEventListener('DOMContentLoaded', function() {
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        document.querySelectorAll('a[href^="https://accounts.codiic.com/login"]').forEach((anchor) => {
+            anchor.setAttribute('href', 'http://localhost:3010/login');
+        });
+    }
+
     const header = document.getElementById('main-header');
     let lastScroll = 0;
     
