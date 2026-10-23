@@ -13,7 +13,7 @@ import {
   Puzzle, LifeBuoy, QrCode, History, PhoneCall,   Paintbrush, Store, List, Scale, Stethoscope, ClipboardList, Pill, GraduationCap, LayoutGrid,
 } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebook, FaTelegram, FaEnvelope } from 'react-icons/fa';
-import { useAuthStore } from '@/stores/authStore';
+import { GATEWAY_LOGOUT_URL, useAuthStore } from '@/stores/authStore';
 import { displayPersonName } from '@/lib/brand';
 import api from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
@@ -702,7 +702,7 @@ export default function ClientSidebar() {
           </Link>
           <button
             type="button"
-            onClick={() => logout()}
+            onClick={() => logout(GATEWAY_LOGOUT_URL)}
             title="Logout"
             className="p-2 rounded-lg text-admin-text-subdued hover:bg-admin-fill hover:text-admin-text transition-colors shrink-0"
           >

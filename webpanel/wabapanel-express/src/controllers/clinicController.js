@@ -11,6 +11,14 @@ const ClinicQueueToken = require('../models/ClinicQueueToken');
 const ClinicSettings = require('../models/ClinicSettings');
 const { generatePrescriptionPdf } = require('../services/clinicRxPdf');
 const WhatsAppService = require('../services/whatsappService');
+const { logAction } = require('../services/auditService');
+
+function emitClinic(req, event, payload) {
+  try {
+    const io = req.app.get('io') || global.io;
+    if (io) io.to(`workspace:${req.workspace._id}`).emit(event, payload);
+  } catch { /* realtime is best-effort */ }
+}
 
 const todayStr = (d = new Date()) => {
   const x = new Date(d);
@@ -45,11 +53,22 @@ function pickMedFields(body) {
 
 async function assignUhid(workspaceId, medical) {
   if (medical.uhid) return medical;
-  const s = await getOrCreateSettings(workspaceId);
+  // Atomic counter increment — safe under concurrent registrations.
+  let s = await ClinicSettings.findOneAndUpdate(
+    { workspace: workspaceId },
+    { $inc: { nextUhidSeq: 1 } },
+    { new: true }
+  );
+  if (!s) {
+    await getOrCreateSettings(workspaceId);
+    s = await ClinicSettings.findOneAndUpdate(
+      { workspace: workspaceId },
+      { $inc: { nextUhidSeq: 1 } },
+      { new: true }
+    );
+  }
   const prefix = String(s.uhidPrefix || 'CLN').replace(/[^A-Za-z0-9-]/g, '').slice(0, 8) || 'CLN';
-  const seq = Math.max(1, Number(s.nextUhidSeq) || 1);
-  s.nextUhidSeq = seq + 1;
-  await s.save();
+  const seq = Math.max(1, Number(s.nextUhidSeq) - 1 || 1);
   medical.uhid = `${prefix}-${String(seq).padStart(4, '0')}`;
   await medical.save();
   return medical;
@@ -64,6 +83,11 @@ async function doctorContactIds(workspaceId, doctorId) {
 async function nextTokenNo(workspaceId, doctorId, date) {
   const last = await ClinicQueueToken.findOne({ workspace: workspaceId, doctor: doctorId, date }).sort('-tokenNo').select('tokenNo');
   return (last?.tokenNo || 0) + 1;
+}
+
+async function tokenPrefixFor(workspaceId) {
+  const s = await getOrCreateSettings(workspaceId);
+  return String(s.tokenPrefix || '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 6);
 }
 
 // ---------- Doctors ----------
@@ -90,7 +114,14 @@ const getDoctor = async (req, res) => {
       .populate('userId', 'name email staffType');
     if (!doctor) return res.status(404).json({ success: false, message: 'Doctor not found' });
     const schedule = await ClinicDoctorSchedule.findOne({ workspace: req.workspace._id, doctor: doctor._id });
-    res.json({ success: true, data: { ...doctor.toObject(), schedule } });
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const upcomingAppointments = await Appointment.find({
+      workspace: req.workspace._id, doctor: doctor._id, date: { $gte: today },
+      status: { $in: ['scheduled', 'confirmed', 'checked_in', 'in_consultation', 'rescheduled'] },
+    }).populate('contact', 'name phone').sort('date startTime').limit(20);
+    const recentVisits = await ClinicVisit.find({ workspace: req.workspace._id, doctor: doctor._id, status: 'done' })
+      .sort('-date -createdAt').limit(10).select('date patientName status diagnosis');
+    res.json({ success: true, data: { ...doctor.toObject(), schedule, upcomingAppointments, recentVisits } });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -127,11 +158,17 @@ const createDoctor = async (req, res) => {
       userId,
       name: body.name,
       specialty: body.specialty || '',
+      department: body.department || '',
       qualifications: body.qualifications || '',
+      registrationNo: body.registrationNo || '',
+      experience: body.experience || '',
       consultationMins: Math.max(5, Math.min(180, Number(body.consultationMins) || 15)),
+      consultationFee: Math.max(0, Number(body.consultationFee) || 0),
       room: body.room || '',
       photo: body.photo || '',
       bio: body.bio || '',
+      email: body.email || '',
+      phone: body.phone || '',
       active: body.active !== false,
     });
     await ClinicDoctorSchedule.create({ workspace: req.workspace._id, doctor: doctor._id });
@@ -151,10 +188,11 @@ const updateDoctor = async (req, res) => {
     if (req.user?.staffType === 'doctor') {
       return res.status(403).json({ success: false, message: 'Not allowed' });
     }
-    const allowed = ['name', 'specialty', 'qualifications', 'consultationMins', 'room', 'photo', 'bio', 'active', 'userId'];
+    const allowed = ['name', 'specialty', 'department', 'qualifications', 'registrationNo', 'experience', 'consultationMins', 'consultationFee', 'room', 'photo', 'bio', 'email', 'phone', 'active', 'userId'];
     const patch = {};
     for (const k of allowed) if (k in req.body) patch[k] = req.body[k];
     if (patch.consultationMins) patch.consultationMins = Math.max(5, Math.min(180, Number(patch.consultationMins) || 15));
+    if (patch.consultationFee != null) patch.consultationFee = Math.max(0, Number(patch.consultationFee) || 0);
     const doctor = await ClinicDoctor.findOneAndUpdate(
       { _id: req.params.id, workspace: req.workspace._id },
       patch,
@@ -172,10 +210,27 @@ const deleteDoctor = async (req, res) => {
     if (req.user?.staffType === 'doctor') {
       return res.status(403).json({ success: false, message: 'Not allowed' });
     }
-    const doctor = await ClinicDoctor.findOneAndDelete({ _id: req.params.id, workspace: req.workspace._id });
+    const doctor = await ClinicDoctor.findOne({ _id: req.params.id, workspace: req.workspace._id });
     if (!doctor) return res.status(404).json({ success: false, message: 'Doctor not found' });
-    await ClinicDoctorSchedule.deleteOne({ doctor: doctor._id });
-    res.json({ success: true, message: 'Doctor removed' });
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const futureAppts = await Appointment.countDocuments({
+      workspace: req.workspace._id, doctor: doctor._id, date: { $gte: today },
+      status: { $in: ['scheduled', 'confirmed', 'checked_in', 'rescheduled'] },
+    });
+    // Hard delete only when explicitly requested AND there is no history.
+    if (req.query.hard === 'true' && !futureAppts) {
+      const visits = await ClinicVisit.countDocuments({ workspace: req.workspace._id, doctor: doctor._id });
+      if (!visits) {
+        await ClinicDoctor.deleteOne({ _id: doctor._id });
+        await ClinicDoctorSchedule.deleteOne({ doctor: doctor._id });
+        return res.json({ success: true, message: 'Doctor removed' });
+      }
+    }
+    // Default: deactivate — preserves all historical consultations/prescriptions.
+    doctor.active = false;
+    await doctor.save();
+    await logAction(req.workspace._id, req.user._id, 'doctor.deactivate', 'ClinicDoctor', String(doctor._id), `futureAppointments=${futureAppts}`, req.ip);
+    res.json({ success: true, data: doctor, futureAppointments: futureAppts, message: futureAppts ? `Deactivated. ${futureAppts} upcoming appointment(s) need reassignment.` : 'Doctor deactivated' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -393,6 +448,27 @@ const archivePatient = async (req, res) => {
   }
 };
 
+// Possible duplicate patients by phone / email / name+dob — for staff review (never auto-merge).
+const findDuplicates = async (req, res) => {
+  try {
+    const phone = String(req.query.phone || '').replace(/\D/g, '');
+    const email = String(req.query.email || '').trim().toLowerCase();
+    const name = String(req.query.name || '').trim();
+    const or = [];
+    if (phone.length >= 6) or.push({ phone: { $regex: phone.slice(-10) + '$' } });
+    if (email) or.push({ email: { $regex: '^' + email.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', $options: 'i' } });
+    if (name.length >= 2) or.push({ name: { $regex: '^' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', $options: 'i' } });
+    if (!or.length) return res.json({ success: true, data: [] });
+    const contacts = await Contact.find({ workspace: req.workspace._id, isGroup: { $ne: true }, $or: or }).limit(10).lean();
+    const profiles = await ClinicPatientProfile.find({ workspace: req.workspace._id, contact: { $in: contacts.map((c) => c._id) } }).lean();
+    const pmap = {};
+    for (const p of profiles) pmap[String(p.contact)] = p;
+    res.json({ success: true, data: contacts.map((c) => ({ ...c, medical: pmap[String(c._id)] || null })) });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 const exportPatients = async (req, res) => {
   try {
     req.query.limit = '5000';
@@ -435,12 +511,39 @@ const listQueue = async (req, res) => {
     const doctorId = mine ? mine._id : req.query.doctor;
     const filter = { workspace: req.workspace._id, date };
     if (doctorId) filter.doctor = doctorId;
-    const tokens = await ClinicQueueToken.find(filter)
+    if (req.query.status) filter.status = req.query.status;
+    if (req.query.priority) filter.priority = req.query.priority;
+    let tokens = await ClinicQueueToken.find(filter)
       .populate('doctor', 'name specialty room')
-      .populate('appointment', 'startTime endTime title')
-      .populate('visit', 'status notes')
-      .sort('tokenNo');
-    res.json({ success: true, data: tokens, date });
+      .populate('appointment', 'startTime endTime title type')
+      .populate('visit', 'status notes finalizedAt')
+      .sort({ priority: -1, tokenNo: 1 });
+    // UHID / age from the medical profile
+    const contactIds = tokens.map((t) => t.contact).filter(Boolean);
+    const profiles = await ClinicPatientProfile.find({ workspace: req.workspace._id, contact: { $in: contactIds } }).select('contact uhid dob gender').lean();
+    const pmap = {};
+    for (const p of profiles) pmap[String(p.contact)] = p;
+    tokens = tokens.map((t) => {
+      const o = t.toObject();
+      const m = o.contact ? pmap[String(o.contact)] : null;
+      o.uhid = m?.uhid || '';
+      o.patientDob = m?.dob || null;
+      o.patientGender = m?.gender || '';
+      return o;
+    });
+    // Summary for the dashboard (full day, unfiltered by status/priority)
+    const all = await ClinicQueueToken.find({ workspace: req.workspace._id, date, ...(doctorId ? { doctor: doctorId } : {}) }).select('status createdAt calledAt completedAt').lean();
+    const waits = all.filter((t) => t.calledAt && t.createdAt).map((t) => (new Date(t.calledAt) - new Date(t.createdAt)) / 60000);
+    const summary = {
+      total: all.length,
+      waiting: all.filter((t) => t.status === 'waiting').length,
+      called: all.filter((t) => t.status === 'called').length,
+      done: all.filter((t) => t.status === 'done').length,
+      skipped: all.filter((t) => t.status === 'skipped').length,
+      noShow: all.filter((t) => t.status === 'no_show').length,
+      avgWaitMin: waits.length ? Math.round(waits.reduce((a, b) => a + b, 0) / waits.length) : 0,
+    };
+    res.json({ success: true, data: tokens, date, summary });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -472,11 +575,15 @@ const checkIn = async (req, res) => {
       }
     }
 
+    const activeStatuses = { $in: ['waiting', 'called'] };
     const existing = appointment
-      ? await ClinicQueueToken.findOne({ workspace: req.workspace._id, appointment: appointment._id, date })
-      : null;
+      ? await ClinicQueueToken.findOne({ workspace: req.workspace._id, appointment: appointment._id, date, status: activeStatuses })
+      : (patientPhone
+        ? await ClinicQueueToken.findOne({ workspace: req.workspace._id, doctor: doctor._id, date, patientPhone, status: activeStatuses })
+        : null);
     if (existing) return res.json({ success: true, data: existing, message: 'Already checked in' });
 
+    const priority = req.body.priority === 'urgent' ? 'urgent' : 'normal';
     const visit = await ClinicVisit.create({
       workspace: req.workspace._id,
       appointment: appointment?._id || null,
@@ -487,24 +594,41 @@ const checkIn = async (req, res) => {
       date,
       status: 'waiting',
     });
-    const tokenNo = await nextTokenNo(req.workspace._id, doctor._id, date);
-    const token = await ClinicQueueToken.create({
-      workspace: req.workspace._id,
-      doctor: doctor._id,
-      date,
-      tokenNo,
-      appointment: appointment?._id || null,
-      visit: visit._id,
-      contact,
-      patientName,
-      patientPhone,
-      status: 'waiting',
-    });
-    if (appointment && appointment.status === 'scheduled') {
-      appointment.status = 'confirmed';
+    const prefix = await tokenPrefixFor(req.workspace._id);
+    // Unique {workspace,doctor,date,tokenNo} index — retry on concurrent collisions.
+    let token = null;
+    let lastErr = null;
+    for (let attempt = 0; attempt < 4 && !token; attempt++) {
+      try {
+        const tokenNo = await nextTokenNo(req.workspace._id, doctor._id, date);
+        token = await ClinicQueueToken.create({
+          workspace: req.workspace._id,
+          doctor: doctor._id,
+          date,
+          tokenNo,
+          tokenLabel: `${prefix}${tokenNo}`,
+          appointment: appointment?._id || null,
+          visit: visit._id,
+          contact,
+          patientName,
+          patientPhone,
+          priority,
+          status: 'waiting',
+          createdBy: req.user._id,
+        });
+      } catch (e) {
+        if (e && e.code === 11000) { lastErr = e; continue; }
+        throw e;
+      }
+    }
+    if (!token) throw lastErr || new Error('Could not assign queue token');
+    if (appointment && ['scheduled', 'confirmed'].includes(appointment.status)) {
+      appointment.status = 'checked_in';
+      appointment.checkInAt = new Date();
       if (!appointment.doctor) appointment.doctor = doctor._id;
       await appointment.save();
     }
+    emitClinic(req, 'clinic:queue', { date, doctor: doctor._id, action: 'check_in' });
     res.status(201).json({ success: true, data: token });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -519,17 +643,44 @@ async function setTokenStatus(req, res, status) {
     if (mine && String(mine._id) !== String(token.doctor)) {
       return res.status(403).json({ success: false, message: 'Not allowed' });
     }
-    token.status = status;
-    if (status === 'called') token.calledAt = new Date();
+    const reason = String(req.body?.reason || '').slice(0, 300);
+    const prev = token.status;
+
+    if (status === 'called') {
+      if (!['waiting', 'skipped', 'called'].includes(prev)) return res.status(400).json({ success: false, message: 'Only waiting/skipped patients can be called' });
+      if (prev === 'called') token.recallCount = (token.recallCount || 0) + 1;
+      token.calledAt = new Date();
+    }
+    if (status === 'skipped') {
+      token.skippedAt = new Date();
+      if (reason) token.skipReason = reason;
+    }
+    if (status === 'waiting' && prev === 'skipped') {
+      // re-queue: keep token no + history, back to waiting
+      token.skippedAt = null;
+    }
     if (status === 'done') token.completedAt = new Date();
+    if (status === 'no_show') { token.cancelReason = reason; token.completedAt = new Date(); }
+    if (status === 'cancelled') { token.cancelReason = reason; token.completedAt = new Date(); }
+    token.status = status;
     await token.save();
+
+    // Keep visit + appointment lifecycles in sync.
     if (token.visit) {
       const visitStatus = status === 'called' ? 'in_consult' : status === 'done' ? 'done' : 'waiting';
-      await ClinicVisit.updateOne({ _id: token.visit }, { status: visitStatus });
+      const patch = { status: visitStatus };
+      if (status === 'called') patch.startedAt = new Date();
+      await ClinicVisit.updateOne({ _id: token.visit }, patch);
     }
-    if (status === 'done' && token.appointment) {
-      await Appointment.updateOne({ _id: token.appointment }, { status: 'completed' });
+    if (token.appointment) {
+      const apptStatus = status === 'called' ? 'in_consultation'
+        : status === 'done' ? 'completed'
+        : status === 'no_show' ? 'no_show'
+        : null;
+      if (apptStatus) await Appointment.updateOne({ _id: token.appointment }, { status: apptStatus });
+      else if (status === 'skipped' || status === 'waiting') await Appointment.updateOne({ _id: token.appointment }, { status: 'checked_in' });
     }
+    emitClinic(req, 'clinic:queue', { date: token.date, doctor: token.doctor, action: status, tokenId: token._id });
     res.json({ success: true, data: token });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -539,6 +690,9 @@ async function setTokenStatus(req, res, status) {
 const callToken = (req, res) => setTokenStatus(req, res, 'called');
 const skipToken = (req, res) => setTokenStatus(req, res, 'skipped');
 const completeToken = (req, res) => setTokenStatus(req, res, 'done');
+const requeueToken = (req, res) => setTokenStatus(req, res, 'waiting');
+const noShowToken = (req, res) => setTokenStatus(req, res, 'no_show');
+const cancelToken = (req, res) => setTokenStatus(req, res, 'cancelled');
 
 const callNext = async (req, res) => {
   try {
@@ -551,7 +705,7 @@ const callNext = async (req, res) => {
       doctor: doctorId,
       date,
       status: 'waiting',
-    }).sort('tokenNo');
+    }).sort({ priority: -1, tokenNo: 1 });
     if (!next) return res.status(404).json({ success: false, message: 'No waiting patients' });
     req.params.id = String(next._id);
     return setTokenStatus(req, res, 'called');
@@ -602,6 +756,12 @@ const getVisit = async (req, res) => {
   }
 };
 
+const VISIT_DOC_FIELDS = [
+  'notes', 'subjective', 'objective', 'assessment', 'plan', 'status', 'vitals',
+  'chiefComplaint', 'hpi', 'history', 'examination', 'diagnosis', 'diagnosisCode',
+  'investigations', 'referrals', 'followUp',
+];
+
 const updateVisit = async (req, res) => {
   try {
     const visit = await ClinicVisit.findOne({ _id: req.params.id, workspace: req.workspace._id });
@@ -610,9 +770,39 @@ const updateVisit = async (req, res) => {
     if (mine && String(mine._id) !== String(visit.doctor)) {
       return res.status(403).json({ success: false, message: 'Not allowed' });
     }
-    const allowed = ['notes', 'subjective', 'objective', 'assessment', 'plan', 'status', 'vitals'];
-    for (const k of allowed) if (k in req.body) visit[k] = req.body[k];
+    if (visit.finalizedAt) {
+      return res.status(400).json({ success: false, message: 'This consultation is finalized and read-only' });
+    }
+    for (const k of VISIT_DOC_FIELDS) if (k in req.body) visit[k] = req.body[k];
+    if (req.body.status === 'in_consult' && !visit.startedAt) visit.startedAt = new Date();
     await visit.save();
+    res.json({ success: true, data: visit });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Finalize: lock the record, mark queue token done + appointment completed.
+const finalizeVisit = async (req, res) => {
+  try {
+    const visit = await ClinicVisit.findOne({ _id: req.params.id, workspace: req.workspace._id });
+    if (!visit) return res.status(404).json({ success: false, message: 'Visit not found' });
+    const mine = await scopedDoctor(req);
+    if (mine && String(mine._id) !== String(visit.doctor)) {
+      return res.status(403).json({ success: false, message: 'Only the assigned doctor can finalize this consultation' });
+    }
+    if (visit.finalizedAt) return res.json({ success: true, data: visit, message: 'Already finalized' });
+    visit.status = 'done';
+    visit.finalizedAt = new Date();
+    visit.finalizedBy = req.user._id;
+    await visit.save();
+    await ClinicQueueToken.updateOne(
+      { visit: visit._id, status: { $in: ['waiting', 'called', 'skipped'] } },
+      { status: 'done', completedAt: new Date() }
+    );
+    if (visit.appointment) await Appointment.updateOne({ _id: visit.appointment }, { status: 'completed' });
+    await logAction(req.workspace._id, req.user._id, 'visit.finalize', 'ClinicVisit', String(visit._id), `patient=${visit.patientName}`, req.ip);
+    emitClinic(req, 'clinic:queue', { date: visit.date, doctor: visit.doctor, action: 'done' });
     res.json({ success: true, data: visit });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -629,13 +819,16 @@ const savePrescription = async (req, res) => {
     if (mine && String(mine._id) !== String(visit.doctor._id || visit.doctor)) {
       return res.status(403).json({ success: false, message: 'Not allowed' });
     }
+    if (visit.finalizedAt) {
+      return res.status(400).json({ success: false, message: 'This consultation is finalized — prescription is read-only' });
+    }
+    const DRUG_FIELDS = ['name', 'generic', 'dose', 'freq', 'days', 'route', 'qty', 'instructions', 'food', 'remarks'];
     const drugs = Array.isArray(req.body.drugs)
-      ? req.body.drugs.filter((d) => d && d.name).map((d) => ({
-        name: String(d.name).trim(),
-        dose: String(d.dose || '').trim(),
-        freq: String(d.freq || '').trim(),
-        days: String(d.days || '').trim(),
-      }))
+      ? req.body.drugs.filter((d) => d && d.name).map((d) => {
+        const out = {};
+        for (const k of DRUG_FIELDS) out[k] = String(d[k] || '').trim().slice(0, 300);
+        return out;
+      })
       : [];
     const advice = String(req.body.advice || '');
     let rx = await ClinicPrescription.findOne({ visit: visit._id });
@@ -653,13 +846,24 @@ const savePrescription = async (req, res) => {
       rx.advice = advice;
       await rx.save();
     }
+    const clinicSettings = await getOrCreateSettings(req.workspace._id);
     const pdf = await generatePrescriptionPdf({
       workspace: req.workspace,
       doctor: visit.doctor,
       contact: visit.contact,
       visit,
       prescription: rx,
-      clinicName: req.workspace.name,
+      clinicName: clinicSettings.clinicName || req.workspace.name,
+      clinicInfo: {
+        phone: clinicSettings.clinicPhone,
+        email: clinicSettings.clinicEmail,
+        address: clinicSettings.clinicAddress,
+        website: clinicSettings.clinicWebsite,
+        header: clinicSettings.rxHeader,
+        footer: clinicSettings.rxFooter,
+        instructions: clinicSettings.rxInstructions,
+      },
+      uhid: (await ClinicPatientProfile.findOne({ workspace: req.workspace._id, contact: visit.contact?._id || visit.contact }).select('uhid').lean())?.uhid || '',
     });
     rx.pdfUrl = pdf.url;
     await rx.save();
@@ -745,14 +949,26 @@ const getSettings = async (req, res) => {
 
 const updateSettings = async (req, res) => {
   try {
+    if (req.user?.staffType === 'doctor') {
+      return res.status(403).json({ success: false, message: 'Only clinic administrators can change settings' });
+    }
     const s = await getOrCreateSettings(req.workspace._id);
-    const allowed = ['slotDuration', 'whatsappConfirm', 'whatsappReminder', 'whatsappRxCaption', 'uhidPrefix'];
+    const allowed = [
+      'slotDuration', 'whatsappConfirm', 'whatsappReminder', 'whatsappRxCaption', 'uhidPrefix',
+      'clinicName', 'clinicPhone', 'clinicEmail', 'clinicAddress', 'clinicWebsite', 'clinicLogo',
+      'timezone', 'currency', 'language',
+      'tokenPrefix', 'tokenResetPolicy',
+      'rxHeader', 'rxFooter', 'rxInstructions',
+      'remind24h', 'remind1h', 'confirmOnCreate',
+    ];
     for (const k of allowed) if (k in req.body) s[k] = req.body[k];
     if (s.slotDuration) s.slotDuration = Math.max(5, Math.min(180, Number(s.slotDuration) || 15));
     if (s.uhidPrefix != null) {
       s.uhidPrefix = String(s.uhidPrefix).replace(/[^A-Za-z0-9-]/g, '').slice(0, 8) || 'CLN';
     }
+    if (s.tokenPrefix != null) s.tokenPrefix = String(s.tokenPrefix).replace(/[^A-Za-z0-9-]/g, '').slice(0, 6);
     await s.save();
+    await logAction(req.workspace._id, req.user._id, 'clinic.settings.update', 'ClinicSettings', String(s._id), '', req.ip);
     res.json({ success: true, data: s });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -771,8 +987,8 @@ const getMe = async (req, res) => {
 module.exports = {
   listDoctors, getDoctor, createDoctor, updateDoctor, deleteDoctor,
   getSchedule, updateSchedule,
-  listPatients, getPatient, upsertPatient, archivePatient, exportPatients,
-  listQueue, checkIn, callToken, skipToken, completeToken, callNext,
-  listVisits, getVisit, updateVisit, savePrescription, sendPrescription,
+  listPatients, getPatient, upsertPatient, archivePatient, exportPatients, findDuplicates,
+  listQueue, checkIn, callToken, skipToken, completeToken, callNext, requeueToken, noShowToken, cancelToken,
+  listVisits, getVisit, updateVisit, finalizeVisit, savePrescription, sendPrescription,
   getSettings, updateSettings, getMe,
 };

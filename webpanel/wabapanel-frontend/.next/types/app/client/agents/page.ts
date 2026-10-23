@@ -1,4 +1,4 @@
-// File: C:\Work\merged-ziplofy-\webpanel\wabapanel-frontend\src\app\client\agents\page.tsx
+// File: /Users/utkarrshhh/Desktop/codiic-15oct/Ziplofy/webpanel/wabapanel-frontend/src/app/client/agents/page.tsx
 import * as entry from '../../../../../src/app/client/agents/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

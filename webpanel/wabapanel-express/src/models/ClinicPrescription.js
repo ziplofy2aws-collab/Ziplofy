@@ -2,9 +2,15 @@ const mongoose = require('mongoose');
 
 const drugSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
-  dose: { type: String, default: '', trim: true },
-  freq: { type: String, default: '', trim: true },
-  days: { type: String, default: '', trim: true },
+  generic: { type: String, default: '', trim: true },
+  dose: { type: String, default: '', trim: true },   // strength / dosage e.g. "500mg"
+  freq: { type: String, default: '', trim: true },   // e.g. "1-0-1" or "twice daily"
+  days: { type: String, default: '', trim: true },   // duration e.g. "5 days"
+  route: { type: String, default: '', trim: true },  // oral / topical / etc.
+  qty: { type: String, default: '', trim: true },
+  instructions: { type: String, default: '', trim: true },
+  food: { type: String, default: '', trim: true },   // before/after food
+  remarks: { type: String, default: '', trim: true },
 }, { _id: false });
 
 const clinicPrescriptionSchema = new mongoose.Schema({

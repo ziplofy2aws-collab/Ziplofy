@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Bot, Save, Shield, Target, MessageSquare, ToggleLeft, ToggleRight, RefreshCw, Brain, Key, TestTube, Sparkles, Upload, FileText, Trash2 } from 'lucide-react';
 import { aiSettingsApi } from '@/lib/api';
 import toast from 'react-hot-toast';
@@ -94,6 +94,7 @@ export default function AISettingsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [kbDocs, setKbDocs] = useState<KbDoc[]>([]);
   const [uploadingKb, setUploadingKb] = useState(false);
+  const apiKeyInputRef = useRef<HTMLInputElement>(null);
 
   const loadKbDocs = () => {
     aiSettingsApi.listKnowledgeDocs().then(r => setKbDocs(r.data.data || [])).catch(() => {});
@@ -151,7 +152,14 @@ export default function AISettingsPage() {
     setTesting(true);
     setSubmitting(true);
     try {
-      const r = await aiSettingsApi.test();
+      const r = await aiSettingsApi.test({
+        provider: settings.provider,
+        apiKey: settings.apiKey || apiKeyInputRef.current?.value || '',
+        model: settings.model,
+        azureEndpoint: settings.azureEndpoint,
+        azureDeployment: settings.azureDeployment,
+        azureApiVersion: settings.azureApiVersion,
+      });
       toast.success('Connection successful! Response: ' + (r.data.data?.response || 'OK'));
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
@@ -315,7 +323,7 @@ export default function AISettingsPage() {
                 <div>
                   <label className={`${labelClass} flex items-center gap-2`}><Key className="h-3.5 w-3.5" /> Chat API Key</label>
                   <div className="flex gap-2">
-                    <input type="password" value={settings.apiKey} onChange={e => setSettings({ ...settings, apiKey: e.target.value })}
+                    <input type="password" autoComplete="new-password" value={settings.apiKey} onChange={e => setSettings({ ...settings, apiKey: e.target.value })}
                       className={`flex-1 ${inputClass}`} placeholder="Azure resource key (for chat)" />
                     <button type="button" onClick={handleTest} disabled={testing} className={secondaryBtn}>
                       <TestTube className="h-4 w-4" /> {testing ? 'Testing...' : 'Test'}
@@ -347,7 +355,7 @@ export default function AISettingsPage() {
                 </div>
                 <div>
                   <label className={`${labelClass} flex items-center gap-2`}><Key className="h-3.5 w-3.5" /> Realtime API Key (optional)</label>
-                  <input type="password" value={settings.azureRealtimeKey || ''} onChange={e => setSettings({ ...settings, azureRealtimeKey: e.target.value })}
+                  <input type="password" autoComplete="new-password" value={settings.azureRealtimeKey || ''} onChange={e => setSettings({ ...settings, azureRealtimeKey: e.target.value })}
                     className={inputClass} placeholder="leave blank to reuse chat key" />
                 </div>
               </div>
@@ -356,7 +364,7 @@ export default function AISettingsPage() {
               <div>
                 <label className={`${labelClass} flex items-center gap-2`}><Key className="h-3.5 w-3.5" /> API Key</label>
                 <div className="flex gap-2">
-                  <input type="password" value={settings.apiKey} onChange={e => setSettings({ ...settings, apiKey: e.target.value })}
+                  <input ref={apiKeyInputRef} type="password" autoComplete="new-password" value={settings.apiKey} onChange={e => setSettings({ ...settings, apiKey: e.target.value })}
                     className={`flex-1 ${inputClass}`} placeholder="sk-..." />
                   <button type="button" onClick={handleTest} disabled={testing} className={secondaryBtn}>
                     <TestTube className="h-4 w-4" /> {testing ? 'Testing...' : 'Test'}

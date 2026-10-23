@@ -23,7 +23,7 @@ interface AuthState {
     workspaces?: Workspace[];
     features?: Record<string, boolean>;
   }) => void;
-  logout: () => void;
+  logout: (redirectUrl?: string) => void;
   loadUser: () => Promise<void>;
   switchWorkspace: (workspaceId: string) => Promise<void>;
   updateUser: (data: Partial<User>) => void;
@@ -33,6 +33,10 @@ interface AuthState {
     industry?: string;
   }) => void;
 }
+
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3010';
+export const GATEWAY_LOGIN_URL = `${GATEWAY_URL}/login`;
+export const GATEWAY_LOGOUT_URL = `${GATEWAY_URL}/logout`;
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
@@ -141,9 +145,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   acceptSsoSession: ({ token, user, workspaces = [], features = {} }) => {
     localStorage.setItem('token', token);
     const workspace =
-      user?.currentWorkspace ||
-      (Array.isArray(workspaces) ? workspaces[0] : null) ||
-      null;
+      typeof user?.currentWorkspace === 'object' && user.currentWorkspace
+        ? user.currentWorkspace
+        : (Array.isArray(workspaces) ? workspaces[0] : null) || null;
     if (workspace?._id) localStorage.setItem('workspaceId', workspace._id);
     connectSocket(token);
     if (workspace?._id) joinWorkspace(workspace._id);
@@ -158,11 +162,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  logout: () => {
+  logout: (redirectUrl) => {
     localStorage.removeItem('token');
     localStorage.removeItem('workspaceId');
     disconnectSocket();
     set({ user: null, workspaces: [], currentWorkspace: null, token: null, isAuthenticated: false, isLoading: false });
+    if (redirectUrl && typeof window !== 'undefined') window.location.href = redirectUrl;
   },
 
   loadUser: async () => {

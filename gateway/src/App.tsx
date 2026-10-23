@@ -19,6 +19,11 @@ function SessionRedirect({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(!getToken());
 
   useEffect(() => {
+    if (location.pathname === '/logout') {
+      clearToken();
+      navigate('/login', { replace: true });
+      return;
+    }
     if (!getToken()) {
       setReady(true);
       return;
@@ -68,6 +73,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/logout" element={<Navigate to="/login" replace />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/choose-industry"

@@ -26,7 +26,7 @@ const checkTimeConflict = async (workspaceId, date, startTime, endTime, excludeI
   const query = {
     workspace: workspaceId,
     date: { $gte: dayStart, $lt: dayEnd },
-    status: { $in: ['scheduled', 'confirmed', 'rescheduled'] },
+    status: { $in: ['scheduled', 'confirmed', 'checked_in', 'in_consultation', 'rescheduled'] },
   };
   if (excludeId) query._id = { $ne: excludeId };
   if (doctorId) query.doctor = doctorId;
@@ -216,31 +216,56 @@ const sendAppointmentMessage = async (workspace, appointment, type) => {
   }
 };
 
+const APPT_WRITE_FIELDS = [
+  'title', 'contact', 'contactName', 'contactPhone', 'contactEmail',
+  'date', 'startTime', 'endTime', 'duration', 'notes', 'assignedTo',
+  'doctor', 'type', 'location', 'reminderSettings', 'metadata', 'status',
+];
+function pickApptFields(body) {
+  const out = {};
+  for (const k of APPT_WRITE_FIELDS) if (k in body) out[k] = body[k];
+  delete out.workspace;
+  return out;
+}
+
 const createAppointment = async (req, res) => {
   try {
+    const body = pickApptFields(req.body);
     // Slot capacity check (allows multiple bookings per slot up to maxPerSlot).
-    if (req.body.date && req.body.startTime) {
+    if (body.date && body.startTime) {
       const settings = await bookingService.getSettings(req.workspace._id);
       const cap = Math.max(1, settings.maxPerSlot || 1);
-      const dateObj = new Date(req.body.date);
+      const dateObj = new Date(body.date);
       const dayStart = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
       const dayEnd = new Date(dayStart.getTime() + 86400000);
       const usedQuery = {
         workspace: req.workspace._id,
         date: { $gte: dayStart, $lt: dayEnd },
-        startTime: req.body.startTime,
-        status: { $in: ['scheduled', 'confirmed', 'rescheduled'] },
+        startTime: body.startTime,
+        status: { $in: ['scheduled', 'confirmed', 'checked_in', 'in_consultation', 'rescheduled'] },
       };
-      if (req.body.doctor) usedQuery.doctor = req.body.doctor;
+      if (body.doctor) usedQuery.doctor = body.doctor;
       const used = await Appointment.countDocuments(usedQuery);
       if (used >= cap) {
         return res.status(400).json({
           success: false,
-          message: `This slot is full (${used}/${cap} booked at ${req.body.startTime}). Please choose another time.`,
+          message: `This slot is full (${used}/${cap} booked at ${body.startTime}). Please choose another time.`,
         });
       }
+      // Overlap check against other appointments for this doctor.
+      if (body.doctor) {
+        const { conflict, conflictWith } = await checkTimeConflict(
+          req.workspace._id, body.date, body.startTime, body.endTime, null, body.doctor
+        );
+        if (conflict) {
+          return res.status(400).json({
+            success: false,
+            message: `Time conflict: "${conflictWith.title}" is already booked ${conflictWith.startTime}-${conflictWith.endTime} on this date.`,
+          });
+        }
+      }
     }
-    const appointment = await Appointment.create({ ...req.body, workspace: req.workspace._id });
+    const appointment = await Appointment.create({ ...body, workspace: req.workspace._id });
 
     try {
       const bkSettings = await bookingService.getSettings(req.workspace._id);
@@ -268,7 +293,7 @@ const updateAppointment = async (req, res) => {
 
     const appointment = await Appointment.findOneAndUpdate(
       { _id: req.params.id, workspace: req.workspace._id },
-      req.body,
+      pickApptFields(req.body),
       { new: true }
     );
 
@@ -338,7 +363,21 @@ const cancelAppointment = async (req, res) => {
     if (!appointment) return res.status(404).json({ success: false, message: 'Appointment not found' });
 
     appointment.status = 'cancelled';
+    appointment.cancelReason = String(req.body?.reason || '').slice(0, 300);
+    appointment.cancelledBy = req.user?._id || null;
+    appointment.cancelledAt = new Date();
+    // Any pending reminders are moot once cancelled.
     await appointment.save();
+
+    // Free the queue slot for the day if the patient was still waiting.
+    try {
+      const ClinicQueueToken = require('../models/ClinicQueueToken');
+      const today = `${appointment.date.getFullYear()}-${String(appointment.date.getMonth() + 1).padStart(2, '0')}-${String(appointment.date.getDate()).padStart(2, '0')}`;
+      await ClinicQueueToken.updateMany(
+        { appointment: appointment._id, date: today, status: { $in: ['waiting', 'skipped'] } },
+        { status: 'cancelled', cancelReason: appointment.cancelReason || 'Appointment cancelled', completedAt: new Date() }
+      );
+    } catch { /* best-effort */ }
 
     // Send cancellation notification
     const workspace = await Workspace.findById(req.workspace._id);
@@ -347,6 +386,29 @@ const cancelAppointment = async (req, res) => {
     }
 
     res.json({ success: true, data: appointment, message: 'Appointment cancelled' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Mark appointment as no-show (patient never arrived)
+const noShowAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findOne({ _id: req.params.id, workspace: req.workspace._id });
+    if (!appointment) return res.status(404).json({ success: false, message: 'Appointment not found' });
+    appointment.status = 'no_show';
+    appointment.noShowAt = new Date();
+    appointment.cancelReason = String(req.body?.reason || '').slice(0, 300);
+    await appointment.save();
+    try {
+      const ClinicQueueToken = require('../models/ClinicQueueToken');
+      await ClinicQueueToken.updateMany(
+        { appointment: appointment._id, status: { $in: ['waiting', 'skipped'] } },
+        { status: 'no_show', completedAt: new Date() }
+      );
+    } catch { /* best-effort */ }
+    await require('../services/auditService').logAction(req.workspace._id, req.user?._id, 'appointment.no_show', 'Appointment', String(appointment._id), appointment.cancelReason, req.ip);
+    res.json({ success: true, data: appointment, message: 'Marked as no-show' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -485,7 +547,7 @@ const getSlots = async (req, res) => {
 
 module.exports = { 
   getAppointments, getAppointment, createAppointment, updateAppointment, 
-  deleteAppointment, sendReminder, rescheduleAppointment, cancelAppointment,
+  deleteAppointment, sendReminder, rescheduleAppointment, cancelAppointment, noShowAppointment,
   processAutoReminders,
   getAvailability, updateAvailability, getSlots,
 };

@@ -7,7 +7,13 @@ export const getSocket = (): Socket | null => socket;
 export const connectSocket = (token: string): Socket => {
   if (socket?.connected) return socket;
 
-  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5000'), {
+  const socketUrl =
+    process.env.NEXT_PUBLIC_SOCKET_URL ||
+    (typeof window !== 'undefined'
+      ? (['localhost', '127.0.0.1'].includes(window.location.hostname) ? 'http://localhost:5001' : window.location.origin)
+      : 'http://localhost:5001');
+
+  socket = io(socketUrl, {
     path: process.env.NEXT_PUBLIC_SOCKET_PATH || '/socket.io',
     auth: { token },
     transports: ['websocket', 'polling'],

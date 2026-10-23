@@ -61,6 +61,7 @@ export default function PatientChartPage() {
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
   const [archived, setArchived] = useState(false);
+  const [dupes, setDupes] = useState<Array<{ _id: string; name: string; phone: string; email?: string; medical?: { uhid?: string; dob?: string } | null }> | null>(null);
 
   const set = (k: keyof typeof emptyForm, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -99,8 +100,7 @@ export default function PatientChartPage() {
       .finally(() => setLoading(false));
   }, [id, isNew]);
 
-  const save = async () => {
-    if (!form.phone.trim()) { toast.error('Phone is required'); return; }
+  const doSave = async () => {
     setSaving(true);
     try {
       const r = isNew
@@ -108,6 +108,7 @@ export default function PatientChartPage() {
         : await clinicApi.patients.upsert(id, form);
       const contactId = r.data.data?.contact?._id;
       toast.success('Patient saved');
+      setDupes(null);
       if (isNew && contactId) router.replace(`/client/clinic/patients/${contactId}`);
       else if (r.data.data?.medical?.uhid) setForm((f) => ({ ...f, uhid: r.data.data.medical.uhid || f.uhid }));
     } catch (e: unknown) {
@@ -116,6 +117,20 @@ export default function PatientChartPage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const save = async () => {
+    if (!form.phone.trim()) { toast.error('Phone is required'); return; }
+    // Duplicate check on first save of a new patient — show possible matches for review.
+    if (isNew && dupes === null) {
+      setSaving(true);
+      try {
+        const r = await clinicApi.patients.duplicates({ phone: form.phone, name: form.name, dob: form.dob });
+        const matches = r.data.data || [];
+        if (matches.length) { setDupes(matches); setSaving(false); return; }
+      } catch { /* proceed if the check itself fails */ }
+    }
+    await doSave();
   };
 
   const archive = async () => {
@@ -161,6 +176,11 @@ export default function PatientChartPage() {
         </div>
         <div className="flex gap-2">
           {!isNew && (
+            <button type="button" className={secondaryBtn} onClick={() => router.push(`/client/clinic/calendar?patient=${id}`)}>
+              Book appointment
+            </button>
+          )}
+          {!isNew && (
             <button type="button" className={secondaryBtn} onClick={archive}>Archive</button>
           )}
           {tab === 'profile' && (
@@ -170,6 +190,29 @@ export default function PatientChartPage() {
           )}
         </div>
       </div>
+
+      {dupes && dupes.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => setDupes(null)}>
+          <div className="w-full max-w-md rounded-xl bg-white" onClick={(e) => e.stopPropagation()}>
+            <div className="border-b border-admin-border p-4">
+              <h3 className="font-semibold">Possible duplicate patients</h3>
+              <p className="mt-1 text-[12px] text-admin-text-secondary">These existing patients match the details you entered. Open one to avoid duplicates, or register anyway.</p>
+            </div>
+            <div className="max-h-60 divide-y divide-admin-border overflow-y-auto">
+              {dupes.map((d) => (
+                <button key={d._id} type="button" className="block w-full px-4 py-2.5 text-left hover:bg-[#fafafa]" onClick={() => router.push(`/client/clinic/patients/${d._id}`)}>
+                  <p className="text-[13px] font-medium">{d.name || d.phone} {d.medical?.uhid ? <span className="font-mono text-[11px] text-admin-text-subdued">({d.medical.uhid})</span> : null}</p>
+                  <p className="text-[12px] text-admin-text-secondary">{d.phone}{d.email ? ` · ${d.email}` : ''}</p>
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2 border-t border-admin-border p-4">
+              <button type="button" className={secondaryBtn} onClick={() => setDupes(null)}>Cancel</button>
+              <button type="button" className={primaryBtn} disabled={saving} onClick={doSave}>Register anyway</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {!isNew && (
         <div className="flex gap-1 border-b border-admin-border">

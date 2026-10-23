@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { requireFeature } = require('../middleware/featureGate');
 const { protect, workspaceAccess } = require('../middleware/auth');
-const { getAppointments, getAppointment, createAppointment, updateAppointment, deleteAppointment, sendReminder, rescheduleAppointment, cancelAppointment, getAvailability, updateAvailability, getSlots } = require('../controllers/appointmentController');
+const { getAppointments, getAppointment, createAppointment, updateAppointment, deleteAppointment, sendReminder, rescheduleAppointment, cancelAppointment, noShowAppointment, getAvailability, updateAvailability, getSlots } = require('../controllers/appointmentController');
 
 router.use(protect, workspaceAccess);
 router.use(requireFeature('appointments'));
@@ -16,5 +16,6 @@ router.delete('/:id', deleteAppointment);
 router.post('/:id/reminder', sendReminder);
 router.post('/:id/reschedule', rescheduleAppointment);
 router.post('/:id/cancel', cancelAppointment);
+router.post('/:id/no-show', noShowAppointment);
 
 module.exports = router;

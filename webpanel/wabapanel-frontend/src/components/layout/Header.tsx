@@ -15,7 +15,7 @@ import {
   Store,
 } from "lucide-react";
 import { displayPersonName } from "@/lib/brand";
-import { useAuthStore } from "@/stores/authStore";
+import { GATEWAY_LOGOUT_URL, useAuthStore } from "@/stores/authStore";
 import { useStoreStore } from "@/stores/storeStore";
 import { useI18n, LANGUAGES } from "@/lib/i18n";
 import api from "@/lib/api";
@@ -323,7 +323,7 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                       type="button"
                       onClick={() => {
                         setShowWsDropdown(false);
-                        logout();
+                        logout(isAdmin ? undefined : GATEWAY_LOGOUT_URL);
                       }}
                       className={`${adminHeaderDropdownItemClass()} text-red-600 hover:bg-red-50 hover:text-red-700`}
                     >

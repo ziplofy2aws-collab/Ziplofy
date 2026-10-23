@@ -93,7 +93,7 @@ async function slotsForDate(workspaceId, settings, dateStr, doctorId) {
   const bookedQuery = {
     workspace: workspaceId,
     date: { $gte: dayStart, $lte: dayEnd },
-    status: { $nin: ['cancelled'] },
+    status: { $nin: ['cancelled', 'no_show', 'completed'] },
   };
   if (doctorId && mongoose.Types.ObjectId.isValid(String(doctorId))) {
     bookedQuery.doctor = doctorId;

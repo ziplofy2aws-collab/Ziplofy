@@ -183,7 +183,7 @@ export default function AdminSidebar() {
               <p className="text-xs text-gray-500 truncate">{user?.role}</p>
             </div>
           </Link>
-          <button onClick={logout} className="text-gray-400 hover:text-red-600" title="Logout">
+          <button onClick={() => logout()} className="text-gray-400 hover:text-red-600" title="Logout">
             <LogOut className="w-4 h-4" />
           </button>
         </div>

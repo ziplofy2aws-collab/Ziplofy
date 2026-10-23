@@ -43,14 +43,22 @@ const updateSettings = async (req, res) => {
 const testConnection = async (req, res) => {
   try {
     const settings = await AISettings.findOne({ workspace: req.workspace._id });
-    if (!settings || !settings.apiKey) {
+    const body = req.body || {};
+    // Prefer values submitted in the request (unsaved form state); fall back to saved settings.
+    const provider = body.provider || settings?.provider;
+    const apiKey = (typeof body.apiKey === 'string' && body.apiKey && !body.apiKey.startsWith('****'))
+      ? body.apiKey
+      : settings?.apiKey;
+    const model = body.model || settings?.model;
+    if (!apiKey) {
       return res.status(400).json({ success: false, message: 'API key not configured' });
     }
     const aiService = require('../services/aiService');
-    const result = await aiService.chat(settings.provider, settings.apiKey, [
+    const merged = { ...(settings ? settings.toObject() : {}), ...body, provider };
+    const result = await aiService.chat(provider, apiKey, [
       { role: 'system', content: 'Reply with exactly: CONNECTION_OK' },
       { role: 'user', content: 'Test' },
-    ], { model: settings.model, maxTokens: 20, ...aiService.azureOpts(settings) });
+    ], { model, maxTokens: 20, ...aiService.azureOpts(merged) });
     res.json({ success: true, message: 'Connection successful', data: { response: result.content } });
   } catch (error) {
     res.status(400).json({ success: false, message: 'Connection failed: ' + error.message });

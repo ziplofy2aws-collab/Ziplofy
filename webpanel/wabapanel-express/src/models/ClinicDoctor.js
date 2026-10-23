@@ -5,11 +5,17 @@ const clinicDoctorSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
   name: { type: String, required: true, trim: true },
   specialty: { type: String, default: '', trim: true },
+  department: { type: String, default: '', trim: true },
   qualifications: { type: String, default: '', trim: true },
+  registrationNo: { type: String, default: '', trim: true },
+  experience: { type: String, default: '', trim: true },
   consultationMins: { type: Number, default: 15, min: 5, max: 180 },
+  consultationFee: { type: Number, default: 0, min: 0 },
   room: { type: String, default: '', trim: true },
   photo: { type: String, default: '' },
   bio: { type: String, default: '', trim: true },
+  email: { type: String, default: '', trim: true },
+  phone: { type: String, default: '', trim: true },
   active: { type: Boolean, default: true },
 }, { timestamps: true });
 
