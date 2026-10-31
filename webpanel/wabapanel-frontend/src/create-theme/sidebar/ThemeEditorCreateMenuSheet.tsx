@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import type { StoreMenu, StoreMenuItem } from '../../contexts/store-menu.context';
 import { useStoreMenus } from '../../contexts/store-menu.context';
 import { useStore } from '../../contexts/store.context';
-import { MenuItemRow } from '../../pages/ContentMenuCreatePage';
+import { MenuItemRow } from '../../spa-pages/ContentMenuCreatePage';
 import {
   createMenuItemDraft,
   menuItemDraftsToApiInputs,
