@@ -23,12 +23,14 @@ import { InformaticThemePreviewModal } from '@/components/themes/InformaticTheme
 import {
   informaticInstalledThemesApi,
   informaticThemesApi,
+  storeCustomThemesApi,
   type InformaticInstalledThemeItem,
   type InformaticThemeCatalogItem,
+  type StoreCustomThemeItem,
 } from '@/lib/api';
 import { useStoreStore, selectActiveStore } from '@/stores/storeStore';
 
-type ThemesTab = 'available' | 'installed';
+type ThemesTab = 'available' | 'installed' | 'custom';
 
 type AvailableThemeItem = {
   id: string;
@@ -153,6 +155,10 @@ export default function ThemesPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [installingThemeId, setInstallingThemeId] = useState<string | null>(null);
   const [applyingThemeId, setApplyingThemeId] = useState<string | null>(null);
+  const [customThemes, setCustomThemes] = useState<StoreCustomThemeItem[]>([]);
+  const [loadingCustom, setLoadingCustom] = useState(false);
+  const [deletingCustomId, setDeletingCustomId] = useState<string | null>(null);
+  const [applyingCustomId, setApplyingCustomId] = useState<string | null>(null);
   const [uninstallingId, setUninstallingId] = useState<string | null>(null);
   const [previewModal, setPreviewModal] = useState<{
     isOpen: boolean;
@@ -312,9 +318,65 @@ export default function ThemesPage() {
     window.open(editorHrefForTheme(themeId), '_blank', 'noopener,noreferrer');
   };
 
+  const loadCustomThemes = useCallback(async () => {
+    if (!activeStoreId) {
+      setCustomThemes([]);
+      return;
+    }
+    setLoadingCustom(true);
+    try {
+      const res = await storeCustomThemesApi.list(activeStoreId);
+      setCustomThemes(res.data?.success && Array.isArray(res.data.data) ? res.data.data : []);
+    } catch {
+      setCustomThemes([]);
+    } finally {
+      setLoadingCustom(false);
+    }
+  }, [activeStoreId]);
+
+  useEffect(() => {
+    void loadCustomThemes();
+  }, [loadCustomThemes]);
+
+  const handleDeleteCustomTheme = async (theme: StoreCustomThemeItem) => {
+    if (!window.confirm(`Delete theme "${theme.themeName}"? This cannot be undone.`)) return;
+    setDeletingCustomId(theme._id);
+    try {
+      await storeCustomThemesApi.remove(theme._id);
+      setCustomThemes((prev) => prev.filter((t) => t._id !== theme._id));
+      await fetchStores();
+    } catch (e) {
+      const msg =
+        (e as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (e as Error)?.message ||
+        'Failed to delete theme';
+      window.alert(msg);
+    } finally {
+      setDeletingCustomId(null);
+    }
+  };
+
+  const handleApplyCustomTheme = async (theme: StoreCustomThemeItem) => {
+    if (!activeStoreId) return;
+    setApplyingCustomId(theme._id);
+    try {
+      await storeCustomThemesApi.apply(activeStoreId, theme._id);
+      await fetchStores();
+    } catch (e) {
+      const msg =
+        (e as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (e as Error)?.message ||
+        'Failed to apply theme';
+      window.alert(msg);
+    } finally {
+      setApplyingCustomId(null);
+    }
+  };
+
   const refreshAll = () => {
     void loadCatalog();
     void loadInstalled();
+    void loadCustomThemes();
   };
 
   return (
@@ -360,19 +422,28 @@ export default function ThemesPage() {
             Preview catalog themes, install to your store, then customize from the Installed tab.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={refreshAll}
-          disabled={loadingCatalog || loadingInstalled}
-          className="inline-flex items-center gap-1.5 rounded-md border border-admin-border bg-white px-3 py-2 text-[13px] font-medium text-admin-text hover:bg-admin-secondary disabled:opacity-60"
-        >
-          {loadingCatalog || loadingInstalled ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <RefreshCw className="h-3.5 w-3.5" />
-          )}
-          Refresh
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={refreshAll}
+            disabled={loadingCatalog || loadingInstalled}
+            className="inline-flex items-center gap-1.5 rounded-md border border-admin-border bg-white px-3 py-2 text-[13px] font-medium text-admin-text hover:bg-admin-secondary disabled:opacity-60"
+          >
+            {loadingCatalog || loadingInstalled ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3.5 w-3.5" />
+            )}
+            Refresh
+          </button>
+          <Link
+            href="/client/themes/create"
+            className={`${adminListPrimaryButtonClass} inline-flex items-center gap-1.5`}
+          >
+            <Paintbrush className="h-3.5 w-3.5" aria-hidden />
+            Create theme
+          </Link>
+        </div>
       </header>
 
       {loadError ? (
@@ -388,6 +459,7 @@ export default function ThemesPage() {
             [
               { id: 'available' as const, label: 'Available', count: availableThemes.length },
               { id: 'installed' as const, label: 'Installed', count: installedThemes.length },
+              { id: 'custom' as const, label: 'Custom', count: customThemes.length },
             ] as const
           ).map((tab) => (
             <button
@@ -515,6 +587,112 @@ export default function ThemesPage() {
                 </p>
               </div>
             )
+          ) : activeTab === 'custom' ? (
+            loadingCustom && customThemes.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-admin-border bg-white px-6 py-16 text-center">
+                <Loader2 className="h-8 w-8 animate-spin text-admin-text-secondary" aria-hidden />
+                <p className="mt-3 text-sm font-medium text-admin-text">Loading your themes…</p>
+              </div>
+            ) : customThemes.length > 0 ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {customThemes.map((theme) => {
+                  const isApplied =
+                    Boolean(activeStore?.appliedCustomThemeId) &&
+                    String(activeStore?.appliedCustomThemeId) === String(theme._id);
+                  const isDeleting = deletingCustomId === theme._id;
+                  const isApplying = applyingCustomId === theme._id;
+
+                  return (
+                    <article
+                      key={theme._id}
+                      className="flex flex-col overflow-hidden rounded-xl border border-admin-border bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06)]"
+                    >
+                      <div className="flex h-36 items-center justify-center bg-gradient-to-br from-neutral-50 to-neutral-100">
+                        <LayoutTemplate className="h-10 w-10 text-neutral-300" aria-hidden />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-3 p-4">
+                        <div className="min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h2 className="truncate text-[14px] font-semibold text-admin-text">
+                              {theme.themeName}
+                            </h2>
+                            {isApplied ? (
+                              <span className="shrink-0 rounded-full bg-green-50 px-2 py-0.5 text-[11px] font-semibold text-green-700">
+                                Live
+                              </span>
+                            ) : null}
+                          </div>
+                          <p className="mt-1 line-clamp-2 text-[12px] leading-relaxed text-admin-text-secondary">
+                            {theme.themeDesc || 'Theme built in the visual theme builder'}
+                          </p>
+                          <p className="mt-2 text-[11px] text-admin-text-secondary">
+                            {theme.updatedAt
+                              ? `Updated ${new Date(theme.updatedAt).toLocaleDateString()}`
+                              : 'Custom theme'}
+                          </p>
+                        </div>
+                        <div className="mt-auto flex flex-wrap gap-2">
+                          {!isApplied ? (
+                            <button
+                              type="button"
+                              disabled={isApplying || isDeleting}
+                              className={`${adminListPrimaryButtonClass} inline-flex items-center gap-1.5`}
+                              onClick={() => void handleApplyCustomTheme(theme)}
+                            >
+                              {isApplying ? (
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                              ) : (
+                                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
+                              )}
+                              {isApplying ? 'Applying…' : 'Apply'}
+                            </button>
+                          ) : null}
+                          <Link
+                            href={`/client/themes/create?id=${theme._id}`}
+                            className={
+                              isApplied
+                                ? `${adminListPrimaryButtonClass} inline-flex items-center gap-1.5`
+                                : 'inline-flex items-center gap-1.5 rounded-md border border-admin-border bg-white px-3 py-2 text-[13px] font-medium text-admin-text hover:bg-admin-secondary'
+                            }
+                          >
+                            <Pencil className="h-3.5 w-3.5" aria-hidden />
+                            Edit
+                          </Link>
+                          <button
+                            type="button"
+                            disabled={isDeleting}
+                            className="inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-white px-3 py-2 text-[13px] font-medium text-red-700 hover:bg-red-50 disabled:opacity-60"
+                            onClick={() => void handleDeleteCustomTheme(theme)}
+                          >
+                            {isDeleting ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                            ) : (
+                              <Trash2 className="h-3.5 w-3.5" aria-hidden />
+                            )}
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-dashed border-admin-border bg-white px-6 py-12 text-center">
+                <Paintbrush className="mx-auto h-8 w-8 text-admin-text-secondary" aria-hidden />
+                <p className="mt-3 text-sm font-medium text-admin-text">No custom themes yet</p>
+                <p className="mt-1 text-[13px] text-admin-text-secondary">
+                  Design your own storefront theme with the visual theme builder.
+                </p>
+                <Link
+                  href="/client/themes/create"
+                  className={`${adminListPrimaryButtonClass} mt-4 inline-flex items-center gap-1.5`}
+                >
+                  <Paintbrush className="h-3.5 w-3.5" aria-hidden />
+                  Create theme
+                </Link>
+              </div>
+            )
           ) : loadingInstalled && installedThemes.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-admin-border bg-white px-6 py-16 text-center">
               <Loader2 className="h-8 w-8 animate-spin text-admin-text-secondary" aria-hidden />
@@ -608,7 +786,7 @@ export default function ThemesPage() {
                           onClick={() => void handleUninstall(theme.installedThemeId)}
                         >
                           {isUninstalling ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
                           ) : (
                             <Trash2 className="h-3.5 w-3.5" aria-hidden />
                           )}
@@ -638,6 +816,7 @@ export default function ThemesPage() {
           )}
         </div>
       </div>
+
 
       <InformaticThemePreviewModal
         isOpen={previewModal.isOpen}

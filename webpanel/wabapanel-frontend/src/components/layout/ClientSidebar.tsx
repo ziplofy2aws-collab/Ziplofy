@@ -11,6 +11,7 @@ import {
   Menu, X, LogOut, Database, FileDown, MessageCircle, ImageIcon, Wrench, BookOpen,
   Megaphone, Wallet, Palette, Brain, Plug, Sparkles, PiggyBank, Shield,
   Puzzle, LifeBuoy, QrCode, History, PhoneCall,   Paintbrush, Store, List, Scale, Stethoscope, ClipboardList, Pill, GraduationCap, LayoutGrid,
+  Building2, Briefcase, Hotel, Scissors, Plane,
 } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebook, FaTelegram, FaEnvelope } from 'react-icons/fa';
 import { GATEWAY_LOGOUT_URL, useAuthStore } from '@/stores/authStore';
@@ -145,6 +146,90 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: 'Real Estate',
+    icon: <Building2 className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/real-estate', icon: <Building2 className="w-4 h-4" /> },
+      { label: 'Properties', href: '/client/real-estate/properties', icon: <Building2 className="w-4 h-4" /> },
+      { label: 'Leads & Enquiries', href: '/client/real-estate/enquiries', icon: <Users className="w-4 h-4" /> },
+      { label: 'Site Visits', href: '/client/real-estate/site-visits', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Clients', href: '/client/real-estate/clients', icon: <Users className="w-4 h-4" /> },
+      { label: 'Deals & Transactions', href: '/client/real-estate/deals', icon: <CreditCard className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Agency',
+    icon: <Briefcase className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/agency', icon: <Briefcase className="w-4 h-4" /> },
+      { label: 'Clients', href: '/client/agency/clients', icon: <Users className="w-4 h-4" /> },
+      { label: 'Projects', href: '/client/agency/projects', icon: <Layers className="w-4 h-4" /> },
+      { label: 'Tasks & Deliverables', href: '/client/agency/tasks', icon: <ClipboardList className="w-4 h-4" /> },
+      { label: 'Team', href: '/client/teams', icon: <Users className="w-4 h-4" /> },
+      { label: 'Proposals & Contracts', href: '/client/agency/proposals', icon: <FileText className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Legal',
+    icon: <Scale className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/legal', icon: <Scale className="w-4 h-4" /> },
+      { label: 'Clients', href: '/client/legal/clients', icon: <Users className="w-4 h-4" /> },
+      { label: 'Matters & Cases', href: '/client/legal/matters', icon: <FileText className="w-4 h-4" /> },
+      { label: 'Hearings & Deadlines', href: '/client/legal/hearings', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Documents', href: '/client/legal/documents', icon: <FileText className="w-4 h-4" /> },
+      { label: 'Billing & Invoices', href: '/client/invoices', icon: <Receipt className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Hospitality',
+    icon: <Hotel className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/hospitality', icon: <Hotel className="w-4 h-4" /> },
+      { label: 'Reservations & Bookings', href: '/client/hospitality/reservations', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Guests', href: '/client/hospitality/guests', icon: <Users className="w-4 h-4" /> },
+      { label: 'Rooms & Availability', href: '/client/hospitality/rooms', icon: <Hotel className="w-4 h-4" /> },
+      { label: 'Services', href: '/client/hospitality/services', icon: <ShoppingBag className="w-4 h-4" /> },
+      { label: 'Hospitality Settings', href: '/client/hospitality/settings', icon: <Settings className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Salon & Spa',
+    icon: <Scissors className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/salon', icon: <Scissors className="w-4 h-4" /> },
+      { label: 'Appointments', href: '/client/salon/bookings', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Services & Pricing', href: '/client/salon/services', icon: <Scissors className="w-4 h-4" /> },
+      { label: 'Staff', href: '/client/salon/staff', icon: <Users className="w-4 h-4" /> },
+      { label: 'Customers', href: '/client/salon/customers', icon: <Users className="w-4 h-4" /> },
+      { label: 'Salon Settings', href: '/client/salon/settings', icon: <Settings className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Service Business',
+    icon: <Wrench className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/service-business', icon: <Wrench className="w-4 h-4" /> },
+      { label: 'Services', href: '/client/service-business/services', icon: <ShoppingBag className="w-4 h-4" /> },
+      { label: 'Bookings', href: '/client/service-business/bookings', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Customers', href: '/client/service-business/customers', icon: <Users className="w-4 h-4" /> },
+      { label: 'Team', href: '/client/teams', icon: <Users className="w-4 h-4" /> },
+      { label: 'Business Settings', href: '/client/service-business/settings', icon: <Settings className="w-4 h-4" /> },
+    ],
+  },
+  {
+    label: 'Tour & Travel',
+    icon: <Plane className="w-5 h-5" />,
+    children: [
+      { label: 'Overview', href: '/client/travel', icon: <Plane className="w-4 h-4" /> },
+      { label: 'Tour Packages', href: '/client/travel/packages', icon: <Package className="w-4 h-4" /> },
+      { label: 'Bookings', href: '/client/travel/bookings', icon: <CalendarCheck className="w-4 h-4" /> },
+      { label: 'Travellers', href: '/client/travel/travellers', icon: <Users className="w-4 h-4" /> },
+      { label: 'Enquiries', href: '/client/travel/enquiries', icon: <MessageCircle className="w-4 h-4" /> },
+      { label: 'Travel Settings', href: '/client/travel/settings', icon: <Settings className="w-4 h-4" /> },
+    ],
+  },
+  {
     label: 'Leads & Commerce',
     icon: <ShoppingBag className="w-5 h-5" />,
     children: [
@@ -267,6 +352,45 @@ const ADMIN_FEATURE_MAP: Record<string, string> = {
   '/client/edtech/teachers': 'edtech',
   '/client/edtech/attendance': 'edtech',
   '/client/edtech/settings': 'edtech',
+  '/client/real-estate': 'realEstate',
+  '/client/real-estate/properties': 'realEstate',
+  '/client/real-estate/enquiries': 'realEstate',
+  '/client/real-estate/site-visits': 'realEstate',
+  '/client/real-estate/clients': 'realEstate',
+  '/client/real-estate/deals': 'realEstate',
+  '/client/agency': 'agency',
+  '/client/agency/clients': 'agency',
+  '/client/agency/projects': 'agency',
+  '/client/agency/tasks': 'agency',
+  '/client/agency/proposals': 'agency',
+  '/client/legal': 'legal',
+  '/client/legal/clients': 'legal',
+  '/client/legal/matters': 'legal',
+  '/client/legal/hearings': 'legal',
+  '/client/legal/documents': 'legal',
+  '/client/hospitality': 'hospitality',
+  '/client/hospitality/reservations': 'hospitality',
+  '/client/hospitality/guests': 'hospitality',
+  '/client/hospitality/rooms': 'hospitality',
+  '/client/hospitality/services': 'hospitality',
+  '/client/hospitality/settings': 'hospitality',
+  '/client/salon': 'salon',
+  '/client/salon/bookings': 'salon',
+  '/client/salon/services': 'salon',
+  '/client/salon/staff': 'salon',
+  '/client/salon/customers': 'salon',
+  '/client/salon/settings': 'salon',
+  '/client/service-business': 'serviceBusiness',
+  '/client/service-business/services': 'serviceBusiness',
+  '/client/service-business/bookings': 'serviceBusiness',
+  '/client/service-business/customers': 'serviceBusiness',
+  '/client/service-business/settings': 'serviceBusiness',
+  '/client/travel': 'travel',
+  '/client/travel/packages': 'travel',
+  '/client/travel/bookings': 'travel',
+  '/client/travel/travellers': 'travel',
+  '/client/travel/enquiries': 'travel',
+  '/client/travel/settings': 'travel',
   '/client/events': 'events',
   '/client/leads': 'leads',
   '/client/forms': 'forms',
@@ -302,6 +426,13 @@ const SECTION_MODULE: Record<string, string> = {
   Automation: 'automation',
   Clinic: 'clinic',
   Edtech: 'edtech',
+  'Real Estate': 'realEstate',
+  Agency: 'agency',
+  Legal: 'legal',
+  Hospitality: 'hospitality',
+  'Salon & Spa': 'salon',
+  'Service Business': 'serviceBusiness',
+  'Tour & Travel': 'travel',
   'Leads & Commerce': 'commerce',
   'Online Store': 'websiteBuilder',
   Channels: 'channels',
@@ -327,6 +458,13 @@ export const MODULE_KEY_MAP: Record<string, string> = {
   'Automation': 'automation',
   'Clinic': 'clinic',
   'Edtech': 'edtech',
+  'Real Estate': 'realEstate',
+  'Agency': 'agency',
+  'Legal': 'legal',
+  'Hospitality': 'hospitality',
+  'Salon & Spa': 'salon',
+  'Service Business': 'serviceBusiness',
+  'Tour & Travel': 'travel',
   'Leads & Commerce': 'commerce',
   'Channels': 'channels',
   'Settings': 'settings',
@@ -346,6 +484,11 @@ export const PERMISSION_TREE = navItems
     moduleKey: MODULE_KEY_MAP[s.label],
     children: (s.children || []).map(c => ({ label: c.label, href: c.href })),
   }));
+
+// Sector modules are locked to the matching industry — the backend derives the
+// feature flag from featureOverrides.industry, so treat these as visible when the
+// flag is on even if the stored selectedModules list predates the sector catalog.
+const SECTOR_MODULE_IDS = new Set(['clinic', 'edtech', 'realEstate', 'agency', 'legal', 'hospitality', 'salon', 'serviceBusiness', 'travel']);
 
 const ALWAYS_ON_SECTIONS = new Set([
   'Dashboard',
@@ -420,9 +563,10 @@ export default function ClientSidebar() {
       if (section.label === 'Channels' && selectedModules.includes('whatsapp')) return true;
       const moduleId = SECTION_MODULE[section.label];
       if (!moduleId) return true;
+      if (SECTOR_MODULE_IDS.has(moduleId) && features[moduleId] === true) return true;
       return selectedModules.includes(moduleId);
     });
-  }, [unlockedNav, selectedModules]);
+  }, [unlockedNav, selectedModules, features]);
 
   // Granular agent permissions: when an agent has module permissions set,
   // only the allowed modules are shown

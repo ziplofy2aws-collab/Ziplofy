@@ -1,6 +1,9 @@
 import { useStorefront } from '@/contexts/store.context';
+import { InformaticStorefrontContactFormProvider } from '@/contexts/informatic-contact-form.context';
 import { InformaticStorefront } from '@/components/InformaticStorefront';
+import { CustomThemeStorefront } from '@/components/CustomThemeStorefront';
 import { StoreNotFound } from '@/components/StoreNotFound';
+import { ThemePreviewApp } from '@/theme-preview/ThemePreviewApp';
 
 function BootFallback() {
   return (
@@ -47,6 +50,23 @@ export function IsValidStorefront() {
         hostname={typeof window !== 'undefined' ? window.location.host : undefined}
         message={resolveError}
       />
+    );
+  }
+
+  /** Theme-builder live preview iframe host. */
+  if (
+    typeof window !== 'undefined' &&
+    window.location.pathname === '/theme-preview'
+  ) {
+    return <ThemePreviewApp />;
+  }
+
+  /** Stores with a builder-made custom theme render through the composer. */
+  if (storeFrontMeta.appliedCustomThemeId) {
+    return (
+      <InformaticStorefrontContactFormProvider>
+        <CustomThemeStorefront store={storeFrontMeta} />
+      </InformaticStorefrontContactFormProvider>
     );
   }
 

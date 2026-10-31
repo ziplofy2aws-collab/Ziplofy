@@ -28,6 +28,11 @@ const {
   submitStorefrontLeadGenForm,
 } = require('../controllers/webpanelStorefrontLeadGenFormController');
 const { getStorefrontClinic } = require('../controllers/webpanelStorefrontClinicController');
+const {
+  listStorefrontTravelPackages,
+  getStorefrontTravelPackage,
+  createStorefrontTravelPackageEnquiry,
+} = require('../controllers/webpanelStorefrontTravelController');
 
 const router = express.Router();
 
@@ -47,5 +52,15 @@ router.post('/:storeId/contact-form-submissions', createStorefrontContactSubmiss
 router.get('/:storeId/lead-gen-forms/:formId', getStorefrontLeadGenForm);
 router.post('/:storeId/lead-gen-forms/:formId/submit', submitStorefrontLeadGenForm);
 router.get('/:storeId/clinic', getStorefrontClinic);
+router.get('/:storeId/travel-packages', listStorefrontTravelPackages);
+router.get('/:storeId/travel-packages/:packageId', getStorefrontTravelPackage);
+router.post(
+  '/:storeId/travel-packages/:packageId/enquiries',
+  createStorefrontTravelPackageEnquiry
+);
+router.get(
+  '/:storeId/custom-theme-runtime',
+  require('../controllers/webpanelStoreCustomThemeController').getStorefrontCustomThemeRuntime
+);
 
 module.exports = router;

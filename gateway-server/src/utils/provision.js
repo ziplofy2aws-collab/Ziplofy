@@ -3,14 +3,24 @@ const { mintSsoTicket } = require('./jwt');
 const { signCanonical } = require('./hmac');
 const SsoTicket = require('../models/SsoTicket');
 
+// Industry -> webpanel landing path.
+const INDUSTRY_LAUNCH_PATH = {
+  education: '/client/edtech/overview',
+  healthcare: '/client/clinic/queue',
+  real_estate: '/client/real-estate',
+  agency: '/client/agency',
+  legal: '/client/legal',
+  hospitality: '/client/hospitality',
+  salon: '/client/salon',
+  other_service: '/client/service-business',
+  tour_travel: '/client/travel',
+};
+
 function resolveDestination(user) {
-  if (user.industry === 'education') {
-    return { destination: 'webpanel', launchPath: '/client/edtech/overview' };
-  }
-  if (user.industry === 'healthcare') {
-    return { destination: 'webpanel', launchPath: '/client/clinic/queue' };
-  }
-  return { destination: 'webpanel', launchPath: '/client/dashboard' };
+  return {
+    destination: 'webpanel',
+    launchPath: INDUSTRY_LAUNCH_PATH[user.industry] || '/client/dashboard',
+  };
 }
 
 async function callProvision(url, body) {

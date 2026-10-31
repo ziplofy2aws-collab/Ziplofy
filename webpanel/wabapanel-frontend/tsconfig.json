@@ -31,7 +31,13 @@
         "../../remote-themes/informatic/src/*"
       ],
       "@render-store/sdk": [
-        "../../remote-themes/informatic/src/sdk-shim.tsx"
+        "./src/shims/render-store-sdk.tsx"
+      ],
+      "react-router-dom": [
+        "./src/shims/react-router-dom.tsx"
+      ],
+      "@codiic/create-theme/*": [
+        "./src/create-theme/*"
       ]
     }
   },
@@ -45,6 +51,7 @@
   ],
   "exclude": [
     "node_modules",
-    "patch_backups"
+    "patch_backups",
+    "src/theme-packs"
   ]
 }

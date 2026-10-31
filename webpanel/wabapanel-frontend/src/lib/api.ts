@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { GATEWAY_LOGOUT_URL } from './gateway';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api',
@@ -33,7 +34,7 @@ api.interceptors.response.use(
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
         localStorage.removeItem('workspaceId');
-        window.location.href = '/auth/login';
+        window.location.href = GATEWAY_LOGOUT_URL;
       }
     }
     return Promise.reject(error);
@@ -157,6 +158,38 @@ export const informaticInstalledThemesApi = {
       message?: string;
       data: { appliedTheme: string; installedThemes: InformaticInstalledThemeItem[] };
     }>(`/stores/${storeId}/informatic-installed-themes/apply`, { themeId }),
+};
+
+/** Builder-made custom themes (create-theme composer configs). */
+export type StoreCustomThemeItem = {
+  _id: string;
+  storeId: string;
+  themeName: string;
+  themeDesc?: string | null;
+  themeConfig: Record<string, unknown>;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export const storeCustomThemesApi = {
+  list: (storeId: string) =>
+    api.get<{ success: boolean; data: StoreCustomThemeItem[] }>(
+      `/stores/${storeId}/custom-themes`
+    ),
+  create: (storeId: string, data: { themeName: string; themeDesc?: string; themeConfig: Record<string, unknown> }) =>
+    api.post<{ success: boolean; data: StoreCustomThemeItem }>(
+      `/stores/${storeId}/custom-themes`,
+      data
+    ),
+  update: (id: string, data: Partial<Pick<StoreCustomThemeItem, 'themeName' | 'themeDesc' | 'themeConfig'>>) =>
+    api.put<{ success: boolean; data: StoreCustomThemeItem }>(`/custom-themes/${id}`, data),
+  remove: (id: string) =>
+    api.delete<{ success: boolean; data: { deletedId: string } }>(`/custom-themes/${id}`),
+  apply: (storeId: string, themeId: string) =>
+    api.post<{ success: boolean; data: Record<string, unknown> }>(
+      `/stores/${storeId}/apply-custom-theme`,
+      { themeId }
+    ),
 };
 
 /** Per-store Informatic theme config (MongoDB + JSON file mirror). */
@@ -959,4 +992,25 @@ export const platformApi = {
   adminHealthReport: (force?: boolean) => api.get('/platform/admin/health-report', { params: force ? { force: 1 } : {}, timeout: 120000 }),
   adminMaintenance: () => api.get('/platform/admin/maintenance'),
   adminSetMaintenance: (data: { isEnabled: boolean; message?: string }) => api.put('/platform/admin/maintenance', data),
+};
+
+export const sectorApi = {
+  entities: (industry: string) => api.get(`/sector/${industry}/entities`),
+  overview: (industry: string) => api.get(`/sector/${industry}/overview`),
+  list: (industry: string, entity: string, params?: Record<string, unknown>) =>
+    api.get(`/sector/${industry}/${entity}`, { params }),
+  get: (industry: string, entity: string, id: string) =>
+    api.get(`/sector/${industry}/${entity}/${id}`),
+  create: (industry: string, entity: string, data: object) =>
+    api.post(`/sector/${industry}/${entity}`, data),
+  update: (industry: string, entity: string, id: string, data: object) =>
+    api.put(`/sector/${industry}/${entity}/${id}`, data),
+  archive: (industry: string, entity: string, id: string) =>
+    api.delete(`/sector/${industry}/${entity}/${id}`),
+  setStatus: (industry: string, entity: string, id: string, data: { status: string; reason?: string; cancelReason?: string; refundAmount?: number }) =>
+    api.post(`/sector/${industry}/${entity}/${id}/status`, data),
+  duplicate: (industry: string, entity: string, id: string) =>
+    api.post(`/sector/${industry}/${entity}/${id}/duplicate`),
+  convertEnquiry: (industry: string, id: string, data?: object) =>
+    api.post(`/sector/${industry}/enquiries/${id}/convert`, data || {}),
 };

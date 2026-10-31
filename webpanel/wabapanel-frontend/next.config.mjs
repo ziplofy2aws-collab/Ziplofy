@@ -12,7 +12,10 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@informatic-theme': informaticSrc,
-      '@render-store/sdk': path.join(informaticSrc, 'sdk-shim.tsx'),
+      // Ported create-theme builder shims (see src/shims/)
+      '@render-store/sdk': path.join(__dirname, 'src/shims/render-store-sdk.tsx'),
+      'react-router-dom': path.join(__dirname, 'src/shims/react-router-dom.tsx'),
+      '@codiic/create-theme': path.join(__dirname, 'src/create-theme'),
     };
     return config;
   },

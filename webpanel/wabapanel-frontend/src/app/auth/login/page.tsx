@@ -7,6 +7,7 @@ import {
   CheckCircle2, Megaphone,
 } from 'lucide-react';
 import useBranding from '@/lib/useBranding';
+import { GATEWAY_LOGOUT_URL } from '@/lib/gateway';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/lib/api';
 import toast from 'react-hot-toast';
@@ -45,6 +46,17 @@ function LoginForm() {
   const [code, setCode] = useState('');
   const [blocked, setBlocked] = useState(false);
   const [blockRemaining, setBlockRemaining] = useState(0);
+  const [redirecting, setRedirecting] = useState(false);
+
+  // Client auth lives on the gateway (3010). Keep local login only for
+  // magic-link tokens (?token=) and the admin escape hatch (?local=1).
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get('token') && params.get('local') !== '1') {
+      setRedirecting(true);
+      window.location.replace(GATEWAY_LOGOUT_URL);
+    }
+  }, []);
 
   const canSubmit = useMemo(
     () => !!(email.trim() && password.length >= 1) && !blocked && !loading,
@@ -195,6 +207,14 @@ function LoginForm() {
       toast.error(authErrorMessage(err, 'Could not send verification email'));
     }
   };
+
+  if (redirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f1f1f1]">
+        <p className="text-[#98A2B3] text-sm">Redirecting to sign in…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">

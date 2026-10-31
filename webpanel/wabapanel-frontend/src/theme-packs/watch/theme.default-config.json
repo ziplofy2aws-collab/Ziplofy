@@ -1,0 +1,977 @@
+{
+  "settings": {
+    "colors": {
+      "primary": "#111111",
+      "background": "#ffffff",
+      "text": "#111111",
+      "surface": "#ffffff",
+      "muted": "#6b6b6b",
+      "accent": "#c5a059",
+      "border": "#e5e7eb",
+      "palette": [
+        "#ffffff",
+        "#111111",
+        "#c5a059"
+      ]
+    },
+    "typography": {
+      "fontFamily": "\"EB Garamond\", Georgia, serif",
+      "fontFamilyBody": "\"Montserrat\", system-ui, sans-serif",
+      "fontBodyKey": "montserrat",
+      "fontSubheadingKey": "montserrat",
+      "fontHeadingKey": "eb-garamond",
+      "fontAccentKey": "eb-garamond",
+      "fontFamilySubheading": "\"Montserrat\", system-ui, sans-serif",
+      "fontFamilyAccent": "\"EB Garamond\", Georgia, serif",
+      "fontBodyWeight": "regular",
+      "fontSubheadingWeight": "regular",
+      "fontHeadingWeight": "regular",
+      "fontAccentWeight": "regular"
+    },
+    "buttons": {
+      "primary": {
+        "background": "#c5a059",
+        "text": "#ffffff",
+        "border": "#c5a059",
+        "borderThickness": 0,
+        "cornerRadius": 0,
+        "font": "body",
+        "textCase": "default"
+      },
+      "secondary": {
+        "background": "transparent",
+        "text": "#c5a059",
+        "border": "#c5a059",
+        "borderThickness": 1,
+        "cornerRadius": 0,
+        "font": "body",
+        "textCase": "default"
+      }
+    },
+    "logo": {
+      "defaultUrl": "/remote-themes/watch/assets/img/logo.png",
+      "inverseUrl": "",
+      "faviconUrl": "",
+      "desktopHeight": 36,
+      "mobileHeight": 28
+    }
+  },
+  "layout_order": {
+    "header": [
+      "announcement_bar",
+      "header"
+    ],
+    "footer": [
+      "footer"
+    ]
+  },
+  "sections": {
+    "announcement_bar": {
+      "id": "announcement_bar",
+      "type": "announcement-bar",
+      "enabled": true,
+      "settings": {
+        "enabled": true,
+        "message": "Free shipping on orders over ₹999 — Shop the new collection",
+        "linkLabel": "Shop now",
+        "linkHref": "/products",
+        "timeToNext": 5,
+        "sectionWidth": "page",
+        "colorScheme": "scheme-4",
+        "backgroundColor": "#000000",
+        "textColor": "#ffffff",
+        "dividerThickness": 1,
+        "paddingTop": 15,
+        "paddingBottom": 15,
+        "customCss": "",
+        "dismissible": true,
+        "icon": ""
+      },
+      "blocks": {
+        "announcement": {
+          "type": "announcement",
+          "settings": {
+            "text": "Just Launched: Dominator & Dominator Skeleton Watches —",
+            "link": "/collections/all",
+            "font": "subheading",
+            "fontSize": "12px",
+            "fontWeight": "default",
+            "letterSpacing": "normal",
+            "textCase": "default",
+            "linkLabel": "Shop Now"
+          }
+        }
+      },
+      "block_order": [
+        "announcement"
+      ]
+    },
+    "header": {
+      "id": "header",
+      "type": "header",
+      "enabled": true,
+      "settings": {
+        "backgroundColor": "#ffffff",
+        "textColor": "#111111",
+        "customerAccountMenu": "customer-account",
+        "searchIcon": true,
+        "searchPosition": "right",
+        "searchRow": "top",
+        "searchPlaceholder": "Timegrapher Watches",
+        "countryRegionEnabled": false,
+        "countryRegionLabel": "IN · USD",
+        "showFlag": false,
+        "languageSelectorEnabled": false,
+        "languageLabel": "English",
+        "localizationFont": "heading",
+        "localizationSize": "14px",
+        "localizationPosition": "right",
+        "localizationRow": "top",
+        "sectionWidth": "page",
+        "headerHeight": "standard",
+        "stickyMode": "always",
+        "borderThickness": 1,
+        "menuStyle": "icons",
+        "colorScheme": "scheme-1",
+        "homeTransparentBackground": false,
+        "productTransparentBackground": false,
+        "collectionTransparentBackground": false,
+        "defaultLogoUrl": "/remote-themes/watch/assets/img/logo.png",
+        "cartType": "drawer",
+        "productTitleCase": "default",
+        "emptyCartLink": "/products",
+        "cartDrawerAutoOpen": false,
+        "cartLabel": "Cart",
+        "customCss": ""
+      },
+      "blocks": {
+        "logo": {
+          "type": "logo",
+          "settings": {
+            "position": "left",
+            "text": "exbuyer",
+            "tagline": "",
+            "hideLogoOnHomePage": false,
+            "paddingTop": 0,
+            "paddingBottom": 0,
+            "imageUrl": "/remote-themes/watch/assets/img/logo.png"
+          }
+        },
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "position": "left",
+            "row": "",
+            "menu": "main-menu",
+            "colorScheme": "scheme-1",
+            "topLevelSize": "14px",
+            "submenuSize": "medium",
+            "font": "body",
+            "textCase": "default",
+            "submenuMediaType": "featured-products",
+            "submenuImageRatio": "portrait",
+            "submenuImageCornerRadius": 0,
+            "mobileNavigationBar": false,
+            "mobileAccordion": false,
+            "mobileDividers": false,
+            "items": [
+              {
+                "label": "Home",
+                "href": "/"
+              },
+              {
+                "label": "All products",
+                "href": "/collections/all"
+              },
+              {
+                "label": "All collections",
+                "href": "/collections"
+              },
+              {
+                "label": "All blogs",
+                "href": "/blogs/all"
+              }
+            ]
+          },
+          "nested_block_order": [
+            "link_home",
+            "link_all_products",
+            "link_all_collections",
+            "link_all_blogs"
+          ]
+        }
+      },
+      "block_order": [
+        "logo",
+        "menu"
+      ]
+    },
+    "footer": {
+      "id": "footer",
+      "type": "footer",
+      "enabled": true,
+      "settings": {
+        "backgroundColor": "#0f0f0f",
+        "textColor": "#ffffff"
+      },
+      "blocks": {
+        "brand": {
+          "type": "brand",
+          "settings": {
+            "brandName": "exbuyer",
+            "email": "support@exbuyerwatch.in",
+            "phone": "+91 82827 2045",
+            "facebookUrl": "https://facebook.com",
+            "instagramUrl": "https://instagram.com",
+            "xUrl": "https://x.com",
+            "youtubeUrl": "https://youtube.com"
+          }
+        },
+        "menu_main": {
+          "type": "menu",
+          "settings": {
+            "heading": "Main Menu",
+            "items": [
+              {
+                "label": "Home",
+                "href": "/"
+              },
+              {
+                "label": "All products",
+                "href": "/collections/all"
+              },
+              {
+                "label": "All collections",
+                "href": "/collections"
+              },
+              {
+                "label": "All blogs",
+                "href": "/blogs/all"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
+          }
+        },
+        "menu_help": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help",
+            "items": [
+              {
+                "label": "Contact us",
+                "href": "/pages/contact"
+              },
+              {
+                "label": "FAQ",
+                "href": "/pages/faq"
+              },
+              {
+                "label": "Refund Policy",
+                "href": "/policies/refund"
+              },
+              {
+                "label": "Privacy Policy",
+                "href": "/policies/privacy"
+              },
+              {
+                "label": "Shipping Policy",
+                "href": "/policies/shipping"
+              },
+              {
+                "label": "Terms of Service",
+                "href": "/policies/terms"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
+          }
+        },
+        "menu_collections": {
+          "type": "menu",
+          "settings": {
+            "heading": "Our Collections",
+            "items": [
+              {
+                "label": "All collections",
+                "href": "/collections"
+              },
+              {
+                "label": "All products",
+                "href": "/collections/all"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
+          }
+        },
+        "bottom_links": {
+          "type": "menu",
+          "settings": {
+            "items": [
+              {
+                "label": "Contact us",
+                "href": "/pages/contact"
+              },
+              {
+                "label": "FAQ",
+                "href": "/pages/faq"
+              },
+              {
+                "label": "Refund Policy",
+                "href": "/policies/refund"
+              },
+              {
+                "label": "Privacy Policy",
+                "href": "/policies/privacy"
+              },
+              {
+                "label": "Shipping Policy",
+                "href": "/policies/shipping"
+              },
+              {
+                "label": "Terms of Service",
+                "href": "/policies/terms"
+              }
+            ],
+            "menu": "",
+            "menuName": ""
+          }
+        }
+      },
+      "block_order": [
+        "brand",
+        "menu_main",
+        "menu_help",
+        "menu_collections",
+        "bottom_links"
+      ]
+    }
+  },
+  "templates": {
+    "404": {
+      "sections": {
+        "not_found_main": {
+          "type": "not-found-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "404",
+            "title": "Page not found",
+            "message": "The page you are looking for may have moved or no longer exists.",
+            "homeLabel": "Back to home",
+            "shopLabel": "Browse watches"
+          }
+        }
+      },
+      "section_order": [
+        "not_found_main"
+      ]
+    },
+    "index": {
+      "sections": {
+        "hero_banner": {
+          "type": "hero-banner",
+          "enabled": true,
+          "settings": {
+            "slide1Eyebrow": "Timex Atelier",
+            "slide1Title": "A Legacy Of Modernity",
+            "slide1Tagline": "A Modern Time Traveller has Landed",
+            "slide1PrimaryLabel": "Shop Now",
+            "slide1PrimaryUrl": "/collections/all",
+            "slide1SecondaryLabel": "Explore",
+            "slide1SecondaryUrl": "/collections",
+            "slide1ImageUrl": "",
+            "slide1MobileImageUrl": "",
+            "slide2Eyebrow": "Dominator Series",
+            "slide2Title": "Engineered For The Edge",
+            "slide2Tagline": "Precision Meets Fearless Design",
+            "slide2PrimaryLabel": "Shop Now",
+            "slide2PrimaryUrl": "/collections/all",
+            "slide2SecondaryLabel": "Explore",
+            "slide2SecondaryUrl": "/collections",
+            "slide2ImageUrl": "",
+            "slide2MobileImageUrl": "",
+            "slide3Eyebrow": "Studio Collection",
+            "slide3Title": "Crafted In Silence",
+            "slide3Tagline": "Where Light Meets Mechanical Art",
+            "slide3PrimaryLabel": "Shop Now",
+            "slide3PrimaryUrl": "/collections/all",
+            "slide3SecondaryLabel": "Explore",
+            "slide3SecondaryUrl": "/collections",
+            "slide3ImageUrl": "",
+            "slide3MobileImageUrl": "",
+            "slide4Eyebrow": "Skeleton Edit",
+            "slide4Title": "Time Unveiled",
+            "slide4Tagline": "Every Gear Tells A Story",
+            "slide4PrimaryLabel": "Shop Now",
+            "slide4PrimaryUrl": "/collections/all",
+            "slide4SecondaryLabel": "Explore",
+            "slide4SecondaryUrl": "/collections",
+            "slide4ImageUrl": "",
+            "slide4MobileImageUrl": ""
+          }
+        },
+        "legacy_collection": {
+          "type": "legacy-collection",
+          "enabled": true,
+          "settings": {
+            "titleBefore": "Shop",
+            "titleAccent": "The Legacy",
+            "titleAfter": "Collection",
+            "collectionsPicker": "",
+            "himTitle": "Watches\nFor Him",
+            "himImageUrl": "",
+            "himLink": "/collections",
+            "herTitle": "Watches\nFor Her",
+            "herImageUrl": "",
+            "herLink": "/collections"
+          }
+        },
+        "icons": {
+          "type": "icons",
+          "enabled": true,
+          "settings": {
+            "title": "Our Icons at Upto 25% Off",
+            "backgroundImageUrl": "",
+            "ctaLabel": "Shop All Icons",
+            "ctaUrl": "/collections/all",
+            "card1ProductId": "",
+            "card2ProductId": "",
+            "card3ProductId": "",
+            "card4ProductId": "",
+            "card5ProductId": "",
+            "card6ProductId": ""
+          }
+        },
+        "signature": {
+          "type": "signature",
+          "enabled": true,
+          "settings": {
+            "title": "Sylvi Signature Watch Collection",
+            "tile1CollectionHandle": "",
+            "tile1LifestyleImageUrl": "",
+            "tile1ProductImageUrl": "",
+            "tile2CollectionHandle": "",
+            "tile2LifestyleImageUrl": "",
+            "tile2ProductImageUrl": "",
+            "tile3CollectionHandle": "",
+            "tile3LifestyleImageUrl": "",
+            "tile3ProductImageUrl": "",
+            "tile4CollectionHandle": "",
+            "tile4LifestyleImageUrl": "",
+            "tile4ProductImageUrl": ""
+          }
+        },
+        "engineering": {
+          "type": "engineering",
+          "enabled": true,
+          "settings": {
+            "title": "Engineering Meets Elegance",
+            "mediaImageUrl": "",
+            "feature1Title": "K1 Sapphire Coated Crystal",
+            "feature1Text": "Clarity that lasts. Scratch-resistant sapphire coating ensures your watch looks as flawless on day 1000 as it did on day one.",
+            "feature2Title": "316L Stainless Steel Case",
+            "feature2Text": "The same grade trusted in luxury timepieces worldwide. Resistant to corrosion, built for strength, finished for elegance.",
+            "feature3Title": "Quick Release Strap",
+            "feature3Text": "Swap styles in seconds. The quick-release strap system lets you adapt your watch to any occasion with ease."
+          }
+        },
+        "new_launches": {
+          "type": "new-launches",
+          "enabled": true,
+          "settings": {
+            "title": "New Launches",
+            "viewAllLabel": "View all",
+            "viewAllUrl": "/collections/all",
+            "featuredImageUrl": "",
+            "featuredLink": "/collections/all",
+            "card1ProductId": "",
+            "card2ProductId": "",
+            "card3ProductId": ""
+          }
+        },
+        "instagram": {
+          "type": "instagram",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Social Media",
+            "title": "Follow us on Instagram",
+            "ctaLabel": "Follow on Instagram",
+            "ctaUrl": "https://instagram.com",
+            "tileAImageUrl": "",
+            "tileALink": "https://instagram.com",
+            "tileBImageUrl": "",
+            "tileBLink": "https://instagram.com",
+            "tileCImageUrl": "",
+            "tileCLink": "https://instagram.com",
+            "tileDImageUrl": "",
+            "tileDLink": "https://instagram.com",
+            "tileEImageUrl": "",
+            "tileELink": "https://instagram.com",
+            "tileFImageUrl": "",
+            "tileFLink": "https://instagram.com"
+          }
+        },
+        "watch_collection": {
+          "type": "watch-collection",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "New Collection",
+            "title": "Timeless Elegance, Crafted for You",
+            "lead": "Discover our most loved timepieces, where precision meets sophistication.",
+            "productsPicker": ""
+          }
+        },
+        "banner_showcase": {
+          "type": "banner-showcase",
+          "enabled": true,
+          "settings": {
+            "slide1ImageUrl": "",
+            "slide1MobileImageUrl": "",
+            "slide2ImageUrl": "",
+            "slide2MobileImageUrl": "",
+            "slide3ImageUrl": "",
+            "slide3MobileImageUrl": ""
+          }
+        }
+      },
+      "section_order": [
+        "hero_banner",
+        "legacy_collection",
+        "icons",
+        "signature",
+        "banner_showcase",
+        "watch_collection",
+        "engineering",
+        "new_launches",
+        "instagram"
+      ]
+    },
+    "product": {
+      "sections": {
+        "product_main": {
+          "type": "product-main",
+          "enabled": true,
+          "settings": {
+            "taxNote": "MRP (Inclusive of all taxes). Shipping calculated at checkout.",
+            "addToCartLabel": "ADD TO CART",
+            "buyNowLabel": "BUY NOW",
+            "addingLabel": "ADDING…",
+            "warrantyText": "1-year manufacturer warranty covering movement defects under normal use.",
+            "shippingText": "Standard delivery in 2–5 business days. Express options available at checkout.",
+            "returnsText": "Easy 14-day returns on unused products in original packaging.",
+            "sizeChartText": "Case sizes typically run 40–44 mm. Choose based on wrist comfort and preference.",
+            "trust1": "EXPRESS SHIPPING",
+            "trust2": "10-DAY RETURN POLICY*",
+            "trust3": "1-YEAR* WARRANTY",
+            "trust4": "100% SECURE CHECKOUT",
+            "specsTitle": "Product Specifications",
+            "specsCase": "Case details are listed in the product description when provided by the merchant.",
+            "specsStrap": "Strap and clasp details vary by model — see description for materials and finish.",
+            "specsDial": "Dial markers, hands, and complications are described on the product listing.",
+            "specsMovement": "Movement type and accuracy details are included when available from the seller.",
+            "specsOther": "Glass, water resistance, and warranty information appear in the listing details.",
+            "specsImageUrl": "",
+            "qtyMin": 1,
+            "qtyMax": 20
+          }
+        },
+        "product_faq": {
+          "type": "product-faq",
+          "enabled": true,
+          "settings": {
+            "title": "FAQs",
+            "backgroundColor": "",
+            "textColor": ""
+          },
+          "settings_field_order": [
+            "templates.product.sections.product_faq.settings.title",
+            "templates.product.sections.product_faq.settings.backgroundColor",
+            "templates.product.sections.product_faq.settings.textColor"
+          ],
+          "blocks": {
+            "faq_1": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "How long does Starboard Rosegold battery last?",
+                "answer": "Under normal use, the quartz battery typically lasts around 2 years before needing replacement."
+              }
+            },
+            "faq_2": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "Can I wear my Starboard Rosegold watch while swimming or showering?",
+                "answer": "It is water resistant to 30M, suitable for splashes. Avoid swimming, diving, or hot showers."
+              }
+            },
+            "faq_3": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "How should I clean my Starboard Rosegold watch?",
+                "answer": "Wipe gently with a soft dry cloth. Avoid harsh chemicals, solvents, and abrasive cleaners."
+              }
+            },
+            "faq_4": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "What is your return policy for Starboard Rosegold?",
+                "answer": "Unused products can be returned within 10 days in original packaging for a refund or exchange."
+              }
+            },
+            "faq_5": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "Do you offer expedited delivery services for Starboard Rosegold?",
+                "answer": "Yes. Express shipping options are available at checkout depending on your pincode."
+              }
+            },
+            "faq_6": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "What is the warranty for Starboard Rosegold?",
+                "answer": "It includes a 1-year manufacturer warranty covering movement defects under normal use."
+              }
+            },
+            "faq_7": {
+              "type": "faq-item",
+              "enabled": true,
+              "settings": {
+                "question": "Where can I find user manual of Starboard Rosegold?",
+                "answer": "Open the User Manual accordion on this product page, or download it from your order confirmation email."
+              }
+            }
+          },
+          "block_order": [
+            "faq_1",
+            "faq_2",
+            "faq_3",
+            "faq_4",
+            "faq_5",
+            "faq_6",
+            "faq_7"
+          ]
+        }
+      },
+      "section_order": [
+        "product_main",
+        "product_faq"
+      ]
+    },
+    "search": {
+      "sections": {
+        "search_main": {
+          "type": "search-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Search",
+            "title": "Find a watch",
+            "subtitle": "Search by name, model, or keyword.",
+            "placeholder": "Search products",
+            "emptyMessage": "No products found.",
+            "hintMessage": "Try a product name or keyword.",
+            "submitLabel": "Search",
+            "browseLabel": "Browse all products"
+          }
+        }
+      },
+      "section_order": [
+        "search_main"
+      ]
+    },
+    "collections_list": {
+      "sections": {
+        "collections_list_main": {
+          "type": "collections-list-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Explore",
+            "title": "Collections",
+            "subtitle": "Shop curated lines and signature series.",
+            "emptyMessage": "No collections yet.",
+            "allProductsLabel": "View all products",
+            "loadingLabel": "Loading collections…"
+          }
+        }
+      },
+      "section_order": [
+        "collections_list_main"
+      ]
+    },
+    "all_products": {
+      "sections": {
+        "all_products_main": {
+          "type": "all-products-main",
+          "enabled": true,
+          "settings": {
+            "breadcrumb": "Home / Product Catalogue / All products",
+            "emptyMessage": "No products match your filters."
+          }
+        }
+      },
+      "section_order": [
+        "all_products_main"
+      ]
+    },
+    "collection": {
+      "sections": {
+        "collection_main": {
+          "type": "collection-main",
+          "enabled": true,
+          "settings": {
+            "emptyMessage": "No products in this collection.",
+            "notFoundTitle": "Collection not found",
+            "notFoundMessage": "This collection could not be found or is unavailable.",
+            "loadingLabel": "Loading collection…",
+            "allCollectionsLabel": "All collections",
+            "allProductsLabel": "View all products",
+            "shopLabel": "Shop the collection"
+          }
+        }
+      },
+      "section_order": [
+        "collection_main"
+      ]
+    },
+    "all_blogs": {
+      "sections": {
+        "all_blogs_main": {
+          "type": "all-blogs-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Journal",
+            "title": "All blogs",
+            "subtitle": "Stories, craft, and collections from the atelier.",
+            "emptyTitle": "No blogs yet.",
+            "loadingLabel": "Loading blogs…"
+          }
+        }
+      },
+      "section_order": [
+        "all_blogs_main"
+      ]
+    },
+    "blogs": {
+      "sections": {
+        "blog_main": {
+          "type": "blog-main",
+          "enabled": true,
+          "settings": {
+            "emptyTitle": "No published articles yet.",
+            "notFoundTitle": "Blog not found",
+            "notFoundMessage": "This blog could not be found or is unavailable.",
+            "loadingLabel": "Loading blog…"
+          }
+        }
+      },
+      "section_order": [
+        "blog_main"
+      ]
+    },
+    "blog_posts": {
+      "sections": {
+        "blog_post_main": {
+          "type": "blog-post-main",
+          "enabled": true,
+          "settings": {
+            "loadingLabel": "Loading article…",
+            "notFoundTitle": "Article not found",
+            "backLabel": "Back to blog"
+          }
+        }
+      },
+      "section_order": [
+        "blog_post_main"
+      ]
+    },
+    "cart": {
+      "sections": {
+        "cart_main": {
+          "type": "cart-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Your bag",
+            "title": "Shopping cart",
+            "subtitle": "Review your pieces before checkout.",
+            "emptyTitle": "Your cart is empty.",
+            "continueLabel": "Continue shopping",
+            "removeLabel": "Remove",
+            "loadingLabel": "Loading cart…",
+            "subtotalLabel": "Subtotal",
+            "checkoutLabel": "Checkout",
+            "shippingNote": "Shipping calculated at checkout",
+            "offersLabel": "Eligible offers"
+          }
+        }
+      },
+      "section_order": [
+        "cart_main"
+      ]
+    },
+    "login": {
+      "sections": {
+        "login_main": {
+          "type": "login-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Sign in",
+            "subtitle": "Welcome back — enter your details to continue.",
+            "emailPlaceholder": "Email",
+            "passwordPlaceholder": "Password",
+            "submitLabel": "Sign in",
+            "loadingLabel": "Please wait…",
+            "forgotLabel": "Forgot password?",
+            "signupPrompt": "New here?",
+            "signupLabel": "Create an account"
+          }
+        }
+      },
+      "section_order": [
+        "login_main"
+      ]
+    },
+    "signup": {
+      "sections": {
+        "signup_main": {
+          "type": "signup-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Join us",
+            "title": "Create account",
+            "subtitle": "Start shopping with a free account.",
+            "firstNamePlaceholder": "First name",
+            "lastNamePlaceholder": "Last name",
+            "emailPlaceholder": "Email",
+            "passwordPlaceholder": "Password",
+            "submitLabel": "Create account",
+            "loadingLabel": "Please wait…",
+            "loginPrompt": "Already have an account?",
+            "loginLabel": "Sign in"
+          }
+        }
+      },
+      "section_order": [
+        "signup_main"
+      ]
+    },
+    "forgot_password": {
+      "sections": {
+        "forgot_main": {
+          "type": "forgot-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Reset password",
+            "subtitle": "Enter your email and we’ll send reset instructions.",
+            "emailPlaceholder": "Email",
+            "submitLabel": "Send reset link",
+            "loadingLabel": "Sending…",
+            "successMessage": "If an account exists for that email, reset instructions are on the way.",
+            "backLabel": "Back to sign in"
+          }
+        }
+      },
+      "section_order": [
+        "forgot_main"
+      ]
+    },
+    "profile": {
+      "sections": {
+        "profile_main": {
+          "type": "profile-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Your profile",
+            "subtitle": "Update your details and communication preferences.",
+            "signedOutMessage": "Sign in to view and edit your profile.",
+            "signInLabel": "Sign in",
+            "emailLabel": "Email",
+            "emailHelper": "Email cannot be changed here.",
+            "firstNamePlaceholder": "First name",
+            "lastNamePlaceholder": "Last name",
+            "phonePlaceholder": "Phone number",
+            "saveLabel": "Save profile",
+            "savingLabel": "Saving…",
+            "preferencesTitle": "Preferences",
+            "preferencesSubtitle": "Language and marketing choices for this store.",
+            "languageLabel": "Language",
+            "emailMarketingLabel": "Email me about new releases and offers",
+            "smsMarketingLabel": "Text me about orders and promotions",
+            "preferencesSaveLabel": "Save preferences",
+            "ordersLinkLabel": "View orders"
+          }
+        }
+      },
+      "section_order": [
+        "profile_main"
+      ]
+    },
+    "orders": {
+      "sections": {
+        "orders_main": {
+          "type": "orders-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Your orders",
+            "subtitle": "Track purchases and past deliveries.",
+            "loadingMessage": "Loading orders…",
+            "emptyMessage": "No orders yet. When you place one, it will appear here.",
+            "signedOutMessage": "Sign in to view your order history.",
+            "signInLabel": "Sign in",
+            "totalLabel": "Total",
+            "datePrefix": "Ordered",
+            "statusPrefix": "Status",
+            "profileLinkLabel": "Back to profile",
+            "viewDetailsLabel": "View details"
+          }
+        }
+      },
+      "section_order": [
+        "orders_main"
+      ]
+    },
+    "order_details": {
+      "sections": {
+        "order_details_main": {
+          "type": "order-details-main",
+          "enabled": true,
+          "settings": {
+            "eyebrow": "Account",
+            "title": "Order details",
+            "subtitle": "Review items, totals, and shipping for this order.",
+            "loadingMessage": "Loading order…",
+            "notFoundMessage": "We could not find that order.",
+            "signedOutMessage": "Sign in to view this order.",
+            "signInLabel": "Sign in",
+            "backLabel": "Back to orders",
+            "itemsHeading": "Items",
+            "summaryHeading": "Summary",
+            "shippingHeading": "Shipping",
+            "orderIdLabel": "Order",
+            "datePrefix": "Ordered",
+            "statusPrefix": "Status",
+            "paymentPrefix": "Payment",
+            "qtyLabel": "Qty",
+            "subtotalLabel": "Subtotal",
+            "taxLabel": "Tax",
+            "shippingLabel": "Shipping",
+            "totalLabel": "Total",
+            "freeShippingLabel": "Free",
+            "emptyAddressMessage": "No shipping address on this order."
+          }
+        }
+      },
+      "section_order": [
+        "order_details_main"
+      ]
+    }
+  }
+}

@@ -17,6 +17,7 @@ const SERVICE_INDUSTRIES = [
   { id: 'legal', label: 'Legal' },
   { id: 'hospitality', label: 'Hospitality' },
   { id: 'salon', label: 'Salon / spa' },
+  { id: 'tour_travel', label: 'Tour & travel' },
   { id: 'other_service', label: 'Other service' },
 ];
 

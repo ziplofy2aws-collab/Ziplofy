@@ -12,8 +12,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) { (() => { try { sessionStorage.setItem('postLoginRedirect', window.location.pathname + window.location.search); } catch { /* */ } router.push('/auth/login'); })(); return; }
-    if (!isAuthenticated) { loadUser().then(() => setReady(true)).catch(() => router.push('/auth/login')); }
+    if (!token) { (() => { try { sessionStorage.setItem('postLoginRedirect', window.location.pathname + window.location.search); } catch { /* */ } router.push('/auth/login?local=1'); })(); return; }
+    if (!isAuthenticated) { loadUser().then(() => setReady(true)).catch(() => router.push('/auth/login?local=1')); }
     else setReady(true);
   }, [isAuthenticated, loadUser, router]);
 

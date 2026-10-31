@@ -1,4 +1,5 @@
 import { randomUUID } from 'crypto';
+import fs from 'fs';
 import path from 'path';
 import { Request, Response } from 'express';
 import { DeleteObjectsCommand, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -7,6 +8,86 @@ import { asyncErrorHandler, CustomError } from '../utils/error.utils';
 import { awsBucket as bucketName, awsRegion, s3Client } from '../utils/s3-client';
 import { stagingThemeFileKey } from '../utils/theme-s3-ingest';
 import { informaticStagingPrefix, informaticStagingThemeFileKey } from '../utils/informatic-theme-s3-ingest';
+import { env } from '../utils/env.utils';
+
+// ── Local-disk upload sink (dev only) ────────────────────────────
+// When AWS creds are placeholders ('local'/'placeholder'), presigned PUTs are
+// redirected to PUT /api/aws/local-upload?key=... and files are served from
+// GET /uploads/<key>. Lets the image picker work with no AWS account.
+export const LOCAL_DISK_UPLOADS = ['local', 'placeholder', ''].includes(
+  String(env.AWS_ACCESS_KEY_ID || '').trim().toLowerCase()
+);
+export const LOCAL_UPLOAD_ROOT = path.resolve(process.cwd(), 'uploads');
+
+const requestOrigin = (req: Request): string => {
+  const proto = (req.headers['x-forwarded-proto'] as string) || req.protocol || 'http';
+  return `${proto}://${req.get('host')}`;
+};
+
+// Uniform responder for every presigned-URL branch. In local mode the browser
+// PUTs straight back to this server; otherwise it gets the real S3 URL.
+const respondWithUploadTarget = async (
+  req: Request,
+  res: Response,
+  opts: { key: string; contentType: string; expiresInSeconds: number }
+): Promise<Response> => {
+  const awsBucket = bucketName;
+  let signedUrl: string;
+  let objectUrl: string;
+  if (LOCAL_DISK_UPLOADS) {
+    const origin = requestOrigin(req);
+    signedUrl = `${origin}/api/aws/local-upload?key=${encodeURIComponent(opts.key)}`;
+    objectUrl = `${origin}/uploads/${opts.key.split('/').map(encodeURIComponent).join('/')}`;
+  } else {
+    const command = new PutObjectCommand({ Bucket: awsBucket, Key: opts.key, ContentType: opts.contentType });
+    signedUrl = await getSignedUrl(s3Client, command, { expiresIn: opts.expiresInSeconds });
+    objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${opts.key}`;
+  }
+  return res.status(200).json({
+    success: true,
+    message: 'Signed URL generated',
+    data: {
+      signedUrl,
+      key: opts.key,
+      bucket: awsBucket,
+      region: awsRegion,
+      method: 'PUT' as const,
+      contentType: opts.contentType,
+      expiresInSeconds: opts.expiresInSeconds,
+      objectUrl,
+    },
+  });
+};
+
+const safeLocalKey = (raw: unknown): string | null => {
+  const key = String(raw || '').replace(/\\/g, '/').replace(/^\/+/, '');
+  if (!key || key.length > 600) return null;
+  if (key.split('/').some((seg) => seg === '..' || seg === '')) return null;
+  return key;
+};
+
+// PUT /api/aws/local-upload?key=... — dev-only file sink. Mounted before
+// `protect` in the router; guarded here by LOCAL_DISK_UPLOADS anyway.
+export const localDiskUpload = asyncErrorHandler(async (req: Request, res: Response) => {
+  if (!LOCAL_DISK_UPLOADS) throw new CustomError('Local disk uploads are disabled', 404);
+  const key = safeLocalKey(req.query.key);
+  if (!key) throw new CustomError('Invalid key', 400);
+  const dest = path.join(LOCAL_UPLOAD_ROOT, key);
+  if (!dest.startsWith(LOCAL_UPLOAD_ROOT + path.sep)) throw new CustomError('Invalid key', 400);
+  await fs.promises.mkdir(path.dirname(dest), { recursive: true });
+  if (Buffer.isBuffer(req.body)) {
+    await fs.promises.writeFile(dest, req.body);
+  } else {
+    await new Promise<void>((resolve, reject) => {
+      const ws = fs.createWriteStream(dest);
+      req.pipe(ws);
+      req.on('error', reject);
+      ws.on('error', reject);
+      ws.on('finish', () => resolve());
+    });
+  }
+  return res.status(200).json({ success: true, key });
+});
 
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   'image/jpeg',
@@ -27,7 +108,9 @@ const sanitizeFilename = (value: string): string =>
 const extractS3KeyFromUrl = (imageUrl: string): string | null => {
   try {
     const parsed = new URL(imageUrl);
-    const key = decodeURIComponent(parsed.pathname.replace(/^\/+/, ''));
+    let key = decodeURIComponent(parsed.pathname.replace(/^\/+/, ''));
+    // Local-disk URLs are /uploads/<key> — strip the mount prefix
+    if (key.startsWith('uploads/')) key = key.slice('uploads/'.length);
     return key || null;
   } catch {
     return null;
@@ -60,29 +143,7 @@ export const generateImageUploadSignedUrl = asyncErrorHandler(async (req: Reques
   const baseName = sanitizeFilename(path.basename(fileName, extension)) || 'image';
   const key = `${parsedFolder.replace(/^\/+|\/+$/g, '')}/${Date.now()}-${randomUUID()}-${baseName}${extension}`;
 
-  const command = new PutObjectCommand({
-    Bucket: awsBucket,
-    Key: key,
-    ContentType: fileType,
-  });
-
-  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-  const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-
-  return res.status(200).json({
-    success: true,
-    message: 'Signed URL generated',
-    data: {
-      signedUrl,
-      key,
-      bucket: awsBucket,
-      region: awsRegion,
-      method: 'PUT',
-      contentType: fileType,
-      expiresInSeconds: safeExpires,
-      objectUrl,
-    },
-  });
+  return respondWithUploadTarget(req, res, { key, contentType: fileType, expiresInSeconds: safeExpires });
 });
 
 const THEME_ZIP_MIMES = new Set([
@@ -174,27 +235,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     const key = isInformatic
       ? informaticStagingThemeFileKey(userId, sessionId, rp)
       : stagingThemeFileKey(userId, sessionId, rp);
-    const command = new PutObjectCommand({
-      Bucket: awsBucket,
-      Key: key,
-      ContentType: ct,
-    });
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-    const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-    return res.status(200).json({
-      success: true,
-      message: 'Signed URL generated',
-      data: {
-        signedUrl,
-        key,
-        bucket: awsBucket,
-        region: awsRegion,
-        method: 'PUT' as const,
-        contentType: ct,
-        expiresInSeconds: safeExpires,
-        objectUrl,
-      },
-    });
+    return respondWithUploadTarget(req, res, { key, contentType: ct, expiresInSeconds: safeExpires });
   }
 
   let contentType = fileType;
@@ -212,27 +253,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     }
     const base = sanitizeFilename(path.basename(fileName, ext)) || 'liquid-theme';
     const key = `${stagingSessionPrefix(userId, sessionId)}${base}${ext}`;
-    const command = new PutObjectCommand({
-      Bucket: awsBucket,
-      Key: key,
-      ContentType: contentType,
-    });
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-    const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-    return res.status(200).json({
-      success: true,
-      message: 'Signed URL generated',
-      data: {
-        signedUrl,
-        key,
-        bucket: awsBucket,
-        region: awsRegion,
-        method: 'PUT' as const,
-        contentType,
-        expiresInSeconds: safeExpires,
-        objectUrl,
-      },
-    });
+    return respondWithUploadTarget(req, res, { key, contentType, expiresInSeconds: safeExpires });
   }
 
   if (assetKind === 'thumbnail') {
@@ -242,27 +263,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     const extension = ext || (fileType.includes('png') ? '.png' : fileType.includes('webp') ? '.webp' : '.jpg');
     const base = sanitizeFilename(path.basename(fileName, ext)) || 'thumbnail';
     const key = `${stagingSessionPrefix(userId, sessionId)}thumb-${randomUUID()}-${base}${extension}`;
-    const command = new PutObjectCommand({
-      Bucket: awsBucket,
-      Key: key,
-      ContentType: fileType,
-    });
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-    const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-    return res.status(200).json({
-      success: true,
-      message: 'Signed URL generated',
-      data: {
-        signedUrl,
-        key,
-        bucket: awsBucket,
-        region: awsRegion,
-        method: 'PUT' as const,
-        contentType: fileType,
-        expiresInSeconds: safeExpires,
-        objectUrl,
-      },
-    });
+    return respondWithUploadTarget(req, res, { key, contentType: fileType, expiresInSeconds: safeExpires });
   }
 
   if (assetKind === 'reactJs') {
@@ -275,27 +276,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
       throw new CustomError('Unsupported JavaScript MIME type for reactJs.', 400);
     }
     const key = `${stagingSessionPrefix(userId, sessionId)}remote-theme-${randomUUID()}.js`;
-    const command = new PutObjectCommand({
-      Bucket: awsBucket,
-      Key: key,
-      ContentType: ct,
-    });
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-    const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-    return res.status(200).json({
-      success: true,
-      message: 'Signed URL generated',
-      data: {
-        signedUrl,
-        key,
-        bucket: awsBucket,
-        region: awsRegion,
-        method: 'PUT' as const,
-        contentType: ct,
-        expiresInSeconds: safeExpires,
-        objectUrl,
-      },
-    });
+    return respondWithUploadTarget(req, res, { key, contentType: ct, expiresInSeconds: safeExpires });
   }
 
   const jsonThemeAssetKinds = ['themeSchema', 'themeDefaultConfig', 'themeManifest'] as const;
@@ -312,27 +293,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     let ct = (fileType && fileType.trim()) || 'application/json';
     if (ct === 'application/octet-stream') ct = 'application/json';
     const key = `${stagingSessionPrefix(userId, sessionId)}${fixedName}`;
-    const command = new PutObjectCommand({
-      Bucket: awsBucket,
-      Key: key,
-      ContentType: ct,
-    });
-    const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-    const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-    return res.status(200).json({
-      success: true,
-      message: 'Signed URL generated',
-      data: {
-        signedUrl,
-        key,
-        bucket: awsBucket,
-        region: awsRegion,
-        method: 'PUT' as const,
-        contentType: ct,
-        expiresInSeconds: safeExpires,
-        objectUrl,
-      },
-    });
+    return respondWithUploadTarget(req, res, { key, contentType: ct, expiresInSeconds: safeExpires });
   }
 
   // reactCss
@@ -345,27 +306,7 @@ export const generateThemeUploadSignedUrl = asyncErrorHandler(async (req: Reques
     throw new CustomError('Unsupported CSS MIME type.', 400);
   }
   const key = `${stagingSessionPrefix(userId, sessionId)}remote-theme-${randomUUID()}.css`;
-  const command = new PutObjectCommand({
-    Bucket: awsBucket,
-    Key: key,
-    ContentType: ctCss,
-  });
-  const signedUrl = await getSignedUrl(s3Client, command, { expiresIn: safeExpires });
-  const objectUrl = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
-  return res.status(200).json({
-    success: true,
-    message: 'Signed URL generated',
-    data: {
-      signedUrl,
-      key,
-      bucket: awsBucket,
-      region: awsRegion,
-      method: 'PUT' as const,
-      contentType: ctCss,
-      expiresInSeconds: safeExpires,
-      objectUrl,
-    },
-  });
+  return respondWithUploadTarget(req, res, { key, contentType: ctCss, expiresInSeconds: safeExpires });
 });
 
 export const deleteImagesFromS3 = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -395,6 +336,23 @@ export const deleteImagesFromS3 = asyncErrorHandler(async (req: Request, res: Re
 
   if (keys.length === 0) {
     throw new CustomError('No valid S3 image keys found from payload', 400);
+  }
+
+  if (LOCAL_DISK_UPLOADS) {
+    const deletedKeys: string[] = [];
+    for (const key of keys) {
+      const safe = safeLocalKey(key);
+      if (!safe) continue;
+      const dest = path.join(LOCAL_UPLOAD_ROOT, safe);
+      if (dest.startsWith(LOCAL_UPLOAD_ROOT + path.sep)) {
+        await fs.promises.unlink(dest).then(() => deletedKeys.push(safe)).catch(() => {});
+      }
+    }
+    return res.status(200).json({
+      success: true,
+      message: 'Images deleted from local storage',
+      data: { deletedKeys, deletedCount: deletedKeys.length },
+    });
   }
 
   const deleteCommand = new DeleteObjectsCommand({

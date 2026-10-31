@@ -41,6 +41,14 @@ const FEATURE_CATALOG = [
   { key: 'appointments', label: 'Appointments', path: '/client/appointments', group: 'Automation' },
   { key: 'clinic', label: 'Clinic / Doctors', path: '/client/clinic/queue', group: 'Clinic', optIn: true },
   { key: 'edtech', label: 'Edtech / Institute', path: '/client/edtech', group: 'Edtech', optIn: true },
+  // Sector modules (opt-in per industry via gateway onboarding / choose-services)
+  { key: 'realEstate', label: 'Real Estate', path: '/client/real-estate', group: 'Real Estate', optIn: true },
+  { key: 'agency', label: 'Agency / Consulting', path: '/client/agency', group: 'Agency', optIn: true },
+  { key: 'legal', label: 'Legal Practice', path: '/client/legal', group: 'Legal', optIn: true },
+  { key: 'hospitality', label: 'Hospitality', path: '/client/hospitality', group: 'Hospitality', optIn: true },
+  { key: 'salon', label: 'Salon & Spa', path: '/client/salon', group: 'Salon', optIn: true },
+  { key: 'serviceBusiness', label: 'Service Business', path: '/client/service-business', group: 'Service Business', optIn: true },
+  { key: 'travel', label: 'Tour & Travel', path: '/client/travel', group: 'Tour & Travel', optIn: true },
   { key: 'tickets', label: 'Tickets', path: '/client/tickets', group: 'Automation' },
   { key: 'predefinedActions', label: 'Predefined Actions', path: '/client/predefined-actions', group: 'Automation' },
   // AI
@@ -91,16 +99,30 @@ const getPanelAddons = async () => {
   }
 };
 
+// Industry -> its sector feature keys (clinic, edtech, realEstate, ...).
+// Deriving here keeps existing accounts working even if the flag was never
+// written to featureOverrides (e.g. sector keys added after signup).
+const sectorKeysForIndustry = (industry) => {
+  try {
+    const { INDUSTRY_MODULE, MODULES } = require('../utils/gatewayModules');
+    const mod = MODULES.find((m) => m.id === INDUSTRY_MODULE[industry]);
+    return new Set(mod ? mod.keys : []);
+  } catch {
+    return new Set();
+  }
+};
+
 // Resolves the effective feature map for a workspace owner.
 // Normal features: missing key = enabled. Add-ons: enabled only when panel + client both allow.
 const getOwnerFeatures = async (ownerId) => {
   const owner = await User.findById(ownerId).select('featureOverrides').lean();
   const overrides = (owner && owner.featureOverrides) || {};
   const panelAddons = await getPanelAddons();
+  const sectorKeys = sectorKeysForIndustry(overrides.industry);
   const map = {};
   for (const key of FEATURE_KEYS) {
     if (ADDON_KEYS.has(key)) map[key] = panelAddons[key] === true && overrides[key] === true;
-    else if (OPT_IN_KEYS.has(key)) map[key] = overrides[key] === true;
+    else if (OPT_IN_KEYS.has(key)) map[key] = overrides[key] === true || sectorKeys.has(key);
     else map[key] = overrides[key] !== false;
   }
   return map;
@@ -122,7 +144,8 @@ const requireFeature = (key) => async (req, res, next) => {
       }
       return next();
     }
-    if (OPT_IN_KEYS.has(key) && owner?.featureOverrides?.[key] !== true) {
+    if (OPT_IN_KEYS.has(key) && owner?.featureOverrides?.[key] !== true &&
+        !sectorKeysForIndustry(owner?.featureOverrides?.industry).has(key)) {
       return res.status(403).json({ success: false, message: 'This feature is not enabled for your account' });
     }
     if (owner?.featureOverrides?.[key] === false) {

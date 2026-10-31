@@ -101,6 +101,16 @@ router.get('/:storeId/policies', listStorePolicies);
 router.get('/:storeId/policies/:policyType', getStorePolicy);
 router.put('/:storeId/policies/:policyType', upsertStorePolicy);
 
+const {
+  listStoreCustomThemes,
+  createStoreCustomTheme,
+  applyCustomThemeForStore,
+} = require('../controllers/webpanelStoreCustomThemeController');
+
+router.get('/:storeId/custom-themes', listStoreCustomThemes);
+router.post('/:storeId/custom-themes', createStoreCustomTheme);
+router.post('/:storeId/apply-custom-theme', applyCustomThemeForStore);
+
 router.get('/:storeId/informatic-theme-config/:themeId', getStoreInformaticThemeConfig);
 router.put('/:storeId/informatic-theme-config/:themeId', saveStoreInformaticThemeConfig);
 router.delete('/:storeId/informatic-theme-config/:themeId', resetStoreInformaticThemeConfig);

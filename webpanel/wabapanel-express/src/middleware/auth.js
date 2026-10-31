@@ -14,7 +14,18 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Not authorized, no token' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_jwt_secret');
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_jwt_secret');
+    } catch (err) {
+      // Stale client-side token (e.g. signed with a different secret) shouldn't
+      // block a valid cookie session — fall back to the cookie token.
+      if (req.cookies?.token && req.cookies.token !== token) {
+        decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET || 'default_jwt_secret');
+      } else {
+        throw err;
+      }
+    }
     const user = await User.findById(decoded.id).select('-password').populate('currentWorkspace').populate('plan');
 
     if (!user) {

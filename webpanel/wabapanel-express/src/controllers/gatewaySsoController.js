@@ -6,7 +6,7 @@ const WebpanelStore = require('../models/WebpanelStore');
 const GatewayConsumedTicket = require('../models/GatewayConsumedTicket');
 const generateToken = require('../utils/generateToken');
 const { assertGatewaySignature, gatewaySecret } = require('../utils/gatewayHmac');
-const { normalizeSelectedModules, defaultLaunchModules, featureOverridesForModules, launchPathFor } = require('../utils/gatewayModules');
+const { normalizeSelectedModules, defaultLaunchModules, featureOverridesForModules, launchPathFor, INDUSTRY_MODULE, MODULES } = require('../utils/gatewayModules');
 const { createWebpanelStoreWithSubdomain } = require('../utils/webpanelStoreBootstrap');
 
 function padDescription(name) {
@@ -42,8 +42,8 @@ async function provisionVendor(req, res) {
       return res.status(400).json({ success: false, message: 'email and businessName are required' });
     }
 
+    const sectorMod = MODULES.find((m) => m.id === INDUSTRY_MODULE[industry]);
     const enableClinic = industry === 'healthcare';
-    const enableEdtech = industry === 'education';
     const selectedModules = normalizeSelectedModules(
       industry,
       Array.isArray(req.body.selectedModules) && req.body.selectedModules.length
@@ -55,8 +55,7 @@ async function provisionVendor(req, res) {
     let user = await User.findOne({ email });
 
     const baseOverrides = featureOverridesForModules(selectedModules, industry);
-    if (enableClinic) baseOverrides.clinic = true;
-    if (enableEdtech) baseOverrides.edtech = true;
+    if (sectorMod) for (const key of sectorMod.keys) baseOverrides[key] = true;
 
     if (!user) {
       user = await User.create({

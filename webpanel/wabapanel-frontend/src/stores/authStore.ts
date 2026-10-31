@@ -34,9 +34,7 @@ interface AuthState {
   }) => void;
 }
 
-const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL || 'http://localhost:3010';
-export const GATEWAY_LOGIN_URL = `${GATEWAY_URL}/login`;
-export const GATEWAY_LOGOUT_URL = `${GATEWAY_URL}/logout`;
+export { GATEWAY_URL, GATEWAY_LOGIN_URL, GATEWAY_LOGOUT_URL } from '@/lib/gateway';
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,

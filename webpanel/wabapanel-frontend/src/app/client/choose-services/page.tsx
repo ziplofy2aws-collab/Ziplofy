@@ -9,6 +9,19 @@ type CatalogModule = { id: string; label: string; locked: boolean; selected: boo
 
 const CORE_IDS = new Set(['whatsapp', 'websiteBuilder']);
 
+const CARD_DESCRIPTIONS: Record<string, string> = {
+  websiteBuilder: 'Store, themes, pages, and the public website. Always included.',
+  whatsapp: 'WhatsApp inbox, QR inbox, and channel settings.',
+  clinic: 'Your clinic workspace — OPD queue, consults, doctors, patients, and calendar. Included with Healthcare.',
+  edtech: 'Your institute workspace — courses, batches, students, teachers, and attendance. Included with Education.',
+  realEstate: 'Your real-estate workspace — included with the Real estate industry.',
+  agency: 'Your agency workspace — included with the Agency / consulting industry.',
+  legal: 'Your legal-practice workspace — included with the Legal industry.',
+  hospitality: 'Your hospitality workspace — included with the Hospitality industry.',
+  salon: 'Your salon & spa workspace — included with the Salon / spa industry.',
+  serviceBusiness: 'Your service-business workspace — included with your industry selection.',
+};
+
 export default function ChooseServicesPage() {
   const applyServiceChoices = useAuthStore((s) => s.applyServiceChoices);
   const [modules, setModules] = useState<CatalogModule[]>([]);
@@ -44,6 +57,9 @@ export default function ChooseServicesPage() {
     }
   };
 
+  // Cards: only the two core services. Locked modules (e.g. the sector
+  // workspace included with the user's industry) stay in the checkbox grid,
+  // already checked and disabled.
   const core = modules.filter((item) => CORE_IDS.has(item.id));
   const extra = modules.filter((item) => !CORE_IDS.has(item.id));
 
@@ -67,9 +83,7 @@ export default function ChooseServicesPage() {
               <div>
                 <h2 className="text-[15px] font-semibold">{item.label}</h2>
                 <p className="mt-1 text-[12px] text-admin-text-secondary">
-                  {item.id === 'websiteBuilder'
-                    ? 'Store, themes, pages, and the public website. Always included.'
-                    : 'WhatsApp inbox, QR inbox, and channel settings.'}
+                  {CARD_DESCRIPTIONS[item.id] || 'Included with your plan.'}
                 </p>
               </div>
               <input type="checkbox" readOnly checked={item.selected} className="mt-1" />

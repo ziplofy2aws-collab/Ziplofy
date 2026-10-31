@@ -1,0 +1,2571 @@
+{
+  "version": "1.0.0",
+  "themeId": "watch",
+  "description": "Watch - luxury watches storefront (nav-first rebuild).",
+  "schemaVersion": "2.0.0",
+  "globalSettings": {
+    "label": "Theme settings",
+    "settings": {
+      "colors": {
+        "type": "group",
+        "label": "Colors",
+        "settings": {
+          "primary": {
+            "type": "color",
+            "label": "Primary",
+            "default": "#c5a059"
+          },
+          "background": {
+            "type": "color",
+            "label": "Background",
+            "default": "#ffffff"
+          },
+          "text": {
+            "type": "color",
+            "label": "Text",
+            "default": "#111111"
+          },
+          "surface": {
+            "type": "color",
+            "label": "Surface",
+            "default": "#ffffff"
+          },
+          "muted": {
+            "type": "color",
+            "label": "Muted",
+            "default": "#6b6b6b"
+          }
+        }
+      },
+      "typography": {
+        "type": "group",
+        "label": "Typography",
+        "settings": {
+          "fontFamily": {
+            "type": "text",
+            "label": "Heading font",
+            "default": "\"Cormorant Garamond\", Georgia, serif"
+          },
+          "fontFamilyBody": {
+            "type": "text",
+            "label": "Body font",
+            "default": "\"Montserrat\", system-ui, sans-serif"
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "announcement_bar": {
+      "label": "Announcement bar",
+      "description": "Storewide announcement message",
+      "settingsFields": [
+        {
+          "path": "sections.announcement_bar.settings.enabled",
+          "type": "boolean",
+          "label": "Show announcement",
+          "sidebar": true
+        },
+        {
+          "path": "sections.announcement_bar.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.announcement_bar.settings.textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        }
+      ],
+      "blocks": [
+        {
+          "id": "announcement",
+          "label": "Announcement",
+          "settingsFields": [
+            {
+              "path": "sections.announcement_bar.blocks.announcement.settings.text",
+              "type": "textarea",
+              "label": "Text",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "sections.announcement_bar.blocks.announcement.settings.link",
+              "type": "text",
+              "label": "Link",
+              "widget": "url",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "sections.announcement_bar.blocks.announcement.settings.linkLabel",
+              "type": "text",
+              "label": "Link label",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    "header": {
+      "label": "Header",
+      "description": "Store logo, menu, and actions",
+      "settingsFields": [
+        {
+          "path": "sections.header.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.header.settings.textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        }
+      ],
+      "blocks": [
+        {
+          "id": "logo",
+          "label": "Logo",
+          "settingsFields": [
+            {
+              "path": "sections.header.blocks.logo.settings.imageUrl",
+              "type": "text",
+              "label": "Logo image",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "sections.header.blocks.logo.settings.text",
+              "type": "text",
+              "label": "Store name",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "menu",
+          "label": "Menu",
+          "settingsFields": [
+            {
+              "path": "sections.header.blocks.menu.settings.menu",
+              "type": "text",
+              "label": "Menu",
+              "widget": "menu",
+              "sidebar": true
+            }
+          ],
+          "blocks": [
+            {
+              "id": "link_home",
+              "label": "Home",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.0.label",
+                  "type": "text",
+                  "label": "Label",
+                  "sidebar": false
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.0.href",
+                  "type": "text",
+                  "label": "Link",
+                  "sidebar": false
+                }
+              ]
+            },
+            {
+              "id": "link_all_products",
+              "label": "All products",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.1.label",
+                  "type": "text",
+                  "label": "Label",
+                  "sidebar": false
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.1.href",
+                  "type": "text",
+                  "label": "Link",
+                  "sidebar": false
+                }
+              ]
+            },
+            {
+              "id": "link_all_collections",
+              "label": "All collections",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.2.label",
+                  "type": "text",
+                  "label": "Label",
+                  "sidebar": false
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.2.href",
+                  "type": "text",
+                  "label": "Link",
+                  "sidebar": false
+                }
+              ]
+            },
+            {
+              "id": "link_all_blogs",
+              "label": "All blogs",
+              "settingsFields": [
+                {
+                  "path": "sections.header.blocks.menu.settings.items.3.label",
+                  "type": "text",
+                  "label": "Label",
+                  "sidebar": false
+                },
+                {
+                  "path": "sections.header.blocks.menu.settings.items.3.href",
+                  "type": "text",
+                  "label": "Link",
+                  "sidebar": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "label": "Footer",
+      "description": "Brand, columns, and bottom links",
+      "settingsFields": [
+        {
+          "path": "sections.footer.settings.backgroundColor",
+          "type": "color",
+          "label": "Background color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        },
+        {
+          "path": "sections.footer.settings.textColor",
+          "type": "color",
+          "label": "Text color",
+          "group": "General",
+          "widget": "color",
+          "sidebar": true
+        }
+      ],
+      "blocks": [
+        {
+          "id": "brand",
+          "label": "Brand",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.brand.settings.brandName",
+              "type": "text",
+              "label": "Brand name",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.brand.settings.email",
+              "type": "text",
+              "label": "Email",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.brand.settings.phone",
+              "type": "text",
+              "label": "Phone",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.brand.settings.facebookUrl",
+              "type": "text",
+              "label": "Facebook",
+              "widget": "url",
+              "placeholder": "https://facebook.com/your-page",
+              "group": "Social links",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.brand.settings.instagramUrl",
+              "type": "text",
+              "label": "Instagram",
+              "widget": "url",
+              "placeholder": "https://instagram.com/your-handle",
+              "group": "Social links",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.brand.settings.xUrl",
+              "type": "text",
+              "label": "X",
+              "widget": "url",
+              "placeholder": "https://x.com/your-handle",
+              "group": "Social links",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.brand.settings.youtubeUrl",
+              "type": "text",
+              "label": "YouTube",
+              "widget": "url",
+              "placeholder": "https://youtube.com/@your-channel",
+              "group": "Social links",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "menu_main",
+          "label": "Main Menu",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.menu_main.settings.heading",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.menu_main.settings.menu",
+              "type": "text",
+              "label": "Menu",
+              "widget": "menu",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "menu_help",
+          "label": "Help",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.menu_help.settings.heading",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.menu_help.settings.menu",
+              "type": "text",
+              "label": "Menu",
+              "widget": "menu",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "menu_collections",
+          "label": "Our Collections",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.menu_collections.settings.heading",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "sections.footer.blocks.menu_collections.settings.menu",
+              "type": "text",
+              "label": "Menu",
+              "widget": "menu",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "bottom_links",
+          "label": "Bottom links",
+          "settingsFields": [
+            {
+              "path": "sections.footer.blocks.bottom_links.settings.menu",
+              "type": "text",
+              "label": "Menu",
+              "widget": "menu",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "templates": [
+    {
+      "id": "index",
+      "label": "Home page",
+      "sections": [
+        {
+          "id": "hero_banner",
+          "type": "hero-banner",
+          "label": "Banner",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1Eyebrow",
+              "type": "text",
+              "label": "Slide 1 - Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1Title",
+              "type": "text",
+              "label": "Slide 1 - Heading",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1Tagline",
+              "type": "text",
+              "label": "Slide 1 - Tagline",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1PrimaryLabel",
+              "type": "text",
+              "label": "Slide 1 - Primary label",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1PrimaryUrl",
+              "type": "text",
+              "label": "Slide 1 - Primary link",
+              "widget": "url",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1PrimaryCta",
+              "type": "text",
+              "label": "Slide 1 - Primary button",
+              "widget": "button",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1SecondaryLabel",
+              "type": "text",
+              "label": "Slide 1 - Secondary label",
+              "widget": "styled-text",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1SecondaryUrl",
+              "type": "text",
+              "label": "Slide 1 - Secondary link",
+              "widget": "url",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1SecondaryCta",
+              "type": "text",
+              "label": "Slide 1 - Secondary button",
+              "widget": "button",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1ImageUrl",
+              "type": "text",
+              "label": "Slide 1 - Desktop image",
+              "widget": "image",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide1MobileImageUrl",
+              "type": "text",
+              "label": "Slide 1 - Mobile image",
+              "widget": "image",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2Eyebrow",
+              "type": "text",
+              "label": "Slide 2 - Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2Title",
+              "type": "text",
+              "label": "Slide 2 - Heading",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2Tagline",
+              "type": "text",
+              "label": "Slide 2 - Tagline",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2PrimaryLabel",
+              "type": "text",
+              "label": "Slide 2 - Primary label",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2PrimaryUrl",
+              "type": "text",
+              "label": "Slide 2 - Primary link",
+              "widget": "url",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2PrimaryCta",
+              "type": "text",
+              "label": "Slide 2 - Primary button",
+              "widget": "button",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2SecondaryLabel",
+              "type": "text",
+              "label": "Slide 2 - Secondary label",
+              "widget": "styled-text",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2SecondaryUrl",
+              "type": "text",
+              "label": "Slide 2 - Secondary link",
+              "widget": "url",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2SecondaryCta",
+              "type": "text",
+              "label": "Slide 2 - Secondary button",
+              "widget": "button",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2ImageUrl",
+              "type": "text",
+              "label": "Slide 2 - Desktop image",
+              "widget": "image",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide2MobileImageUrl",
+              "type": "text",
+              "label": "Slide 2 - Mobile image",
+              "widget": "image",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3Eyebrow",
+              "type": "text",
+              "label": "Slide 3 - Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3Title",
+              "type": "text",
+              "label": "Slide 3 - Heading",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3Tagline",
+              "type": "text",
+              "label": "Slide 3 - Tagline",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3PrimaryLabel",
+              "type": "text",
+              "label": "Slide 3 - Primary label",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3PrimaryUrl",
+              "type": "text",
+              "label": "Slide 3 - Primary link",
+              "widget": "url",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3PrimaryCta",
+              "type": "text",
+              "label": "Slide 3 - Primary button",
+              "widget": "button",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3SecondaryLabel",
+              "type": "text",
+              "label": "Slide 3 - Secondary label",
+              "widget": "styled-text",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3SecondaryUrl",
+              "type": "text",
+              "label": "Slide 3 - Secondary link",
+              "widget": "url",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3SecondaryCta",
+              "type": "text",
+              "label": "Slide 3 - Secondary button",
+              "widget": "button",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3ImageUrl",
+              "type": "text",
+              "label": "Slide 3 - Desktop image",
+              "widget": "image",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide3MobileImageUrl",
+              "type": "text",
+              "label": "Slide 3 - Mobile image",
+              "widget": "image",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4Eyebrow",
+              "type": "text",
+              "label": "Slide 4 - Eyebrow",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4Title",
+              "type": "text",
+              "label": "Slide 4 - Heading",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4Tagline",
+              "type": "text",
+              "label": "Slide 4 - Tagline",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4PrimaryLabel",
+              "type": "text",
+              "label": "Slide 4 - Primary label",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4PrimaryUrl",
+              "type": "text",
+              "label": "Slide 4 - Primary link",
+              "widget": "url",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4PrimaryCta",
+              "type": "text",
+              "label": "Slide 4 - Primary button",
+              "widget": "button",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4SecondaryLabel",
+              "type": "text",
+              "label": "Slide 4 - Secondary label",
+              "widget": "styled-text",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4SecondaryUrl",
+              "type": "text",
+              "label": "Slide 4 - Secondary link",
+              "widget": "url",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4SecondaryCta",
+              "type": "text",
+              "label": "Slide 4 - Secondary button",
+              "widget": "button",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4ImageUrl",
+              "type": "text",
+              "label": "Slide 4 - Desktop image",
+              "widget": "image",
+              "group": "Slide 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.hero_banner.settings.slide4MobileImageUrl",
+              "type": "text",
+              "label": "Slide 4 - Mobile image",
+              "widget": "image",
+              "group": "Slide 4",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "legacy_collection",
+          "type": "legacy-collection",
+          "label": "Shop The Legacy Collection",
+          "category": "collections",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.legacy_collection.settings.titleBefore",
+              "type": "text",
+              "label": "Title - before",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.titleAccent",
+              "type": "text",
+              "label": "Title - accent",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.titleAfter",
+              "type": "text",
+              "label": "Title - after",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.collectionsPicker",
+              "type": "text",
+              "label": "Collections",
+              "widget": "collections",
+              "group": "Collections",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.himTitle",
+              "type": "textarea",
+              "label": "Him - title",
+              "widget": "styled-text",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.himImageUrl",
+              "type": "text",
+              "label": "Him - image",
+              "widget": "image",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.himLink",
+              "type": "text",
+              "label": "Him - link",
+              "widget": "url",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.herTitle",
+              "type": "textarea",
+              "label": "Her - title",
+              "widget": "styled-text",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.herImageUrl",
+              "type": "text",
+              "label": "Her - image",
+              "widget": "image",
+              "group": "Promo images",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.legacy_collection.settings.herLink",
+              "type": "text",
+              "label": "Her - link",
+              "widget": "url",
+              "group": "Promo images",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "icons",
+          "type": "icons",
+          "label": "Our Icons",
+          "category": "products",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.icons.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.backgroundImageUrl",
+              "type": "text",
+              "label": "Background image",
+              "widget": "image",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.ctaLabel",
+              "type": "text",
+              "label": "CTA label",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.ctaUrl",
+              "type": "text",
+              "label": "CTA link",
+              "widget": "url",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.ctaButton",
+              "type": "text",
+              "label": "CTA button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card1ProductId",
+              "type": "text",
+              "label": "Card 1 - Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card2ProductId",
+              "type": "text",
+              "label": "Card 2 - Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card3ProductId",
+              "type": "text",
+              "label": "Card 3 - Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card4ProductId",
+              "type": "text",
+              "label": "Card 4 - Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card5ProductId",
+              "type": "text",
+              "label": "Card 5 - Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.icons.settings.card6ProductId",
+              "type": "text",
+              "label": "Card 6 - Select product",
+              "widget": "product",
+              "group": "Product",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "signature",
+          "type": "signature",
+          "label": "Signature Collection",
+          "category": "collections",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.signature.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile1CollectionHandle",
+              "type": "text",
+              "label": "Tile 1 - Select collection",
+              "widget": "collection",
+              "group": "Tile 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile1LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 1 - Lifestyle image",
+              "widget": "image",
+              "group": "Tile 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile1ProductImageUrl",
+              "type": "text",
+              "label": "Tile 1 - Product image",
+              "widget": "image",
+              "group": "Tile 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile2CollectionHandle",
+              "type": "text",
+              "label": "Tile 2 - Select collection",
+              "widget": "collection",
+              "group": "Tile 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile2LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 2 - Lifestyle image",
+              "widget": "image",
+              "group": "Tile 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile2ProductImageUrl",
+              "type": "text",
+              "label": "Tile 2 - Product image",
+              "widget": "image",
+              "group": "Tile 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile3CollectionHandle",
+              "type": "text",
+              "label": "Tile 3 - Select collection",
+              "widget": "collection",
+              "group": "Tile 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile3LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 3 - Lifestyle image",
+              "widget": "image",
+              "group": "Tile 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile3ProductImageUrl",
+              "type": "text",
+              "label": "Tile 3 - Product image",
+              "widget": "image",
+              "group": "Tile 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile4CollectionHandle",
+              "type": "text",
+              "label": "Tile 4 - Select collection",
+              "widget": "collection",
+              "group": "Tile 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile4LifestyleImageUrl",
+              "type": "text",
+              "label": "Tile 4 - Lifestyle image",
+              "widget": "image",
+              "group": "Tile 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.signature.settings.tile4ProductImageUrl",
+              "type": "text",
+              "label": "Tile 4 - Product image",
+              "widget": "image",
+              "group": "Tile 4",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "banner_showcase",
+          "type": "banner-showcase",
+          "label": "Banner Showcase",
+          "category": "media",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.banner_showcase.settings.slide1ImageUrl",
+              "type": "text",
+              "label": "Slide 1 - Desktop image",
+              "widget": "image",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.banner_showcase.settings.slide1MobileImageUrl",
+              "type": "text",
+              "label": "Slide 1 - Mobile image",
+              "widget": "image",
+              "group": "Slide 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.banner_showcase.settings.slide2ImageUrl",
+              "type": "text",
+              "label": "Slide 2 - Desktop image",
+              "widget": "image",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.banner_showcase.settings.slide2MobileImageUrl",
+              "type": "text",
+              "label": "Slide 2 - Mobile image",
+              "widget": "image",
+              "group": "Slide 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.banner_showcase.settings.slide3ImageUrl",
+              "type": "text",
+              "label": "Slide 3 - Desktop image",
+              "widget": "image",
+              "group": "Slide 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.banner_showcase.settings.slide3MobileImageUrl",
+              "type": "text",
+              "label": "Slide 3 - Mobile image",
+              "widget": "image",
+              "group": "Slide 3",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "watch_collection",
+          "type": "watch-collection",
+          "label": "New Collection",
+          "category": "products",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.watch_collection.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.lead",
+              "type": "textarea",
+              "label": "Description",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.productsPicker",
+              "type": "text",
+              "label": "Products",
+              "widget": "products",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.watch_collection.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "engineering",
+          "type": "engineering",
+          "label": "Engineering Meets Elegance",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.engineering.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.mediaImageUrl",
+              "type": "text",
+              "label": "Feature image",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature1Title",
+              "type": "text",
+              "label": "Feature 1 title",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature1Text",
+              "type": "textarea",
+              "label": "Feature 1 text",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature2Title",
+              "type": "text",
+              "label": "Feature 2 title",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature2Text",
+              "type": "textarea",
+              "label": "Feature 2 text",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature3Title",
+              "type": "text",
+              "label": "Feature 3 title",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.engineering.settings.feature3Text",
+              "type": "textarea",
+              "label": "Feature 3 text",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "new_launches",
+          "type": "new-launches",
+          "label": "New Launches",
+          "category": "products",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.new_launches.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.viewAllLabel",
+              "type": "text",
+              "label": "View all label",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.viewAllUrl",
+              "type": "text",
+              "label": "View all link",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.viewAllButton",
+              "type": "text",
+              "label": "View all button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.featuredImageUrl",
+              "type": "text",
+              "label": "Featured image",
+              "widget": "image",
+              "group": "Featured",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.featuredLink",
+              "type": "text",
+              "label": "Featured link",
+              "group": "Featured",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card1ProductId",
+              "type": "text",
+              "label": "Card 1 - Select product",
+              "widget": "product",
+              "group": "Products",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card2ProductId",
+              "type": "text",
+              "label": "Card 2 - Select product",
+              "widget": "product",
+              "group": "Products",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.card3ProductId",
+              "type": "text",
+              "label": "Card 3 - Select product",
+              "widget": "product",
+              "group": "Products",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.new_launches.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Products",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "instagram",
+          "type": "instagram",
+          "label": "Follow us on Instagram",
+          "settingsFields": [
+            {
+              "path": "templates.index.sections.instagram.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.ctaLabel",
+              "type": "text",
+              "label": "CTA label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.ctaUrl",
+              "type": "text",
+              "label": "CTA link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.ctaButton",
+              "type": "text",
+              "label": "CTA button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileAImageUrl",
+              "type": "text",
+              "label": "Image A (tall left)",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileALink",
+              "type": "text",
+              "label": "Image A link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileBImageUrl",
+              "type": "text",
+              "label": "Image B",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileBLink",
+              "type": "text",
+              "label": "Image B link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileCImageUrl",
+              "type": "text",
+              "label": "Image C (tall center)",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileCLink",
+              "type": "text",
+              "label": "Image C link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileDImageUrl",
+              "type": "text",
+              "label": "Image D",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileDLink",
+              "type": "text",
+              "label": "Image D link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileEImageUrl",
+              "type": "text",
+              "label": "Image E",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileELink",
+              "type": "text",
+              "label": "Image E link",
+              "widget": "url",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileFImageUrl",
+              "type": "text",
+              "label": "Image F",
+              "widget": "image",
+              "sidebar": true
+            },
+            {
+              "path": "templates.index.sections.instagram.settings.tileFLink",
+              "type": "text",
+              "label": "Image F link",
+              "widget": "url",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "product",
+      "label": "Product page",
+      "sections": [
+        {
+          "id": "product_main",
+          "label": "Product details",
+          "settingsFields": [
+            {
+              "path": "templates.product.sections.product_main.settings.addToCartLabel",
+              "type": "text",
+              "label": "Add to cart label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.addToCartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.buyNowLabel",
+              "type": "text",
+              "label": "Buy now label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.buyNowButton",
+              "type": "text",
+              "label": "Buy now button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.checkPinButton",
+              "type": "text",
+              "label": "Check pincode button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.taxNote",
+              "type": "text",
+              "label": "Tax note",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.warrantyText",
+              "type": "text",
+              "label": "Warranty",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.shippingText",
+              "type": "text",
+              "label": "Shipping",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.returnsText",
+              "type": "text",
+              "label": "Returns",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.sizeChartText",
+              "type": "text",
+              "label": "Size chart",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.trust1",
+              "type": "text",
+              "label": "Trust badge 1",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.trust2",
+              "type": "text",
+              "label": "Trust badge 2",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.trust3",
+              "type": "text",
+              "label": "Trust badge 3",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.trust4",
+              "type": "text",
+              "label": "Trust badge 4",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.specsTitle",
+              "type": "text",
+              "label": "Specs title",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_main.settings.specsImageUrl",
+              "type": "text",
+              "label": "Specs image",
+              "widget": "image",
+              "sidebar": true
+            }
+          ]
+        },
+        {
+          "id": "product_faq",
+          "type": "product-faq",
+          "label": "FAQs",
+          "settingsFields": [
+            {
+              "path": "templates.product.sections.product_faq.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_faq.settings.backgroundColor",
+              "type": "color",
+              "label": "Background color",
+              "widget": "color",
+              "group": "Appearance",
+              "sidebar": true
+            },
+            {
+              "path": "templates.product.sections.product_faq.settings.textColor",
+              "type": "color",
+              "label": "Text color",
+              "widget": "color",
+              "group": "Appearance",
+              "sidebar": true
+            }
+          ],
+          "blocks": [
+            {
+              "id": "faq_item",
+              "label": "Question",
+              "settingsFields": [
+                {
+                  "path": "templates.product.sections.product_faq.blocks.faq_item.settings.question",
+                  "type": "text",
+                  "label": "Question",
+                  "widget": "styled-text",
+                  "group": "Content",
+                  "sidebar": true
+                },
+                {
+                  "path": "templates.product.sections.product_faq.blocks.faq_item.settings.answer",
+                  "type": "textarea",
+                  "label": "Answer",
+                  "widget": "styled-text",
+                  "group": "Content",
+                  "sidebar": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "search",
+      "label": "Search",
+      "sections": [
+        {
+          "id": "search_main",
+          "label": "Search",
+          "settingsFields": [
+            {
+              "path": "templates.search.sections.search_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.placeholder",
+              "type": "text",
+              "label": "Placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.submitButton",
+              "type": "text",
+              "label": "Search button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.search.sections.search_main.settings.emptyMessage",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "collections_list",
+      "label": "Collections list",
+      "sections": [
+        {
+          "id": "collections_list_main",
+          "label": "Collections list",
+          "settingsFields": [
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.emptyMessage",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.allProductsLabel",
+              "type": "text",
+              "label": "All products link",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.allProductsButton",
+              "type": "text",
+              "label": "All products button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collections_list.sections.collections_list_main.settings.shopCollectionButton",
+              "type": "text",
+              "label": "Shop collection button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "all_products",
+      "label": "All products",
+      "sections": [
+        {
+          "id": "all_products_main",
+          "label": "Product catalogue",
+          "settingsFields": [
+            {
+              "path": "templates.all_products.sections.all_products_main.settings.breadcrumb",
+              "type": "text",
+              "label": "Breadcrumb",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_products.sections.all_products_main.settings.emptyMessage",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_products.sections.all_products_main.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_products.sections.all_products_main.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "404",
+      "label": "404",
+      "sections": [
+        {
+          "id": "not_found_main",
+          "type": "not-found-main",
+          "label": "Not found",
+          "settingsFields": [
+            {
+              "path": "templates.404.sections.not_found_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.message",
+              "type": "textarea",
+              "label": "Message",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.homeLabel",
+              "type": "text",
+              "label": "Home button",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.homeButton",
+              "type": "text",
+              "label": "Home button style",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.shopLabel",
+              "type": "text",
+              "label": "Shop button",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.404.sections.not_found_main.settings.shopButton",
+              "type": "text",
+              "label": "Shop button style",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "collection",
+      "label": "Collection",
+      "sections": [
+        {
+          "id": "collection_main",
+          "label": "Collection",
+          "settingsFields": [
+            {
+              "path": "templates.collection.sections.collection_main.settings.emptyMessage",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.allCollectionsLabel",
+              "type": "text",
+              "label": "All collections link",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.allCollectionsButton",
+              "type": "text",
+              "label": "All collections button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.allProductsLabel",
+              "type": "text",
+              "label": "All products link",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.allProductsButton",
+              "type": "text",
+              "label": "All products button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.cartButton",
+              "type": "text",
+              "label": "Add to cart button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.viewButton",
+              "type": "text",
+              "label": "Quick view button",
+              "widget": "button",
+              "group": "Product",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.shopLabel",
+              "type": "text",
+              "label": "Fallback intro",
+              "sidebar": true
+            },
+            {
+              "path": "templates.collection.sections.collection_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "all_blogs",
+      "label": "All blogs",
+      "sections": [
+        {
+          "id": "all_blogs_main",
+          "label": "All blogs",
+          "settingsFields": [
+            {
+              "path": "templates.all_blogs.sections.all_blogs_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_blogs.sections.all_blogs_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_blogs.sections.all_blogs_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.all_blogs.sections.all_blogs_main.settings.emptyTitle",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blogs",
+      "label": "Blog",
+      "sections": [
+        {
+          "id": "blog_main",
+          "label": "Blog",
+          "settingsFields": [
+            {
+              "path": "templates.blogs.sections.blog_main.settings.emptyTitle",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.blogs.sections.blog_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blog_posts",
+      "label": "Blog post",
+      "sections": [
+        {
+          "id": "blog_post_main",
+          "label": "Blog post",
+          "settingsFields": [
+            {
+              "path": "templates.blog_posts.sections.blog_post_main.settings.backLabel",
+              "type": "text",
+              "label": "Back link",
+              "sidebar": true
+            },
+            {
+              "path": "templates.blog_posts.sections.blog_post_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.blog_posts.sections.blog_post_main.settings.notFoundTitle",
+              "type": "text",
+              "label": "Not found title",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cart",
+      "label": "Cart",
+      "sections": [
+        {
+          "id": "cart_main",
+          "label": "Cart",
+          "settingsFields": [
+            {
+              "path": "templates.cart.sections.cart_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.emptyTitle",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.checkoutLabel",
+              "type": "text",
+              "label": "Checkout label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.checkoutButton",
+              "type": "text",
+              "label": "Checkout button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.continueLabel",
+              "type": "text",
+              "label": "Continue shopping",
+              "sidebar": true
+            },
+            {
+              "path": "templates.cart.sections.cart_main.settings.continueButton",
+              "type": "text",
+              "label": "Continue shopping button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "login",
+      "label": "Login",
+      "sections": [
+        {
+          "id": "login_main",
+          "type": "login-main",
+          "label": "Login form",
+          "settingsFields": [
+            {
+              "path": "templates.login.sections.login_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.emailPlaceholder",
+              "type": "text",
+              "label": "Email placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.passwordPlaceholder",
+              "type": "text",
+              "label": "Password placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.submitLabel",
+              "type": "text",
+              "label": "Button label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.submitButton",
+              "type": "text",
+              "label": "Submit button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.forgotLabel",
+              "type": "text",
+              "label": "Forgot password label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.signupPrompt",
+              "type": "text",
+              "label": "Sign up prompt",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.login.sections.login_main.settings.signupLabel",
+              "type": "text",
+              "label": "Sign up link",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "signup",
+      "label": "Sign up",
+      "sections": [
+        {
+          "id": "signup_main",
+          "type": "signup-main",
+          "label": "Sign up form",
+          "settingsFields": [
+            {
+              "path": "templates.signup.sections.signup_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Subtext",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.firstNamePlaceholder",
+              "type": "text",
+              "label": "First name placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.lastNamePlaceholder",
+              "type": "text",
+              "label": "Last name placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.emailPlaceholder",
+              "type": "text",
+              "label": "Email placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.passwordPlaceholder",
+              "type": "text",
+              "label": "Password placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.submitLabel",
+              "type": "text",
+              "label": "Button label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.submitButton",
+              "type": "text",
+              "label": "Submit button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.loginPrompt",
+              "type": "text",
+              "label": "Sign in prompt",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.signup.sections.signup_main.settings.loginLabel",
+              "type": "text",
+              "label": "Sign in link",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "forgot_password",
+      "label": "Forgot password",
+      "sections": [
+        {
+          "id": "forgot_main",
+          "type": "forgot-main",
+          "label": "Reset password",
+          "settingsFields": [
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.subtitle",
+              "type": "textarea",
+              "label": "Instructions",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.emailPlaceholder",
+              "type": "text",
+              "label": "Email placeholder",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.submitLabel",
+              "type": "text",
+              "label": "Button label",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.submitButton",
+              "type": "text",
+              "label": "Submit button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.loadingLabel",
+              "type": "text",
+              "label": "Loading label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.successMessage",
+              "type": "textarea",
+              "label": "Success message",
+              "widget": "styled-text",
+              "sidebar": true
+            },
+            {
+              "path": "templates.forgot_password.sections.forgot_main.settings.backLabel",
+              "type": "text",
+              "label": "Back link",
+              "widget": "styled-text",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "label": "Profile",
+      "sections": [
+        {
+          "id": "profile_main",
+          "label": "Profile",
+          "settingsFields": [
+            {
+              "path": "templates.profile.sections.profile_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.signedOutMessage",
+              "type": "text",
+              "label": "Signed-out message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.signInButton",
+              "type": "text",
+              "label": "Sign in button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.saveLabel",
+              "type": "text",
+              "label": "Save button",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.saveButton",
+              "type": "text",
+              "label": "Save button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.preferencesTitle",
+              "type": "text",
+              "label": "Preferences heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.emailMarketingLabel",
+              "type": "text",
+              "label": "Email marketing label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.smsMarketingLabel",
+              "type": "text",
+              "label": "SMS marketing label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.profile.sections.profile_main.settings.preferencesSaveButton",
+              "type": "text",
+              "label": "Save preferences button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "orders",
+      "label": "Orders",
+      "sections": [
+        {
+          "id": "orders_main",
+          "label": "Orders",
+          "settingsFields": [
+            {
+              "path": "templates.orders.sections.orders_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.emptyMessage",
+              "type": "text",
+              "label": "Empty message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.signedOutMessage",
+              "type": "text",
+              "label": "Signed-out message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.signInButton",
+              "type": "text",
+              "label": "Sign in button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.totalLabel",
+              "type": "text",
+              "label": "Total label",
+              "sidebar": true
+            },
+            {
+              "path": "templates.orders.sections.orders_main.settings.viewDetailsLabel",
+              "type": "text",
+              "label": "View details link",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "order_details",
+      "label": "Order details",
+      "sections": [
+        {
+          "id": "order_details_main",
+          "label": "Order details",
+          "settingsFields": [
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.eyebrow",
+              "type": "text",
+              "label": "Eyebrow",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.title",
+              "type": "text",
+              "label": "Heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.subtitle",
+              "type": "text",
+              "label": "Subtitle",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.backLabel",
+              "type": "text",
+              "label": "Back to orders",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.backButton",
+              "type": "text",
+              "label": "Back button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.itemsHeading",
+              "type": "text",
+              "label": "Items heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.summaryHeading",
+              "type": "text",
+              "label": "Summary heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.shippingHeading",
+              "type": "text",
+              "label": "Shipping heading",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.notFoundMessage",
+              "type": "text",
+              "label": "Not found message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.signedOutMessage",
+              "type": "text",
+              "label": "Signed-out message",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.signInButton",
+              "type": "text",
+              "label": "Sign in button",
+              "widget": "button",
+              "group": "Content",
+              "sidebar": true
+            },
+            {
+              "path": "templates.order_details.sections.order_details_main.settings.totalLabel",
+              "type": "text",
+              "label": "Total label",
+              "sidebar": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

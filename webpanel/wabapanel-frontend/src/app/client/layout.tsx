@@ -10,6 +10,7 @@ import PageHelp from '@/components/PageHelp';
 import NotificationProvider from '@/components/NotificationProvider';
 import AnnouncementBanner from '@/components/AnnouncementBanner';
 import { useAuthStore } from '@/stores/authStore';
+import { GATEWAY_LOGOUT_URL } from '@/lib/gateway';
 import { useStoreStore } from '@/stores/storeStore';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -39,7 +40,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       try { sessionStorage.setItem('postLoginRedirect', window.location.pathname + window.location.search); } catch { /* */ }
-      router.push('/auth/login');
+      window.location.assign(GATEWAY_LOGOUT_URL);
     }
   }, [isLoading, isAuthenticated, router]);
 

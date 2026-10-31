@@ -927,15 +927,22 @@ const switchWorkspace = async (req, res) => {
 
 const getClientModules = async (req, res) => {
   try {
-    const { publicCatalog, defaultLaunchModules } = require('../utils/gatewayModules');
+    const { publicCatalog, defaultLaunchModules, normalizeSelectedModules } = require('../utils/gatewayModules');
     const user = await User.findById(req.user._id).select('featureOverrides role');
     if (user.role === 'agent') {
       return res.status(403).json({ success: false, message: 'Only the workspace owner can choose services' });
     }
     const industry = user.featureOverrides?.industry || '';
-    const selected = Array.isArray(user.featureOverrides?.selectedModules)
-      ? user.featureOverrides.selectedModules
-      : defaultLaunchModules(industry);
+    const stored = user.featureOverrides?.selectedModules;
+    const selected = normalizeSelectedModules(
+      industry,
+      Array.isArray(stored) ? stored : defaultLaunchModules(industry)
+    );
+    // Self-heal older accounts: persist the normalized list when it differs
+    // (e.g. sector module added to the catalog after the user signed up).
+    if (!Array.isArray(stored) || JSON.stringify(stored) !== JSON.stringify(selected)) {
+      await User.updateOne({ _id: user._id }, { $set: { 'featureOverrides.selectedModules': selected } });
+    }
     return res.json({ success: true, data: publicCatalog(industry, selected) });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -949,6 +956,8 @@ const updateClientModules = async (req, res) => {
       defaultLaunchModules,
       featureOverridesForModules,
       publicCatalog,
+      INDUSTRY_MODULE,
+      MODULES,
     } = require('../utils/gatewayModules');
     const { getOwnerFeatures } = require('../middleware/featureGate');
     const user = await User.findById(req.user._id);
@@ -961,8 +970,8 @@ const updateClientModules = async (req, res) => {
       Array.isArray(req.body.selectedModules) ? req.body.selectedModules : defaultLaunchModules(industry)
     );
     user.featureOverrides = featureOverridesForModules(selectedModules, industry);
-    if (industry === 'healthcare') user.featureOverrides.clinic = true;
-    if (industry === 'education') user.featureOverrides.edtech = true;
+    const sectorMod = MODULES.find((m) => m.id === INDUSTRY_MODULE[industry]);
+    if (sectorMod) for (const key of sectorMod.keys) user.featureOverrides[key] = true;
     user.markModified('featureOverrides');
     await user.save();
     const features = await getOwnerFeatures(user._id);

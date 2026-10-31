@@ -5,7 +5,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/server.js",
     "dev": "cross-env NODE_ENV=development node --watch src/server.js",
-    "seed": "cross-env NODE_ENV=development node src/seed.js"
+    "seed": "cross-env NODE_ENV=development node src/seed.js",
+    "seed:travel-packages": "cross-env NODE_ENV=development node src/seed-travel-packages.js"
   },
   "keywords": [],
   "author": "",

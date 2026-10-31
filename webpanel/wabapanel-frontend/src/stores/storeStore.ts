@@ -15,7 +15,10 @@ export type WebpanelStore = {
   storeName: string;
   storeDescription: string;
   appliedTheme?: string | null;
+  appliedCustomThemeId?: string | null;
   status?: string;
+  industry?: string | null;
+  industryKind?: string | null;
   storeCode?: string;
   createdAt?: string;
   updatedAt?: string;

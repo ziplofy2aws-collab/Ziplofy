@@ -1,0 +1,25 @@
+/* Horizon theme — minimal global resets; layout uses inline tokens from config */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button,
+input {
+  font: inherit;
+}

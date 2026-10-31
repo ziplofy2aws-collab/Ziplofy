@@ -1,0 +1,169 @@
+.create-theme-powered-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.create-theme-powered-loader__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  background: transparent;
+}
+
+.create-theme-powered-loader__scene {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  perspective: 700px;
+}
+
+.tesseract {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: tesseract-orbit 12s ease-in-out infinite;
+}
+
+.tesseract__projection {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  animation: tesseract-4d-warp 6s ease-in-out infinite;
+}
+
+.tesseract__cube {
+  position: absolute;
+  left: -40px;
+  top: -40px;
+  width: 80px;
+  height: 80px;
+  transform-style: preserve-3d;
+}
+
+.tesseract__cube--outer {
+  animation: tesseract-spin-outer 10s linear infinite;
+}
+
+.tesseract__cube--inner {
+  animation: tesseract-spin-inner 8s linear infinite reverse;
+}
+
+.tesseract__face {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border: 1px solid rgba(99, 102, 241, 0.45);
+  background: transparent;
+  backface-visibility: visible;
+}
+
+.tesseract__cube--inner .tesseract__face {
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.tesseract__face--front {
+  transform: translateZ(40px);
+}
+.tesseract__face--back {
+  transform: rotateY(180deg) translateZ(40px);
+}
+.tesseract__face--right {
+  transform: rotateY(90deg) translateZ(40px);
+}
+.tesseract__face--left {
+  transform: rotateY(-90deg) translateZ(40px);
+}
+.tesseract__face--top {
+  transform: rotateX(90deg) translateZ(40px);
+}
+.tesseract__face--bottom {
+  transform: rotateX(-90deg) translateZ(40px);
+}
+
+.tesseract__bridge {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.tesseract__edge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  transform-origin: 0 0;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.5) 0%, rgba(59, 130, 246, 0.2) 100%);
+}
+
+.create-theme-powered-loader__brand {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+}
+
+.create-theme-powered-loader__brand span {
+  font-weight: 600;
+  color: #374151;
+}
+
+@keyframes tesseract-orbit {
+  0%,
+  100% {
+    transform: rotateX(14deg);
+  }
+  50% {
+    transform: rotateX(20deg);
+  }
+}
+
+@keyframes tesseract-4d-warp {
+  0%,
+  100% {
+    transform: rotateX(16deg) rotateY(0deg);
+  }
+  50% {
+    transform: rotateX(22deg) rotateY(180deg);
+  }
+}
+
+@keyframes tesseract-spin-outer {
+  from {
+    transform: rotateX(0deg) rotateY(0deg);
+  }
+  to {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
+}
+
+@keyframes tesseract-spin-inner {
+  from {
+    transform: rotateX(45deg) rotateY(45deg) scale3d(0.45, 0.45, 0.45);
+  }
+  50% {
+    transform: rotateX(225deg) rotateY(225deg) scale3d(0.55, 0.55, 0.55);
+  }
+  to {
+    transform: rotateX(405deg) rotateY(405deg) scale3d(0.45, 0.45, 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tesseract,
+  .tesseract__projection,
+  .tesseract__cube--outer,
+  .tesseract__cube--inner {
+    animation: none;
+  }
+}

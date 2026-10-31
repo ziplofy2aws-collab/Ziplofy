@@ -34,14 +34,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
-      '@informatic-theme': path.resolve(import.meta.dirname, '../../remote-themes/informatic/src'),
+      '@informatic-theme': path.resolve(import.meta.dirname, './src/informatic-stub'),
       '@informatic-theme/sdk-shim': path.resolve(
         import.meta.dirname,
-        '../../remote-themes/informatic/src/sdk-shim.tsx'
+        './src/informatic-stub/sdk-shim.tsx'
       ),
       '@render-store/sdk': path.resolve(
         import.meta.dirname,
-        '../../remote-themes/informatic/src/sdk-shim.tsx'
+        './src/shims/render-store-sdk.tsx'
       ),
     },
     dedupe: ['react', 'react-dom', 'react-router', 'react-router-dom'],

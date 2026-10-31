@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ThemeConfigProvider } from '@render-store/sdk';
 import theme from '@informatic-theme';
-import defaultConfig from '../../../../remote-themes/informatic/theme.default-config.json';
+import defaultConfig from '../informatic-stub/theme.default-config.json';
 import { useStorefront, type StorefrontMeta } from '@/contexts/store.context';
 import { InformaticStorefrontContactFormProvider } from '@/contexts/informatic-contact-form.context';
 import { InformaticStorefrontLeadGenFormProvider } from '@/contexts/informatic-lead-gen-form.context';

@@ -6,15 +6,17 @@
   "description": "Web Panel Store Renderer — resolves Informatic store subdomains and renders launched websites",
   "scripts": {
     "dev": "vite --port 3003",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview --port 3003",
     "typecheck": "tsc -b",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "axios": "^1.12.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-hot-toast": "^2.6.1",
     "react-router-dom": "^7.9.1"
   },
   "devDependencies": {

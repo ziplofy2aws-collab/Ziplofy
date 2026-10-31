@@ -1,0 +1,55 @@
+[data-codiic-card-hover='lift'] a[href*='/products/']:has(img),
+[data-codiic-card-hover='lift'] a[href*='/collections/']:has(img) {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+[data-codiic-card-hover='lift'] a[href*='/products/']:has(img):hover,
+[data-codiic-card-hover='lift'] a[href*='/collections/']:has(img):hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(17, 24, 39, 0.12);
+}
+
+[data-codiic-card-hover='scale'] a[href*='/products/']:has(img),
+[data-codiic-card-hover='scale'] a[href*='/collections/']:has(img) {
+  transition: transform 0.25s ease;
+}
+
+[data-codiic-card-hover='scale'] a[href*='/products/']:has(img):hover,
+[data-codiic-card-hover='scale'] a[href*='/collections/']:has(img):hover {
+  transform: scale(1.03);
+}
+
+[data-codiic-card-hover='zoom'] a[href*='/products/']:has(img),
+[data-codiic-card-hover='zoom'] a[href*='/collections/']:has(img) {
+  overflow: hidden;
+}
+
+[data-codiic-card-hover='zoom'] a[href*='/products/'] img,
+[data-codiic-card-hover='zoom'] a[href*='/collections/'] img {
+  transition: transform 0.35s ease;
+}
+
+[data-codiic-card-hover='zoom'] a[href*='/products/']:hover img,
+[data-codiic-card-hover='zoom'] a[href*='/collections/']:hover img {
+  transform: scale(1.06);
+}
+
+[data-codiic-add-to-cart-animation='true'] button[type='submit']:active {
+  transform: scale(0.98);
+  transition: transform 0.12s ease;
+}
+
+[data-codiic-page-transition='true'] main {
+  animation: codiic-page-enter 0.28s ease;
+}
+
+@keyframes codiic-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

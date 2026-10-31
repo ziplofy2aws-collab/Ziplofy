@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { authApi } from '@/lib/api';
+import { GATEWAY_LOGOUT_URL } from '@/lib/gateway';
 import { useAuthStore } from '@/stores/authStore';
 
 function inflightMap(): Map<string, Promise<any>> {
@@ -57,7 +58,7 @@ function SsoExchange() {
         {error ? (
           <>
             <p className="text-red-600 mb-4">{error}</p>
-            <a className="text-sm font-semibold text-emerald-700 underline" href="/auth/login">
+            <a className="text-sm font-semibold text-emerald-700 underline" href={GATEWAY_LOGOUT_URL}>
               Go to login
             </a>
           </>

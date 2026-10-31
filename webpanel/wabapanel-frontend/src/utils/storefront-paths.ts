@@ -1,0 +1,58 @@
+/** Canonical storefront catalog URL paths (match render-store). */
+
+export const STOREFRONT_PATHS = {
+  home: '/',
+  /** All products catalog */
+  allProducts: '/collections/all',
+  /** Collections index */
+  allCollections: '/collections',
+  /** All blogs index */
+  allBlogs: '/blogs/all',
+  cart: '/cart',
+  search: '/search',
+} as const;
+
+/** Product detail: `/product/{urlHandle}` */
+export function productPath(urlHandleOrId: string): string {
+  const handle = urlHandleOrId.trim();
+  return handle ? `/product/${encodeURIComponent(handle)}` : STOREFRONT_PATHS.allProducts;
+}
+
+/**
+ * Single collection: `/collection/{urlHandle}`
+ * Special case `all` → `/collections/all` (all products).
+ */
+export function collectionPath(urlHandle: string): string {
+  const handle = urlHandle.trim().toLowerCase();
+  if (!handle || handle === 'all') return STOREFRONT_PATHS.allProducts;
+  return `/collection/${encodeURIComponent(handle)}`;
+}
+
+/** Custom page detail: `/pages/{urlHandle}` */
+export function pagePath(urlHandle: string): string {
+  const handle = urlHandle.trim().toLowerCase();
+  return handle ? `/pages/${encodeURIComponent(handle)}` : '/pages';
+}
+
+export function isAllProductsPath(pathname: string): boolean {
+  return pathname === STOREFRONT_PATHS.allProducts || pathname === '/products';
+}
+
+export function isAllCollectionsPath(pathname: string): boolean {
+  return pathname === STOREFRONT_PATHS.allCollections;
+}
+
+/** Normalize legacy storefront links written before path conventions settled. */
+export function normalizeStorefrontPath(path: string): string {
+  const trimmed = path.trim();
+  if (!trimmed) return trimmed;
+  if (trimmed === '/products' || trimmed.endsWith('/products')) return STOREFRONT_PATHS.allProducts;
+  if (trimmed === '/collection') return STOREFRONT_PATHS.allCollections;
+  const productLegacy = trimmed.match(/^\/products\/([^/?#]+)/);
+  if (productLegacy) return productPath(decodeURIComponent(productLegacy[1]));
+  const collectionPlural = trimmed.match(/^\/collections\/(?!all$)([^/?#]+)/);
+  if (collectionPlural) return collectionPath(decodeURIComponent(collectionPlural[1]));
+  const pageSingular = trimmed.match(/^\/page\/([^/?#]+)/);
+  if (pageSingular) return pagePath(decodeURIComponent(pageSingular[1]));
+  return trimmed;
+}

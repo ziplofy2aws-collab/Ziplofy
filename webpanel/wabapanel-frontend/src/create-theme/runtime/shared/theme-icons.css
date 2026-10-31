@@ -1,0 +1,3 @@
+[data-codiic-icon-stroke] .codiic-theme-icon [stroke] {
+  stroke-width: var(--codiic-icon-stroke-width, 1.75);
+}

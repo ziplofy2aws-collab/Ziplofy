@@ -204,6 +204,7 @@ const applyInformaticThemeForStore = async (req, res) => {
     await fetchCatalogTheme(themeId);
 
     store.appliedTheme = String(themeId);
+    store.appliedCustomThemeId = null;
     await store.save();
 
     const rows = await listInstalledRows(storeId);

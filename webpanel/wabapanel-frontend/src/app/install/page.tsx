@@ -73,7 +73,7 @@ export default function InstallPage() {
           <div className="text-4xl mb-3">✅</div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Already Installed</h1>
           <p className="text-gray-600 text-sm mb-6">This platform is already set up. For security, the installer is disabled. Delete <code className="bg-gray-100 px-1 rounded">installed.lock</code> on the server to run it again.</p>
-          <button onClick={() => router.push('/auth/login')} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg">Go to Login</button>
+          <button onClick={() => router.push('/auth/login?local=1')} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg">Go to Login</button>
         </div>
       </div>
     );
@@ -96,7 +96,7 @@ export default function InstallPage() {
               <div className="text-5xl mb-3">🎉</div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">All Set!</h1>
               <p className="text-gray-600 text-sm mb-6">Your platform is installed and ready. Log in with the admin account you just created.</p>
-              <button onClick={() => router.push('/auth/login')} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg">Go to Login</button>
+              <button onClick={() => router.push('/auth/login?local=1')} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-lg">Go to Login</button>
             </div>
           ) : (
             <>

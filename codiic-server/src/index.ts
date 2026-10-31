@@ -3,6 +3,7 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
+import path from 'path';
 import { Server as SocketIOServer } from 'socket.io';
 import { connectDB } from './config/database.config';
 import { errorMiddleware } from './middlewares/error.middleware';
@@ -200,6 +201,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/stores", storeRouter);
 app.use("/api/auth", authRouter);
 app.post("/api/internal/gateway/provision-merchant", provisionMerchant);
+// Dev-local uploaded files (disk sink used when AWS creds are placeholders)
+app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads"), {
+  setHeaders: (res) => { res.setHeader("Access-Control-Allow-Origin", "*"); },
+}));
 app.use("/api/aws", awsRouter);
 app.use("/api/user", userRouter);
 app.use("/api/themes", themeRouter);

@@ -1,0 +1,265 @@
+import { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import {
+  amountOffOrderSecondaryLine,
+  amountOffProductSecondaryLine,
+  buyXGetYSecondaryLine,
+  dedupeAmountOffOrder,
+  dedupeAmountOffProducts,
+  dedupeBuyXGetY,
+  dedupeFreeShipping,
+  formatMoney,
+  freeShippingSecondaryLine,
+  useProductOffers,
+  useStorefront,
+  useStorefrontAuth,
+  useStorefrontCart,
+  useStorefrontProductVariants,
+  useStorefrontProducts,
+  useThemeConfig,
+} from '@render-store/sdk';
+import { cfgBool, cfgString } from '../lib/config';
+import { EditorBlock, EditorField, EditorSection } from '../lib/editorAttrs';
+import { ThemeEditorRichTextContent } from '../../../../../create-theme/runtime/shared/ThemeEditorRichTextContent';
+import { PageShell } from '../shell/PageShell';
+import { layout, useThemeColors } from '../tokens';
+
+const SEC = 'templates.product.sections.product_main';
+
+export function ProductPage() {
+  const params = useParams<{ id?: string; urlHandle?: string }>();
+  const routeParam = params.urlHandle ?? params.id;
+  const config = useThemeConfig();
+  const { text, background, primary, fontHeading, fontBody } = useThemeColors();
+  const { storeFrontMeta } = useStorefront();
+  const { user } = useStorefrontAuth();
+  const { products, productDetail, fetchProductForRoute, fetchProductById } = useStorefrontProducts();
+  const { variants, fetchVariantsByProductId } = useStorefrontProductVariants();
+  const { createCartEntry } = useStorefrontCart();
+  const {
+    freeShippingOffers,
+    amountOffOrderOffers,
+    amountOffProductsOffers,
+    buyXGetYOffers,
+    fetchFreeShippingOffersForProduct,
+    fetchAmountOffOrderOffersForProduct,
+    fetchAmountOffProductsOffersForProduct,
+    fetchBuyXGetYOffersForProduct,
+  } = useProductOffers();
+  const [adding, setAdding] = useState(false);
+
+  const showImage = cfgBool(config, `${SEC}.blocks.product_media.settings.showImage`, true);
+  const showVendor = cfgBool(config, `${SEC}.blocks.product_header.blocks.vendor_line.settings.showVendor`, true);
+  const vendorPrefix = cfgString(config, `${SEC}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`);
+  const loadingLabel = cfgString(config, `${SEC}.blocks.product_header.blocks.product_title.settings.loadingLabel`);
+  const showDescription = cfgBool(config, `${SEC}.blocks.product_content.blocks.description.settings.showDescription`, true);
+  const priceFallback = cfgString(config, `${SEC}.blocks.product_content.blocks.price_line.settings.priceFallback`, '—');
+  const addLabel = cfgString(config, `${SEC}.blocks.buy_box.blocks.add_to_cart_button.settings.label`);
+  const addingLabel = cfgString(config, `${SEC}.blocks.buy_box.blocks.add_to_cart_button.settings.addingLabel`);
+
+  const storeId = storeFrontMeta?.storeId;
+  const fallbackProductId = products[0]?._id;
+
+  useEffect(() => {
+    if (!storeId) return;
+    if (!routeParam || routeParam === 'preview') {
+      if (fallbackProductId) void fetchProductById(fallbackProductId);
+      return;
+    }
+    void fetchProductForRoute(storeId, routeParam);
+  }, [storeId, routeParam, fallbackProductId, fetchProductById, fetchProductForRoute]);
+
+  const resolvedProductId = productDetail?._id ?? null;
+
+  useEffect(() => {
+    if (!resolvedProductId) return;
+    void fetchVariantsByProductId(resolvedProductId);
+  }, [resolvedProductId, fetchVariantsByProductId]);
+
+  useEffect(() => {
+    if (!resolvedProductId) return;
+    const customerId = user?._id ?? null;
+    void fetchFreeShippingOffersForProduct(resolvedProductId, customerId);
+    void fetchAmountOffOrderOffersForProduct(resolvedProductId, customerId);
+    void fetchAmountOffProductsOffersForProduct(resolvedProductId, customerId);
+    void fetchBuyXGetYOffersForProduct(resolvedProductId, customerId);
+  }, [
+    resolvedProductId,
+    user?._id,
+    fetchFreeShippingOffersForProduct,
+    fetchAmountOffOrderOffersForProduct,
+    fetchAmountOffProductsOffersForProduct,
+    fetchBuyXGetYOffersForProduct,
+  ]);
+
+  const selectedVariant = useMemo(
+    () => variants[0] ?? productDetail?.variantDetails?.[0],
+    [productDetail?.variantDetails, variants]
+  );
+
+  const offerLines = useMemo(() => {
+    const lineQty = 1;
+    const lineSubtotal = selectedVariant?.price ?? productDetail?.price ?? 0;
+    const lines: string[] = [];
+
+    for (const offer of dedupeFreeShipping(freeShippingOffers)) {
+      const secondary = freeShippingSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.title ?? 'Free shipping'} — ${secondary}` : offer.title ?? 'Free shipping');
+    }
+    for (const offer of dedupeAmountOffOrder(amountOffOrderOffers)) {
+      const secondary = amountOffOrderSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.valueDescription} — ${secondary}` : offer.valueDescription);
+    }
+    for (const offer of dedupeAmountOffProducts(amountOffProductsOffers)) {
+      const secondary = amountOffProductSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.valueDescription} — ${secondary}` : offer.valueDescription);
+    }
+    for (const offer of dedupeBuyXGetY(buyXGetYOffers)) {
+      const secondary = buyXGetYSecondaryLine(offer, lineQty, lineSubtotal);
+      lines.push(secondary ? `${offer.title ?? 'Buy X get Y'} — ${secondary}` : offer.title ?? 'Buy X get Y');
+    }
+
+    return lines.filter(Boolean).slice(0, 6);
+  }, [
+    freeShippingOffers,
+    amountOffOrderOffers,
+    amountOffProductsOffers,
+    buyXGetYOffers,
+    selectedVariant?.price,
+    productDetail?.price,
+  ]);
+
+  const handleAdd = async () => {
+    if (!storeFrontMeta?.storeId || !selectedVariant) return;
+    try {
+      setAdding(true);
+      await createCartEntry(
+        { storeId: storeFrontMeta.storeId, productVariantId: selectedVariant._id, quantity: 1 },
+        selectedVariant
+      );
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const image = productDetail?.imageUrls?.[0];
+  const price = selectedVariant?.price ?? productDetail?.price;
+
+  return (
+    <PageShell>
+      <EditorSection sectionId="product_main" label="Product details" style={{ padding: `48px ${layout.padX}px` }}>
+        <div
+          style={{
+            maxWidth: layout.maxWidth,
+            margin: '0 auto',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: 40,
+            fontFamily: fontBody,
+            color: text,
+          }}
+        >
+          <EditorBlock nodeId="template:product:product_main:block:product_media" label="Media">
+            {showImage ? (
+              <div
+                style={{
+                  aspectRatio: '3/4',
+                  borderRadius: 12,
+                  border: `1px solid ${layout.line}`,
+                  background: image
+                    ? `center/cover url(${image}) no-repeat`
+                    : 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                }}
+              />
+            ) : null}
+          </EditorBlock>
+
+          <div>
+            <EditorBlock nodeId="template:product:product_main:block:product_header" label="Header">
+              {showVendor && productDetail?.vendor?.name ? (
+                <EditorBlock nodeId="template:product:product_main:block:product_header:block:vendor_line" label="Vendor">
+                  <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.1em', opacity: 0.6 }}>
+                    <EditorField
+                      fieldPath={`${SEC}.blocks.product_header.blocks.vendor_line.settings.vendorPrefix`}
+                      label="Vendor prefix"
+                      as="span"
+                    >
+                      {vendorPrefix}
+                    </EditorField>{' '}
+                    {productDetail.vendor.name}
+                  </p>
+                </EditorBlock>
+              ) : null}
+              <EditorBlock nodeId="template:product:product_main:block:product_header:block:product_title" label="Product title">
+                <h1 style={{ fontFamily: fontHeading, fontSize: 32, margin: '8px 0 16px', fontWeight: 600 }}>
+                  {productDetail?.title ?? (
+                    <EditorField
+                      fieldPath={`${SEC}.blocks.product_header.blocks.product_title.settings.loadingLabel`}
+                      label="Loading label"
+                    >
+                      {loadingLabel}
+                    </EditorField>
+                  )}
+                </h1>
+              </EditorBlock>
+            </EditorBlock>
+
+            <EditorBlock nodeId="template:product:product_main:block:product_content" label="Content">
+              {showDescription ? (
+                <EditorBlock nodeId="template:product:product_main:block:product_content:block:description" label="Description">
+                  <ThemeEditorRichTextContent
+                    html={productDetail?.description ?? ''}
+                    style={{ lineHeight: 1.7, opacity: 0.85, marginBottom: 24 }}
+                  />
+                </EditorBlock>
+              ) : null}
+              <EditorBlock nodeId="template:product:product_main:block:product_content:block:price_line" label="Price">
+                <p style={{ fontSize: 24, fontWeight: 600, marginBottom: 12 }}>
+                  {typeof price === 'number' ? formatMoney(price) : priceFallback}
+                </p>
+              </EditorBlock>
+              {offerLines.length > 0 ? (
+                <ul style={{ margin: '0 0 24px', paddingLeft: 18, opacity: 0.85, lineHeight: 1.5 }}>
+                  {offerLines.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </EditorBlock>
+
+            <EditorBlock nodeId="template:product:product_main:block:buy_box" label="Buy box">
+              <EditorBlock
+                nodeId="template:product:product_main:block:buy_box:block:add_to_cart_button"
+                label="Add to cart button"
+              >
+                <button
+                  type="button"
+                  disabled={adding || !selectedVariant}
+                  onClick={() => void handleAdd()}
+                  style={{
+                    padding: '14px 28px',
+                    borderRadius: 8,
+                    border: 'none',
+                    background: primary,
+                    color: background,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    fontFamily: fontBody,
+                  }}
+                >
+                  <EditorField
+                    fieldPath={`${SEC}.blocks.buy_box.blocks.add_to_cart_button.settings.label`}
+                    label="Button label"
+                    as="span"
+                  >
+                    {adding ? addingLabel : addLabel}
+                  </EditorField>
+                </button>
+              </EditorBlock>
+            </EditorBlock>
+          </div>
+        </div>
+      </EditorSection>
+    </PageShell>
+  );
+}

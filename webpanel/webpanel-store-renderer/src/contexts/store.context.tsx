@@ -18,6 +18,7 @@ export type StorefrontMeta = {
   status?: string;
   storeCode?: string | null;
   appliedTheme?: string | null;
+  appliedCustomThemeId?: string | null;
   industry?: string | null;
   industryKind?: string | null;
 };

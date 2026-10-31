@@ -1,7 +1,8 @@
 'use client';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { GATEWAY_URL } from '@/lib/gateway';
 import {
   MessageSquare, Gift, Megaphone, BadgeCheck, Bot,
   Eye, EyeOff, Info, MailCheck, Loader2,
@@ -94,6 +95,17 @@ export default function RegisterPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+
+  // Signup runs through the gateway onboarding (service + industry pick).
+  // ?local=1 keeps this form reachable for internal/admin use.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('local') !== '1') {
+      setRedirecting(true);
+      window.location.replace(`${GATEWAY_URL}/register`);
+    }
+  }, []);
 
   const brandName = brand.name || 'Codiic Panel';
   const canSubmit = useMemo(
@@ -149,6 +161,14 @@ export default function RegisterPage() {
       setLoading(false);
     }
   };
+
+  if (redirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f1f1f1]">
+        <p className="text-[#98A2B3] text-sm">Redirecting to sign up…</p>
+      </div>
+    );
+  }
 
   if (verificationSent) {
     return (

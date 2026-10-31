@@ -48,6 +48,12 @@ const webpanelStoreSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    /** Applied custom theme built in the create-theme builder (WebpanelStoreCustomTheme _id). */
+    appliedCustomThemeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'WebpanelStoreCustomTheme',
+      default: null,
+    },
     status: {
       type: String,
       enum: ['active', 'suspended'],

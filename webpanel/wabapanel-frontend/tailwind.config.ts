@@ -7,6 +7,9 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/contexts/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/create-theme/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/theme-packs/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/shims/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
