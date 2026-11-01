@@ -7,7 +7,21 @@ function redactMongoUri(uri) {
 
 const connectDB = async () => {
   try {
-    const uri = (process.env.MONGODB_URI || '').trim() || 'mongodb://127.0.0.1:27017/wabapanel';
+    let uri = (process.env.MONGODB_URI || '').trim();
+    if (process.env.NODE_ENV === 'production') {
+      // Never silently fall back to localhost in production — a missing or
+      // mis-set MONGODB_URI previously booted the API against an empty local db.
+      if (!uri) {
+        console.error('[DB] FATAL: MONGODB_URI is not set (NODE_ENV=production). Refusing to fall back to localhost.');
+        process.exit(1);
+      }
+      if (/127\.0\.0\.1|localhost/.test(uri)) {
+        console.error(`[DB] FATAL: MONGODB_URI points at localhost in production (${redactMongoUri(uri)}).`);
+        process.exit(1);
+      }
+    } else if (!uri) {
+      uri = 'mongodb://127.0.0.1:27017/wabapanel';
+    }
     console.log(`[DB] Connecting to ${redactMongoUri(uri)}`);
     const conn = await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 30000,

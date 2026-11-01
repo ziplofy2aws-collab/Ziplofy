@@ -578,127 +578,142 @@ app.get('/api/health', (req, res) => {
 // Error handler
 app.use(errorHandler);
 
-// Initialize drip campaign scheduler
-const DripScheduler = require('./services/dripScheduler');
-const dripScheduler = new DripScheduler(io);
-dripScheduler.start();
+// Background jobs — gated by JOBS_ENABLED so a secondary/migration
+// instance can serve API + websockets without double-running schedulers,
+// pollers, campaign sends or session restores.
+const JOBS_ENABLED = (process.env.JOBS_ENABLED || 'true').trim().toLowerCase() !== 'false';
 
-// Scheduled broadcast/preset campaigns (exact date-time + recurring)
-const CampaignScheduler = require('./services/campaignScheduler');
-new CampaignScheduler(io).start();
-// Continue campaigns left "running" by a previous restart/crash.
-require('./controllers/campaignController').resumeRunningCampaigns(io);
+function startBackgroundJobs() {
+  // Initialize drip campaign scheduler
+  const DripScheduler = require('./services/dripScheduler');
+  const dripScheduler = new DripScheduler(io);
+  dripScheduler.start();
 
-// Note reminders: notify workspace when a reminder is due
-const ContactNote = require('./models/ContactNote');
-setInterval(async () => {
-  try {
-    const due = await ContactNote.find({ remindAt: { $lte: new Date() }, reminderSent: false }).populate('contact', 'name phone');
-    for (const note of due) {
-      const room = io.sockets.adapter.rooms.get(`workspace:${note.workspace}`);
-      if (!room || room.size === 0) continue; // retry next minute when someone is online
-      io.to(`workspace:${note.workspace}`).emit('reminder_due', {
-        noteId: note._id,
-        text: note.text,
-        contact: note.contact ? { _id: note.contact._id, name: note.contact.name, phone: note.contact.phone } : null,
-      });
-      note.reminderSent = true;
-      await note.save();
-    }
-  } catch (e) { console.error('[NoteReminder]', e.message); }
-}, 60 * 1000);
-global._io = io;
-require('./services/aiCallScheduler').start();
-require('./services/aiCallScheduler').startBulkCampaigns();
-require('./services/aiAssistScheduler').start(io);
-require('./services/dataCleanup').start();
-require('./services/wisher').start();
-require('./services/dailyDigest').start();
-// Instagram Auto DM sender: paced sending, hourly caps and retries.
-setInterval(() => {
-  require('./services/igAutoDmService').processQueue()
-    .catch((e) => console.error('[IgAutoDm] queue error:', e.message));
-}, 20000);
-require('./services/followUpService').start();
-require('./services/emailInboxPoller').start(io);
-// Bot Flow durable timers: resume delayed steps and fire question "no-reply" timeout branches
-setInterval(() => {
-  const bf = require('./services/botFlowEngine');
-  bf.processTimedResumes({ io }).catch(() => {});
-  bf.processReplyTimeouts({ io }).catch(() => {});
-}, 60 * 1000);
-setTimeout(() => require('./services/waQrService').restoreAll().catch(() => {}), 5000);
-setTimeout(() => require('./services/tgUserService').restoreAll().catch(() => {}), 7000);
+  // Scheduled broadcast/preset campaigns (exact date-time + recurring)
+  const CampaignScheduler = require('./services/campaignScheduler');
+  new CampaignScheduler(io).start();
+  // Continue campaigns left "running" by a previous restart/crash.
+  require('./controllers/campaignController').resumeRunningCampaigns(io);
 
-// Auto-delete old call recordings per workspace retention setting
-setInterval(async () => {
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const AISettings = require('./models/AISettings');
-    const CallSession = require('./models/CallSession');
-    const { REC_DIR } = require('./services/callRecorder');
-    const list = await AISettings.find({ 'callRecording.autoDeleteDays': { $gt: 0 } }).select('workspace callRecording').lean();
-    for (const ai of list) {
-      const cutoff = new Date(Date.now() - ai.callRecording.autoDeleteDays * 24 * 60 * 60 * 1000);
-      const old = await CallSession.find({ workspace: ai.workspace, recordingUrl: { $ne: '' }, createdAt: { $lt: cutoff } }).select('recordingUrl').lean();
-      for (const s of old) {
-        try { fs.unlinkSync(path.join(REC_DIR, path.basename(s.recordingUrl))); } catch {}
-        await CallSession.updateOne({ _id: s._id }, { recordingUrl: '' });
+  // Note reminders: notify workspace when a reminder is due
+  const ContactNote = require('./models/ContactNote');
+  setInterval(async () => {
+    try {
+      const due = await ContactNote.find({ remindAt: { $lte: new Date() }, reminderSent: false }).populate('contact', 'name phone');
+      for (const note of due) {
+        const room = io.sockets.adapter.rooms.get(`workspace:${note.workspace}`);
+        if (!room || room.size === 0) continue; // retry next minute when someone is online
+        io.to(`workspace:${note.workspace}`).emit('reminder_due', {
+          noteId: note._id,
+          text: note.text,
+          contact: note.contact ? { _id: note.contact._id, name: note.contact.name, phone: note.contact.phone } : null,
+        });
+        note.reminderSent = true;
+        await note.save();
       }
-      if (old.length) console.log('[Call Rec] auto-deleted', old.length, 'recordings for workspace', String(ai.workspace));
+    } catch (e) { console.error('[NoteReminder]', e.message); }
+  }, 60 * 1000);
+  require('./services/aiCallScheduler').start();
+  require('./services/aiCallScheduler').startBulkCampaigns();
+  require('./services/aiAssistScheduler').start(io);
+  require('./services/dataCleanup').start();
+  require('./services/wisher').start();
+  require('./services/dailyDigest').start();
+  // Instagram Auto DM sender: paced sending, hourly caps and retries.
+  setInterval(() => {
+    require('./services/igAutoDmService').processQueue()
+      .catch((e) => console.error('[IgAutoDm] queue error:', e.message));
+  }, 20000);
+  require('./services/followUpService').start();
+  require('./services/emailInboxPoller').start(io);
+  // Bot Flow durable timers: resume delayed steps and fire question "no-reply" timeout branches
+  setInterval(() => {
+    const bf = require('./services/botFlowEngine');
+    bf.processTimedResumes({ io }).catch(() => {});
+    bf.processReplyTimeouts({ io }).catch(() => {});
+  }, 60 * 1000);
+  setTimeout(() => require('./services/waQrService').restoreAll().catch(() => {}), 5000);
+  setTimeout(() => require('./services/tgUserService').restoreAll().catch(() => {}), 7000);
+
+  // Auto-delete old call recordings per workspace retention setting
+  setInterval(async () => {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const AISettings = require('./models/AISettings');
+      const CallSession = require('./models/CallSession');
+      const { REC_DIR } = require('./services/callRecorder');
+      const list = await AISettings.find({ 'callRecording.autoDeleteDays': { $gt: 0 } }).select('workspace callRecording').lean();
+      for (const ai of list) {
+        const cutoff = new Date(Date.now() - ai.callRecording.autoDeleteDays * 24 * 60 * 60 * 1000);
+        const old = await CallSession.find({ workspace: ai.workspace, recordingUrl: { $ne: '' }, createdAt: { $lt: cutoff } }).select('recordingUrl').lean();
+        for (const s of old) {
+          try { fs.unlinkSync(path.join(REC_DIR, path.basename(s.recordingUrl))); } catch {}
+          await CallSession.updateOne({ _id: s._id }, { recordingUrl: '' });
+        }
+        if (old.length) console.log('[Call Rec] auto-deleted', old.length, 'recordings for workspace', String(ai.workspace));
+      }
+    } catch (e) { console.error('[Call Rec cleanup]', e.message); }
+  }, 6 * 60 * 60 * 1000);
+
+  // Initialize appointment auto-reminder scheduler (every 5 minutes)
+  const { processAutoReminders } = require('./controllers/appointmentController');
+  setInterval(async () => {
+    try {
+      const result = await processAutoReminders();
+      if (result && (result.sent1h > 0 || result.sent24h > 0)) {
+        console.log(`[Appointment Scheduler] Sent ${result.sent1h} 1h reminders, ${result.sent24h} 24h reminders`);
+      }
+    } catch (err) {
+      console.error('[Appointment Scheduler] Error:', err.message);
     }
-  } catch (e) { console.error('[Call Rec cleanup]', e.message); }
-}, 6 * 60 * 60 * 1000);
+  }, 5 * 60 * 1000); // Every 5 minutes
 
-// Initialize appointment auto-reminder scheduler (every 5 minutes)
-const { processAutoReminders } = require('./controllers/appointmentController');
-setInterval(async () => {
-  try {
-    const result = await processAutoReminders();
-    if (result && (result.sent1h > 0 || result.sent24h > 0)) {
-      console.log(`[Appointment Scheduler] Sent ${result.sent1h} 1h reminders, ${result.sent24h} 24h reminders`);
-    }
-  } catch (err) {
-    console.error('[Appointment Scheduler] Error:', err.message);
-  }
-}, 5 * 60 * 1000); // Every 5 minutes
+  // Plan auto-reminder scheduler (every 6 hours)
+  const { runAutoReminder } = require("./controllers/adminController");
+  setInterval(async () => {
+    try {
+      const result = await runAutoReminder();
+      if (result && result.sentCount > 0) console.log("[Plan Reminder] Auto sent:", result.sentCount, "reminders");
+    } catch (e) { console.error("[Plan Reminder] Scheduler error:", e.message); }
+  }, 6 * 60 * 60 * 1000);
+  // Run once at startup after 30 sec delay
+  setTimeout(async () => {
+    try { await runAutoReminder(); } catch(e) { console.error("[Plan Reminder] Startup run error:", e.message); }
+  }, 30000);
 
-// Plan auto-reminder scheduler (every 6 hours)
-const { runAutoReminder } = require("./controllers/adminController");
-setInterval(async () => {
-  try {
-    const result = await runAutoReminder();
-    if (result && result.sentCount > 0) console.log("[Plan Reminder] Auto sent:", result.sentCount, "reminders");
-  } catch (e) { console.error("[Plan Reminder] Scheduler error:", e.message); }
-}, 6 * 60 * 60 * 1000);
-// Run once at startup after 30 sec delay
-setTimeout(async () => {
-  try { await runAutoReminder(); } catch(e) { console.error("[Plan Reminder] Startup run error:", e.message); }
-}, 30000);
+  // Expired plan enforcement (hourly): clears plan on users whose planExpiry has passed
+  const expireOverduePlans = async () => {
+    const User = require('./models/User');
+    const result = await User.updateMany(
+      { plan: { $ne: null }, planExpiry: { $ne: null, $lt: new Date() } },
+      { $set: { plan: null, planExpiry: null } }
+    );
+    if (result.modifiedCount > 0) console.log('[Plan Expiry] Deactivated expired plans:', result.modifiedCount);
+    const Subscription = require('./models/Subscription');
+    await Subscription.updateMany(
+      { status: 'active', endDate: { $ne: null, $lt: new Date() } },
+      { $set: { status: 'expired' } }
+    );
+  };
+  setInterval(() => { expireOverduePlans().catch((e) => console.error('[Plan Expiry] Error:', e.message)); }, 60 * 60 * 1000);
+  setTimeout(() => { expireOverduePlans().catch((e) => console.error('[Plan Expiry] Startup error:', e.message)); }, 45000);
 
-// Expired plan enforcement (hourly): clears plan on users whose planExpiry has passed
-const expireOverduePlans = async () => {
-  const User = require('./models/User');
-  const result = await User.updateMany(
-    { plan: { $ne: null }, planExpiry: { $ne: null, $lt: new Date() } },
-    { $set: { plan: null, planExpiry: null } }
-  );
-  if (result.modifiedCount > 0) console.log('[Plan Expiry] Deactivated expired plans:', result.modifiedCount);
-  const Subscription = require('./models/Subscription');
-  await Subscription.updateMany(
-    { status: 'active', endDate: { $ne: null, $lt: new Date() } },
-    { $set: { status: 'expired' } }
-  );
-};
-setInterval(() => { expireOverduePlans().catch((e) => console.error('[Plan Expiry] Error:', e.message)); }, 60 * 60 * 1000);
-setTimeout(() => { expireOverduePlans().catch((e) => console.error('[Plan Expiry] Startup error:', e.message)); }, 45000);
+  // Daily database backup (every 24 hours, keeps last 10)
+  setInterval(async () => {
+    try { await platform.runBackup(); console.log('[Backup] Daily database backup completed'); }
+    catch (e) { console.error('[Backup] Failed:', e.message); }
+  }, 24 * 60 * 60 * 1000);
+}
 
-// Daily database backup (every 24 hours, keeps last 10)
-setInterval(async () => {
-  try { await platform.runBackup(); console.log('[Backup] Daily database backup completed'); }
-  catch (e) { console.error('[Backup] Failed:', e.message); }
-}, 24 * 60 * 60 * 1000);
+global._io = io;
+
+if (JOBS_ENABLED) {
+  console.log('[Jobs] Background jobs ENABLED (drip, campaigns, pollers, reminders, backups).');
+  startBackgroundJobs();
+} else {
+  console.log('[Jobs] Background jobs DISABLED via JOBS_ENABLED=false — schedulers, pollers, intervals and session restores are off.');
+}
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
