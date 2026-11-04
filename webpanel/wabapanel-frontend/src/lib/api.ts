@@ -30,7 +30,13 @@ api.interceptors.response.use(
   (error) => {
     const reqUrl = (error.config && error.config.url) || '';
     const isAuthRequest = /\/auth\/(login|admin\/login|register|google|sso\/exchange)/.test(reqUrl);
-    if (error.response?.status === 401 && !isAuthRequest) {
+    // Theme/catalog proxy routes can return 401 from upstream Codiic catalog auth —
+    // that is not a CRM session expiry. Do not force Gateway logout.
+    const isCatalogIntegrationRequest =
+      /informatic-themes|informatic-installed-themes|informatic-theme-config|informatic-theme-runtime/.test(
+        reqUrl
+      );
+    if (error.response?.status === 401 && !isAuthRequest && !isCatalogIntegrationRequest) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
         localStorage.removeItem('workspaceId');
