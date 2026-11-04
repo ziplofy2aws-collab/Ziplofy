@@ -11,14 +11,13 @@ const {
 const { readStoreInformaticThemeConfigFile } = require('./webpanelThemeConfigFile');
 const { enrichInformaticWhatsappWidgetConfig } = require('./informaticThemeWhatsapp.util');
 
-const CODIIC_API_BASE = (
-  process.env.CODIIC_API_URL ||
-  process.env.CODIIC_SERVER_URL ||
-  'http://127.0.0.1:5000/api'
-).replace(/\/$/, '');
+const {
+  requireCodiicCatalogApiBase,
+} = require('./codiicCatalogApi');
 
 async function fetchCatalogEditorPack(themeId) {
-  const res = await axios.get(`${CODIIC_API_BASE}/informatic-themes/${themeId}/editor-pack`, {
+  const base = requireCodiicCatalogApiBase();
+  const res = await axios.get(`${base}/informatic-themes/${themeId}/editor-pack`, {
     timeout: 30000,
   });
   if (!res.data?.success || !res.data?.data) {
