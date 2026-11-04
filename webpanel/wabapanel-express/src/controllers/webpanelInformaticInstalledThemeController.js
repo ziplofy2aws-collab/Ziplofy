@@ -2,12 +2,22 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const WebpanelStore = require('../models/WebpanelStore');
 const WebpanelInformaticInstalledTheme = require('../models/WebpanelInformaticInstalledTheme');
+const {
+  requireCodiicCatalogApiBase,
+  mapCodiicCatalogError,
+} = require('../utils/codiicCatalogApi');
 
-const CODIIC_API_BASE = (
-  process.env.CODIIC_API_URL ||
-  process.env.CODIIC_SERVER_URL ||
-  'http://127.0.0.1:5000/api'
-).replace(/\/$/, '');
+function sendCatalogAwareError(res, error, fallbackMessage) {
+  const mapped = mapCodiicCatalogError(error);
+  if (mapped.status === 503 || mapped.body?.code === 'CODIIC_CATALOG_AUTH_FAILED') {
+    return res.status(mapped.status).json(mapped.body);
+  }
+  return res.status(error.statusCode || mapped.status || 500).json({
+    success: false,
+    message: error.message || fallbackMessage,
+    ...(mapped.body?.code ? { code: mapped.body.code } : {}),
+  });
+}
 
 async function assertStoreForUser(req, storeId) {
   if (!mongoose.Types.ObjectId.isValid(storeId)) {
@@ -25,7 +35,8 @@ async function assertStoreForUser(req, storeId) {
 }
 
 async function fetchCatalogTheme(themeId) {
-  const res = await axios.get(`${CODIIC_API_BASE}/informatic-themes/${themeId}`, {
+  const base = requireCodiicCatalogApiBase();
+  const res = await axios.get(`${base}/informatic-themes/${themeId}`, {
     timeout: 30000,
   });
   if (!res.data?.success || !res.data?.data) {
@@ -91,10 +102,7 @@ const listStoreInformaticInstalledThemes = async (req, res) => {
     const data = await enrichInstalledThemes(rows);
     res.json({ success: true, data });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      success: false,
-      message: error.message || 'Failed to list installed Informatic themes',
-    });
+    return sendCatalogAwareError(res, error, 'Failed to list installed Informatic themes');
   }
 };
 
@@ -131,10 +139,7 @@ const installInformaticThemeForStore = async (req, res) => {
       data,
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      success: false,
-      message: error.message || 'Failed to install Informatic theme',
-    });
+    return sendCatalogAwareError(res, error, 'Failed to install Informatic theme');
   }
 };
 
@@ -174,10 +179,7 @@ const uninstallInformaticThemeForStore = async (req, res) => {
       data,
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      success: false,
-      message: error.message || 'Failed to uninstall Informatic theme',
-    });
+    return sendCatalogAwareError(res, error, 'Failed to uninstall Informatic theme');
   }
 };
 
@@ -218,10 +220,7 @@ const applyInformaticThemeForStore = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(error.statusCode || 500).json({
-      success: false,
-      message: error.message || 'Failed to apply Informatic theme',
-    });
+    return sendCatalogAwareError(res, error, 'Failed to apply Informatic theme');
   }
 };
 

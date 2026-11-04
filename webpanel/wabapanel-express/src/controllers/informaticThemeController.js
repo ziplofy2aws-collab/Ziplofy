@@ -1,16 +1,14 @@
 const axios = require('axios');
 const s3Service = require('../services/s3Service');
 const { patchInformaticEditorPack } = require('../utils/informaticRuntimeTemplates.util');
-
-const CODIIC_API_BASE =
-  (process.env.CODIIC_API_URL || process.env.CODIIC_SERVER_URL || 'http://127.0.0.1:5000/api').replace(
-    /\/$/,
-    ''
-  );
+const {
+  requireCodiicCatalogApiBase,
+  mapCodiicCatalogError,
+} = require('../utils/codiicCatalogApi');
 
 function codiicClient() {
   return axios.create({
-    baseURL: CODIIC_API_BASE,
+    baseURL: requireCodiicCatalogApiBase(),
     timeout: 30000,
     headers: { 'Content-Type': 'application/json' },
   });
@@ -68,13 +66,11 @@ const listInformaticThemes = async (req, res) => {
     });
     res.status(response.status).json(response.data);
   } catch (err) {
-    const status = err.response?.status || 502;
-    res.status(status).json(
-      err.response?.data || {
-        success: false,
-        message: err.message || 'Failed to fetch Informatic themes from catalog',
-      }
-    );
+    const mapped = mapCodiicCatalogError(err);
+    if (!mapped.body.message) {
+      mapped.body.message = 'Failed to fetch Informatic themes from catalog';
+    }
+    res.status(mapped.status).json(mapped.body);
   }
 };
 
@@ -84,13 +80,11 @@ const getInformaticTheme = async (req, res) => {
     const response = await codiicClient().get(`/informatic-themes/${req.params.id}`);
     res.status(response.status).json(response.data);
   } catch (err) {
-    const status = err.response?.status || 502;
-    res.status(status).json(
-      err.response?.data || {
-        success: false,
-        message: err.message || 'Failed to fetch Informatic theme',
-      }
-    );
+    const mapped = mapCodiicCatalogError(err);
+    if (!mapped.body.message) {
+      mapped.body.message = 'Failed to fetch Informatic theme';
+    }
+    res.status(mapped.status).json(mapped.body);
   }
 };
 
@@ -104,13 +98,11 @@ const getInformaticThemeEditorPack = async (req, res) => {
     }
     res.status(response.status).json(body);
   } catch (err) {
-    const status = err.response?.status || 502;
-    res.status(status).json(
-      err.response?.data || {
-        success: false,
-        message: err.message || 'Failed to fetch Informatic theme editor pack',
-      }
-    );
+    const mapped = mapCodiicCatalogError(err);
+    if (!mapped.body.message) {
+      mapped.body.message = 'Failed to fetch Informatic theme editor pack';
+    }
+    res.status(mapped.status).json(mapped.body);
   }
 };
 
@@ -149,13 +141,14 @@ const getInformaticThemePreview = async (req, res) => {
     });
     return sendPreviewHtml(response.data);
   } catch (err) {
-    const status = err.response?.status || err.statusCode || 502;
+    const mapped = mapCodiicCatalogError(err);
     const message =
+      mapped.body?.message ||
       err.response?.data?.message ||
       (typeof err.response?.data === 'string' ? err.response.data : null) ||
       err.message ||
       'Failed to load Informatic theme preview';
-    res.status(status).json({ success: false, message });
+    res.status(mapped.status).json({ success: false, message, code: mapped.body?.code });
   }
 };
 
