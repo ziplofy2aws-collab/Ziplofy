@@ -37,7 +37,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY_NEW }}
           REMOTE_HOST: 3.26.59.116
           REMOTE_USER: ubuntu
-          TARGET: /home/ubuntu/Ziplofy
+          TARGET: /home/ubuntu/Ziplofy/codiic-server
         with:
           source: 'codiic-server/'
           exclude: '/node_modules/,.env.production'
