@@ -1,24 +1,16 @@
-# Required GitHub Secrets:
-#   CODIIC_SERVER_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 13.200.227.95 (backend.codiic.com)
-# SSH user (hardcoded): ubuntu
-# Deploy path (hardcoded): /home/ubuntu/Ziplofy
-
-name: Deploy codiic3b to EC2
+name: Deploy Codiic Server
 
 on:
   push:
     branches: [main]
     paths:
       - 'codiic-server/**'
-  workflow_dispatch:  # Allow manual trigger
+      - '.github/workflows/deploy-codiic-server.yml'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: codiic-server
 
     steps:
       - name: Checkout repository
@@ -32,40 +24,44 @@ jobs:
           cache-dependency-path: codiic-server/package-lock.json
 
       - name: Install dependencies
+        working-directory: codiic-server
         run: npm ci
 
-      - name: Build codiic3b
+      - name: Build Codiic Server
+        working-directory: codiic-server
         run: npm run build
 
-      - name: Deploy to EC2
+      - name: Deploy files to EC2
         uses: easingthemes/ssh-deploy@v4
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY }}
-          REMOTE_HOST: 13.200.227.95
+          SSH_PRIVATE_KEY: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY_NEW }}
+          REMOTE_HOST: 3.26.59.116
           REMOTE_USER: ubuntu
           TARGET: /home/ubuntu/Ziplofy
         with:
           source: 'codiic-server/'
-          exclude: 'node_modules'
+          exclude: '/node_modules/,.env.production'
 
-      - name: Install deps and restart PM2 on EC2
+      - name: Install production dependencies and restart Codiic Server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 13.200.227.95
+          host: 3.26.59.116
           username: ubuntu
-          key: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY }}
+          key: ${{ secrets.CODIIC_SERVER_EC2_SSH_KEY_NEW }}
           script: |
             set -e
-            if [ -f "$HOME/.nvm/nvm.sh" ]; then
-              export NVM_DIR="$HOME/.nvm"
-              . "$NVM_DIR/nvm.sh"
+            cd /home/ubuntu/Ziplofy/codiic-server
+
+            if [ ! -f .env.production ]; then
+              echo "ERROR: .env.production is missing. Deployment cannot start."
+              exit 1
             fi
-            if command -v fnm >/dev/null 2>&1; then
-              eval "$(fnm env)"
-            fi
-            [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
-            echo "Using node: $(command -v node) ($(node -v))"
-            cd /home/ubuntu/Ziplofy
-            npm ci
-            pm2 delete all || true
-            pm2 start npm -- run start
+
+            npm ci --omit=dev
+
+            NODE_ENV=production DOTENV_CONFIG_PATH=.env.production \
+              pm2 startOrRestart build/index.js \
+              --name codiic-server \
+              --update-env
+
+            pm2 save
