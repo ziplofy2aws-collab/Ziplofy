@@ -121,12 +121,43 @@ function EventWebhooks({ workspaceId }: { workspaceId?: string }) {
 export default function SettingsPage() {
   const { user, currentWorkspace, updateUser } = useAuthStore();
   const [profile, setProfile] = useState({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '' });
+  const [billing, setBilling] = useState({
+    companyName: user?.companyName || '',
+    gstNumber: user?.gstNumber || '',
+    address: user?.address || '',
+    preferredTimezone:
+      user?.preferredTimezone ||
+      currentWorkspace?.settings?.timezone ||
+      currentWorkspace?.timezone ||
+      'Asia/Kolkata',
+  });
   const [wsSettings, setWsSettings] = useState({
-    name: currentWorkspace?.name || '', timezone: currentWorkspace?.timezone || 'Asia/Kolkata',
-    apiKey: currentWorkspace?.apiKey || '', webhookUrl: currentWorkspace?.webhookUrl || '',
+    apiKey: currentWorkspace?.apiKey || '',
+    webhookUrl: currentWorkspace?.webhookUrl || '',
   });
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setProfile({ name: user?.name || '', email: user?.email || '', phone: user?.phone || '' });
+    setBilling({
+      companyName: user?.companyName || '',
+      gstNumber: user?.gstNumber || '',
+      address: user?.address || '',
+      preferredTimezone:
+        user?.preferredTimezone ||
+        currentWorkspace?.settings?.timezone ||
+        currentWorkspace?.timezone ||
+        'Asia/Kolkata',
+    });
+  }, [user, currentWorkspace]);
+
+  useEffect(() => {
+    setWsSettings({
+      apiKey: currentWorkspace?.apiKey || '',
+      webhookUrl: currentWorkspace?.webhookUrl || '',
+    });
+  }, [currentWorkspace]);
 
   const handleProfileSave = async () => {
     if (submitting) return;
@@ -145,14 +176,39 @@ export default function SettingsPage() {
     setSaving(false);
   };
 
+  const handleBillingSave = async () => {
+    if (submitting) return;
+    setSaving(true);
+    setSubmitting(true);
+    try {
+      const res = await authApi.updateProfile({
+        companyName: billing.companyName,
+        gstNumber: billing.gstNumber,
+        address: billing.address,
+        preferredTimezone: billing.preferredTimezone,
+      });
+      updateUser(res.data.data);
+      toast.success('Business & billing updated');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || 'Failed');
+    } finally {
+      setSubmitting(false);
+    }
+    setSaving(false);
+  };
+
   const handleWorkspaceSave = async () => {
     if (submitting) return;
     if (!currentWorkspace) return;
     setSaving(true);
     setSubmitting(true);
     try {
-      await workspaceApi.update(currentWorkspace._id, wsSettings);
-      toast.success('Business settings updated');
+      // Do not overwrite workspace display name from Business tab — that stays in the header.
+      await workspaceApi.update(currentWorkspace._id, {
+        webhookUrl: wsSettings.webhookUrl,
+      });
+      toast.success('API settings updated');
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast.error(error.response?.data?.message || 'Failed');
@@ -202,16 +258,42 @@ export default function SettingsPage() {
         { key: 'workspace', label: 'Business', content: (
           <div className={dashboardCardShell}>
             <div className="max-w-lg space-y-4">
-              <h3 className="flex items-center gap-2 text-[14px] font-semibold text-admin-text"><Globe className="h-4 w-4" /> Business Settings</h3>
-              <Input label="Business Name" value={wsSettings.name} onChange={(e) => setWsSettings({ ...wsSettings, name: e.target.value })} />
-              <Select label="Timezone" value={wsSettings.timezone} onChange={(e) => setWsSettings({ ...wsSettings, timezone: e.target.value })}
+              <h3 className="flex items-center gap-2 text-[14px] font-semibold text-admin-text"><Globe className="h-4 w-4" /> Business &amp; billing</h3>
+              <p className="text-[12px] text-admin-text-subdued">
+                Workspace name stays in the header. Business name and billing details are separate.
+              </p>
+              <Input
+                label="Business Name"
+                value={billing.companyName}
+                onChange={(e) => setBilling({ ...billing, companyName: e.target.value })}
+                placeholder="Your legal / trading business name"
+              />
+              <Input
+                label="GST / Tax ID"
+                value={billing.gstNumber}
+                onChange={(e) => setBilling({ ...billing, gstNumber: e.target.value })}
+                placeholder="Optional"
+              />
+              <Input
+                label="Business Address"
+                value={billing.address}
+                onChange={(e) => setBilling({ ...billing, address: e.target.value })}
+                placeholder="Street, city, country"
+              />
+              <Select
+                label="Timezone"
+                value={billing.preferredTimezone}
+                onChange={(e) => setBilling({ ...billing, preferredTimezone: e.target.value })}
                 options={[
                   { value: 'Asia/Kolkata', label: 'Asia/Kolkata (IST)' },
+                  { value: 'Asia/Dubai', label: 'Asia/Dubai' },
+                  { value: 'Asia/Singapore', label: 'Asia/Singapore' },
                   { value: 'UTC', label: 'UTC' },
                   { value: 'America/New_York', label: 'America/New_York (EST)' },
                   { value: 'Europe/London', label: 'Europe/London (GMT)' },
-                ]} />
-              <button type="button" onClick={handleWorkspaceSave} disabled={saving} className={primaryBtn}>
+                ]}
+              />
+              <button type="button" onClick={handleBillingSave} disabled={saving} className={primaryBtn}>
                 <Save className="h-4 w-4" /> {saving ? 'Saving…' : 'Save'}
               </button>
             </div>

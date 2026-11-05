@@ -7,7 +7,9 @@ export type PlatformUser = {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   provider: 'local' | 'google';
+  emailVerified?: boolean;
   onboardingStatus: OnboardingStatus;
   selectedService: SelectedService | null;
   industryKind: IndustryKind | null;
@@ -15,6 +17,7 @@ export type PlatformUser = {
   modulesChosen: boolean;
   selectedModules: string[];
   businessName: string;
+  profileComplete?: boolean;
   destination: Destination | null;
   launchPath: string;
 };
@@ -32,6 +35,8 @@ export type SessionResponse = {
   nextPath: string | null;
   redirect: SsoRedirect | null;
   message?: string;
+  needsVerification?: boolean;
+  email?: string;
 };
 
 export type IndustryOption = { id: string; label: string };

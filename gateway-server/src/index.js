@@ -18,6 +18,7 @@ app.get('/health', (_req, res) => {
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/onboarding', require('./routes/onboarding'));
+app.post('/api/internal/sync-profile', require('./controllers/syncProfileController').syncProfile);
 
 app.use((err, _req, res, _next) => {
   console.error('[gateway-server]', err);

@@ -66,10 +66,10 @@ async function complete(req, res) {
       if (businessName.length >= 2) user.businessName = businessName.slice(0, 100);
     }
 
-    if (!user.businessName) {
-      return res.status(400).json({ success: false, message: 'Business name is required' });
+    // Business name / industry are collected later inside CRM manage-profile.
+    if (user.provider === 'local' && !user.emailVerified) {
+      return res.status(403).json({ success: false, message: 'Verify your email first' });
     }
-    // Industry may be empty — users pick their business sector inside CRM after launch.
 
     user.selectedService = 'website_builder';
 

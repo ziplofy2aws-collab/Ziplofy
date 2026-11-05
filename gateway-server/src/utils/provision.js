@@ -3,26 +3,6 @@ const { mintSsoTicket } = require('./jwt');
 const { signCanonical } = require('./hmac');
 const SsoTicket = require('../models/SsoTicket');
 
-// Industry -> webpanel landing path.
-const INDUSTRY_LAUNCH_PATH = {
-  education: '/client/edtech/overview',
-  healthcare: '/client/clinic/queue',
-  real_estate: '/client/real-estate',
-  agency: '/client/agency',
-  legal: '/client/legal',
-  hospitality: '/client/hospitality',
-  salon: '/client/salon',
-  other_service: '/client/service-business',
-  tour_travel: '/client/travel',
-};
-
-function resolveDestination(user) {
-  return {
-    destination: 'webpanel',
-    launchPath: INDUSTRY_LAUNCH_PATH[user.industry] || '/client/dashboard',
-  };
-}
-
 async function callProvision(url, body) {
   const timestamp = String(Date.now());
   const signature = signCanonical(config.ssoSecret, timestamp, body);
@@ -46,23 +26,24 @@ async function callProvision(url, body) {
 }
 
 async function provisionProduct(user) {
-  const { destination, launchPath } = resolveDestination(user);
   const payload = {
     email: user.email,
     name: user.name,
-    businessName: user.businessName,
+    phone: user.phone || '',
+    businessName: user.businessName || '',
     industry: user.industry || '',
     industryKind: user.industryKind || '',
     selectedService: 'website_builder',
     selectedModules: Array.isArray(user.selectedModules) ? user.selectedModules : [],
     platformUserId: user._id.toString(),
+    softProvision: true,
   };
 
   const result = await callProvision(`${config.webpanelApiUrl}/internal/gateway/provision-vendor`, payload);
 
-  user.destination = destination;
+  user.destination = 'webpanel';
   user.selectedService = 'website_builder';
-  user.launchPath = result.launchPath || launchPath;
+  user.launchPath = result.launchPath || '/client/manage-profile';
   user.productUserId = String(result.productUserId || '');
   user.productWorkspaceId = String(result.productWorkspaceId || '');
   user.productStoreId = String(result.productStoreId || '');
@@ -82,11 +63,12 @@ async function issueSsoRedirect(user) {
   if (user.onboardingStatus !== 'complete' || !user.destination || !user.productUserId) {
     throw new Error('User has not been provisioned yet');
   }
+  const launchPath = user.launchPath || '/client/manage-profile';
   const { token, jti } = mintSsoTicket({
     platformUserId: user._id.toString(),
     destination: user.destination,
     productUserId: user.productUserId,
-    launchPath: user.launchPath,
+    launchPath,
   });
   await SsoTicket.create({
     jti,
@@ -97,13 +79,12 @@ async function issueSsoRedirect(user) {
   });
   return {
     destination: user.destination,
-    launchPath: user.launchPath,
+    launchPath,
     ssoUrl: ssoRedirectUrl(user.destination, token),
   };
 }
 
 module.exports = {
-  resolveDestination,
   provisionProduct,
   issueSsoRedirect,
 };

@@ -24,12 +24,73 @@ const getWorkspaces = async (req, res) => {
 // @POST /api/workspaces
 const createWorkspace = async (req, res) => {
   try {
-    const { name } = req.body;
+    const name = String(req.body.name || '').trim();
+    const description = String(req.body.description || '').trim();
+    if (name.length < 2) {
+      return res.status(400).json({ success: false, message: 'Workspace name is required' });
+    }
+
     const workspace = await Workspace.create({
-      name,
+      name: name.slice(0, 100),
       owner: req.user._id,
       members: [{ user: req.user._id, role: 'owner' }],
+      settings: {
+        timezone: req.user.preferredTimezone || 'Asia/Kolkata',
+      },
     });
+
+    // Optional description is stored when the schema supports vendor notes-style fields;
+    // keep companyName/store bootstrap using profile business name.
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.currentWorkspace = workspace._id;
+      await user.save();
+
+      // Bootstrap store once we have a workspace + business name from profile.
+      if (user.companyName) {
+        try {
+          const WebpanelStore = require('../models/WebpanelStore');
+          const existing = await WebpanelStore.findOne({ userId: user._id });
+          if (!existing) {
+            const { createWebpanelStoreWithSubdomain } = require('../utils/webpanelStoreBootstrap');
+            const desc =
+              description.length >= 10
+                ? description.slice(0, 500)
+                : `Website for ${user.companyName}. Customize themes and content anytime.`.slice(0, 500);
+            await createWebpanelStoreWithSubdomain({
+              userId: user._id,
+              workspaceId: workspace._id,
+              storeName: user.companyName.slice(0, 100),
+              storeDescription: desc,
+              industry: user.featureOverrides?.industry || '',
+              industryKind: 'service',
+            });
+          }
+        } catch (storeErr) {
+          console.warn('[createWorkspace] store bootstrap skipped:', storeErr.message);
+        }
+      }
+
+      try {
+        const { syncProfileToGateway } = require('../utils/gatewaySync');
+        await syncProfileToGateway({
+          platformUserId: user.platformUserId,
+          email: user.email,
+          name: user.name,
+          phone: user.phone,
+          businessName: user.companyName,
+          billingTaxId: user.gstNumber,
+          billingAddress: user.address,
+          preferredTimezone: user.preferredTimezone,
+          preferredLanguage: user.preferredLanguage,
+          profileComplete: Boolean(user.featureOverrides?.profileComplete),
+          productWorkspaceId: workspace._id.toString(),
+          launchPath: '/client/dashboard',
+        });
+      } catch (syncErr) {
+        console.warn('[createWorkspace] gateway sync skipped:', syncErr.message);
+      }
+    }
 
     res.status(201).json({ success: true, data: workspace });
   } catch (error) {

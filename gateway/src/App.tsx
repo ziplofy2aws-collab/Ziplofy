@@ -2,15 +2,8 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { api, applySession, clearToken, getToken, goToSso } from './api';
-import BusinessNamePage from './pages/BusinessNamePage';
-import LaunchingPage from './pages/LaunchingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-
-function RequireAuth({ children }: { children: ReactNode }) {
-  if (!getToken()) return <Navigate to="/login" replace />;
-  return children;
-}
 
 function SessionRedirect({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -37,12 +30,18 @@ function SessionRedirect({ children }: { children: ReactNode }) {
           goToSso(data.redirect.ssoUrl);
           return;
         }
-        const next = data.nextPath || '/business-name';
+        const next = data.nextPath || '/login';
         const publicAuth = location.pathname === '/login' || location.pathname === '/register';
-        if (publicAuth) navigate(next, { replace: true });
-        // Old bookmarks to /choose-industry should continue the wizard.
-        if (location.pathname === '/choose-industry') {
+        if (publicAuth && next && next !== location.pathname) {
           navigate(next, { replace: true });
+        }
+        // Legacy wizard routes → login (SSO happens after verified login).
+        if (
+          location.pathname === '/choose-industry' ||
+          location.pathname === '/business-name' ||
+          location.pathname === '/launching'
+        ) {
+          navigate('/login', { replace: true });
         }
         setReady(true);
       })
@@ -73,37 +72,16 @@ export default function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
   const routes = (
     <SessionRedirect>
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/logout" element={<Navigate to="/login" replace />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route
-        path="/choose-industry"
-        element={
-          <RequireAuth>
-            <Navigate to="/business-name" replace />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/business-name"
-        element={
-          <RequireAuth>
-            <BusinessNamePage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/launching"
-        element={
-          <RequireAuth>
-            <LaunchingPage />
-          </RequireAuth>
-        }
-      />
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/logout" element={<Navigate to="/login" replace />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/choose-industry" element={<Navigate to="/login" replace />} />
+        <Route path="/business-name" element={<Navigate to="/login" replace />} />
+        <Route path="/launching" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </SessionRedirect>
   );
 

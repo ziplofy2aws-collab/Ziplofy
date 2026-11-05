@@ -6,110 +6,99 @@ const WebpanelStore = require('../models/WebpanelStore');
 const GatewayConsumedTicket = require('../models/GatewayConsumedTicket');
 const generateToken = require('../utils/generateToken');
 const { assertGatewaySignature, gatewaySecret } = require('../utils/gatewayHmac');
-const { normalizeSelectedModules, defaultLaunchModules, featureOverridesForModules, launchPathFor, INDUSTRY_MODULE, MODULES } = require('../utils/gatewayModules');
-const { createWebpanelStoreWithSubdomain } = require('../utils/webpanelStoreBootstrap');
-
-function padDescription(name) {
-  const text = `Website for ${name}. Customize themes and content anytime.`;
-  return text.length >= 10 ? text.slice(0, 500) : `${name} website.`.slice(0, 500);
-}
-
-async function ensureWorkspace(user, businessName) {
-  if (user.currentWorkspace) {
-    const existing = await Workspace.findById(user.currentWorkspace);
-    if (existing) return existing;
-  }
-  const workspace = await Workspace.create({
-    name: businessName || user.name,
-    owner: user._id,
-    members: [{ user: user._id, role: 'owner' }],
-  });
-  user.currentWorkspace = workspace._id;
-  await user.save();
-  return workspace;
-}
+const {
+  normalizeSelectedModules,
+  defaultLaunchModules,
+  featureOverridesForModules,
+  INDUSTRY_MODULE,
+  MODULES,
+} = require('../utils/gatewayModules');
+const { resolveLaunchPath } = require('../utils/gatewaySync');
 
 async function provisionVendor(req, res) {
   try {
     assertGatewaySignature(req);
     const email = String(req.body.email || '').trim().toLowerCase();
     const name = String(req.body.name || '').trim() || email.split('@')[0] || 'User';
+    const phone = String(req.body.phone || '').trim();
     const businessName = String(req.body.businessName || '').trim();
-    const selectedService = String(req.body.selectedService || '');
     const industry = String(req.body.industry || '');
     const industryKind = String(req.body.industryKind || '');
-    if (!email || !businessName) {
-      return res.status(400).json({ success: false, message: 'email and businessName are required' });
+    const platformUserId = String(req.body.platformUserId || '').trim();
+    const softProvision = req.body.softProvision !== false;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'email is required' });
     }
 
     const sectorMod = MODULES.find((m) => m.id === INDUSTRY_MODULE[industry]);
-    const enableClinic = industry === 'healthcare';
     const selectedModules = normalizeSelectedModules(
       industry,
       Array.isArray(req.body.selectedModules) && req.body.selectedModules.length
         ? req.body.selectedModules
         : defaultLaunchModules(industry)
     );
-    const wantsWebsite = true;
-    let freePlan = await Plan.findOne({ price: 0, status: 'active' });
+    const freePlan = await Plan.findOne({ price: 0, status: 'active' });
     let user = await User.findOne({ email });
 
     const baseOverrides = featureOverridesForModules(selectedModules, industry);
     if (sectorMod) for (const key of sectorMod.keys) baseOverrides[key] = true;
+    // Soft provision: profile/workspace completed later in CRM.
+    if (baseOverrides.profileComplete == null) baseOverrides.profileComplete = false;
 
     if (!user) {
       user = await User.create({
         name,
         email,
+        phone,
         authProvider: 'gateway',
         role: 'vendor',
         plan: freePlan?._id,
         walletBillingExempt: true,
         emailVerified: true,
         companyName: businessName,
+        platformUserId,
         featureOverrides: baseOverrides,
       });
     } else {
-      if (!user.companyName) user.companyName = businessName;
-      user.featureOverrides = baseOverrides;
+      if (phone && !user.phone) user.phone = phone;
+      if (businessName && !user.companyName) user.companyName = businessName;
+      if (platformUserId) user.platformUserId = platformUserId;
+      user.featureOverrides = {
+        ...(user.featureOverrides || {}),
+        ...baseOverrides,
+        profileComplete: Boolean(user.featureOverrides?.profileComplete),
+      };
       user.markModified('featureOverrides');
       await user.save();
     }
 
-    const workspace = await ensureWorkspace(user, businessName);
-    let store = await WebpanelStore.findOne({ userId: user._id });
-    if (wantsWebsite && !store) {
-      const created = await createWebpanelStoreWithSubdomain({
-        userId: user._id,
-        workspaceId: workspace._id,
-        storeName: businessName.slice(0, 100),
-        storeDescription: padDescription(businessName),
-        industry,
-        industryKind: industryKind === 'service' || industryKind === 'ecommerce' ? industryKind : '',
-      });
-      store = created.store;
-    } else if (wantsWebsite && store && industry && !store.industry) {
-      store.industry = industry;
-      store.industryKind = industryKind === 'service' || industryKind === 'ecommerce' ? industryKind : '';
-      await store.save();
+    // Soft provision: do not auto-create workspace or store.
+    let workspace = null;
+    let store = null;
+    if (!softProvision) {
+      // Legacy path kept for non-soft callers.
+      if (user.currentWorkspace) {
+        workspace = await Workspace.findById(user.currentWorkspace);
+      }
+    } else if (user.currentWorkspace) {
+      workspace = await Workspace.findById(user.currentWorkspace);
     }
 
-    if (enableClinic && workspace?._id) {
-      try {
-        const bookingService = require('../services/bookingService');
-        const s = await bookingService.getSettings(workspace._id);
-        s.enabled = true;
-        if (!s.title || s.title === 'Book an Appointment') s.title = 'Book a consultation';
-        await s.save();
-      } catch { /* public booking page is optional */ }
-    }
+    store = await WebpanelStore.findOne({ userId: user._id });
+
+    const workspaceCount = await Workspace.countDocuments({
+      $or: [{ owner: user._id }, { 'members.user': user._id }],
+    });
+    const launchPath = resolveLaunchPath(user, workspaceCount);
 
     return res.json({
       success: true,
       productUserId: user._id.toString(),
       productWorkspaceId: workspace?._id?.toString() || '',
       productStoreId: store?._id?.toString() || '',
-      launchPath: launchPathFor({ industry, selectedModules }),
+      launchPath,
+      industryKind: industryKind === 'service' || industryKind === 'ecommerce' ? industryKind : '',
     });
   } catch (err) {
     const status = err.status || 500;
@@ -139,6 +128,8 @@ async function buildWebpanelSsoPayload(productUserId, launchPath) {
     features = await getOwnerFeatures(ownerId);
   } catch { /* noop */ }
 
+  const resolvedLaunch = launchPath || resolveLaunchPath(user, workspaces.length);
+
   return {
     token,
     user: {
@@ -153,16 +144,23 @@ async function buildWebpanelSsoPayload(productUserId, launchPath) {
       currentWorkspace: user.currentWorkspace,
       plan: user.plan,
       walletBalance: user.walletBalance,
+      companyName: user.companyName,
+      address: user.address,
+      gstNumber: user.gstNumber,
+      preferredTimezone: user.preferredTimezone,
+      preferredLanguage: user.preferredLanguage,
+      platformUserId: user.platformUserId,
       featureOverrides: {
         selectedModules: Array.isArray(user.featureOverrides?.selectedModules)
           ? user.featureOverrides.selectedModules
           : undefined,
         industry: user.featureOverrides?.industry,
+        profileComplete: Boolean(user.featureOverrides?.profileComplete),
       },
     },
     workspaces,
     features,
-    launchPath: launchPath || '/client/dashboard',
+    launchPath: resolvedLaunch,
   };
 }
 
@@ -191,8 +189,6 @@ async function exchangeGatewaySso(req, res) {
       });
     } catch (err) {
       if (!(err && err.code === 11000)) throw err;
-      // React Strict Mode / double navigation can redeem the same fresh ticket twice.
-      // While the JWT is still valid, sign the same user in again instead of failing.
     }
 
     const payload = await buildWebpanelSsoPayload(decoded.productUserId, decoded.launchPath);
