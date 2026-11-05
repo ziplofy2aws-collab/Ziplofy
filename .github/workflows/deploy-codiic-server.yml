@@ -59,9 +59,12 @@ jobs:
 
             npm ci --omit=dev
 
-            NODE_ENV=production DOTENV_CONFIG_PATH=.env.production \
-              pm2 startOrRestart build/index.js \
-              --name codiic-server \
-              --update-env
+            if pm2 describe codiic-server >/dev/null 2>&1; then
+              NODE_ENV=production DOTENV_CONFIG_PATH=.env.production \
+                pm2 restart codiic-server --update-env
+            else
+              NODE_ENV=production DOTENV_CONFIG_PATH=.env.production \
+                pm2 start build/index.js --name codiic-server --update-env
+            fi
 
             pm2 save
