@@ -16,26 +16,6 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/client/clinic/queue/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/queue/page.js"
-    ],
-    "/client/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/layout.js"
-    ],
-    "/auth/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/auth/login/page.js"
-    ],
-    "/auth/register/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/auth/register/page.js"
-    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -46,20 +26,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/client/dashboard/page.js"
     ],
-    "/client/chat/page": [
+    "/client/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/chat/page.js"
+      "static/chunks/app/client/layout.js"
     ],
     "/client/online-store/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/client/online-store/page.js"
-    ],
-    "/client/choose-services/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-services/page.js"
     ],
     "/client/themes/page": [
       "static/chunks/webpack.js",
@@ -67,160 +42,70 @@
       "static/css/app/client/themes/page.css",
       "static/chunks/app/client/themes/page.js"
     ],
-    "/client/channels/page": [
+    "/client/travel/packages/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/channels/page.js"
+      "static/chunks/app/client/travel/packages/page.js"
     ],
-    "/client/ai-settings/page": [
+    "/client/travel/enquiries/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/ai-settings/page.js"
+      "static/chunks/app/client/travel/enquiries/page.js"
     ],
-    "/client/agents/page": [
+    "/client/themes/create/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/agents/page.js"
+      "static/chunks/app/client/themes/create/page.js"
     ],
-    "/client/pipelines/page": [
+    "/client/edtech/overview/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/pipelines/page.js"
+      "static/chunks/app/client/edtech/overview/page.js"
     ],
-    "/client/lead-dashboard/page": [
+    "/auth/register/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/lead-dashboard/page.js"
+      "static/chunks/app/auth/register/page.js"
     ],
-    "/client/leads/page": [
+    "/client/choose-business/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/leads/page.js"
+      "static/chunks/app/client/choose-business/page.js"
     ],
-    "/client/user-guide/page": [
+    "/client/clinic/queue/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/user-guide/page.js"
+      "static/chunks/app/client/clinic/queue/page.js"
     ],
-    "/client/stages/page": [
+    "/client/manage-profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/stages/page.js"
+      "static/chunks/app/client/manage-profile/page.js"
     ],
-    "/client/call-center/page": [
+    "/client/workspace/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/call-center/page.js"
+      "static/chunks/app/client/workspace/page.js"
     ],
-    "/client/templates/page": [
+    "/client/settings/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/templates/page.js"
+      "static/chunks/app/client/settings/page.js"
     ],
-    "/client/automations/page": [
+    "/client/support/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/automations/page.js"
+      "static/chunks/app/client/support/page.js"
     ],
-    "/client/bot-flows/page": [
+    "/client/choose-services/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/bot-flows/page.js"
+      "static/chunks/app/client/choose-services/page.js"
     ],
-    "/client/bot-flows/[id]/page": [
+    "/client/travel/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/bot-flows/[id]/page.js"
-    ],
-    "/client/automations/flows/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/automations/flows/page.js"
-    ],
-    "/client/clinic/doctors/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/doctors/page.js"
-    ],
-    "/client/clinic/settings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/settings/page.js"
-    ],
-    "/client/clinic/consult/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/consult/page.js"
-    ],
-    "/client/crm/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/crm/page.js"
-    ],
-    "/client/contacts/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/contacts/page.js"
-    ],
-    "/client/clinic/patients/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/patients/page.js"
-    ],
-    "/client/clinic/calendar/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/calendar/page.js"
-    ],
-    "/client/clinic/patients/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/clinic/patients/[id]/page.js"
-    ],
-    "/client/forms/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/forms/page.js"
-    ],
-    "/client/facebook-leads/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/facebook-leads/page.js"
-    ],
-    "/client/online-store/media-library/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/media-library/page.js"
-    ],
-    "/client/online-store/blogs/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/blogs/page.js"
-    ],
-    "/client/online-store/pages/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/pages/page.js"
-    ],
-    "/client/online-store/menus/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/menus/page.js"
-    ],
-    "/client/online-store/policies/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/policies/page.js"
-    ],
-    "/client/analytics/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/analytics/page.js"
-    ],
-    "/client/keywords/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/keywords/page.js"
+      "static/chunks/app/client/travel/page.js"
     ]
   }
 }
