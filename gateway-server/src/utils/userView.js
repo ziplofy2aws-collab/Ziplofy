@@ -20,7 +20,7 @@ function nextWizardPath(user) {
   if (user.onboardingStatus === 'complete' && user.destination) {
     return null;
   }
-  if (!user.industryKind) return '/choose-industry';
+  // Industry is chosen later inside the CRM dashboard ("Choose your business").
   if (!user.businessName) return '/business-name';
   return '/launching';
 }

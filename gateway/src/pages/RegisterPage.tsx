@@ -19,7 +19,7 @@ export default function RegisterPage() {
       goToSso(data.redirect.ssoUrl);
       return;
     }
-    navigate(data.nextPath || '/choose-industry');
+    navigate(data.nextPath || '/business-name');
   }
 
   async function onSubmit(e: FormEvent) {
@@ -46,7 +46,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <Shell title="Create your account" subtitle="One login. Then pick your industry and the services you need.">
+    <Shell title="Create your account" subtitle="One login. Name your business, then launch your dashboard.">
       {error ? <div className="err">{error}</div> : null}
       <form onSubmit={onSubmit}>
         <label htmlFor="name">Full name</label>

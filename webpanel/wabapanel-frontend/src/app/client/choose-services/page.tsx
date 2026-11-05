@@ -19,6 +19,7 @@ const CARD_DESCRIPTIONS: Record<string, string> = {
   legal: 'Your legal-practice workspace — included with the Legal industry.',
   hospitality: 'Your hospitality workspace — included with the Hospitality industry.',
   salon: 'Your salon & spa workspace — included with the Salon / spa industry.',
+  travel: 'Your tour & travel workspace — packages, bookings, travellers, and enquiries. Included with Tour & travel.',
   serviceBusiness: 'Your service-business workspace — included with your industry selection.',
 };
 

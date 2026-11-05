@@ -27,8 +27,8 @@ export default function BusinessNamePage() {
     <Shell
       title="Name your business"
       subtitle="This becomes your store or workspace name when the product launches."
-      step={2}
-      totalSteps={2}
+      step={1}
+      totalSteps={1}
     >
       {error ? <div className="err">{error}</div> : null}
       <form onSubmit={onSubmit}>

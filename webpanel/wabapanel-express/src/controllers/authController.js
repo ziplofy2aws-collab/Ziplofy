@@ -991,6 +991,95 @@ const updateClientModules = async (req, res) => {
   }
 };
 
+/** List service-sector businesses the owner can pick after login. */
+const getClientBusinessOptions = async (req, res) => {
+  try {
+    const { SERVICE_BUSINESS_OPTIONS } = require('../utils/gatewayModules');
+    const user = await User.findById(req.user._id).select('featureOverrides role');
+    if (!user || user.role === 'agent') {
+      return res.status(403).json({ success: false, message: 'Only the workspace owner can choose a business' });
+    }
+    return res.json({
+      success: true,
+      data: {
+        industry: user.featureOverrides?.industry || '',
+        options: SERVICE_BUSINESS_OPTIONS,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Single-replace service industry after login.
+ * Swaps the locked sector module and feature flags; keeps other selected modules.
+ */
+const updateClientIndustry = async (req, res) => {
+  try {
+    const {
+      normalizeSelectedModules,
+      featureOverridesForModules,
+      publicCatalog,
+      INDUSTRY_MODULE,
+      SERVICE_INDUSTRY_IDS,
+      MODULES,
+      SECTOR_MODULE_IDS,
+    } = require('../utils/gatewayModules');
+    const { getOwnerFeatures } = require('../middleware/featureGate');
+    const WebpanelStore = require('../models/WebpanelStore');
+
+    const user = await User.findById(req.user._id);
+    if (!user || user.role === 'agent') {
+      return res.status(403).json({ success: false, message: 'Only the workspace owner can choose a business' });
+    }
+
+    const industry = String(req.body.industry || '').trim();
+    if (!SERVICE_INDUSTRY_IDS.has(industry)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Choose a valid service-sector business',
+      });
+    }
+
+    const prevSelected = Array.isArray(user.featureOverrides?.selectedModules)
+      ? user.featureOverrides.selectedModules
+      : [];
+    // Drop any previous sector modules, then normalize for the new industry
+    // (which force-includes the matching locked sector + always-on).
+    const withoutSectors = prevSelected.filter((id) => !SECTOR_MODULE_IDS.has(id));
+    const selectedModules = normalizeSelectedModules(industry, withoutSectors);
+
+    user.featureOverrides = featureOverridesForModules(selectedModules, industry);
+    const sectorMod = MODULES.find((m) => m.id === INDUSTRY_MODULE[industry]);
+    if (sectorMod) for (const key of sectorMod.keys) user.featureOverrides[key] = true;
+    user.markModified('featureOverrides');
+    await user.save();
+
+    const store = await WebpanelStore.findOne({ userId: user._id });
+    if (store) {
+      store.industry = industry;
+      store.industryKind = 'service';
+      await store.save();
+    }
+
+    const features = await getOwnerFeatures(user._id);
+    return res.json({
+      success: true,
+      data: {
+        ...publicCatalog(industry, selectedModules),
+        features,
+        featureOverrides: {
+          selectedModules,
+          industry,
+        },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   register, login, googleLogin, googleAuthConfig, adminLogin, getMe, updateProfile,
   changePassword, forgotPassword, resetPassword, resetPasswordFromBody, switchWorkspace,
@@ -998,4 +1087,5 @@ module.exports = {
   loginVerify2FA, resendLoginOTP,
   get2FAStatus, setup2FA, verify2FA, resendSetupOTP, disable2FA,
   getClientModules, updateClientModules,
+  getClientBusinessOptions, updateClientIndustry,
 };

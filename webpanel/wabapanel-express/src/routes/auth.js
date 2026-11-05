@@ -8,6 +8,7 @@ const {
   loginVerify2FA, resendLoginOTP,
   get2FAStatus, setup2FA, verify2FA, resendSetupOTP, disable2FA,
   getClientModules, updateClientModules,
+  getClientBusinessOptions, updateClientIndustry,
 } = require('../controllers/authController');
 const { exchangeGatewaySso } = require('../controllers/gatewaySsoController');
 
@@ -76,6 +77,8 @@ router.post('/admin-login', loginLimiter, adminLogin);
 router.get('/me', protect, getMe);
 router.get('/modules', protect, getClientModules);
 router.put('/modules', protect, updateClientModules);
+router.get('/business', protect, getClientBusinessOptions);
+router.put('/industry', protect, updateClientIndustry);
 router.put('/profile', protect, updateProfile);
 router.put('/change-password', protect, changePassword);
 router.post('/forgot-password', otpLimiter, forgotPassword);

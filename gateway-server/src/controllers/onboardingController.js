@@ -66,12 +66,10 @@ async function complete(req, res) {
       if (businessName.length >= 2) user.businessName = businessName.slice(0, 100);
     }
 
-    if (!user.industryKind) {
-      return res.status(400).json({ success: false, message: 'Select an industry first' });
-    }
     if (!user.businessName) {
       return res.status(400).json({ success: false, message: 'Business name is required' });
     }
+    // Industry may be empty — users pick their business sector inside CRM after launch.
 
     user.selectedService = 'website_builder';
 

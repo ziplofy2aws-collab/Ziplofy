@@ -3,7 +3,6 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { api, applySession, clearToken, getToken, goToSso } from './api';
 import BusinessNamePage from './pages/BusinessNamePage';
-import IndustryPage from './pages/IndustryPage';
 import LaunchingPage from './pages/LaunchingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -38,9 +37,13 @@ function SessionRedirect({ children }: { children: ReactNode }) {
           goToSso(data.redirect.ssoUrl);
           return;
         }
-        const next = data.nextPath || '/choose-industry';
+        const next = data.nextPath || '/business-name';
         const publicAuth = location.pathname === '/login' || location.pathname === '/register';
         if (publicAuth) navigate(next, { replace: true });
+        // Old bookmarks to /choose-industry should continue the wizard.
+        if (location.pathname === '/choose-industry') {
+          navigate(next, { replace: true });
+        }
         setReady(true);
       })
       .catch(() => {
@@ -79,7 +82,7 @@ export default function App() {
         path="/choose-industry"
         element={
           <RequireAuth>
-            <IndustryPage />
+            <Navigate to="/business-name" replace />
           </RequireAuth>
         }
       />

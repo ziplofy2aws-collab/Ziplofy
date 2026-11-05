@@ -18,7 +18,7 @@ export default function LoginPage() {
       goToSso(data.redirect.ssoUrl);
       return;
     }
-    navigate(data.nextPath || '/choose-industry');
+    navigate(data.nextPath || '/business-name');
   }
 
   async function onSubmit(e: FormEvent) {
