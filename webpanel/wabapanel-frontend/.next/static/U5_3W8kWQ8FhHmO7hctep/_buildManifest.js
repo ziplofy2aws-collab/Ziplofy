@@ -1,1 +1,0 @@
-self.__BUILD_MANIFEST={__rewrites:{afterFiles:[{has:void 0,source:"/remote-themes/:path*",destination:"/api/remote-themes/:path*"}],beforeFiles:[],fallback:[]},"/_error":["static/chunks/pages/_error-505be0775333c3e5.js"],sortedPages:["/_app","/_error"]},self.__BUILD_MANIFEST_CB&&self.__BUILD_MANIFEST_CB();

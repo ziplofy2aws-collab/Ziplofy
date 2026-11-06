@@ -188,7 +188,13 @@ async function exchangeGatewaySso(req, res) {
         productUserId: decoded.productUserId,
       });
     } catch (err) {
-      if (!(err && err.code === 11000)) throw err;
+      if (err && err.code === 11000) {
+        return res.status(401).json({
+          success: false,
+          message: 'Sign-in ticket already used. Please log in again.',
+        });
+      }
+      throw err;
     }
 
     const payload = await buildWebpanelSsoPayload(decoded.productUserId, decoded.launchPath);

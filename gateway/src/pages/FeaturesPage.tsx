@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import Shell from '../components/Shell';
+import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
 import type { PanelModule } from '../types';
 
 const DEFAULT_CORE = ['whatsapp', 'websiteBuilder'];
@@ -112,9 +113,16 @@ export default function FeaturesPage() {
           </label>
         ))}
       </div>
-      <button className="btn" type="button" disabled={!ready || loading || !coreSelected} onClick={continueNext}>
-        {loading ? 'Saving…' : 'Continue'}
-      </button>
+      {loading ? (
+        <FlowButtonLoading text="Saving…" />
+      ) : (
+        <FlowButton
+          text="Continue"
+          className="w-full"
+          disabled={!ready || !coreSelected}
+          onClick={continueNext}
+        />
+      )}
     </Shell>
   );
 }

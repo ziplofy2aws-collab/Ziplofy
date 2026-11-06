@@ -13,6 +13,10 @@ import { useAuthStore } from '@/stores/authStore';
 import { GATEWAY_LOGOUT_URL } from '@/lib/gateway';
 import { useStoreStore } from '@/stores/storeStore';
 import { authApi } from '@/lib/api';
+import AppStatusScreen from '@/components/status/AppStatusScreen';
+import AuthPageBackdrop, { BrandMark } from '@/components/status/AuthPageBackdrop';
+import PageTransition from '@/components/transitions/PageTransition';
+import { FlowButton } from '@/components/ui/flow-button';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -90,12 +94,19 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           router.replace('/client/workspace');
           return;
         }
-        if (data.profileComplete && data.workspaceCount > 0 && (onManage || onWorkspace)) {
+        // Let workspace page finish confetti → loader → dashboard without a mid-celebration yank.
+        let celebrating = false;
+        try {
+          celebrating = sessionStorage.getItem('workspaceCelebrate') === '1';
+        } catch {
+          /* ignore */
+        }
+        if (data.profileComplete && data.workspaceCount > 0 && (onManage || onWorkspace) && !celebrating) {
           router.replace('/client/dashboard');
           return;
         }
         // Soft check: if workspaces already in store but API count lags
-        if (data.profileComplete && (workspaces?.length || 0) > 0 && onWorkspace) {
+        if (data.profileComplete && (workspaces?.length || 0) > 0 && onWorkspace && !celebrating) {
           router.replace('/client/dashboard');
           return;
         }
@@ -133,14 +144,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   }, [isLoading, isAuthenticated]);
 
   if (isLoading || !onboardingReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="animate-spin w-10 h-10 border-3 border-emerald-600 border-t-transparent rounded-full mx-auto" />
-          <p className="text-gray-500 mt-3">Loading...</p>
-        </div>
-      </div>
-    );
+    return <AppStatusScreen variant="loading" />;
   }
 
   if (!isAuthenticated || !user) return null;
@@ -177,27 +181,35 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   // Slim chrome for onboarding (manage-profile / create workspace).
   if (isOnboardingRoute) {
+    let hideChrome = false;
+    try {
+      hideChrome = sessionStorage.getItem('workspaceCelebrate') === '1';
+    } catch {
+      /* ignore */
+    }
     return (
       <I18nProvider>
         <CallProvider>
           <NotificationProvider />
-          <div className="min-h-screen bg-page-background-color antialiased text-admin-text">
-            <header className="border-b border-admin-border bg-white px-4 py-3 sm:px-6">
-              <div className="mx-auto flex max-w-[1000px] items-center justify-between">
-                <p className="text-[15px] font-semibold">Codiic</p>
-                <button
-                  type="button"
-                  className="text-[13px] font-medium text-admin-text-secondary hover:text-admin-text"
-                  onClick={() => {
-                    useAuthStore.getState().logout(GATEWAY_LOGOUT_URL);
-                  }}
-                >
-                  Log out
-                </button>
-              </div>
-            </header>
-            <main className="p-4 sm:p-6 lg:p-8">{children}</main>
-          </div>
+          <AuthPageBackdrop>
+            {!hideChrome ? (
+              <header className="px-4 pt-4 sm:px-6">
+                <div className="mx-auto flex max-w-[980px] items-center justify-between rounded-2xl border border-white/70 bg-white/40 px-4 py-3 shadow-[0_12px_40px_rgba(15,23,42,0.08)] backdrop-blur-2xl sm:px-5">
+                  <BrandMark size="sm" />
+                  <FlowButton
+                    frost
+                    text="Log out"
+                    onClick={() => {
+                      useAuthStore.getState().logout(GATEWAY_LOGOUT_URL);
+                    }}
+                  />
+                </div>
+              </header>
+            ) : null}
+            <main className={hideChrome ? '' : 'p-4 sm:p-6 lg:p-8'}>
+              <PageTransition>{children}</PageTransition>
+            </main>
+          </AuthPageBackdrop>
         </CallProvider>
       </I18nProvider>
     );
@@ -215,7 +227,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
             <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
               <AnnouncementBanner />
               <main className="min-h-0 flex-1 overflow-y-auto bg-page-background-color p-4 sm:p-6 lg:p-8">
-                {children}
+                <PageTransition>{children}</PageTransition>
               </main>
               <PageHelp />
             </div>

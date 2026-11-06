@@ -4,8 +4,11 @@ import { Toaster } from 'react-hot-toast';
 import SeoHead from '@/components/SeoHead';
 import SiteTheme from '@/components/SiteTheme';
 import PwaProvider from '@/components/PwaProvider';
+import OfflineGuard from '@/components/status/OfflineGuard';
+import PreloadLoadingAnimation from '@/components/status/PreloadLoadingAnimation';
 import './globals.css';
 import { normalizeBrandName, isLegacySeoText, sanitizeSeoField } from '@/lib/brand';
+import { LOADING_ANIMATION_SRC } from '@/lib/loadingAnimation';
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL || 'https://wabapanel.com').replace(/\/$/, '');
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'https://api.wabapanel.com/api').replace(/\/$/, '');
@@ -192,9 +195,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var r=document.documentElement;var c=localStorage.getItem('brandColor');if(c){r.classList.add('brand-themed');r.style.setProperty('--brand',c);}var f=localStorage.getItem('brandFont');if(f&&f!=='Inter'){r.style.setProperty('--app-font',"'"+f+"'");}}catch(e){}})();` }} />
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var K='__chunk_reload__';function chunk(m){m=String(m||'');return /Loading chunk [\\d]+ failed|ChunkLoadError|Loading CSS chunk|Failed to fetch dynamically imported module|error loading dynamically imported module/i.test(m);}function fix(m){if(!chunk(m))return;var last=+(sessionStorage.getItem(K)||0);if(Date.now()-last<10000)return;sessionStorage.setItem(K,String(Date.now()));window.location.reload();}window.addEventListener('error',function(e){fix((e&&e.message)||(e&&e.error&&e.error.message));},true);window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;fix(r&&(r.message||r.name||r));});}catch(e){}})();` }} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <link rel="preload" href={LOADING_ANIMATION_SRC} as="fetch" crossOrigin="anonymous" />
         <SeoHead />
         <SiteTheme />
         <PwaProvider />
+        <PreloadLoadingAnimation />
+        <OfflineGuard />
         {children}
         <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       </body>

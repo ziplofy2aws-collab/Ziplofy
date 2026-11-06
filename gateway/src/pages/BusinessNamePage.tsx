@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import Shell from '../components/Shell';
+import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
 
 export default function BusinessNamePage() {
   const navigate = useNavigate();
@@ -41,9 +42,16 @@ export default function BusinessNamePage() {
           maxLength={100}
           required
         />
-        <button className="btn" type="submit" disabled={loading || businessName.trim().length < 2}>
-          {loading ? 'Saving…' : 'Launch'}
-        </button>
+        {loading ? (
+          <FlowButtonLoading text="Saving…" />
+        ) : (
+          <FlowButton
+            type="submit"
+            text="Launch"
+            className="w-full"
+            disabled={businessName.trim().length < 2}
+          />
+        )}
       </form>
     </Shell>
   );

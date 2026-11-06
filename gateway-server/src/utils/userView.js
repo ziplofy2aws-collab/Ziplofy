@@ -31,11 +31,8 @@ function nextWizardPath(user) {
   if (user.provider === 'local' && !user.emailVerified) {
     return '/login';
   }
-  if (user.onboardingStatus === 'complete' && user.destination) {
-    return null;
-  }
-  // Verified but not yet provisioned — client should hit login/me which provisions + SSO.
-  return null;
+  // Verified users go to launching / SSO — never null (client must not fall back to /login).
+  return '/launching';
 }
 
 module.exports = { publicUser, nextWizardPath };

@@ -6,7 +6,8 @@ import toast from 'react-hot-toast';
 import { Building2, Check, Globe2, UserRound } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
-import { adminContentColumnClass, adminListPrimaryButtonClass, adminListSecondaryButtonClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import AppStatusScreen from '@/components/status/AppStatusScreen';
+import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
 
 type ProfileForm = {
   name: string;
@@ -33,6 +34,12 @@ const LANGUAGES = [
   { id: 'hi', label: 'Hindi' },
   { id: 'ar', label: 'Arabic' },
 ];
+
+const glassCard =
+  'overflow-hidden rounded-2xl border border-[#e3e3e3] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]';
+const fieldClass =
+  'mt-1.5 w-full rounded-xl border border-[#e3e3e3] bg-white px-3.5 py-2.5 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20';
+const labelClass = 'block text-[13px] font-semibold text-slate-800';
 
 export default function ManageProfilePage() {
   const router = useRouter();
@@ -140,11 +147,7 @@ export default function ManageProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className={`${adminContentColumnClass} py-16 text-center text-[13px] text-admin-text-secondary`}>
-        Loading profile setup…
-      </div>
-    );
+    return <AppStatusScreen variant="loading" fullScreen={false} />;
   }
 
   const steps = [
@@ -154,25 +157,38 @@ export default function ManageProfilePage() {
   ];
 
   return (
-    <div className={`${adminContentColumnClass} space-y-5`}>
-      <div>
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-admin-text-subdued">Profile setup</p>
-        <h1 className="mt-1 text-[22px] font-semibold text-admin-text">Manage Profile</h1>
-        <p className="mt-1 text-[13px] text-admin-text-secondary">
-          Complete personal, billing, and regional details before creating your workspace.
-        </p>
-      </div>
-
-      <div className={dashboardCardShell}>
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="text-[13px] font-medium text-admin-text">
-            {step + 1} of 3 sections · {progress}%
+    <div className="mx-auto max-w-[980px] space-y-5">
+      <div className={glassCard}>
+        <div className="h-1 w-full" style={{ background: 'linear-gradient(95deg, #059669 0%, #0d9488 55%, #14b8a6 100%)' }} />
+        <div className="px-5 py-6 sm:px-7">
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#98A2B3]">
+            Profile setup
+          </p>
+          <h1 className="mt-2 text-[28px] font-extrabold tracking-tight text-[#101828] sm:text-[32px]">
+            Manage Profile
+          </h1>
+          <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[#667085]">
+            Complete personal, billing, and regional details before creating your workspace.
           </p>
         </div>
-        <div className="mb-4 h-2 overflow-hidden rounded-full bg-[#ebebeb]">
-          <div className="h-full rounded-full bg-black transition-all" style={{ width: `${progress}%` }} />
+      </div>
+
+      <div className={`${glassCard} px-5 py-5 sm:px-7`}>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="text-[13px] font-semibold text-slate-700">
+            {step + 1} of 3 sections · {progress}%
+          </p>
+          <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-100">
+            {progress}% done
+          </span>
         </div>
-        <div className="grid gap-2 sm:grid-cols-3">
+        <div className="mb-5 h-2.5 overflow-hidden rounded-full bg-[#f2f4f7]">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
           {steps.map((item, idx) => {
             const Icon = item.icon;
             const done = idx < step;
@@ -180,21 +196,29 @@ export default function ManageProfilePage() {
             return (
               <div
                 key={item.label}
-                className={`rounded-lg border px-3 py-3 ${
-                  active ? 'border-black bg-[#f6f6f7]' : 'border-admin-border bg-white'
+                className={`rounded-2xl border px-3.5 py-3.5 transition ${
+                  active
+                    ? 'border-emerald-200 bg-emerald-50/80 shadow-[0_8px_24px_rgba(16,185,129,0.10)]'
+                    : done
+                      ? 'border-[#e3e3e3] bg-[#fafafa]'
+                      : 'border-[#e3e3e3] bg-white'
                 }`}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-start gap-3">
                   <span
-                    className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${
-                      done ? 'bg-emerald-600 text-white' : active ? 'bg-black text-white' : 'bg-[#ebebeb] text-admin-text'
+                    className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                      done
+                        ? 'bg-emerald-600 text-white'
+                        : active
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-[#f2f4f7] text-slate-500'
                     }`}
                   >
                     {done ? <Check className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
                   </span>
                   <div>
-                    <p className="text-[13px] font-semibold text-admin-text">{item.label}</p>
-                    <p className="text-[11px] text-admin-text-secondary">{item.hint}</p>
+                    <p className="text-[13px] font-bold text-slate-900">{item.label}</p>
+                    <p className="mt-0.5 text-[11px] text-slate-500">{item.hint}</p>
                   </div>
                 </div>
               </div>
@@ -203,32 +227,31 @@ export default function ManageProfilePage() {
         </div>
       </div>
 
-      <div className={`${dashboardCardShell} space-y-4`}>
+      <div className={`${glassCard} space-y-4 px-5 py-6 sm:px-7`}>
+        <div key={step} className="step-blur-transition space-y-4">
         {step === 0 && (
           <>
-            <h2 className="text-[16px] font-semibold">Personal information</h2>
-            <p className="text-[13px] text-admin-text-secondary">Confirm the details from signup.</p>
-            <label className="block text-[13px] font-medium">
-              Full name <span className="text-red-600">*</span>
+            <div>
+              <h2 className="text-[18px] font-bold tracking-tight text-slate-900">Personal information</h2>
+              <p className="mt-1 text-[13px] text-slate-500">Confirm the details from signup.</p>
+            </div>
+            <label className={labelClass}>
+              Full name <span className="text-rose-500">*</span>
               <input
-                className="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={fieldClass}
                 value={form.name}
                 onChange={(e) => setField('name', e.target.value)}
                 required
               />
             </label>
-            <label className="block text-[13px] font-medium">
+            <label className={labelClass}>
               Email address
-              <input
-                className="mt-1 w-full rounded-lg border border-admin-border bg-[#f6f6f7] px-3 py-2 text-[13px]"
-                value={form.email}
-                readOnly
-              />
+              <input className={`${fieldClass} cursor-not-allowed opacity-80`} value={form.email} readOnly />
             </label>
-            <label className="block text-[13px] font-medium">
-              Phone number <span className="text-red-600">*</span>
+            <label className={labelClass}>
+              Phone number <span className="text-rose-500">*</span>
               <input
-                className="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={fieldClass}
                 value={form.phone}
                 onChange={(e) => setField('phone', e.target.value)}
                 required
@@ -239,53 +262,57 @@ export default function ManageProfilePage() {
 
         {step === 1 && (
           <>
-            <h2 className="text-[16px] font-semibold">Business & billing</h2>
-            <p className="text-[13px] text-admin-text-secondary">
-              These details appear on your subscription invoices (BILL TO).
-            </p>
-            <label className="block text-[13px] font-medium">
-              Business name <span className="text-red-600">*</span>
+            <div>
+              <h2 className="text-[18px] font-bold tracking-tight text-slate-900">Business & billing</h2>
+              <p className="mt-1 text-[13px] text-slate-500">
+                These details appear on your subscription invoices (BILL TO).
+              </p>
+            </div>
+            <label className={labelClass}>
+              Business name <span className="text-rose-500">*</span>
               <input
-                className="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={fieldClass}
                 value={form.companyName}
                 onChange={(e) => setField('companyName', e.target.value)}
                 placeholder="e.g. Acme Business Solutions LLC"
                 required
               />
-              <span className="mt-1 block text-[12px] text-admin-text-secondary">Shown as the company name on invoices.</span>
+              <span className="mt-1 block text-[12px] font-normal text-slate-500">
+                Shown as the company name on invoices.
+              </span>
             </label>
-            <label className="block text-[13px] font-medium">
+            <label className={labelClass}>
               GST / Tax ID
               <input
-                className="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={fieldClass}
                 value={form.gstNumber}
                 onChange={(e) => setField('gstNumber', e.target.value)}
                 placeholder="e.g. GSTIN, VAT, or TRN"
               />
-              <span className="mt-1 block text-[12px] text-admin-text-secondary">Optional. Include if you need it printed on invoices.</span>
             </label>
-            <label className="block text-[13px] font-medium">
-              Business address <span className="text-red-600">*</span>
+            <label className={labelClass}>
+              Business address <span className="text-rose-500">*</span>
               <textarea
-                className="mt-1 min-h-[100px] w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={`${fieldClass} min-h-[110px] resize-y`}
                 value={form.address}
                 onChange={(e) => setField('address', e.target.value)}
                 placeholder="Street, city, state / emirate, postal code, country"
                 required
               />
-              <span className="mt-1 block text-[12px] text-admin-text-secondary">Full billing address used on invoices.</span>
             </label>
           </>
         )}
 
         {step === 2 && (
           <>
-            <h2 className="text-[16px] font-semibold">Regional & language</h2>
-            <p className="text-[13px] text-admin-text-secondary">Set your default timezone and language.</p>
-            <label className="block text-[13px] font-medium">
-              Timezone <span className="text-red-600">*</span>
+            <div>
+              <h2 className="text-[18px] font-bold tracking-tight text-slate-900">Regional & language</h2>
+              <p className="mt-1 text-[13px] text-slate-500">Set your default timezone and language.</p>
+            </div>
+            <label className={labelClass}>
+              Timezone <span className="text-rose-500">*</span>
               <select
-                className="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={fieldClass}
                 value={form.preferredTimezone}
                 onChange={(e) => setField('preferredTimezone', e.target.value)}
               >
@@ -296,10 +323,10 @@ export default function ManageProfilePage() {
                 ))}
               </select>
             </label>
-            <label className="block text-[13px] font-medium">
+            <label className={labelClass}>
               Language
               <select
-                className="mt-1 w-full rounded-lg border border-admin-border px-3 py-2 text-[13px]"
+                className={fieldClass}
                 value={form.preferredLanguage}
                 onChange={(e) => setField('preferredLanguage', e.target.value)}
               >
@@ -312,19 +339,26 @@ export default function ManageProfilePage() {
             </label>
           </>
         )}
+        </div>
 
-        <div className="flex items-center justify-end gap-2 pt-2">
-          <button
+        <div className="flex flex-col-reverse items-stretch gap-2 border-t border-[#e3e3e3] pt-5 sm:flex-row sm:items-center sm:justify-end">
+          <FlowButton
             type="button"
-            className={adminListSecondaryButtonClass}
+            text="Back"
+            className="sm:w-auto sm:min-w-[120px]"
             disabled={step === 0 || saving}
-            onClick={() => setStep((s) => (Math.max(0, s - 1) as 0 | 1 | 2))}
-          >
-            Back
-          </button>
-          <button type="button" className={adminListPrimaryButtonClass} disabled={saving} onClick={saveStep}>
-            {saving ? 'Saving…' : step === 2 ? 'Finish' : 'Continue'}
-          </button>
+            onClick={() => setStep((s) => Math.max(0, s - 1) as 0 | 1 | 2)}
+          />
+          {saving ? (
+            <FlowButtonLoading text="Saving…" className="sm:w-auto sm:min-w-[160px]" />
+          ) : (
+            <FlowButton
+              type="button"
+              text={step === 2 ? 'Finish' : 'Continue'}
+              className="sm:w-auto sm:min-w-[160px]"
+              onClick={saveStep}
+            />
+          )}
         </div>
       </div>
     </div>

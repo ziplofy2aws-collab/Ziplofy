@@ -1,10 +1,8 @@
 {
-  "/client/manage-profile/page": "app/client/manage-profile/page.js",
-  "/client/settings/page": "app/client/settings/page.js",
-  "/client/dashboard/page": "app/client/dashboard/page.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/page": "app/page.js",
+  "/auth/sso/page": "app/auth/sso/page.js",
   "/client/workspace/page": "app/client/workspace/page.js",
-  "/client/choose-services/page": "app/client/choose-services/page.js",
-  "/client/choose-business/page": "app/client/choose-business/page.js",
-  "/client/travel/page": "app/client/travel/page.js",
-  "/client/travel/packages/page": "app/client/travel/packages/page.js"
+  "/client/manage-profile/page": "app/client/manage-profile/page.js",
+  "/client/dashboard/page": "app/client/dashboard/page.js"
 }

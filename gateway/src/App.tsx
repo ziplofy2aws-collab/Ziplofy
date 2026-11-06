@@ -2,6 +2,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { api, applySession, clearToken, getToken, goToSso } from './api';
+import LaunchingPage from './pages/LaunchingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
@@ -17,31 +18,33 @@ function SessionRedirect({ children }: { children: ReactNode }) {
       return;
     }
     if (!getToken()) {
+      if (location.pathname === '/launching') navigate('/login', { replace: true });
       setReady(true);
       return;
     }
+    if (location.pathname === '/launching') {
+      setReady(true);
+      return;
+    }
+
     let cancelled = false;
     api
       .me()
       .then((data) => {
         if (cancelled) return;
         applySession(data);
+        if (data.needsVerification) {
+          if (location.pathname !== '/login') navigate('/login', { replace: true });
+          setReady(true);
+          return;
+        }
         if (data.redirect?.ssoUrl) {
           goToSso(data.redirect.ssoUrl);
           return;
         }
-        const next = data.nextPath || '/login';
         const publicAuth = location.pathname === '/login' || location.pathname === '/register';
-        if (publicAuth && next && next !== location.pathname) {
-          navigate(next, { replace: true });
-        }
-        // Legacy wizard routes → login (SSO happens after verified login).
-        if (
-          location.pathname === '/choose-industry' ||
-          location.pathname === '/business-name' ||
-          location.pathname === '/launching'
-        ) {
-          navigate('/login', { replace: true });
+        if (publicAuth) {
+          navigate('/launching', { replace: true });
         }
         setReady(true);
       })
@@ -49,6 +52,9 @@ function SessionRedirect({ children }: { children: ReactNode }) {
         if (!cancelled) {
           clearToken();
           setReady(true);
+          if (location.pathname !== '/login' && location.pathname !== '/register') {
+            navigate('/login', { replace: true });
+          }
         }
       });
     return () => {
@@ -77,9 +83,9 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/logout" element={<Navigate to="/login" replace />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/choose-industry" element={<Navigate to="/login" replace />} />
-        <Route path="/business-name" element={<Navigate to="/login" replace />} />
-        <Route path="/launching" element={<Navigate to="/login" replace />} />
+        <Route path="/launching" element={<LaunchingPage />} />
+        <Route path="/choose-industry" element={<Navigate to="/launching" replace />} />
+        <Route path="/business-name" element={<Navigate to="/launching" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </SessionRedirect>

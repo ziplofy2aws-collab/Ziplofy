@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import Link from 'next/link';
-import { MessageSquare } from 'lucide-react';
 import useBranding from '@/lib/useBranding';
+import { authPageBackgroundStyle } from '@/lib/authBackground';
 
 type AuthShellProps = {
   title: string;
@@ -14,26 +14,24 @@ type AuthShellProps = {
 export default function AuthShell({ title, subtitle, children, footer }: AuthShellProps) {
   const brand = useBranding();
   const bgStyle = brand.loginBg
-    ? { backgroundImage: `linear-gradient(180deg, rgba(241,241,241,0.92), rgba(241,241,241,0.97)), url(${brand.loginBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-    : undefined;
+    ? {
+        ...authPageBackgroundStyle,
+        backgroundImage: `linear-gradient(160deg, rgba(232, 245, 239, 0.55), rgba(236, 253, 245, 0.42)), url(${brand.loginBg})`,
+      }
+    : authPageBackgroundStyle;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#f1f1f1] px-4 py-10" style={bgStyle}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10" style={bgStyle}>
       <div className="w-full max-w-[420px]">
         <div className="text-center mb-7">
           <Link href="/" className="inline-flex flex-col items-center gap-3 group">
-            {brand.logo ? (
-              <img src={brand.logo} alt={brand.name} className="h-12 w-auto object-contain" />
-            ) : (
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-[0_8px_20px_rgba(5,150,105,0.22)]"
-                style={{ background: 'linear-gradient(95deg, #059669 0%, #0d9488 55%, #14b8a6 100%)' }}
-              >
-                <MessageSquare className="w-6 h-6" />
-              </div>
-            )}
+            <img
+              src={brand.logo || '/logo_with_text.webp'}
+              alt={brand.name || 'Codiic'}
+              className="h-12 w-auto object-contain"
+            />
             <span className="text-xl font-bold tracking-tight text-gray-900 group-hover:text-emerald-700 transition-colors">
-              {brand.name || 'Codiic Panel'}
+              {brand.name || 'Codiic'}
             </span>
           </Link>
           {brand.tagline ? (
@@ -41,7 +39,7 @@ export default function AuthShell({ title, subtitle, children, footer }: AuthShe
           ) : null}
         </div>
 
-        <div className="rounded-xl border border-[#e3e3e3] bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)] overflow-hidden">
+        <div className="rounded-xl border border-[#e3e3e3] bg-white/95 shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)] overflow-hidden backdrop-blur-sm">
           <div className="h-1 w-full" style={{ background: 'linear-gradient(95deg, #059669 0%, #0d9488 55%, #14b8a6 100%)' }} />
           <div className="p-7 sm:p-8">
             <div className="mb-6">
