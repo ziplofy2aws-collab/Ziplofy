@@ -87,6 +87,11 @@ export default function AppStatusScreen({
       aria-busy={variant === 'loading'}
     >
       <div className="w-full max-w-md overflow-hidden rounded-[28px] border border-white/60 bg-white/45 px-6 py-10 text-center shadow-[0_24px_60px_rgba(15,23,42,0.10)] backdrop-blur-2xl sm:px-8">
+        <img
+          src="/logo_with_text.webp"
+          alt="CODIIC"
+          className="mx-auto mb-5 h-9 w-auto object-contain"
+        />
         <LoadingLottie className="relative mx-auto mb-2 h-40 w-40 sm:h-48 sm:w-48" />
         <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
           {resolvedTitle}

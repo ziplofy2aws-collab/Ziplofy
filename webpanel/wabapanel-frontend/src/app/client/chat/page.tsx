@@ -1,6 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search, Send, Paperclip, Smile, Reply,
   Sticker as StickerIcon,
@@ -8,6 +9,7 @@ import {
   MessageSquare, X, UserPlus, Video, Mic, Phone, PhoneCall,
   Zap, LayoutTemplate, ClipboardList, Bot, Check as CheckIcon, PiggyBank, Plus,
   Download , StickyNote, Trash2, Bell, Pencil, IndianRupee, Tag as TagIcon, Share2, Calendar, ShoppingBag, CheckSquare, Mail, GitBranch, MapPin, Pin,
+  ChevronDown, ChevronRight, Sparkles, Receipt, Power, GripVertical, Flame,
 } from 'lucide-react';
 import WhatsAppPhonePreview from '@/components/WhatsAppPhonePreview';
 import { conversationApi, teamApi, noteApi, paymentLinkApi, formApi, tagApi, contactApi, catalogApi, integrationApi, workspaceApi, waqrApi, pipelineApi, aiSettingsApi, crmApi } from '@/lib/api';
@@ -27,6 +29,10 @@ interface ChatTemplate {
   header?: { type?: string; content?: string; mediaUrl?: string };
   buttons?: Array<{ type?: string; text: string }>;
 }
+
+/** WhatsApp Web doodle wallpaper (matches real WA chat canvas). */
+const WA_DOODLE =
+  "url(\"data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c8c0b6' stroke-width='1.4' opacity='0.28'%3E%3Ccircle cx='20' cy='20' r='6'/%3E%3Cpath d='M70 15 l10 10 M80 15 l-10 10'/%3E%3Crect x='95' y='40' width='14' height='10' rx='2'/%3E%3Cpath d='M15 70 q6 -10 12 0 q-6 10 -12 0'/%3E%3Ccircle cx='60' cy='60' r='5'/%3E%3Cpath d='M40 100 h16 M48 92 v16'/%3E%3Cpath d='M90 90 a8 8 0 1 0 8 8'/%3E%3C/g%3E%3C/svg%3E\")";
 
 function WindowTimer({ messages, channel }: { messages: Message[]; channel: string }) {
   const [now, setNow] = useState(Date.now());
@@ -359,10 +365,10 @@ function ChatPageInner() {
     const ls = (conv.contact as { leadScore?: string })?.leadScore;
     const se = (conv as { sentiment?: string }).sentiment;
     return (<>
-      {ls === 'hot' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-red-100 text-red-700 align-middle font-medium">🔥 Hot</span>}
+      {ls === 'hot' && <span className="ml-1 inline-flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded bg-red-100 text-red-700 align-middle font-medium"><Flame className="w-2.5 h-2.5" />Hot</span>}
       {ls === 'warm' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-orange-100 text-orange-700 align-middle font-medium">Warm</span>}
       {ls === 'cold' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700 align-middle font-medium">Cold</span>}
-      {se === 'negative' && <span className="ml-1 text-[11px] align-middle" title="Customer seems unhappy">😟</span>}
+      {se === 'negative' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-rose-100 text-rose-700 align-middle font-medium" title="Customer seems unhappy">Neg</span>}
     </>);
   };
   const [typingAgent, setTypingAgent] = useState<string | null>(null);
@@ -485,15 +491,106 @@ function ChatPageInner() {
   const [fileAccept, setFileAccept] = useState('*/*');
   const [submitting, setSubmitting] = useState(false);
   const attachMenuRef = useRef<HTMLDivElement>(null);
-  const [showAssignMenu, setShowAssignMenu] = useState(false);
-  const [showPipelineMenu, setShowPipelineMenu] = useState(false);
-  const [pipelineMenuPos, setPipelineMenuPos] = useState<{top: number; left: number} | null>(null);
   const [pipelines, setPipelines] = useState<{ _id: string; name: string; stages?: { name: string }[]; deals?: { _id: string; contact?: string | { _id: string }; stage: string }[] }[]>([]);
   const [agents, setAgents] = useState<Array<{_id: string; name: string; email?: string}>>([]);
   const [togglingAI, setTogglingAI] = useState(false);
   const [aiCalling, setAiCalling] = useState(false);
-  const assignMenuRef = useRef<HTMLDivElement>(null);
-  const [assignMenuPos, setAssignMenuPos] = useState<{top: number; left: number} | null>(null);
+  const [showChatAiMenu, setShowChatAiMenu] = useState(false);
+  const [chatAiSub, setChatAiSub] = useState<'assign' | 'pipeline' | null>(null);
+  const [chatAiMenuPos, setChatAiMenuPos] = useState<{ top: number; left: number } | null>(null);
+  const chatAiMenuRef = useRef<HTMLDivElement>(null);
+  const chatAiBtnRef = useRef<HTMLButtonElement>(null);
+
+  const [chatAiPortalReady, setChatAiPortalReady] = useState(false);
+  useEffect(() => { setChatAiPortalReady(true); }, []);
+
+  const LIST_W_MIN = 240;
+  const LIST_W_MAX = 560;
+  const LIST_W_DEFAULT = 360;
+  const [listWidth, setListWidth] = useState(LIST_W_DEFAULT);
+  const [listResizing, setListResizing] = useState(false);
+  const listResizeRef = useRef<{ startX: number; startW: number } | null>(null);
+  const listWidthRef = useRef(LIST_W_DEFAULT);
+  const chatShellRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = Number(localStorage.getItem('chat_list_width'));
+      if (Number.isFinite(saved) && saved >= LIST_W_MIN && saved <= LIST_W_MAX) {
+        setListWidth(saved);
+        listWidthRef.current = saved;
+      }
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => {
+    if (!listResizing) return;
+    const onMove = (e: PointerEvent) => {
+      const s = listResizeRef.current;
+      if (!s) return;
+      const shellW = chatShellRef.current?.clientWidth || window.innerWidth;
+      const max = Math.min(LIST_W_MAX, Math.max(LIST_W_MIN, shellW - 320));
+      const next = Math.min(max, Math.max(LIST_W_MIN, s.startW + (e.clientX - s.startX)));
+      listWidthRef.current = next;
+      setListWidth(next);
+    };
+    const onUp = () => {
+      setListResizing(false);
+      listResizeRef.current = null;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      try { localStorage.setItem('chat_list_width', String(listWidthRef.current)); } catch { /* ignore */ }
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+  }, [listResizing]);
+
+  const startListResize = (e: React.PointerEvent) => {
+    e.preventDefault();
+    listResizeRef.current = { startX: e.clientX, startW: listWidth };
+    setListResizing(true);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  };
+
+  const openChatAiMenu = () => {
+    const btn = chatAiBtnRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const menuW = 208;
+    const estH = 280;
+    let left = Math.min(Math.max(8, rect.left), window.innerWidth - menuW - 8);
+    let top = rect.bottom + 6;
+    if (top + estH > window.innerHeight - 8) {
+      top = Math.max(8, window.innerHeight - estH - 8);
+    }
+    setChatAiMenuPos({ top, left });
+    setChatAiSub(null);
+    setShowChatAiMenu(true);
+  };
+
+  const closeChatAiMenu = useCallback(() => {
+    setShowChatAiMenu(false);
+    setChatAiSub(null);
+    setChatAiMenuPos(null);
+  }, []);
+
+  useEffect(() => {
+    if (!showChatAiMenu) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeChatAiMenu(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showChatAiMenu, closeChatAiMenu]);
+
+  useEffect(() => {
+    closeChatAiMenu();
+  }, [selectedConv?._id, closeChatAiMenu]);
 
   useEffect(() => {
     teamApi.listAgents().then(res => {
@@ -518,7 +615,6 @@ function ChatPageInner() {
         await pipelineApi.addDeal(pipelineId, { title: `${name} - Chat`, value: 0, contact: contactId, stage, status: 'open' });
         toast.success(`Added to "${stage}"`);
       }
-      setShowPipelineMenu(false);
       pipelineApi.list().then(r => setPipelines(r.data?.data || [])).catch(() => {});
     } catch {
       toast.error('Failed to update pipeline');
@@ -530,7 +626,6 @@ function ChatPageInner() {
     try {
       await conversationApi.assign(selectedConv._id, agentId);
       setSelectedConv({ ...selectedConv, assignedAgent: agents.find(a => a._id === agentId) });
-      setShowAssignMenu(false);
       toast.success('Assigned successfully');
     } catch {
       toast.error('Failed to assign');
@@ -1291,10 +1386,14 @@ function ChatPageInner() {
   };
 
   const getStatusIcon = (status: string) => {
+    const ch = (selectedConv as unknown as { channel?: string } | null)?.channel || '';
+    const wa = ch === 'whatsapp' || ch === 'whatsapp_qr';
+    const muted = wa ? 'text-[#667781]' : 'text-admin-text-subdued';
+    const read = wa ? 'text-[#53bdeb]' : 'text-blue-500';
     switch (status) {
-      case 'sent': return <Check className="w-3 h-3 text-admin-text-subdued" />;
-      case 'delivered': return <CheckCheck className="w-3 h-3 text-admin-text-subdued" />;
-      case 'read': return <CheckCheck className="w-3 h-3 text-blue-500" />;
+      case 'sent': return <Check className={`w-3 h-3 ${muted}`} />;
+      case 'delivered': return <CheckCheck className={`w-3 h-3 ${muted}`} />;
+      case 'read': return <CheckCheck className={`w-3 h-3 ${read}`} />;
       case 'failed': return <AlertCircle className="w-3 h-3 text-red-500" />;
       default: return <Clock className="w-3 h-3 text-gray-300" />;
     }
@@ -1583,8 +1682,35 @@ function ChatPageInner() {
   // for Telegram / Instagram / Facebook / Email chats.
   const selectedChannel = (selectedConv as unknown as { channel?: string } | null)?.channel || 'whatsapp';
   const isWaChat = selectedChannel === 'whatsapp';
+  const isWaChannelView = channelFilter === 'whatsapp' || channelFilter === 'whatsapp_qr';
+  const isWaThread = selectedChannel === 'whatsapp' || selectedChannel === 'whatsapp_qr';
   // Channels where free-form sends work (Pay / Preset / Invoice / Chat AI)
   const isMsgChat = ['whatsapp', 'whatsapp_qr', 'telegram', 'telegram_personal', 'facebook', 'instagram'].includes(selectedChannel);
+
+  const handleResolveConv = async () => {
+    if (!selectedConv) return;
+    try {
+      const r = await conversationApi.resolve(selectedConv._id);
+      const st = r.data?.data?.status || 'closed';
+      const resolved = st === 'closed';
+      setSelectedConv({ ...selectedConv, status: st, isResolved: resolved } as Conversation);
+      setConversations(prev => prev.map(c => c._id === selectedConv._id ? ({ ...c, status: st, isResolved: resolved } as Conversation) : c));
+      toast.success(resolved ? 'Conversation resolved' : 'Conversation reopened');
+    } catch { /* empty */ }
+  };
+
+  const handleAiSummary = async () => {
+    if (!selectedConv || summarizing) return;
+    setSummarizing(true);
+    try {
+      const r = await conversationApi.aiSummary(selectedConv._id);
+      setAiSummaryText(r.data?.data?.summary || 'No summary');
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } } };
+      setAiSummaryText(e.response?.data?.message || 'Summary failed');
+    }
+    setSummarizing(false);
+  };
 
   const getConversationPreview = (conv: Conversation) => {
     const text = conv.lastMessage?.text || '';
@@ -1599,22 +1725,46 @@ function ChatPageInner() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-7rem)] overflow-hidden rounded-xl border border-admin-border bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]">
+    <div
+      ref={chatShellRef}
+      className={`flex h-[calc(100vh-7rem)] overflow-hidden rounded-xl border bg-white ${listResizing ? 'select-none' : ''} ${isWaChannelView ? 'border-[#d1d7db] shadow-[0_12px_28px_rgba(11,20,26,0.12)]' : 'border-admin-border shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]'}`}
+    >
       {/* Conversation List */}
-      <div className={`w-full md:w-80 lg:w-96 border-r border-admin-border flex flex-col ${selectedConv ? 'hidden md:flex' : 'flex'}`}>
-        <div className="p-4 border-b border-admin-border space-y-3">
+      <div
+        className={`relative flex flex-col shrink-0 overflow-hidden border-r ${isWaChannelView ? 'border-[#e9edef] bg-white' : 'border-admin-border'} ${selectedConv ? 'hidden md:flex' : 'flex'} w-full md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]`}
+        style={{ ['--chat-list-w' as string]: `${listWidth}px` }}
+      >
+        {isWaChannelView && (
+          <div className="flex items-center justify-between gap-3 bg-[#00a884] px-4 py-2.5 text-white shrink-0">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/15 shrink-0">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden>
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold leading-tight truncate">{channelFilter === 'whatsapp_qr' ? 'WhatsApp QR' : 'WhatsApp'}</p>
+                <p className="text-[10px] text-white/80 truncate">{channelFilter === 'whatsapp_qr' ? 'Linked device inbox' : 'Business API inbox'}</p>
+              </div>
+            </div>
+            <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-semibold whitespace-nowrap">
+              {notConnected ? 'Not connected' : 'Connected ✓'}
+            </span>
+          </div>
+        )}
+        <div className={`p-3 sm:p-4 border-b space-y-2.5 min-w-0 overflow-hidden ${isWaChannelView ? 'border-[#e9edef] bg-[#f0f2f5]' : 'border-admin-border'}`}>
           <div className="flex items-center justify-between">
-            <h2 className="text-[15px] font-semibold tracking-tight text-admin-text">{channelFilter === 'whatsapp' ? 'WhatsApp' : channelFilter === 'whatsapp_qr' ? 'WhatsApp QR' : channelFilter === 'instagram' ? 'Instagram' : channelFilter === 'facebook' ? 'Facebook' : channelFilter === 'telegram' ? 'Telegram Bot' : channelFilter === 'telegram_personal' ? 'Personal Telegram' : channelFilter === 'email' ? 'Email' : 'Conversations'}</h2>
+            <h2 className={`text-[15px] font-semibold tracking-tight ${isWaChannelView ? 'text-[#111b21]' : 'text-admin-text'}`}>{channelFilter === 'whatsapp' ? 'Chats' : channelFilter === 'whatsapp_qr' ? 'Chats' : channelFilter === 'instagram' ? 'Instagram' : channelFilter === 'facebook' ? 'Facebook' : channelFilter === 'telegram' ? 'Telegram Bot' : channelFilter === 'telegram_personal' ? 'Personal Telegram' : channelFilter === 'email' ? 'Email' : 'Conversations'}</h2>
             <div className="flex items-center gap-2">
-              <span className="text-xs bg-[#f1f1f1] text-admin-text px-2 py-0.5 rounded-full">
+              <span className={`text-xs px-2 py-0.5 rounded-full ${isWaChannelView ? 'bg-white text-[#00a884] font-semibold' : 'bg-[#f1f1f1] text-admin-text'}`}>
                 {Math.max(convTotal, conversations.length)}
               </span>
-              <button onClick={() => { setBulkMode(!bulkMode); setBulkSelected(new Set()); }} className={`p-1.5 rounded-lg border text-xs ${bulkMode ? 'bg-[#f1f1f1] border-admin-border text-admin-text' : 'border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]'}`} title="Bulk select">
+              <button onClick={() => { setBulkMode(!bulkMode); setBulkSelected(new Set()); }} className={`p-1.5 rounded-lg border text-xs ${bulkMode ? (isWaChannelView ? 'bg-[#d9fdd3] border-[#00a884]/40 text-[#008069]' : 'bg-[#f1f1f1] border-admin-border text-admin-text') : (isWaChannelView ? 'border-[#d1d7db] text-[#54656f] hover:bg-white' : 'border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]')}`} title="Bulk select">
                 <CheckSquare className="w-3.5 h-3.5" />
               </button>
               <div className="relative">
                 <button onClick={() => setExportMenu(exportMenu === 'all' ? null : 'all')}
-                  className="p-1.5 rounded-lg border border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]"
+                  className={`p-1.5 rounded-lg border ${isWaChannelView ? 'border-[#d1d7db] text-[#54656f] hover:bg-white' : 'border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]'}`}
                   title="Export all chats (backup)">
                   <Download className="w-3.5 h-3.5" />
                 </button>
@@ -1628,7 +1778,7 @@ function ChatPageInner() {
               </div>
               {channelFilter !== 'facebook' && channelFilter !== 'instagram' && (
               <button onClick={() => { if (channelFilter === 'email') { openEmailCompose('new'); } else if (channelFilter === 'whatsapp_qr') { setQrNewMsg(true); } else if (channelFilter === 'telegram' || channelFilter === 'telegram_personal') { setTgNewMsg(true); } else { setShowNewMsg(true); } }}
-                className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-admin-text text-white hover:bg-[#1a1a1a]"
+                className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg text-white ${isWaChannelView ? 'bg-[#00a884] hover:bg-[#008f72]' : 'bg-admin-text hover:bg-[#1a1a1a]'}`}
                 title={channelFilter === 'email' ? 'Compose a new email' : 'Send a template to any number (no need to save the contact)'}>
                 <Plus className="w-3.5 h-3.5" /> {channelFilter === 'email' ? 'New Email' : 'New Msg'}
               </button>
@@ -1638,17 +1788,17 @@ function ChatPageInner() {
           {notConnected && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center justify-between gap-2">
               <p className="text-xs text-amber-800"><b>{CHANNEL_META[channelFilter]?.label || 'This channel'}</b> is not connected yet.</p>
-              <Link href={CHANNEL_META[channelFilter]?.href || '/client/channels'} className="shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg bg-admin-text text-white hover:bg-[#1a1a1a]">Connect</Link>
+              <Link href={CHANNEL_META[channelFilter]?.href || '/client/channels'} className={`shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg text-white ${isWaChannelView ? 'bg-[#00a884] hover:bg-[#008f72]' : 'bg-admin-text hover:bg-[#1a1a1a]'}`}>Connect</Link>
             </div>
           )}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-text-subdued" />
+            <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isWaChannelView ? 'text-[#667781]' : 'text-admin-text-subdued'}`} />
             <input
               type="text"
-              placeholder="Search interactions"
+              placeholder={isWaChannelView ? 'Search or start new chat' : 'Search interactions'}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-admin-border bg-[#f6f6f7] text-sm focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30"
+              className={`w-full pl-10 pr-4 py-2 text-sm focus:outline-none ${isWaChannelView ? 'rounded-lg border-0 bg-white text-[#111b21] placeholder:text-[#667781] focus:ring-2 focus:ring-[#00a884]/25' : 'rounded-lg border border-admin-border bg-[#f6f6f7] focus:ring-2 focus:ring-[#005bd3]/30'}`}
             />
           </div>
           {bulkMode && bulkSelected.size > 0 && (
@@ -1675,12 +1825,12 @@ function ChatPageInner() {
               ))}
             </div>
           )}
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 min-w-0">
             <TagIcon className="w-3.5 h-3.5 text-admin-text-subdued shrink-0" />
             <select value={labelFilter} onChange={e => setLabelFilter(e.target.value)}
               className="flex-1 min-w-0 px-2 py-1 border border-admin-border rounded-lg text-xs text-admin-text-secondary bg-white">
               <option value="all">All labels</option>
-              <option value="__reminder">⏰ Reminder set</option>
+              <option value="__reminder">Reminder set</option>
               {allTags.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
             </select>
             <select value={stageFilter} onChange={e => setStageFilter(e.target.value)}
@@ -1690,37 +1840,46 @@ function ChatPageInner() {
               {allStages.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
             </select>
           </div>
-          <div className="flex gap-0.5 items-center">
+          <div className="flex flex-wrap gap-1 items-center min-w-0 pr-1">
             {['all', 'unread', 'active', 'assigned', 'unassigned', 'resolved'].map((f) => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-1.5 py-0.5 text-[10px] rounded-full whitespace-nowrap ${filter === f ? 'bg-admin-text text-white' : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]'}`}
+                className={`px-1.5 py-0.5 text-[10px] rounded-full whitespace-nowrap shrink-0 ${filter === f ? (isWaChannelView ? 'bg-[#00a884] text-white' : 'bg-admin-text text-white') : (isWaChannelView ? 'bg-white text-[#54656f] hover:bg-[#e9edef]' : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]')}`}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
+                {f === 'unread' && isWaChannelView && conversations.reduce((n, c) => n + (c.unreadCount || 0), 0) > 0 ? ` ${conversations.reduce((n, c) => n + (c.unreadCount || 0), 0)}` : ''}
               </button>
             ))}
+          </div>
+          <div className="flex items-center gap-1.5 min-w-0 pr-1">
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest' | 'unread')}
               title="Sort conversations"
-              className="ml-auto text-[10px] border border-admin-border rounded-full px-1.5 py-0.5 bg-white text-admin-text-secondary focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30"
+              className={`min-w-0 flex-1 text-[10px] border rounded-full px-2 py-1 bg-white focus:outline-none ${isWaChannelView ? 'border-[#d1d7db] text-[#54656f] focus:ring-1 focus:ring-[#00a884]/30' : 'border-admin-border text-admin-text-secondary focus:ring-1 focus:ring-[#005bd3]/30'}`}
             >
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
               <option value="unread">Unread first</option>
             </select>
-          </div>
-          <div className="flex gap-1">
-            {[['all', 'All'], ['hot', '\ud83d\udd25 Hot'], ['warm', 'Warm'], ['cold', 'Cold']].map(([v, l]) => (
-              <button
-                key={v}
-                onClick={() => setLeadFilter(v)}
-                className={`px-2 py-0.5 text-[10px] rounded-full whitespace-nowrap ${leadFilter === v ? (v === 'hot' ? 'bg-red-600 text-white' : v === 'warm' ? 'bg-orange-500 text-white' : v === 'cold' ? 'bg-blue-600 text-white' : 'bg-admin-text text-white') : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]'}`}
-              >
-                {l}
-              </button>
-            ))}
+            <div className="flex gap-1 shrink-0">
+              {([
+                { v: 'all', label: 'All' },
+                { v: 'hot', label: 'Hot', icon: true },
+                { v: 'warm', label: 'Warm' },
+                { v: 'cold', label: 'Cold' },
+              ] as Array<{ v: string; label: string; icon?: boolean }>).map(({ v, label, icon }) => (
+                <button
+                  key={v}
+                  onClick={() => setLeadFilter(v)}
+                  className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] rounded-full whitespace-nowrap ${leadFilter === v ? (v === 'hot' ? 'bg-red-600 text-white' : v === 'warm' ? 'bg-orange-500 text-white' : v === 'cold' ? 'bg-blue-600 text-white' : 'bg-admin-text text-white') : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]'}`}
+                >
+                  {icon ? <Flame className="w-2.5 h-2.5" /> : null}
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -1745,7 +1904,7 @@ function ChatPageInner() {
               <div key={conv._id} className="relative group">
               <button
                 onClick={() => { if (bulkMode) { setBulkSelected(prev => { const n = new Set(prev); if (n.has(conv._id)) n.delete(conv._id); else n.add(conv._id); return n; }); } else { loadMessages(conv); } }}
-                className={`w-full text-left p-4 border-b border-gray-100 hover:bg-[#f6f6f7] transition-colors ${selectedConv?._id === conv._id ? 'bg-[#f1f1f1]' : ''} ${bulkSelected.has(conv._id) ? 'bg-blue-50' : ''}`}
+                className={`w-full text-left p-4 border-b transition-colors ${isWaChannelView ? 'border-[#f0f2f5] hover:bg-[#f5f6f6]' : 'border-gray-100 hover:bg-[#f6f6f7]'} ${selectedConv?._id === conv._id ? (isWaChannelView ? 'bg-[#f0f2f5]' : 'bg-[#f1f1f1]') : ''} ${bulkSelected.has(conv._id) ? 'bg-blue-50' : ''}`}
               >
                 <div className="flex items-start gap-3">
                   {bulkMode && (
@@ -1756,13 +1915,13 @@ function ChatPageInner() {
                   <ContactAvatar conv={conv} size={40} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className={`text-sm font-medium truncate ${hasReminder(conv) ? 'text-red-600' : 'text-admin-text'}`}>{hasReminder(conv) && <Bell className="w-3 h-3 inline mr-1 text-red-500" />}{getContactName(conv)}{(conv as { pinnedAt?: string }).pinnedAt && <Pin className="w-3 h-3 inline ml-1 text-admin-text align-middle" fill="currentColor" />}{leadBadge(conv)}{(conv.status === 'closed' || (conv as { isResolved?: boolean }).isResolved) && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-admin-text text-white align-middle font-medium">Resolved</span>}{hasReminder(conv) && <span className="ml-1 text-[10px] text-red-500 font-normal">{new Date(reminderContacts[getContactId(conv)]).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>}{(conv as { channel?: string }).channel === 'facebook' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700 align-middle">FB</span> : null}{(conv as { channel?: string }).channel === 'instagram' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-pink-100 text-pink-700 align-middle">IG</span> : null}{(conv as { channel?: string }).channel === 'whatsapp_qr' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-[#f1f1f1] text-admin-text align-middle">QR</span> : null}{(conv as { channel?: string }).channel === 'telegram' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700 align-middle">TG</span> : null}{(conv as { channel?: string }).channel === 'telegram_personal' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700 align-middle">TG-P</span> : null}{(conv as { channel?: string }).channel === 'email' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-orange-100 text-orange-700 align-middle">Email</span> : null}</p>
-                      <span className="text-xs text-admin-text-subdued shrink-0 ml-1">{fmtListTime(conv.updatedAt)}</span>
+                      <p className={`text-sm font-medium truncate ${hasReminder(conv) ? 'text-red-600' : (isWaChannelView ? 'text-[#111b21]' : 'text-admin-text')}`}>{hasReminder(conv) && <Bell className="w-3 h-3 inline mr-1 text-red-500" />}{getContactName(conv)}{(conv as { pinnedAt?: string }).pinnedAt && <Pin className="w-3 h-3 inline ml-1 text-admin-text align-middle" fill="currentColor" />}{leadBadge(conv)}{(conv.status === 'closed' || (conv as { isResolved?: boolean }).isResolved) && <span className={`ml-1 text-[10px] px-1 py-0.5 rounded text-white align-middle font-medium ${isWaChannelView ? 'bg-[#00a884]' : 'bg-admin-text'}`}>Resolved</span>}{hasReminder(conv) && <span className="ml-1 text-[10px] text-red-500 font-normal">{new Date(reminderContacts[getContactId(conv)]).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>}{(conv as { channel?: string }).channel === 'facebook' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700 align-middle">FB</span> : null}{(conv as { channel?: string }).channel === 'instagram' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-pink-100 text-pink-700 align-middle">IG</span> : null}{(conv as { channel?: string }).channel === 'whatsapp_qr' && !isWaChannelView ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-[#f1f1f1] text-admin-text align-middle">QR</span> : null}{(conv as { channel?: string }).channel === 'telegram' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700 align-middle">TG</span> : null}{(conv as { channel?: string }).channel === 'telegram_personal' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700 align-middle">TG-P</span> : null}{(conv as { channel?: string }).channel === 'email' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-orange-100 text-orange-700 align-middle">Email</span> : null}</p>
+                      <span className={`text-xs shrink-0 ml-1 ${isWaChannelView ? (conv.unreadCount > 0 ? 'text-[#00a884] font-semibold' : 'text-[#667781]') : 'text-admin-text-subdued'}`}>{fmtListTime(conv.updatedAt)}</span>
                     </div>
                     <div className="flex items-center justify-between mt-0.5">
-                      <p className="text-xs text-admin-text-secondary truncate">{getConversationPreview(conv)}</p>
+                      <p className={`text-xs truncate ${isWaChannelView ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>{getConversationPreview(conv)}</p>
                       {conv.unreadCount > 0 && (
-                        <span className="bg-admin-text text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{conv.unreadCount}</span>
+                        <span className={`${isWaChannelView ? 'bg-[#25d366]' : 'bg-admin-text'} text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold`}>{conv.unreadCount}</span>
                       )}
                     </div>
                     {(getContactTags(conv).length > 0 || getContactBadges(conv).length > 0 || (conv.tags && conv.tags.length > 0) || getContactStages(conv).length > 0) && (
@@ -1802,35 +1961,65 @@ function ChatPageInner() {
             </div>
           )}
         </div>
+
+        {/* Drag to resize conversations / chat */}
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize conversations panel"
+          title="Drag to make Conversations bigger or smaller"
+          onPointerDown={startListResize}
+          onDoubleClick={() => {
+            listWidthRef.current = LIST_W_DEFAULT;
+            setListWidth(LIST_W_DEFAULT);
+            try { localStorage.setItem('chat_list_width', String(LIST_W_DEFAULT)); } catch { /* ignore */ }
+          }}
+          className={`absolute inset-y-0 -right-1 z-30 hidden md:flex w-3 cursor-col-resize items-center justify-center touch-none group ${
+            listResizing ? 'bg-[#00a884]/15' : 'hover:bg-[#00a884]/10'
+          }`}
+        >
+          <span className={`pointer-events-none h-full w-0.5 rounded-full transition-colors ${
+            listResizing
+              ? (isWaChannelView ? 'bg-[#00a884]' : 'bg-admin-text')
+              : (isWaChannelView ? 'bg-[#d1d7db] group-hover:bg-[#00a884]' : 'bg-admin-border group-hover:bg-admin-text')
+          }`} />
+          <span className={`pointer-events-none absolute flex h-7 w-3.5 items-center justify-center rounded-full border bg-white shadow-sm opacity-0 transition-opacity group-hover:opacity-100 ${
+            listResizing ? 'opacity-100' : ''
+          } ${isWaChannelView ? 'border-[#d1d7db] text-[#667781]' : 'border-admin-border text-admin-text-subdued'}`}>
+            <GripVertical className="w-2.5 h-2.5" />
+          </span>
+        </div>
       </div>
 
       {/* Chat Area */}
       {selectedConv ? (
         <div className="flex-1 flex flex-col min-w-0">
           {/* Chat header */}
-          <div className="border-b border-admin-border bg-white">
+          <div className={`border-b relative z-20 overflow-visible ${isWaThread ? 'border-[#d1d7db] bg-[#f0f2f5]' : 'border-admin-border bg-white'}`}>
             {/* Row 1: Contact info + quick utility icons */}
             <div className="px-4 py-3 flex items-center justify-between gap-2">
               <div className="flex items-center gap-3 min-w-0 shrink-0 max-w-[55%] sm:max-w-none">
-                <button onClick={() => setSelectedConv(null)} className="md:hidden text-admin-text-secondary mr-1">
+                <button onClick={() => setSelectedConv(null)} className={`md:hidden mr-1 ${isWaThread ? 'text-[#54656f]' : 'text-admin-text-secondary'}`}>
                   <X className="w-5 h-5" />
                 </button>
                 <ContactAvatar conv={selectedConv} gradient size={40} />
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold text-admin-text truncate">{getContactName(selectedConv)}</p>
+                    <p className={`text-sm font-semibold truncate ${isWaThread ? 'text-[#111b21]' : 'text-admin-text'}`}>{getContactName(selectedConv)}</p>
+                    {!isWaThread && (
                     <Badge variant={selectedConv.status === 'active' ? 'success' : selectedConv.status === 'resolved' ? 'info' : 'warning'}>
                       {selectedConv.status}
                     </Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <p className="text-xs text-admin-text-secondary">{getContactSubtitle(selectedConv)}</p>
+                    <p className={`text-xs ${isWaThread ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>{getContactSubtitle(selectedConv)}</p>
                     <WindowTimer messages={messages} channel={(selectedConv as unknown as { channel?: string })?.channel || 'whatsapp'} />
                     {presence && (selectedConv as unknown as { channel?: string })?.channel === 'whatsapp_qr' && (
                       presence.online
-                        ? <span className="text-xs text-admin-text font-medium">● online</span>
+                        ? <span className={`text-xs font-medium ${isWaThread ? 'text-[#00a884]' : 'text-admin-text'}`}>● online</span>
                         : presence.lastSeen
-                          ? <span className="text-xs text-admin-text-subdued">last seen {new Date(presence.lastSeen * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                          ? <span className={`text-xs ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`}>last seen {new Date(presence.lastSeen * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                           : null
                     )}
                   </div>
@@ -1975,194 +2164,212 @@ function ChatPageInner() {
                 )}
               </div>
             </div>
-            {/* Row 2: Action buttons bar */}
-            <div className="px-4 pb-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            {/* Row 2: Chat AI dropdown + extras */}
+            <div className="px-4 pb-3 flex items-center gap-2 overflow-visible">
               {isMsgChat && (
               <>
-              <button
-                onClick={() => handleToggleAI('chat')}
-                disabled={togglingAI}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap disabled:opacity-50 ${chatAiOn ? 'border-admin-border bg-[#f1f1f1] text-admin-text shadow-sm' : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300'}`}
-                title={chatAiOn ? 'Chat AI is ON — click to turn off' : 'Turn ON Chat AI'}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${chatAiOn ? 'bg-admin-text' : 'bg-gray-300'}`} />
-                <Bot className="w-3.5 h-3.5" />
-                Chat AI
-                <span className={`text-[10px] font-bold ${chatAiOn ? 'text-admin-text' : 'text-admin-text-subdued'}`}>{chatAiOn ? 'ON' : 'OFF'}</span>
-              </button>
+                <button
+                  ref={chatAiBtnRef}
+                  type="button"
+                  onClick={() => { if (showChatAiMenu) closeChatAiMenu(); else openChatAiMenu(); }}
+                  className={`inline-flex items-center gap-2 pl-2.5 pr-2 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap shadow-sm ${
+                    isWaThread
+                      ? (chatAiOn || showChatAiMenu
+                        ? 'border-[#00a884]/35 bg-[#d9fdd3] text-[#008069] hover:bg-[#c8f7c0]'
+                        : 'border-[#d1d7db] bg-white text-[#54656f] hover:bg-[#f0f2f5]')
+                      : (chatAiOn || showChatAiMenu
+                        ? 'border-admin-border bg-[#f1f1f1] text-admin-text'
+                        : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300')
+                  }`}
+                  title="Chat AI tools"
+                >
+                  <span className={`flex h-5 w-5 items-center justify-center rounded-full ${chatAiOn ? (isWaThread ? 'bg-[#00a884] text-white' : 'bg-admin-text text-white') : 'bg-gray-200 text-gray-500'}`}>
+                    <Bot className="w-3 h-3" />
+                  </span>
+                  Chat AI
+                  <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${
+                    chatAiOn
+                      ? (isWaThread ? 'bg-[#00a884] text-white' : 'bg-admin-text text-white')
+                      : 'bg-gray-100 text-gray-500'
+                  }`}>{chatAiOn ? 'ON' : 'OFF'}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showChatAiMenu ? 'rotate-180' : ''} ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`} />
+                </button>
+
+                {chatAiPortalReady && showChatAiMenu && chatAiMenuPos && createPortal(
+                  (
+                    <div className="fixed inset-0 z-[20000]" data-chat-ai-portal>
+                    <div className="absolute inset-0 bg-black/20" onClick={closeChatAiMenu} aria-hidden />
+                    <div
+                      ref={chatAiMenuRef}
+                      role="menu"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`absolute w-[208px] max-h-[min(300px,calc(100vh-16px))] overflow-y-auto rounded-xl border bg-white shadow-[0_12px_32px_rgba(11,20,26,0.28)] ${isWaThread ? 'border-[#d1d7db]' : 'border-admin-border'}`}
+                      style={{ top: chatAiMenuPos.top, left: chatAiMenuPos.left }}
+                    >
+                      <div className={`px-2.5 py-2 border-b sticky top-0 z-10 ${isWaThread ? 'border-[#f0f2f5] bg-[#e7f8f2]' : 'border-gray-100 bg-[#f6f6f7]'}`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="min-w-0 flex items-center gap-1.5">
+                            <Power className={`w-3 h-3 shrink-0 ${chatAiOn ? (isWaThread ? 'text-[#00a884]' : 'text-admin-text') : 'text-gray-400'}`} />
+                            <p className={`text-[12px] font-semibold truncate ${isWaThread ? 'text-[#111b21]' : 'text-admin-text'}`}>Chat AI</p>
+                            <span className={`text-[10px] font-bold ${chatAiOn ? (isWaThread ? 'text-[#008069]' : 'text-admin-text') : 'text-gray-400'}`}>{chatAiOn ? 'ON' : 'OFF'}</span>
+                          </div>
+                          <button
+                            type="button"
+                            disabled={togglingAI}
+                            onClick={() => handleToggleAI('chat')}
+                            className={`relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:opacity-50 ${chatAiOn ? (isWaThread ? 'bg-[#00a884]' : 'bg-admin-text') : 'bg-gray-300'}`}
+                            title={chatAiOn ? 'Turn OFF Chat AI' : 'Turn ON Chat AI'}
+                          >
+                            <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${chatAiOn ? 'translate-x-4' : ''}`} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="py-1">
+                        {([
+                          { key: 'preset', label: 'Preset', icon: <PiggyBank className="w-3.5 h-3.5" />, tone: isWaThread ? 'bg-[#e7f8f2] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text', onClick: () => { setShowPresetModal(true); closeChatAiMenu(); } },
+                          { key: 'assign', label: 'Assign', icon: <UserPlus className="w-3.5 h-3.5" />, tone: isWaThread ? 'bg-[#e7f8f2] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text', onClick: () => setChatAiSub(s => s === 'assign' ? null : 'assign'), chevron: true, open: chatAiSub === 'assign' },
+                          { key: 'pipeline', label: 'Pipeline', icon: <GitBranch className="w-3.5 h-3.5" />, tone: isWaThread ? 'bg-[#efe8ff] text-[#6d28d9]' : 'bg-violet-50 text-violet-700', onClick: () => setChatAiSub(s => s === 'pipeline' ? null : 'pipeline'), chevron: true, open: chatAiSub === 'pipeline' },
+                          { key: 'invoice', label: 'Invoice', icon: <Receipt className="w-3.5 h-3.5" />, tone: 'bg-amber-50 text-amber-700', onClick: () => { setShowInvoice(true); closeChatAiMenu(); } },
+                          { key: 'summary', label: summarizing ? 'Summarizing…' : 'Summary', icon: <Sparkles className="w-3.5 h-3.5" />, tone: 'bg-violet-50 text-violet-700', onClick: () => { handleAiSummary(); closeChatAiMenu(); }, disabled: summarizing },
+                        ] as Array<{ key: string; label: string; icon: React.ReactNode; tone: string; onClick: () => void; chevron?: boolean; open?: boolean; disabled?: boolean }>).map((item) => (
+                          <React.Fragment key={item.key}>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              disabled={item.disabled}
+                              onClick={item.onClick}
+                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-[12px] transition-colors disabled:opacity-50 ${
+                                item.open
+                                  ? (isWaThread ? 'bg-[#e7f8f2] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text')
+                                  : (isWaThread ? 'text-[#111b21] hover:bg-[#f0f2f5]' : 'text-admin-text hover:bg-[#f6f6f7]')
+                              }`}
+                            >
+                              <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${item.tone}`}>{item.icon}</span>
+                              <span className="flex-1 font-medium">{item.label}</span>
+                              {item.chevron && (
+                                <ChevronRight className={`w-3.5 h-3.5 transition-transform ${item.open ? 'rotate-90' : ''} ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`} />
+                              )}
+                            </button>
+                            {item.key === 'assign' && chatAiSub === 'assign' && (
+                              <div className={`mx-1.5 mb-1 max-h-28 overflow-y-auto rounded-lg border ${isWaThread ? 'border-[#e9edef] bg-[#fafafa]' : 'border-admin-border bg-white'}`}>
+                                {agents.length === 0 && (
+                                  <p className="px-2.5 py-1.5 text-[11px] text-admin-text-subdued">No agents</p>
+                                )}
+                                {agents.map(a => {
+                                  const assignedId = typeof selectedConv?.assignedAgent === 'string' ? selectedConv.assignedAgent : selectedConv?.assignedAgent?._id;
+                                  const isAssigned = assignedId === a._id;
+                                  return (
+                                    <button
+                                      key={a._id}
+                                      type="button"
+                                      onClick={() => { handleAssignAgent(a._id); closeChatAiMenu(); }}
+                                      className={`w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] hover:bg-white ${isAssigned ? (isWaThread ? 'text-[#008069] font-semibold' : 'text-admin-text font-semibold') : 'text-admin-text'}`}
+                                    >
+                                      <span className="truncate">{a.name}</span>
+                                      {isAssigned && <CheckIcon className={`w-3 h-3 ${isWaThread ? 'text-[#00a884]' : 'text-admin-text'}`} />}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {item.key === 'pipeline' && chatAiSub === 'pipeline' && (
+                              <div className={`mx-1.5 mb-1 max-h-32 overflow-y-auto rounded-lg border ${isWaThread ? 'border-[#e9edef] bg-[#fafafa]' : 'border-admin-border bg-white'}`}>
+                                {pipelines.length === 0 && (
+                                  <p className="px-2.5 py-1.5 text-[11px] text-admin-text-subdued">No pipeline found</p>
+                                )}
+                                {pipelines.map(p => {
+                                  const cid = typeof selectedConv?.contact === 'string' ? selectedConv?.contact : (selectedConv?.contact as { _id?: string })?._id;
+                                  const currentDeal = p.deals?.find(d => (typeof d.contact === 'string' ? d.contact : d.contact?._id) === cid);
+                                  return (
+                                    <div key={p._id}>
+                                      <p className="px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wide text-admin-text-subdued">{p.name}</p>
+                                      {(p.stages || []).map(s => {
+                                        const isCurrent = currentDeal?.stage === s.name;
+                                        return (
+                                          <button
+                                            key={s.name}
+                                            type="button"
+                                            onClick={() => { handleAddToPipeline(p._id, s.name); closeChatAiMenu(); }}
+                                            className={`w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] hover:bg-white ${isCurrent ? 'text-violet-700 font-semibold' : 'text-admin-text'}`}
+                                          >
+                                            <span className="truncate">{s.name}</span>
+                                            {isCurrent && <CheckIcon className="w-3 h-3 text-violet-600" />}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </React.Fragment>
+                        ))}
+
+                        <div className={`my-0.5 border-t ${isWaThread ? 'border-[#f0f2f5]' : 'border-gray-100'}`} />
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => { handleResolveConv(); closeChatAiMenu(); }}
+                          className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-[12px] font-semibold transition-colors ${
+                            selectedConv.status === 'closed'
+                              ? 'text-gray-600 hover:bg-gray-50'
+                              : (isWaThread ? 'text-[#008069] hover:bg-[#e7f8f2]' : 'text-admin-text hover:bg-[#f6f6f7]')
+                          }`}
+                        >
+                          <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${selectedConv.status === 'closed' ? 'bg-gray-100 text-gray-600' : (isWaThread ? 'bg-[#d9fdd3] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text')}`}>
+                            <CheckIcon className="w-3.5 h-3.5" />
+                          </span>
+                          <span className="flex-1">{selectedConv.status === 'closed' ? 'Reopen' : 'Resolve'}</span>
+                        </button>
+                      </div>
+                    </div>
+                    </div>
+                  ),
+                  document.body
+                )}
+              </>
+              )}
+
               {isWaChat && (
+              <>
               <button
                 onClick={() => handleToggleAI('call')}
                 disabled={togglingAI}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap disabled:opacity-50 ${selectedConv.aiCallEnabled ? 'border-admin-border bg-[#f1f1f1] text-admin-text shadow-sm' : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300'}`}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap disabled:opacity-50 ${selectedConv.aiCallEnabled ? (isWaThread ? 'border-[#00a884]/35 bg-[#d9fdd3] text-[#008069]' : 'border-admin-border bg-[#f1f1f1] text-admin-text shadow-sm') : (isWaThread ? 'border-[#d1d7db] bg-white text-[#54656f] hover:bg-[#f0f2f5]' : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300')}`}
                 title={selectedConv.aiCallEnabled ? 'Call AI is ON — click to turn off' : 'Turn ON Call AI'}
               >
-                <span className={`w-1.5 h-1.5 rounded-full ${selectedConv.aiCallEnabled ? 'bg-admin-text' : 'bg-gray-300'}`} />
                 <PhoneCall className="w-3.5 h-3.5" />
                 Call AI
-                <span className={`text-[10px] font-bold ${selectedConv.aiCallEnabled ? 'text-admin-text' : 'text-admin-text-subdued'}`}>{selectedConv.aiCallEnabled ? 'ON' : 'OFF'}</span>
+                <span className={`text-[10px] font-bold ${selectedConv.aiCallEnabled ? (isWaThread ? 'text-[#008069]' : 'text-admin-text') : 'text-admin-text-subdued'}`}>{selectedConv.aiCallEnabled ? 'ON' : 'OFF'}</span>
               </button>
-              )}
-              <div className="w-px h-5 bg-gray-200 mx-0.5" />
-              {isWaChat && (
               <button
                 onClick={() => setShowTemplateModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-admin-border bg-white text-admin-text-secondary hover:border-gray-300 hover:bg-[#f6f6f7] transition-all whitespace-nowrap"
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap ${isWaThread ? 'border-[#d1d7db] bg-white text-[#54656f] hover:bg-[#f0f2f5]' : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300 hover:bg-[#f6f6f7]'}`}
                 title="Send a template message"
               >
                 <LayoutTemplate className="w-3.5 h-3.5" />
                 Template
               </button>
-              )}
-              <button
-                onClick={() => setShowPresetModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-admin-border bg-[#f1f1f1] text-admin-text hover:bg-[#e8e8e8] transition-all whitespace-nowrap"
-                title="Send a preset message (free)"
-              >
-                <PiggyBank className="w-3.5 h-3.5" />
-                Preset
-              </button>
               </>
               )}
-              <div ref={assignMenuRef}>
-                <button
-                  onClick={(e) => {
-                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                    setAssignMenuPos({ top: rect.bottom + 4, left: Math.min(rect.left, window.innerWidth - 240) });
-                    setShowAssignMenu(v => !v);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-admin-border bg-white text-admin-text-secondary hover:border-gray-300 hover:bg-[#f6f6f7] transition-all whitespace-nowrap"
-                  title="Assign to agent"
-                >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  Assign
-                </button>
-                {showAssignMenu && assignMenuPos && (
-                  <>
-                    <div className="fixed inset-0 z-[9998]" onClick={() => setShowAssignMenu(false)} />
-                    <div className="fixed w-56 bg-white border border-admin-border rounded-xl shadow-xl z-[9999] py-1 max-h-64 overflow-y-auto" style={{ top: assignMenuPos.top, left: assignMenuPos.left }}>
-                      <p className="px-3 py-1.5 text-xs font-medium text-admin-text-subdued uppercase border-b">Assign to Agent</p>
-                      {agents.length === 0 && (
-                        <p className="px-3 py-2 text-sm text-admin-text-subdued">No agents available</p>
-                      )}
-                      {agents.map(a => {
-                        const assignedId = typeof selectedConv?.assignedAgent === 'string' ? selectedConv.assignedAgent : selectedConv?.assignedAgent?._id;
-                        const isAssigned = assignedId === a._id;
-                        return (
-                          <button
-                            key={a._id}
-                            onClick={() => handleAssignAgent(a._id)}
-                            className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-[#f6f6f7] ${isAssigned ? 'bg-[#f1f1f1] text-admin-text' : 'text-admin-text'}`}
-                          >
-                            <span className="truncate">{a.name}</span>
-                            {isAssigned && <CheckIcon className="w-4 h-4 text-admin-text" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-              </div>
-              <div>
-                <button
-                  onClick={(e) => {
-                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                    setPipelineMenuPos({ top: rect.bottom + 4, left: Math.min(rect.left, window.innerWidth - 260) });
-                    setShowPipelineMenu(v => !v);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100 transition-all whitespace-nowrap"
-                  title="Add this chat to a sales pipeline stage"
-                >
-                  <GitBranch className="w-3.5 h-3.5" />
-                  Pipeline
-                </button>
-                {showPipelineMenu && pipelineMenuPos && (
-                  <>
-                    <div className="fixed inset-0 z-[9998]" onClick={() => setShowPipelineMenu(false)} />
-                    <div className="fixed w-64 bg-white border border-admin-border rounded-xl shadow-xl z-[9999] py-1 max-h-72 overflow-y-auto" style={{ top: pipelineMenuPos.top, left: pipelineMenuPos.left }}>
-                      {pipelines.length === 0 && (
-                        <p className="px-3 py-2 text-sm text-admin-text-subdued">No pipeline found. Create one in Pipelines.</p>
-                      )}
-                      {pipelines.map(p => {
-                        const cid = typeof selectedConv?.contact === 'string' ? selectedConv?.contact : (selectedConv?.contact as { _id?: string })?._id;
-                        const currentDeal = p.deals?.find(d => (typeof d.contact === 'string' ? d.contact : d.contact?._id) === cid);
-                        return (
-                          <div key={p._id}>
-                            <p className="px-3 py-1.5 text-xs font-medium text-admin-text-subdued uppercase border-b">{p.name}</p>
-                            {(p.stages || []).map(s => {
-                              const isCurrent = currentDeal?.stage === s.name;
-                              return (
-                                <button
-                                  key={s.name}
-                                  onClick={() => handleAddToPipeline(p._id, s.name)}
-                                  className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-[#f6f6f7] ${isCurrent ? 'bg-violet-50 text-violet-700' : 'text-admin-text'}`}
-                                >
-                                  <span className="truncate">{s.name}</span>
-                                  {isCurrent && <CheckIcon className="w-4 h-4 text-violet-600" />}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-              </div>
-              {isMsgChat && (
-              <button onClick={() => setShowInvoice(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all whitespace-nowrap"
-                title="Create & send Quotation/Invoice">
-                🧾 Invoice
-              </button>
-              )}
+
               {showInvoice && <InvoiceModal convId={selectedConv._id} onClose={() => setShowInvoice(false)} />}
-              <button
-                onClick={async () => {
-                  if (summarizing) return;
-                  setSummarizing(true);
-                  try {
-                    const r = await conversationApi.aiSummary(selectedConv._id);
-                    setAiSummaryText(r.data?.data?.summary || 'No summary');
-                  } catch (err: unknown) {
-                    const e = err as { response?: { data?: { message?: string } } };
-                    setAiSummaryText(e.response?.data?.message || 'Summary failed');
-                  }
-                  setSummarizing(false);
-                }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-violet-600 text-white hover:bg-violet-700 transition-all whitespace-nowrap shadow-sm"
-                title="AI summary of conversation"
-              >
-                {summarizing ? '...' : '✨ Summary'}
-              </button>
               {aiSummaryText && (
-                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setAiSummaryText(null)}>
+                <div className="fixed inset-0 bg-black/40 z-[10000] flex items-center justify-center p-4" onClick={() => setAiSummaryText(null)}>
                   <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-5" onClick={e => e.stopPropagation()}>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-bold text-admin-text">✨ AI Summary</h3>
-                      <button onClick={() => setAiSummaryText(null)} className="text-admin-text-subdued hover:text-admin-text-secondary">✕</button>
+                      <h3 className="text-sm font-bold text-admin-text inline-flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-violet-600" />
+                        AI Summary
+                      </h3>
+                      <button onClick={() => setAiSummaryText(null)} className="text-admin-text-subdued hover:text-admin-text-secondary"><X className="w-4 h-4" /></button>
                     </div>
                     <p className="text-sm text-admin-text whitespace-pre-wrap max-h-80 overflow-y-auto">{aiSummaryText}</p>
                   </div>
                 </div>
               )}
-              <div className="ml-auto">
-                <button
-                  onClick={async () => {
-                    try {
-                      const r = await conversationApi.resolve(selectedConv._id);
-                      const st = r.data?.data?.status || 'closed';
-                      const resolved = st === 'closed';
-                      setSelectedConv({ ...selectedConv, status: st, isResolved: resolved } as Conversation);
-                      setConversations(prev => prev.map(c => c._id === selectedConv._id ? ({ ...c, status: st, isResolved: resolved } as Conversation) : c));
-                    } catch { /* empty */ }
-                  }}
-                  className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap shadow-sm ${selectedConv.status === 'closed' ? 'bg-gray-600 text-white hover:bg-gray-700' : 'bg-admin-text text-white hover:bg-[#1a1a1a]'}`}
-                  title={selectedConv.status === 'closed' ? 'Reopen conversation' : 'Resolve conversation'}
-                >
-                  {selectedConv.status === 'closed' ? 'Reopen' : 'Resolve'}
-                </button>
-              </div>
             </div>
           </div>
 
@@ -2189,7 +2396,8 @@ function ChatPageInner() {
                 loadOlderMessages();
               }
             }}
-            className="flex-1 overflow-y-auto overflow-x-hidden p-4 bg-[#f1f1f1] space-y-3"
+            className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-2 ${isWaThread ? 'bg-[#efeae2]' : 'bg-[#f1f1f1] space-y-3'}`}
+            style={isWaThread ? { backgroundImage: WA_DOODLE } : undefined}
           >
             {!loadingMsgs && (hasOlder || olderLoading) && (
               <div className="text-center py-2 text-xs text-admin-text-subdued">
@@ -2215,17 +2423,23 @@ function ChatPageInner() {
                   || (selectedConv as unknown as { channel?: string } | null)?.channel === 'email';
                 return (
                 <div key={msg._id} id={`msg-${msg._id}`} className={`group flex min-w-0 ${msg.direction === 'outbound' ? 'justify-end' : 'justify-start'} ${matchIds.includes(msg._id) ? (matchIds[matchIdx] === msg._id ? 'rounded-lg ring-2 ring-amber-400' : 'rounded-lg ring-1 ring-amber-200') : ''}`}>
-                  <div className={`${isEmailMsg ? 'max-w-[98%] w-full' : 'max-w-[85%] sm:max-w-[70%]'} min-w-0 break-words [overflow-wrap:anywhere] rounded-xl px-4 py-2 shadow-sm ${
-                    msg.direction === 'outbound' ? 'bg-[#e8e8e8] text-admin-text rounded-br-sm' : 'bg-white text-admin-text rounded-bl-sm'
+                  <div className={`${isEmailMsg ? 'max-w-[98%] w-full' : 'max-w-[85%] sm:max-w-[70%]'} min-w-0 break-words [overflow-wrap:anywhere] px-3 py-1.5 shadow-sm ${
+                    isWaThread
+                      ? (msg.direction === 'outbound'
+                        ? 'bg-[#d9fdd3] text-[#111b21] rounded-lg rounded-tr-none'
+                        : 'bg-white text-[#111b21] rounded-lg rounded-tl-none')
+                      : (msg.direction === 'outbound'
+                        ? 'bg-[#e8e8e8] text-admin-text rounded-xl rounded-br-sm'
+                        : 'bg-white text-admin-text rounded-xl rounded-bl-sm')
                   }`}>
                     {msg.context?.messageId && (
-                      <div className="mb-1 border-l-4 border-admin-text bg-black/5 rounded px-2 py-1 text-xs text-admin-text-secondary">
-                        <span className="font-medium text-admin-text">{msg.context.from === 'outbound' ? 'You' : 'Customer'}</span>
+                      <div className={`mb-1 border-l-4 rounded px-2 py-1 text-xs ${isWaThread ? 'border-[#00a884] bg-black/[0.04] text-[#667781]' : 'border-admin-text bg-black/5 text-admin-text-secondary'}`}>
+                        <span className={`font-medium ${isWaThread ? 'text-[#008069]' : 'text-admin-text'}`}>{msg.context.from === 'outbound' ? 'You' : 'Customer'}</span>
                         <div className="truncate max-w-[240px]">{msg.context.text || 'Message'}</div>
                       </div>
                     )}
                     {renderMessageContent(msg)}
-                    <div className={`flex items-center justify-end gap-1 mt-1 text-admin-text-subdued`}>
+                    <div className={`flex items-center justify-end gap-1 mt-1 ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`}>
                       <span className="text-[10px]">{new Date(msg.createdAt).toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                       {msg.direction === 'outbound' && getStatusIcon(msg.status)}
                       <button onClick={() => setReactPickerId(reactPickerId === msg._id ? null : msg._id)} className="opacity-0 group-hover:opacity-100 ml-1 p-0.5 hover:text-admin-text transition-opacity" title="React"><Smile className="w-3 h-3" /></button>
@@ -2253,8 +2467,8 @@ function ChatPageInner() {
             )}
             {typingAgent && (
               <div className="flex justify-start">
-                <div className="bg-white rounded-xl px-4 py-2 shadow-sm">
-                  <p className="text-xs text-admin-text-secondary italic">{typingAgent} is typing...</p>
+                <div className={`bg-white px-4 py-2 shadow-sm ${isWaThread ? 'rounded-lg rounded-tl-none' : 'rounded-xl'}`}>
+                  <p className={`text-xs italic ${isWaThread ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>{typingAgent} is typing...</p>
                 </div>
               </div>
             )}
@@ -2262,12 +2476,12 @@ function ChatPageInner() {
           </div>
 
           {/* Message input */}
-          <div className="p-3 border-t border-admin-border bg-white">
+          <div className={`p-3 border-t ${isWaThread ? 'border-[#d1d7db] bg-[#f0f2f5]' : 'border-admin-border bg-white'}`}>
             {replyTo && (
-              <div className="mb-2 flex items-center gap-2 border-l-4 border-admin-text bg-[#f6f6f7] rounded px-3 py-2">
+              <div className={`mb-2 flex items-center gap-2 border-l-4 rounded px-3 py-2 ${isWaThread ? 'border-[#00a884] bg-white' : 'border-admin-text bg-[#f6f6f7]'}`}>
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs font-medium text-admin-text">Replying to {replyTo.direction === 'outbound' ? 'yourself' : 'customer'}</div>
-                  <div className="text-xs text-admin-text-secondary truncate">{replyTo.text || replyTo.media?.caption || `[${replyTo.type}]`}</div>
+                  <div className={`text-xs font-medium ${isWaThread ? 'text-[#008069]' : 'text-admin-text'}`}>Replying to {replyTo.direction === 'outbound' ? 'yourself' : 'customer'}</div>
+                  <div className={`text-xs truncate ${isWaThread ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>{replyTo.text || replyTo.media?.caption || `[${replyTo.type}]`}</div>
                 </div>
                 <button onClick={() => setReplyTo(null)} className="text-admin-text-subdued hover:text-admin-text-secondary"><X className="w-4 h-4" /></button>
               </div>
@@ -2340,7 +2554,7 @@ function ChatPageInner() {
                 <button
                   onClick={() => setShowAttachMenu(!showAttachMenu)}
                   disabled={uploading}
-                  className="p-2 text-admin-text-subdued hover:text-admin-text-secondary rounded-lg hover:bg-[#f6f6f7] disabled:opacity-50"
+                  className={`p-2 rounded-lg disabled:opacity-50 ${isWaThread ? 'text-[#54656f] hover:bg-white/70' : 'text-admin-text-subdued hover:text-admin-text-secondary hover:bg-[#f6f6f7]'}`}
                   title="Attach"
                 >
                   {uploading ? (
@@ -2407,9 +2621,9 @@ function ChatPageInner() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey && !isTouch && !e.nativeEvent.isComposing) { e.preventDefault(); handleSend(); }
                   }}
-                  placeholder="Type a message..."
+                  placeholder="Type a message"
                   rows={1}
-                  className="w-full px-4 py-2.5 rounded-xl border border-admin-border bg-[#f6f6f7] text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30 focus:border-[#005bd3]"
+                  className={`w-full px-4 py-2.5 text-sm resize-none focus:outline-none ${isWaThread ? 'rounded-lg border-0 bg-white text-[#111b21] placeholder:text-[#667781] focus:ring-2 focus:ring-[#00a884]/25' : 'rounded-xl border border-admin-border bg-[#f6f6f7] focus:ring-2 focus:ring-[#005bd3]/30 focus:border-[#005bd3]'}`}
                 />
               </div>
               <div className="relative">
@@ -2422,7 +2636,7 @@ function ChatPageInner() {
                     </div>
                   </div>
                 )}
-                <button onClick={() => setShowEmoji(v => !v)} className={`p-2 rounded-lg hover:bg-[#f6f6f7] ${showEmoji ? 'text-admin-text' : 'text-admin-text-subdued hover:text-admin-text-secondary'}`}>
+                <button onClick={() => setShowEmoji(v => !v)} className={`p-2 rounded-lg ${isWaThread ? (showEmoji ? 'text-[#00a884] bg-white/70' : 'text-[#54656f] hover:bg-white/70') : (showEmoji ? 'text-admin-text hover:bg-[#f6f6f7]' : 'text-admin-text-subdued hover:text-admin-text-secondary hover:bg-[#f6f6f7]')}`}>
                   <Smile className="w-5 h-5" />
                 </button>
               </div>
@@ -2492,7 +2706,7 @@ function ChatPageInner() {
               <button
                 onClick={handleSend}
                 disabled={!messageText.trim() || sending}
-                className="p-2.5 bg-admin-text text-white rounded-xl hover:bg-[#1a1a1a] disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`p-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed ${isWaThread ? 'rounded-full bg-[#00a884] hover:bg-[#008f72]' : 'rounded-xl bg-admin-text hover:bg-[#1a1a1a]'}`}
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -2501,11 +2715,26 @@ function ChatPageInner() {
           </div>
         </div>
       ) : (
-        <div className="flex-1 hidden md:flex items-center justify-center bg-[#f1f1f1]">
-          <div className="text-center">
-            <MessageSquare className="w-16 h-16 text-admin-border mx-auto mb-4" />
-            <h3 className="text-[15px] font-semibold text-admin-text">Select a conversation</h3>
-            <p className="text-[13px] text-admin-text-secondary mt-1">Choose a conversation from the sidebar to begin chatting or send a new message</p>
+        <div
+          className={`flex-1 hidden md:flex items-center justify-center ${isWaChannelView ? 'bg-[#efeae2]' : 'bg-[#f1f1f1]'}`}
+          style={isWaChannelView ? { backgroundImage: WA_DOODLE } : undefined}
+        >
+          <div className={`text-center ${isWaChannelView ? 'rounded-2xl bg-white/80 px-8 py-7 shadow-sm backdrop-blur-sm border border-[#e9edef]' : ''}`}>
+            {isWaChannelView ? (
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#00a884] text-white shadow-md">
+                <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current" aria-hidden>
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                </svg>
+              </div>
+            ) : (
+              <MessageSquare className="w-16 h-16 text-admin-border mx-auto mb-4" />
+            )}
+            <h3 className={`text-[15px] font-semibold ${isWaChannelView ? 'text-[#111b21]' : 'text-admin-text'}`}>
+              {isWaChannelView ? 'WhatsApp Web style inbox' : 'Select a conversation'}
+            </h3>
+            <p className={`text-[13px] mt-1 ${isWaChannelView ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>
+              {isWaChannelView ? 'Pick a chat on the left to reply like WhatsApp — tools live under Chat AI.' : 'Choose a conversation from the sidebar to begin chatting or send a new message'}
+            </p>
           </div>
         </div>
       )}
@@ -3066,7 +3295,7 @@ function InvoiceModal({ convId, onClose }: { convId: string; onClose: () => void
     setSending(true);
     try {
       await conversationApi.sendInvoice(convId, { docType, items: items.filter(i => i.name.trim()), gstPercent: gst, notes });
-      toast.success((docType === 'quotation' ? 'Quotation' : 'Invoice') + ' sent 🧾');
+      toast.success((docType === 'quotation' ? 'Quotation' : 'Invoice') + ' sent');
       onClose();
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
@@ -3078,7 +3307,7 @@ function InvoiceModal({ convId, onClose }: { convId: string; onClose: () => void
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-5 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-admin-text">🧾 Send Quotation / Invoice</h3>
+          <h3 className="text-sm font-bold text-admin-text inline-flex items-center gap-2"><Receipt className="w-4 h-4 text-amber-700" /> Send Quotation / Invoice</h3>
           <button onClick={onClose} className="text-admin-text-subdued hover:text-admin-text-secondary">✕</button>
         </div>
         <div className="space-y-3">

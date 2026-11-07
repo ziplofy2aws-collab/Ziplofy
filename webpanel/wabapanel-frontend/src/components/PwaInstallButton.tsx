@@ -7,15 +7,26 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
-const getDeferred = () => (window as unknown as { deferredPwaPrompt?: BeforeInstallPromptEvent }).deferredPwaPrompt;
+const getDeferred = () =>
+  (window as unknown as { deferredPwaPrompt?: BeforeInstallPromptEvent }).deferredPwaPrompt;
 
-export default function PwaInstallButton({ variant = 'light' }: { variant?: 'light' | 'dark' }) {
+export default function PwaInstallButton({
+  variant = 'light',
+  iconOnly = false,
+}: {
+  variant?: 'light' | 'dark';
+  /** Compact icon button — avoids overlapping the header search capsule. */
+  iconOnly?: boolean;
+}) {
   const [installed, setInstalled] = useState(false);
   const [canPrompt, setCanPrompt] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
 
   useEffect(() => {
-    if (window.matchMedia('(display-mode: standalone)').matches || (navigator as unknown as { standalone?: boolean }).standalone) {
+    if (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as unknown as { standalone?: boolean }).standalone
+    ) {
       setInstalled(true);
       return;
     }
@@ -38,7 +49,8 @@ export default function PwaInstallButton({ variant = 'light' }: { variant?: 'lig
       deferred.prompt();
       const choice = await deferred.userChoice;
       if (choice.outcome === 'accepted') setInstalled(true);
-      (window as unknown as { deferredPwaPrompt?: BeforeInstallPromptEvent }).deferredPwaPrompt = undefined;
+      (window as unknown as { deferredPwaPrompt?: BeforeInstallPromptEvent }).deferredPwaPrompt =
+        undefined;
       setCanPrompt(false);
     } else {
       setShowHelp(true);
@@ -48,24 +60,42 @@ export default function PwaInstallButton({ variant = 'light' }: { variant?: 'lig
   const btnClass =
     variant === 'dark'
       ? 'admin-header-control flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-white transition-colors'
-      : 'flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-full transition-colors';
+      : iconOnly
+        ? 'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#e8efe9] bg-white/70 text-[#00896F] shadow-sm backdrop-blur-md transition-all duration-200 hover:bg-[#eef8f0]'
+        : 'flex items-center gap-1.5 rounded-full bg-[#00896F] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#007a63]';
 
   return (
-    <div className="relative">
-      <button onClick={handleClick} title="Install Codiic Panel as an app" className={btnClass}>
-        <Download className="w-4 h-4" />
-        <span className="hidden sm:inline">Install App</span>
+    <div className="relative shrink-0">
+      <button
+        type="button"
+        onClick={handleClick}
+        title="Install Codiic Panel as an app"
+        aria-label="Install App"
+        className={btnClass}
+      >
+        <Download className="h-4 w-4" />
+        {!iconOnly && <span className="hidden sm:inline">Install App</span>}
       </button>
       {showHelp && !canPrompt && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-gray-800 rounded-xl shadow-xl ring-1 ring-gray-100 dark:ring-gray-700 z-50 p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-1.5"><Smartphone className="w-4 h-4" /> Install App</h4>
-            <button onClick={() => setShowHelp(false)}><X className="w-4 h-4 text-gray-400" /></button>
+        <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-2xl border border-white/50 bg-white/70 p-4 shadow-[0_16px_40px_rgba(15,61,46,0.14)] backdrop-blur-2xl">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="flex items-center gap-1.5 text-sm font-semibold text-[#101828]">
+              <Smartphone className="h-4 w-4 text-[#00896F]" /> Install App
+            </h4>
+            <button type="button" onClick={() => setShowHelp(false)} aria-label="Close">
+              <X className="h-4 w-4 text-[#8a9a93]" />
+            </button>
           </div>
-          <ul className="text-xs text-gray-600 dark:text-gray-300 space-y-1.5 list-disc pl-4">
-            <li><b>iPhone / iPad (Safari):</b> Tap the Share button, then &quot;Add to Home Screen&quot;.</li>
-            <li><b>Android (Chrome):</b> Tap the ⋮ menu, then &quot;Install app&quot; or &quot;Add to Home screen&quot;.</li>
-            <li><b>Desktop (Chrome / Edge):</b> Click the install icon in the address bar.</li>
+          <ul className="list-disc space-y-1.5 pl-4 text-xs text-[#6b7a74]">
+            <li>
+              <b>iPhone / iPad (Safari):</b> Tap Share, then &quot;Add to Home Screen&quot;.
+            </li>
+            <li>
+              <b>Android (Chrome):</b> Tap ⋮, then &quot;Install app&quot;.
+            </li>
+            <li>
+              <b>Desktop (Chrome / Edge):</b> Use the install icon in the address bar.
+            </li>
           </ul>
         </div>
       )}

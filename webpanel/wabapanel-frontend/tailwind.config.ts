@@ -16,6 +16,15 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        card: "var(--card)",
+        primary: {
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
+        },
+        muted: {
+          foreground: "var(--muted-foreground)",
+        },
+        border: "var(--border)",
         /* Shopify-style admin tokens (Codiic parity) */
         "page-background-color": "#f1f1f1",
         "admin-sidebar": "#e8e8e8",
@@ -40,6 +49,10 @@ const config: Config = {
     'admin-shopify-header',
     'admin-header-control',
     'admin-header-search',
+    'client-orbitly-shell',
+    'client-orbitly-aside',
+    'client-orbitly-header',
+    'client-orbitly-main',
     'bg-black',
     'bg-admin-sidebar',
     'bg-admin-surface',

@@ -10,14 +10,14 @@ import {
 export type StatColor = 'emerald' | 'blue' | 'purple' | 'orange' | 'red' | 'amber' | 'indigo' | 'rose';
 
 export const statColorStyles: Record<StatColor, { icon: string; bar: string }> = {
-  emerald: { icon: 'bg-emerald-50 text-emerald-600', bar: 'from-emerald-400 to-teal-500' },
-  blue: { icon: 'bg-blue-50 text-blue-600', bar: 'from-blue-400 to-sky-500' },
-  purple: { icon: 'bg-purple-50 text-purple-600', bar: 'from-purple-400 to-fuchsia-500' },
-  orange: { icon: 'bg-orange-50 text-orange-600', bar: 'from-orange-400 to-amber-500' },
-  red: { icon: 'bg-red-50 text-red-600', bar: 'from-red-400 to-rose-500' },
-  amber: { icon: 'bg-amber-50 text-amber-600', bar: 'from-amber-400 to-yellow-500' },
-  indigo: { icon: 'bg-indigo-50 text-indigo-600', bar: 'from-indigo-400 to-blue-500' },
-  rose: { icon: 'bg-rose-50 text-rose-600', bar: 'from-rose-400 to-red-500' },
+  emerald: { icon: 'bg-[#eef8f0] text-[#0f766e]', bar: 'from-[#6ee7b0] to-[#14b8a6]' },
+  blue: { icon: 'bg-[#eef6fb] text-[#2563eb]', bar: 'from-[#93c5fd] to-[#60a5fa]' },
+  purple: { icon: 'bg-[#f5f0ff] text-[#7c3aed]', bar: 'from-[#c4b5fd] to-[#a78bfa]' },
+  orange: { icon: 'bg-[#fff7ed] text-[#ea580c]', bar: 'from-[#fdba74] to-[#fb923c]' },
+  red: { icon: 'bg-[#fef2f2] text-[#dc2626]', bar: 'from-[#fca5a5] to-[#f87171]' },
+  amber: { icon: 'bg-[#fffbeb] text-[#d97706]', bar: 'from-[#fcd34d] to-[#fbbf24]' },
+  indigo: { icon: 'bg-[#eef2ff] text-[#4f46e5]', bar: 'from-[#a5b4fc] to-[#818cf8]' },
+  rose: { icon: 'bg-[#fff1f2] text-[#e11d48]', bar: 'from-[#fda4af] to-[#fb7185]' },
 };
 
 export function ShopifyStatCard({
@@ -48,7 +48,7 @@ export function ShopifyStatCard({
           )}
         </div>
         <div
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tint.icon} [&>svg]:h-4 [&>svg]:w-4`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${tint.icon} [&>svg]:h-4 [&>svg]:w-4`}
         >
           {icon}
         </div>
@@ -92,7 +92,7 @@ export function ShopifyPanel({
         {actionLabel && actionHref && (
           <Link
             href={actionHref}
-            className="text-[13px] font-semibold text-[#005bd3] hover:underline shrink-0"
+            className="shrink-0 text-[13px] font-semibold text-[#0f766e] hover:underline"
           >
             {actionLabel}
           </Link>
@@ -120,13 +120,13 @@ export function ShopifySection({
       <div className="flex items-center gap-2.5 px-0.5">
         {icon && (
           <div
-            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${tint.bar} shadow-sm [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:text-white`}
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tint.bar} shadow-sm [&>svg]:h-3.5 [&>svg]:w-3.5 [&>svg]:text-white`}
           >
             {icon}
           </div>
         )}
-        <h2 className="text-[15px] font-semibold text-admin-text">{title}</h2>
-        <div className="h-px flex-1 bg-gradient-to-r from-admin-border to-transparent" />
+        <h2 className="text-[15px] font-semibold text-[#101828]">{title}</h2>
+        <div className="h-px flex-1 bg-gradient-to-r from-[#e8efe9] to-transparent" />
       </div>
       <div className="space-y-4">{children}</div>
     </section>
@@ -143,11 +143,11 @@ export function StatusBadge({
   disconnectedLabel: string;
 }) {
   return connected ? (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/15">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#e8f5a8]/80 to-[#d4f4d8] px-3 py-1.5 text-[12px] font-medium text-[#0f3d2e] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] ring-1 ring-inset ring-[#b7e4c0]/80">
       {connectedLabel}
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-[12px] font-medium text-red-700 ring-1 ring-inset ring-red-600/15">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#fef2f2] px-3 py-1.5 text-[12px] font-medium text-[#b91c1c] ring-1 ring-inset ring-[#fecaca]">
       {disconnectedLabel}
     </span>
   );

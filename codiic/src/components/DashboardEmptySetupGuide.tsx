@@ -7,7 +7,7 @@ import React from 'react';
 const easeOutExpo = 'ease-[cubic-bezier(0.16,1,0.3,1)]';
 
 const cardShell = [
-  'group relative flex min-h-[280px] flex-col overflow-hidden rounded-xl border border-admin-border bg-admin-surface p-5 sm:min-h-[300px] sm:p-6',
+  'group relative flex min-h-[280px] flex-col overflow-hidden rounded-2xl border border-admin-border bg-white/70 p-5 shadow-[0_12px_32px_rgba(15,23,42,0.06)] backdrop-blur-xl sm:min-h-[300px] sm:p-6',
   `transition-all duration-500 ${easeOutExpo} will-change-transform`,
   'shadow-[0_1px_2px_0_rgba(0,0,0,0.04)]',
   'hover:-translate-y-2.5 hover:scale-[1.015]',

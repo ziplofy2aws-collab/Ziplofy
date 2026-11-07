@@ -220,13 +220,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <CallProvider>
         <NotificationProvider />
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
-        <div className="flex h-screen flex-col overflow-hidden bg-page-background-color antialiased text-admin-text">
+        <div className="client-orbitly-shell flex h-screen flex-col overflow-hidden antialiased text-admin-text">
           <Header variant="shopify" />
           <div className="relative flex min-h-0 flex-1 pt-14">
             <ClientSidebar />
             <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
               <AnnouncementBanner />
-              <main className="min-h-0 flex-1 overflow-y-auto bg-page-background-color p-4 sm:p-6 lg:p-8">
+              <main className="client-orbitly-main min-h-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
                 <PageTransition>{children}</PageTransition>
               </main>
               <PageHelp />

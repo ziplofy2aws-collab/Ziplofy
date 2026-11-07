@@ -41,12 +41,12 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 }
 
 const resultRowClass = (active: boolean) =>
-  `flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors rounded-lg mx-1 ${
-    active ? 'bg-[#f6f6f7]' : 'hover:bg-[#f6f6f7]'
+  `flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors rounded-xl mx-1 ${
+    active ? 'bg-[#eef8f0]' : 'hover:bg-[#f4faf5]'
   }`;
 
 const sectionLabelClass =
-  'px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#8a8a8a]';
+  'px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#8a9a93]';
 
 type ClientGlobalSearchProps = {
   className?: string;
@@ -206,28 +206,30 @@ export default function ClientGlobalSearch({
   };
 
   const searchInput = (
-    <div className="group relative">
-      <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#b5b5b5] group-focus-within:text-white" />
-      <input
-        ref={inputRef}
-        type="search"
-        role="combobox"
-        aria-expanded={showPanel}
-        aria-controls={listId}
-        aria-autocomplete="list"
-        placeholder="Search pages, sections, tools…"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        onKeyDown={onInputKeyDown}
-        className={`${adminHeaderSearchClass} ${inputClassName}`}
-      />
-      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-[#262626] px-1.5 py-0.5 text-[10px] font-medium text-[#b5b5b5] sm:inline-block">
-        Ctrl K
-      </kbd>
+    <div className="group relative rounded-full bg-[#00896F] p-[3px] shadow-[0_6px_18px_rgba(0,137,111,0.28)] transition-shadow duration-200 focus-within:shadow-[0_8px_22px_rgba(0,137,111,0.38)]">
+      <div className="relative rounded-full bg-[#f7fbf8] transition-colors group-focus-within:bg-white">
+        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a9a93] group-focus-within:text-[#00896F]" />
+        <input
+          ref={inputRef}
+          type="search"
+          role="combobox"
+          aria-expanded={showPanel}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          placeholder="Search here..."
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onInputKeyDown}
+          className={`${adminHeaderSearchClass} ${inputClassName}`}
+        />
+        <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-md border border-[#e8efe9] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#8a9a93] sm:inline-block">
+          Ctrl K
+        </kbd>
+      </div>
     </div>
   );
 
@@ -272,7 +274,7 @@ export default function ClientGlobalSearch({
       ref={panelRef}
       id={listId}
       role="listbox"
-      className="admin-header-dropdown absolute left-0 right-0 top-full z-[1300] mt-1.5 max-h-[min(70vh,480px)] overflow-y-auto rounded-xl border border-[#e3e3e3] bg-white py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+      className="admin-header-dropdown absolute left-0 right-0 top-full z-[1300] mt-2 max-h-[min(70vh,480px)] overflow-y-auto rounded-2xl border border-white/50 bg-white/60 py-1.5 shadow-[0_16px_40px_rgba(15,61,46,0.14),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-2xl animate-[orbitly-pop_140ms_ease-out]"
     >
       {renderPanelBody()}
     </div>
@@ -295,7 +297,7 @@ export default function ClientGlobalSearch({
             <div
               aria-hidden
               /* Keep left rail clickable — sidebar sits at z-[1100]; do not cover it. */
-              className="fixed inset-0 z-[1090] bg-black/25 transition-opacity lg:left-[240px]"
+              className="fixed inset-0 z-[1090] bg-[#0f3d2e]/15 transition-[opacity,left] lg:left-[var(--client-sidebar-w,248px)]"
               onMouseDown={() => {
                 close();
               }}
@@ -314,15 +316,15 @@ export default function ClientGlobalSearch({
                 setOpen(true);
                 window.setTimeout(() => inputRef.current?.focus(), 0);
               }}
-              className="admin-header-control inline-flex items-center justify-center rounded-lg p-2 md:hidden"
+              className="inline-flex items-center justify-center rounded-xl p-2 text-[#6b7a74] transition-colors hover:bg-[#eef8f0] md:hidden"
               aria-label="Search"
             >
-              <Search className="h-4 w-4 text-[#b5b5b5]" />
+              <Search className="h-4 w-4" />
             </button>
             {mobileExpanded && (
               <div className="fixed inset-x-3 top-[3.75rem] z-[1300] md:hidden">
-                <div className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.22)]">
-                  <div className="border-b border-[#ebebeb] bg-black p-2">{searchInput}</div>
+                <div className="overflow-hidden rounded-2xl border border-[#e8efe9] bg-white shadow-[0_16px_40px_rgba(15,61,46,0.14)]">
+                  <div className="border-b border-[#e8efe9] bg-[#f7fbf8] p-2">{searchInput}</div>
                   {mobileResultsPanel}
                 </div>
               </div>

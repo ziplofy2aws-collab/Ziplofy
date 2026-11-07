@@ -378,7 +378,7 @@ const AdminApp: React.FC = () => {
             lockMainScroll ? "flex flex-col overflow-hidden" : "overflow-y-auto",
             isFullScreen || isSettings || isLiveView
               ? "bg-transparent p-0"
-              : "bg-page-background-color p-4 sm:p-6 lg:p-8",
+              : "bg-transparent p-4 sm:p-6 lg:p-8",
           ]
             .filter(Boolean)
             .join(" ")}

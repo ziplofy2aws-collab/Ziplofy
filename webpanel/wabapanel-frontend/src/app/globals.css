@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --background: #f1f1f1;
-  --foreground: #303030;
+  --background: #f3faf5;
+  --foreground: #101828;
+  --card: #ffffff;
+  --primary: #00896F;
+  --primary-foreground: #ffffff;
+  --muted-foreground: #6b7a74;
+  --border: #e8efe9;
   --admin-sidebar: #e8e8e8;
   --admin-surface: #ffffff;
   --admin-border: #e3e3e3;
@@ -41,19 +46,21 @@ html.dark .admin-shopify-header {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Header dropdown menus — solid white panel over black bar */
+/* Header dropdown menus — soft glass panel */
 .admin-header-dropdown {
-  background-color: #ffffff !important;
-  border-color: #e3e3e3 !important;
+  background-color: rgba(255, 255, 255, 0.62) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
   color: #303030;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 16px 40px rgba(15, 61, 46, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 .admin-header-dropdown-item {
   background-color: transparent;
   color: #303030;
 }
 .admin-header-dropdown-item:hover {
-  background-color: #f6f6f7 !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
 }
 html.dark .admin-header-dropdown {
   background-color: #1f2937 !important;
@@ -101,6 +108,57 @@ input.rounded-lg, select.rounded-lg, textarea.rounded-lg, button.rounded-lg {
 /* Smoother interactions */
 button { transition: background-color .15s, color .15s, border-color .15s, box-shadow .15s, transform .1s; }
 button:active { transform: scale(0.98); }
+
+/* ===== Client Orbitly shell (soft CRM glass UI) ===== */
+.client-orbitly-shell {
+  --orbitly-mint: #d4f4d8;
+  --orbitly-mint-soft: #eef8f0;
+  --orbitly-ink: #101828;
+  background-color: #f3faf5;
+  background-image:
+    radial-gradient(ellipse 70% 55% at 8% 18%, rgba(187, 247, 208, 0.55), transparent 58%),
+    radial-gradient(ellipse 55% 45% at 92% 8%, rgba(191, 219, 254, 0.42), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 78% 88%, rgba(254, 243, 199, 0.38), transparent 55%),
+    radial-gradient(ellipse 45% 35% at 18% 92%, rgba(167, 243, 208, 0.35), transparent 50%),
+    linear-gradient(180deg, #f7fbf8 0%, #eef7f1 100%);
+  color: var(--orbitly-ink);
+}
+.client-orbitly-main {
+  background: transparent;
+}
+.client-orbitly-aside {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(247, 251, 248, 0.78) 100%);
+  box-shadow: 1px 0 0 rgba(232, 239, 233, 0.9), 8px 0 28px rgba(15, 61, 46, 0.03);
+}
+.client-orbitly-aside::before {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background: radial-gradient(ellipse at 20% 100%, rgba(187, 247, 208, 0.45), transparent 70%);
+  z-index: 0;
+}
+.client-orbitly-aside > * {
+  position: relative;
+  z-index: 1;
+}
+.client-orbitly-header {
+  background: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: 0 1px 0 rgba(232, 239, 233, 0.95), 0 8px 24px rgba(15, 61, 46, 0.03);
+}
+
+@keyframes orbitly-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 /* ===== Page hero (gradient header with guide) ===== */
 .page-hero {

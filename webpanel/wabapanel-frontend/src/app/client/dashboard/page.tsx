@@ -51,11 +51,11 @@ interface DashboardData {
   botFlowsActive?: number;
 }
 
-const CHART_COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444'];
+const CHART_COLORS = ['#14b8a6', '#60a5fa', '#a78bfa', '#fbbf24', '#f87171'];
 
 const fmtDate = (d: string) => new Date(d).toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
 
-const listRowClass = 'flex items-center justify-between gap-3 border-b border-admin-divider py-2.5 last:border-0';
+const listRowClass = 'flex items-center justify-between gap-3 border-b border-[#eef3ef] py-2.5 last:border-0';
 
 export default function DashboardPage() {
   const { user, currentWorkspace } = useAuthStore();
@@ -104,13 +104,13 @@ export default function DashboardPage() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="min-h-[120px] animate-pulse rounded-xl border border-admin-border bg-white shadow-sm"
+              className="min-h-[120px] animate-pulse rounded-2xl border border-[#e8efe9] bg-white/80 shadow-sm"
             />
           ))}
         </div>
         <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="min-h-[320px] animate-pulse rounded-xl border border-admin-border bg-white shadow-sm" />
-          <div className="min-h-[320px] animate-pulse rounded-xl border border-admin-border bg-white shadow-sm" />
+          <div className="min-h-[320px] animate-pulse rounded-2xl border border-[#e8efe9] bg-white/80 shadow-sm" />
+          <div className="min-h-[320px] animate-pulse rounded-2xl border border-[#e8efe9] bg-white/80 shadow-sm" />
         </div>
       </div>
     );
@@ -120,13 +120,14 @@ export default function DashboardPage() {
     <div className={adminContentColumnClass}>
       <div className="flex flex-col gap-8">
         {/* Page header */}
-        <div className="relative overflow-hidden rounded-xl border border-emerald-100 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)] sm:flex sm:items-center sm:justify-between gap-4">
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-50/80 via-transparent to-teal-50/50" aria-hidden />
+        <div className="relative overflow-hidden rounded-2xl border border-white/50 bg-white/55 px-5 py-5 shadow-[0_8px_28px_rgba(15,61,46,0.06),inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-xl sm:flex sm:items-center sm:justify-between gap-4">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(212,244,216,0.55),transparent_45%),radial-gradient(circle_at_100%_0%,rgba(219,234,254,0.45),transparent_40%)]" aria-hidden />
           <div className="relative min-w-0 flex-1">
-            <h1 className="text-[20px] font-semibold tracking-tight text-admin-text sm:text-2xl">
-              Welcome back{displayPersonName(user?.name) ? `, ${displayPersonName(user?.name)}` : ''} 👋
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a9a93]">Dashboard</p>
+            <h1 className="mt-1 text-[22px] font-semibold tracking-tight text-[#101828] sm:text-[26px]">
+              Welcome back{displayPersonName(user?.name) ? `, ${displayPersonName(user?.name)}` : ''}
             </h1>
-            <p className="mt-1.5 text-[13px] text-admin-text-secondary">
+            <p className="mt-1.5 text-[13px] text-[#6b7a74]">
               Here&apos;s what&apos;s happening with your workspace today.
             </p>
           </div>
@@ -253,25 +254,25 @@ export default function DashboardPage() {
         <ShopifySection title="Analytics & trends" icon={<TrendingUp />} accent="purple">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div className={`${dashboardChartCardShell} lg:col-span-2`}>
-              <h3 className="text-[13px] font-semibold text-admin-text">Message analytics (30 days)</h3>
-              <p className="mt-0.5 text-[12px] text-admin-text-secondary">Sent vs received messages</p>
+              <h3 className="text-[13px] font-semibold text-[#101828]">Message analytics (30 days)</h3>
+              <p className="mt-0.5 text-[12px] text-[#6b7a74]">Sent vs received messages</p>
               <div className="mt-4 h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ebebeb" />
-                    <XAxis dataKey="date" fontSize={11} tick={{ fill: '#616161' }} />
-                    <YAxis fontSize={11} tick={{ fill: '#616161' }} />
-                    <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e3e3e3', fontSize: 12 }} />
-                    <Bar dataKey="sent" fill="#10B981" name="Sent" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="received" fill="#3B82F6" name="Received" radius={[4, 4, 0, 0]} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#eef3ef" />
+                    <XAxis dataKey="date" fontSize={11} tick={{ fill: '#6b7a74' }} />
+                    <YAxis fontSize={11} tick={{ fill: '#6b7a74' }} />
+                    <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e8efe9', fontSize: 12 }} />
+                    <Bar dataKey="sent" fill="#14b8a6" name="Sent" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="received" fill="#60a5fa" name="Received" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
             <div className={dashboardChartCardShell}>
-              <h3 className="text-[13px] font-semibold text-admin-text">Message status</h3>
-              <p className="mt-0.5 text-[12px] text-admin-text-secondary">Delivery breakdown</p>
+              <h3 className="text-[13px] font-semibold text-[#101828]">Message status</h3>
+              <p className="mt-0.5 text-[12px] text-[#6b7a74]">Delivery breakdown</p>
               <div className="mt-4 h-64">
                 {pieData.length ? (
                   <ResponsiveContainer width="100%" height="100%">
@@ -295,16 +296,16 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             <div className={dashboardChartCardShell}>
-              <h3 className="text-[13px] font-semibold text-admin-text">Contact growth (30 days)</h3>
+              <h3 className="text-[13px] font-semibold text-[#101828]">Contact growth (30 days)</h3>
               <div className="mt-4 h-56">
                 {contactData.length ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={contactData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ebebeb" />
-                      <XAxis dataKey="date" fontSize={11} tick={{ fill: '#616161' }} />
-                      <YAxis fontSize={11} allowDecimals={false} tick={{ fill: '#616161' }} />
-                      <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e3e3e3', fontSize: 12 }} />
-                      <Area type="monotone" dataKey="contacts" stroke="#8B5CF6" fill="#EDE9FE" name="New contacts" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#eef3ef" />
+                      <XAxis dataKey="date" fontSize={11} tick={{ fill: '#6b7a74' }} />
+                      <YAxis fontSize={11} allowDecimals={false} tick={{ fill: '#6b7a74' }} />
+                      <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e8efe9', fontSize: 12 }} />
+                      <Area type="monotone" dataKey="contacts" stroke="#14b8a6" fill="#d4f4d8" name="New contacts" />
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
@@ -374,22 +375,22 @@ export default function DashboardPage() {
         </ShopifySection>
 
         {!whatsappConnected && (
-          <div className="relative overflow-hidden flex flex-col gap-3 rounded-xl border border-emerald-200 bg-white px-5 py-4 shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)] sm:flex-row sm:items-center sm:justify-between">
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald-50/70 to-teal-50/40" aria-hidden />
+          <div className="relative flex flex-col gap-3 overflow-hidden rounded-2xl border border-[#b7e4c0] bg-white/90 px-5 py-4 shadow-[0_8px_24px_rgba(15,61,46,0.04)] sm:flex-row sm:items-center sm:justify-between">
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#eef8f0] to-[#f0fdf9]" aria-hidden />
             <div className="relative flex items-start gap-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100">
-                <WifiOff className="h-4 w-4 text-emerald-600" />
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#d4f4d8]">
+                <WifiOff className="h-4 w-4 text-[#0f766e]" />
               </span>
               <div>
-                <p className="text-[13px] font-semibold text-emerald-900">Connect WhatsApp to start messaging</p>
-                <p className="mt-0.5 text-[12px] text-emerald-700/80">
+                <p className="text-[13px] font-semibold text-[#0f3d2e]">Connect WhatsApp to start messaging</p>
+                <p className="mt-0.5 text-[12px] text-[#3d4a45]/80">
                   Link your WhatsApp Business account to send broadcasts and manage inbox conversations.
                 </p>
               </div>
             </div>
             <Link
               href="/client/whatsapp"
-              className="relative inline-flex shrink-0 items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-emerald-700"
+              className="relative inline-flex shrink-0 items-center justify-center rounded-xl bg-[#00896F] px-4 py-2 text-[13px] font-semibold text-white shadow-[0_6px_16px_rgba(0,137,111,0.25)] transition-all duration-200 hover:bg-[#007a63]"
             >
               Connect WhatsApp
             </Link>

@@ -13,6 +13,8 @@ import {
   LogOut,
   Plus,
   Store,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { displayPersonName } from "@/lib/brand";
 import { GATEWAY_LOGOUT_URL, useAuthStore } from "@/stores/authStore";
@@ -80,6 +82,21 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
   const { lang, setLang } = useI18n();
   const [showLang, setShowLang] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    try {
+      setSidebarOpen(localStorage.getItem('clientSidebarOpen') !== '0');
+    } catch {
+      /* ignore */
+    }
+    const onToggle = (e: Event) => {
+      const open = (e as CustomEvent<{ open?: boolean }>).detail?.open;
+      if (typeof open === 'boolean') setSidebarOpen(open);
+    };
+    window.addEventListener('client-sidebar-toggle', onToggle as EventListener);
+    return () => window.removeEventListener('client-sidebar-toggle', onToggle as EventListener);
+  }, []);
 
   const showWallet = !isAdmin && user?.role !== "super_admin" && user?.role !== "admin";
   const canManageStores =
@@ -173,19 +190,47 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
   if (shopify) {
     return (
       <>
-      <header className={`admin-shopify-header ${adminHeaderClass} bg-black`}>
+      <header className={adminHeaderClass}>
         <div className="grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 md:grid-cols-[minmax(0,1fr)_minmax(220px,500px)_minmax(0,1fr)]">
           {/* Brand — left */}
-          <div className="flex min-w-0 items-center justify-start">
+          <div className="flex min-w-0 items-center justify-start gap-2.5">
+            <button
+              type="button"
+              className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#f0f1f3] text-[#101828] transition-colors hover:bg-[#e6e8ec] lg:inline-flex"
+              title={sidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
+              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
+              onClick={() => {
+                const next = !sidebarOpen;
+                setSidebarOpen(next);
+                try {
+                  localStorage.setItem('clientSidebarOpen', next ? '1' : '0');
+                } catch {
+                  /* ignore */
+                }
+                window.dispatchEvent(new CustomEvent('client-sidebar-toggle', { detail: { open: next } }));
+              }}
+            >
+              {sidebarOpen ? (
+                <PanelLeftClose className="h-[16px] w-[16px]" strokeWidth={1.75} />
+              ) : (
+                <PanelLeftOpen className="h-[16px] w-[16px]" strokeWidth={1.75} />
+              )}
+            </button>
             <Link
               href="/client/dashboard"
-              className="inline-flex shrink-0 items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              className="inline-flex shrink-0 items-center rounded-[10px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b7e4c0]"
               aria-label="Go to dashboard"
             >
-              <span className="font-['Poppins',system-ui,sans-serif] text-[20px] font-extrabold italic tracking-tight text-white">
-                Codiic
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo_with_text.webp"
+                alt="Codiic"
+                className="h-8 w-auto object-contain"
+              />
             </Link>
+            <span className="hidden truncate rounded-full bg-[#eef8f0] px-2.5 py-1 text-[11px] font-medium text-[#3d4a45] sm:inline">
+              {displayPersonName(currentWorkspace?.name) || 'Workspace'} · Free plan
+            </span>
           </div>
 
           {/* Global search — true center */}
@@ -194,9 +239,8 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
           </div>
 
           {/* Actions — right */}
-          <div className="flex items-center justify-end gap-1.5">
-            <PwaInstallButton variant="dark" />
-
+          <div className="flex shrink-0 items-center justify-end gap-1.5">
+            <PwaInstallButton variant="light" iconOnly />
             {!isAdmin && (
               <div className="relative" ref={langRef}>
                 <button
@@ -205,11 +249,11 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                   title="Change panel language"
                   className={adminHeaderControlClass}
                 >
-                  <Globe className="h-4 w-4 text-[#b5b5b5]" />
+                  <Globe className="h-4 w-4 text-[#6b7a74]" />
                   <span className="hidden sm:inline">
                     {(LANGUAGES.find((l) => l.code === lang) || LANGUAGES[0]).name}
                   </span>
-                  <ChevronDown className="h-3.5 w-3.5 text-[#b5b5b5]" />
+                  <ChevronDown className="h-3.5 w-3.5 text-[#6b7a74]" />
                 </button>
                 {showLang && (
                   <div className={`${adminHeaderDropdownClass} max-h-80 w-44 overflow-y-auto py-1`}>
@@ -241,17 +285,24 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                 <div className={workspaceAvatarClass}>
                   {getInitials(profileLabel)}
                 </div>
-                <span className="hidden max-w-[140px] truncate sm:inline">
-                  {activeStore?.storeName || profileLabel}
-                </span>
-                <ChevronDown className="h-4 w-4 text-[#b5b5b5]" />
+                <div className="hidden min-w-0 sm:block">
+                  <div className="max-w-[140px] truncate text-[13px] font-semibold leading-tight text-[#101828]">
+                    {activeStore?.storeName || profileLabel}
+                  </div>
+                  {displayPersonName(user?.name) ? (
+                    <div className="max-w-[140px] truncate text-[10px] leading-tight text-[#8a9a93]">
+                      {displayPersonName(user?.name)}
+                    </div>
+                  ) : null}
+                </div>
+                <ChevronDown className="h-4 w-4 text-[#6b7a74]" />
               </button>
               {showWsDropdown && (
                 <div className={`${adminHeaderDropdownClass} w-64`}>
                   {currentWorkspace && (
                     <div className="border-b border-[#e3e3e3] bg-[#f7f7f7] px-3 py-2.5">
                       <div className="flex items-center gap-2">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#d4f4d8] text-xs font-semibold text-[#0f3d2e]">
                           {getInitials(profileLabel)}
                         </div>
                         <div className="min-w-0 flex-1">

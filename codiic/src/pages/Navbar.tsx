@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import codiicLogo from '../assets/codiic-logo.png';
 import AdminNavbarSearch from '../components/AdminNavbarSearch';
 import StoreDropdown from '../components/StoreDropdown';
 import { axiosi } from '../config/axios.config';
@@ -367,15 +366,19 @@ const codiicNavbar: React.FC = () => {
   }, [resolveAppliedTheme]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[1201] h-14 border-b border-white/10 bg-admin-header">
-      <div className="flex h-full items-center justify-between px-3">
+    <header className="fixed top-0 left-0 right-0 z-[1201] h-14 border-b border-admin-border bg-admin-header/90 shadow-[0_8px_30px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+      <div className="flex h-full items-center justify-between px-3 sm:px-4">
         <div className="flex items-center gap-3">
           <Link
             to="/"
-            className="inline-flex shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            className="inline-flex shrink-0 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
             aria-label="Go to home"
           >
-            <img src={codiicLogo} alt="codiic Logo" className="h-8 w-auto object-contain brightness-0 invert" />
+            <img
+              src="/logo_with_text.webp"
+              alt="CODIIC"
+              className="h-8 w-auto object-contain sm:h-9"
+            />
           </Link>
         </div>
 
@@ -387,7 +390,7 @@ const codiicNavbar: React.FC = () => {
           <button
             type="button"
             onClick={toggleCodiix}
-            className={`codiix-header-btn codiix-header-btn--on-dark ${codiixOpen ? 'codiix-header-btn--active' : ''}`}
+            className={`codiix-header-btn codiix-header-btn--on-light ${codiixOpen ? 'codiix-header-btn--active' : ''}`}
             title="Ask Codiix"
             aria-label="Ask Codiix"
             aria-pressed={codiixOpen}

@@ -1,9 +1,0 @@
-
-> codiic3b@1.0.0 dev
-> cross-env DOTENV_CONFIG_PATH=.env.development NODE_ENV=development node build/index.js
-
-◇ injected env (15) from .env.development // tip: ◈ secrets for agents [www.dotenvx.com]
-◇ injected env (0) from .env.development // tip: ⌁ auth for agents [www.vestauth.com]
-✅ All required environment variables are set
-🚀 Server is running on port 5000 in development mode (using .env.development)
-✅ MongoDB connected
