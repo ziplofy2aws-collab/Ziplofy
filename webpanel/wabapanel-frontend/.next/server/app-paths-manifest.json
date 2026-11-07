@@ -1,5 +1,8 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/auth/sso/page": "app/auth/sso/page.js"
+  "/client/chat/page": "app/client/chat/page.js",
+  "/client/dashboard/page": "app/client/dashboard/page.js",
+  "/client/automations/page": "app/client/automations/page.js",
+  "/client/online-store/page": "app/client/online-store/page.js",
+  "/client/leads/page": "app/client/leads/page.js",
+  "/client/themes/page": "app/client/themes/page.js"
 }
