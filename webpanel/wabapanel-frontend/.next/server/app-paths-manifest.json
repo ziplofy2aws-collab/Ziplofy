@@ -1,7 +1,5 @@
 {
-  "/auth/sso/page": "app/auth/sso/page.js",
-  "/client/dashboard/page": "app/client/dashboard/page.js",
-  "/client/analytics/page": "app/client/analytics/page.js",
-  "/client/manage-profile/page": "app/client/manage-profile/page.js",
-  "/client/ctwa-ads/page": "app/client/ctwa-ads/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
+  "/auth/sso/page": "app/auth/sso/page.js"
 }
