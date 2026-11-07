@@ -5,6 +5,7 @@ import {
   dashboardCardShell,
   dashboardStatValueClassFor,
 } from '@/components/layout/dashboard-ui';
+import { showNavBusy } from '@/stores/busyStore';
 
 /** Soft icon tints — same palette as the original dashboard, muted for Shopify cards. */
 export type StatColor = 'emerald' | 'blue' | 'purple' | 'orange' | 'red' | 'amber' | 'indigo' | 'rose';
@@ -58,7 +59,7 @@ export function ShopifyStatCard({
 
   if (href) {
     return (
-      <Link href={href} className="block">
+      <Link href={href} className="block" onClick={() => showNavBusy(href)}>
         {inner}
       </Link>
     );

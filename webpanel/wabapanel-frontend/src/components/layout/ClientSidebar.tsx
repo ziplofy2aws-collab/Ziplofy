@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebook, FaTelegram, FaEnvelope } from 'react-icons/fa';
 import { GATEWAY_LOGOUT_URL, useAuthStore } from '@/stores/authStore';
+import { showNavBusy } from '@/stores/busyStore';
 import { displayPersonName } from '@/lib/brand';
 import api from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
@@ -807,6 +808,7 @@ export default function ClientSidebar() {
                     href={section.href}
                     title={t(section.label)}
                     onClick={() => {
+                      showNavBusy(section.href);
                       closeMobile();
                       setSearch('');
                     }}
@@ -823,6 +825,7 @@ export default function ClientSidebar() {
                           href={section.href}
                           title={t(section.label)}
                           onClick={() => {
+                            showNavBusy(section.href);
                             closeMobile();
                             setSearch('');
                             if (collapsed) {
@@ -901,6 +904,7 @@ export default function ClientSidebar() {
                                 <Link
                                   href={item.href}
                                   onClick={() => {
+                                    showNavBusy(item.href);
                                     closeMobile();
                                     const q = item.href.includes('?')
                                       ? item.href.slice(item.href.indexOf('?'))
@@ -960,7 +964,10 @@ export default function ClientSidebar() {
         <div className={`flex items-center ${collapsed ? 'flex-col gap-1' : 'gap-2'}`}>
           <Link
             href="/client/settings"
-            onClick={closeMobile}
+            onClick={() => {
+              showNavBusy('/client/settings');
+              closeMobile();
+            }}
             className={`${adminSidebarNavItemClass(
               pathname.startsWith('/client/settings'),
               collapsed

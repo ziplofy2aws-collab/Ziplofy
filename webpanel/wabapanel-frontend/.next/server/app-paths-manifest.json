@@ -1,8 +1,9 @@
 {
   "/page": "app/page.js",
-  "/auth/sso/page": "app/auth/sso/page.js",
-  "/client/dashboard/page": "app/client/dashboard/page.js",
   "/client/analytics/page": "app/client/analytics/page.js",
-  "/client/templates/page": "app/client/templates/page.js",
-  "/client/chat/page": "app/client/chat/page.js"
+  "/client/manage-profile/page": "app/client/manage-profile/page.js",
+  "/client/api-docs/page": "app/client/api-docs/page.js",
+  "/client/channels/page": "app/client/channels/page.js",
+  "/client/save-money/qr-campaigns/page": "app/client/save-money/qr-campaigns/page.js",
+  "/client/choose-business/page": "app/client/choose-business/page.js"
 }

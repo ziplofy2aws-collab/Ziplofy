@@ -6,21 +6,29 @@ import api, { workspaceApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
 import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  appModalFieldClass,
+  appModalGlassPanel,
+  appModalLabelClass,
+} from '@/components/ui/AppFormModal';
+import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
 
 const primaryBtn =
   'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
 const secondaryBtn =
   'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
 const tagChip =
-  'inline-flex items-center gap-1 rounded-full bg-[#f1f1f1] px-2.5 py-1 text-[12px] font-medium text-admin-text ring-1 ring-inset ring-admin-border';
+  'inline-flex items-center gap-1 rounded-full border border-white/80 bg-white/70 px-2.5 py-1 text-[12px] font-medium text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]';
 const modalOverlayClass =
-  'fixed inset-0 z-[1300] flex items-center justify-center p-4 sm:p-6';
-const modalPanelClass =
-  'relative z-10 flex max-h-[min(90vh,880px)] w-full flex-col overflow-hidden rounded-xl border border-admin-border bg-white shadow-[0_16px_48px_rgba(16,24,40,0.18)]';
+  'fixed inset-0 z-[1400] flex items-center justify-center p-4 sm:p-6';
+const modalBackdropClass = 'absolute inset-0 bg-slate-900/25 backdrop-blur-[3px]';
+const modalPanelClass = `relative z-10 flex max-h-[min(90vh,880px)] w-full flex-col ${appModalGlassPanel}`;
 const stepTabBase =
-  'rounded-lg px-3 py-1.5 text-[12px] font-semibold transition-colors';
-const stepTabActive = 'bg-admin-text text-white';
-const stepTabIdle = 'bg-[#f6f6f7] text-admin-text-secondary hover:bg-[#ebebeb] hover:text-admin-text';
+  'rounded-full px-3.5 py-1.5 text-[12px] font-semibold transition-all';
+const stepTabActive =
+  'bg-gradient-to-b from-emerald-500 to-emerald-600 text-white shadow-[0_8px_18px_rgba(5,150,105,0.28)]';
+const stepTabIdle =
+  'border border-white/80 bg-white/55 text-slate-600 hover:bg-white/80 hover:text-slate-900';
 
 interface CTWAAd {
   _id: string;
@@ -125,9 +133,13 @@ const ctaOptions = [
   { value: 'book_now', label: 'Book Now' },
 ];
 
-const inputClass = 'w-full rounded-lg border border-admin-border bg-white px-3 py-2 text-[13px] text-admin-text focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30';
-const labelClass = 'mb-1 block text-[12px] font-medium text-admin-text-secondary';
-const sectionClass = 'space-y-3 rounded-lg border border-admin-border bg-[#fafafa] p-4';
+const inputClass = appModalFieldClass;
+const labelClass = appModalLabelClass;
+const sectionClass =
+  'space-y-3 rounded-2xl border border-white/70 bg-white/40 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md';
+const closeBtnClass =
+  'rounded-xl border border-white/80 bg-white/55 p-2 text-slate-500 transition hover:bg-white/80 hover:text-slate-800';
+const sectionTitleClass = 'text-[13px] font-semibold text-slate-800';
 
 export default function CTWAAdsPage() {
   const [ads, setAds] = useState<CTWAAd[]>([]);
@@ -576,11 +588,14 @@ export default function CTWAAdsPage() {
       {/* Preview Modal */}
       {previewAd && mounted && createPortal(
         <div className={modalOverlayClass}>
-          <div className="absolute inset-0 bg-black/45" onClick={() => setPreviewAd(null)} />
+          <button type="button" aria-label="Close" className={modalBackdropClass} onClick={() => setPreviewAd(null)} />
           <div className={`${modalPanelClass} max-w-sm`} role="dialog" aria-modal="true" aria-label="Ad preview">
-            <div className="flex items-center justify-between border-b border-admin-border px-4 py-3">
-              <h3 className="text-[14px] font-semibold text-admin-text">Ad preview</h3>
-              <button type="button" onClick={() => setPreviewAd(null)} className="rounded-lg p-1.5 text-admin-text-subdued hover:bg-[#f6f6f7] hover:text-admin-text"><X className="h-4 w-4" /></button>
+            <div className="flex items-center justify-between border-b border-white/50 px-5 py-4">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">Preview</p>
+                <h3 className="mt-1 text-[16px] font-semibold tracking-tight text-slate-900">Ad preview</h3>
+              </div>
+              <button type="button" onClick={() => setPreviewAd(null)} className={closeBtnClass} aria-label="Close"><X className="h-4 w-4" /></button>
             </div>
             <div className="overflow-y-auto p-4">
               <div className="overflow-hidden rounded-lg border border-admin-border">
@@ -626,14 +641,19 @@ export default function CTWAAdsPage() {
       {/* Publish Modal */}
       {publishAd && mounted && createPortal(
         <div className={modalOverlayClass}>
-          <div className="absolute inset-0 bg-black/45" onClick={() => setPublishAd(null)} />
+          <button type="button" aria-label="Close" className={modalBackdropClass} onClick={() => setPublishAd(null)} />
           <div className={`${modalPanelClass} max-w-md`} role="dialog" aria-modal="true" aria-label="Publish to Meta">
-            <div className="flex items-center justify-between border-b border-admin-border px-5 py-3.5">
-              <h3 className="text-[15px] font-semibold text-admin-text">Publish to Meta</h3>
-              <button type="button" onClick={() => setPublishAd(null)} className="rounded-lg p-1.5 text-admin-text-subdued hover:bg-[#f6f6f7] hover:text-admin-text"><X className="h-4 w-4" /></button>
+            <div className="flex items-start justify-between gap-3 border-b border-white/50 px-5 py-5 sm:px-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">Meta</p>
+                <h3 className="mt-1 text-[18px] font-semibold tracking-tight text-slate-900">Publish to Meta</h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+                  Campaign <strong className="text-slate-900">{publishAd.name}</strong> will be created in <strong>PAUSED</strong> state so you can review it before spending.
+                </p>
+              </div>
+              <button type="button" onClick={() => setPublishAd(null)} className={closeBtnClass} aria-label="Close"><X className="h-4 w-4" /></button>
             </div>
-            <div className="space-y-3 overflow-y-auto p-5">
-              <p className="text-[12px] text-admin-text-secondary">Campaign <strong className="text-admin-text">{publishAd.name}</strong> will be created on Meta in <strong className="text-admin-text">PAUSED</strong> state so you can review it before spending. Your token needs <strong>ads_management</strong> permission.</p>
+            <div className="space-y-4 overflow-y-auto px-5 py-5 sm:px-6">
               <div>
                 <label className={labelClass}>Ad account</label>
                 {adAccounts.length > 0 ? (
@@ -647,9 +667,13 @@ export default function CTWAAdsPage() {
               <div>
                 <label className={labelClass}>Facebook Page ID</label>
                 <input placeholder="Your Facebook Page ID (linked to WhatsApp)" value={publishPageId} onChange={(e) => setPublishPageId(e.target.value)} className={inputClass} />
-                <p className="mt-1 text-[11px] text-admin-text-subdued">Meta Business Suite → Page → About → Page ID. The page must be connected to your WhatsApp number.</p>
+                <p className="mt-1.5 text-[12px] text-slate-500">Meta Business Suite → Page → About → Page ID. The page must be connected to your WhatsApp number.</p>
               </div>
-              <button type="button" onClick={doPublish} disabled={publishing} className={`w-full ${primaryBtn}`}>{publishing ? 'Publishing...' : 'Publish (PAUSED)'}</button>
+              {publishing ? (
+                <FlowButtonLoading text="Publishing…" className="w-full" />
+              ) : (
+                <FlowButton type="button" text="Publish (PAUSED)" className="w-full" onClick={doPublish} />
+              )}
             </div>
           </div>
         </div>,
@@ -659,21 +683,30 @@ export default function CTWAAdsPage() {
       {/* Full Campaign Modal */}
       {showModal && mounted && createPortal(
         <div className={modalOverlayClass}>
-          <div className="absolute inset-0 bg-black/45" onClick={closeCampaignModal} />
+          <button type="button" aria-label="Close dialog" className={modalBackdropClass} onClick={closeCampaignModal} />
           <div className={`${modalPanelClass} max-w-2xl`} role="dialog" aria-modal="true" aria-label={editItem ? 'Edit campaign' : 'New campaign'}>
-            <div className="shrink-0 border-b border-admin-border px-5 py-4 sm:px-6">
+            <div className="shrink-0 border-b border-white/50 px-5 py-5 sm:px-7">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-[16px] font-semibold tracking-tight text-admin-text">{editItem ? 'Edit campaign' : 'New campaign'}</h2>
-                  <p className="mt-0.5 text-[12px] text-admin-text-secondary">
-                    {activeTab === 'details' ? 'Step 1 of 3 — Campaign details' : activeTab === 'targeting' ? 'Step 2 of 3 — Audience & targeting' : 'Step 3 of 3 — Ad creative'}
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">
+                    {editItem ? 'Edit' : 'New'}
+                  </p>
+                  <h2 className="mt-1 text-[18px] font-semibold tracking-tight text-slate-900">
+                    {editItem ? 'Edit campaign' : 'New campaign'}
+                  </h2>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">
+                    {activeTab === 'details'
+                      ? 'Step 1 of 3 — Campaign details'
+                      : activeTab === 'targeting'
+                        ? 'Step 2 of 3 — Audience & targeting'
+                        : 'Step 3 of 3 — Ad creative'}
                   </p>
                 </div>
-                <button type="button" onClick={closeCampaignModal} className="rounded-lg p-1.5 text-admin-text-subdued hover:bg-[#f6f6f7] hover:text-admin-text" aria-label="Close">
-                  <X className="h-5 w-5" />
+                <button type="button" onClick={closeCampaignModal} className={closeBtnClass} aria-label="Close">
+                  <X className="h-4 w-4" />
                 </button>
               </div>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {([
                   { id: 'details' as const, label: '1. Details' },
                   { id: 'targeting' as const, label: '2. Targeting' },
@@ -723,7 +756,7 @@ export default function CTWAAdsPage() {
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Budget &amp; bidding</h3>
+                    <h3 className={sectionTitleClass}>Budget &amp; bidding</h3>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className={labelClass}>Budget type</label>
@@ -756,7 +789,7 @@ export default function CTWAAdsPage() {
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Schedule</h3>
+                    <h3 className={sectionTitleClass}>Schedule</h3>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className={labelClass}>Start date</label>
@@ -784,7 +817,7 @@ export default function CTWAAdsPage() {
               {activeTab === 'targeting' && (
                 <div className="space-y-4">
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Demographics</h3>
+                    <h3 className={sectionTitleClass}>Demographics</h3>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                       <div>
                         <label className={labelClass}>Min age</label>
@@ -806,7 +839,7 @@ export default function CTWAAdsPage() {
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Locations</h3>
+                    <h3 className={sectionTitleClass}>Locations</h3>
                     <div className="flex gap-2">
                       <input value={locationInput} onChange={e => setLocationInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag('locations', locationInput, setLocationInput))} className={inputClass} placeholder="Type city/state/country and press Enter" />
                       <button type="button" onClick={() => addTag('locations', locationInput, setLocationInput)} className={`${primaryBtn} shrink-0`}>Add</button>
@@ -823,7 +856,7 @@ export default function CTWAAdsPage() {
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Interests</h3>
+                    <h3 className={sectionTitleClass}>Interests</h3>
                     <div className="flex gap-2">
                       <input value={interestInput} onChange={e => setInterestInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag('interests', interestInput, setInterestInput))} className={inputClass} placeholder="e.g. Fashion, Technology, Food" />
                       <button type="button" onClick={() => addTag('interests', interestInput, setInterestInput)} className={`${primaryBtn} shrink-0`}>Add</button>
@@ -840,7 +873,7 @@ export default function CTWAAdsPage() {
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Languages</h3>
+                    <h3 className={sectionTitleClass}>Languages</h3>
                     <div className="flex gap-2">
                       <input value={languageInput} onChange={e => setLanguageInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag('languages', languageInput, setLanguageInput))} className={inputClass} placeholder="e.g. Hindi, English, Tamil" />
                       <button type="button" onClick={() => addTag('languages', languageInput, setLanguageInput)} className={`${primaryBtn} shrink-0`}>Add</button>
@@ -857,20 +890,20 @@ export default function CTWAAdsPage() {
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Custom audience</h3>
+                    <h3 className={sectionTitleClass}>Custom audience</h3>
                     <input value={form.targeting.customAudience} onChange={e => setForm({ ...form, targeting: { ...form.targeting, customAudience: e.target.value } })} className={inputClass} placeholder="Custom Audience ID from Meta" />
-                    <label className="mt-2 flex items-center gap-2 text-[13px] text-admin-text-secondary">
-                      <input type="checkbox" checked={form.targeting.lookalike} onChange={e => setForm({ ...form, targeting: { ...form.targeting, lookalike: e.target.checked } })} className="rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30" />
+                    <label className="mt-2 flex items-center gap-2 text-[13px] text-slate-600">
+                      <input type="checkbox" checked={form.targeting.lookalike} onChange={e => setForm({ ...form, targeting: { ...form.targeting, lookalike: e.target.checked } })} className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500/30" />
                       Create lookalike audience
                     </label>
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Placements</h3>
+                    <h3 className={sectionTitleClass}>Placements</h3>
                     <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
                       {placementOptions.map(p => (
-                        <label key={p.value} className="flex cursor-pointer items-center gap-2 rounded-lg p-2 text-[13px] text-admin-text-secondary hover:bg-[#f6f6f7]">
-                          <input type="checkbox" checked={form.placements.includes(p.value)} onChange={() => togglePlacement(p.value)} className="rounded border-admin-border text-admin-text focus:ring-[#005bd3]/30" />
+                        <label key={p.value} className="flex cursor-pointer items-center gap-2 rounded-xl p-2 text-[13px] text-slate-600 hover:bg-white/50">
+                          <input type="checkbox" checked={form.placements.includes(p.value)} onChange={() => togglePlacement(p.value)} className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500/30" />
                           {p.label}
                         </label>
                       ))}
@@ -882,26 +915,26 @@ export default function CTWAAdsPage() {
               {activeTab === 'creative' && (
                 <div className="space-y-4">
                   <div className={sectionClass}>
-                    <h3 className="text-[13px] font-semibold text-admin-text">Media</h3>
+                    <h3 className={sectionTitleClass}>Media</h3>
                     <input ref={fileInputRef} type="file" accept="image/*,video/*" onChange={handleFileUpload} className="hidden" />
                     {form.mediaUrl ? (
                       <div className="relative">
                         {form.mediaType === 'video' ? (
-                          <video src={form.mediaUrl} controls className="max-h-48 w-full rounded-lg bg-[#f1f1f1]" />
+                          <video src={form.mediaUrl} controls className="max-h-48 w-full rounded-2xl bg-white/50" />
                         ) : (
-                          <img src={form.mediaUrl} alt="" className="max-h-48 w-full rounded-lg bg-[#f1f1f1] object-cover" />
+                          <img src={form.mediaUrl} alt="" className="max-h-48 w-full rounded-2xl bg-white/50 object-cover" />
                         )}
                         <button type="button" onClick={() => setForm({ ...form, mediaUrl: '', mediaType: '' })} className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"><X className="h-4 w-4" /></button>
                       </div>
                     ) : (
-                      <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed border-admin-border p-8 transition-colors hover:border-admin-text-subdued hover:bg-[#f6f6f7]">
+                      <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-emerald-300/60 bg-white/35 p-8 transition-colors hover:border-emerald-400 hover:bg-white/55">
                         {uploading ? (
-                          <RefreshCw className="h-8 w-8 animate-spin text-admin-text" />
+                          <RefreshCw className="h-8 w-8 animate-spin text-emerald-600" />
                         ) : (
-                          <Upload className="h-8 w-8 text-admin-text-subdued" />
+                          <Upload className="h-8 w-8 text-slate-400" />
                         )}
-                        <span className="text-[13px] text-admin-text-secondary">{uploading ? 'Uploading...' : 'Click to upload image or video'}</span>
-                        <span className="text-[11px] text-admin-text-subdued">JPG, PNG, MP4, MOV (Max 30MB)</span>
+                        <span className="text-[13px] text-slate-600">{uploading ? 'Uploading...' : 'Click to upload image or video'}</span>
+                        <span className="text-[11px] text-slate-400">JPG, PNG, MP4, MOV (Max 30MB)</span>
                       </button>
                     )}
                   </div>
@@ -909,13 +942,13 @@ export default function CTWAAdsPage() {
                   <div>
                     <label className={labelClass}>Ad headline</label>
                     <input value={form.headline} onChange={e => setForm({ ...form, headline: e.target.value })} className={inputClass} placeholder="Catchy headline for your ad" maxLength={40} />
-                    <p className="mt-1 text-[11px] text-admin-text-subdued">{form.headline.length}/40 characters</p>
+                    <p className="mt-1.5 text-[12px] text-slate-500">{form.headline.length}/40 characters</p>
                   </div>
 
                   <div>
                     <label className={labelClass}>Ad description</label>
-                    <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className={`${inputClass} resize-none`} placeholder="Describe your offer or product" maxLength={125} />
-                    <p className="mt-1 text-[11px] text-admin-text-subdued">{form.description.length}/125 characters</p>
+                    <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className={`${inputClass} min-h-[100px] resize-y`} placeholder="Describe your offer or product" maxLength={125} />
+                    <p className="mt-1.5 text-[12px] text-slate-500">{form.description.length}/125 characters</p>
                   </div>
 
                   <div>
@@ -927,26 +960,26 @@ export default function CTWAAdsPage() {
 
                   <div>
                     <label className={labelClass}>WhatsApp welcome message</label>
-                    <textarea value={form.welcomeMessage} onChange={e => setForm({ ...form, welcomeMessage: e.target.value })} rows={3} className={`${inputClass} resize-none`} placeholder="Message shown when user clicks the ad and opens WhatsApp" />
+                    <textarea value={form.welcomeMessage} onChange={e => setForm({ ...form, welcomeMessage: e.target.value })} rows={3} className={`${inputClass} min-h-[100px] resize-y`} placeholder="Message shown when user clicks the ad and opens WhatsApp" />
                   </div>
 
                   <div className={sectionClass}>
-                    <h3 className="flex items-center gap-2 text-[13px] font-semibold text-admin-text"><Eye className="h-4 w-4" /> Ad preview</h3>
-                    <div className="mx-auto max-w-sm rounded-lg bg-[#f6f6f7] p-4">
-                      <div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-admin-border">
+                    <h3 className={`flex items-center gap-2 ${sectionTitleClass}`}><Eye className="h-4 w-4 text-emerald-700" /> Ad preview</h3>
+                    <div className="mx-auto max-w-sm rounded-2xl border border-white/70 bg-white/45 p-4 backdrop-blur-md">
+                      <div className="overflow-hidden rounded-2xl border border-white/80 bg-white/80 shadow-[0_8px_24px_rgba(15,23,42,0.06)]">
                         {form.mediaUrl ? (
                           form.mediaType === 'video' ? (
-                            <div className="flex h-40 w-full items-center justify-center bg-[#f1f1f1]"><Video className="h-10 w-10 text-admin-text-subdued" /></div>
+                            <div className="flex h-40 w-full items-center justify-center bg-slate-100"><Video className="h-10 w-10 text-slate-400" /></div>
                           ) : (
                             <img src={form.mediaUrl} alt="" className="h-40 w-full object-cover" />
                           )
                         ) : (
-                          <div className="flex h-40 w-full items-center justify-center bg-gradient-to-br from-[#f1f1f1] to-[#f6f6f7]"><ImageIcon className="h-10 w-10 text-admin-border" /></div>
+                          <div className="flex h-40 w-full items-center justify-center bg-gradient-to-br from-[#eef8f0] to-[#f7fbf8]"><ImageIcon className="h-10 w-10 text-emerald-300" /></div>
                         )}
                         <div className="p-3">
-                          <p className="text-[13px] font-semibold text-admin-text">{form.headline || 'Your ad headline'}</p>
-                          <p className="mt-1 text-[12px] text-admin-text-secondary">{form.description || 'Your ad description will appear here'}</p>
-                          <button type="button" className="mt-3 w-full rounded-lg bg-admin-text py-2 text-[12px] font-medium text-white">
+                          <p className="text-[13px] font-semibold text-slate-900">{form.headline || 'Your ad headline'}</p>
+                          <p className="mt-1 text-[12px] text-slate-600">{form.description || 'Your ad description will appear here'}</p>
+                          <button type="button" className="mt-3 w-full rounded-xl bg-[#111111] py-2 text-[12px] font-medium text-white">
                             {ctaOptions.find(o => o.value === form.callToAction)?.label || 'Send WhatsApp Message'}
                           </button>
                         </div>
@@ -957,20 +990,45 @@ export default function CTWAAdsPage() {
               )}
             </div>
 
-            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-admin-border bg-[#fafafa] px-5 py-3.5 sm:px-6">
+            <div className="flex shrink-0 flex-col-reverse gap-2 border-t border-white/50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-7">
               <div>
-                {activeTab !== 'details' && (
-                  <button type="button" onClick={() => setActiveTab(activeTab === 'creative' ? 'targeting' : 'details')} className={secondaryBtn}>← Back</button>
+                {activeTab !== 'details' ? (
+                  <FlowButton
+                    type="button"
+                    text="Back"
+                    className="sm:w-auto sm:min-w-[120px]"
+                    onClick={() => setActiveTab(activeTab === 'creative' ? 'targeting' : 'details')}
+                  />
+                ) : (
+                  <span className="hidden sm:block" />
                 )}
               </div>
-              <div className="flex gap-2">
-                <button type="button" onClick={closeCampaignModal} className={secondaryBtn}>Cancel</button>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <FlowButton
+                  type="button"
+                  text="Cancel"
+                  className="sm:w-auto sm:min-w-[120px]"
+                  onClick={closeCampaignModal}
+                />
                 {activeTab !== 'creative' ? (
-                  <button type="button" onClick={() => setActiveTab(activeTab === 'details' ? 'targeting' : 'creative')} className={primaryBtn}>Next →</button>
+                  <FlowButton
+                    type="button"
+                    text="Next"
+                    className="sm:w-auto sm:min-w-[160px]"
+                    onClick={() => setActiveTab(activeTab === 'details' ? 'targeting' : 'creative')}
+                  />
+                ) : submitting ? (
+                  <FlowButtonLoading
+                    text="Saving…"
+                    className="sm:w-auto sm:min-w-[190px]"
+                  />
                 ) : (
-                  <button type="button" onClick={handleSave} disabled={submitting} className={primaryBtn}>
-                    {submitting ? 'Saving...' : editItem ? 'Update campaign' : 'Create campaign'}
-                  </button>
+                  <FlowButton
+                    type="button"
+                    text={editItem ? 'Update campaign' : 'Create campaign'}
+                    className="sm:w-auto sm:min-w-[190px]"
+                    onClick={handleSave}
+                  />
                 )}
               </div>
             </div>

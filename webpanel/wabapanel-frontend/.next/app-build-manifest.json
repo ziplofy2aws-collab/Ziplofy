@@ -167,10 +167,30 @@
       "static/chunks/main-app.js",
       "static/chunks/app/client/contacts/page.js"
     ],
-    "/_not-found/page": [
+    "/client/smart-broadcast/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/client/smart-broadcast/page.js"
+    ],
+    "/client/pipelines/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/client/pipelines/page.js"
+    ],
+    "/client/api-docs/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/client/api-docs/page.js"
+    ],
+    "/client/automations/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/client/automations/page.js"
+    ],
+    "/client/save-money/qr-campaigns/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/client/save-money/qr-campaigns/page.js"
     ]
   }
 }

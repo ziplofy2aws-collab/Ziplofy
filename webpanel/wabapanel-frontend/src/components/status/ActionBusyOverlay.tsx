@@ -34,12 +34,9 @@ export default function ActionBusyOverlay({
   useEffect(() => {
     if (!open) return;
     const prevOverflow = document.body.style.overflow;
-    const prevTouch = document.body.style.touchAction;
     document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
     return () => {
       document.body.style.overflow = prevOverflow;
-      document.body.style.touchAction = prevTouch;
     };
   }, [open]);
 
@@ -48,6 +45,10 @@ export default function ActionBusyOverlay({
   return createPortal(
     <div
       className={`fixed inset-0 ${zIndexClass} flex flex-col items-center justify-center overscroll-none`}
+      role="status"
+      aria-live="assertive"
+      aria-busy="true"
+      aria-label={label}
       style={{
         position: 'fixed',
         top: 0,
@@ -64,11 +65,6 @@ export default function ActionBusyOverlay({
         WebkitTransform: 'translateZ(0)',
         transform: 'translateZ(0)',
       }}
-      role="status"
-      aria-live="assertive"
-      aria-busy="true"
-      aria-label={label}
-      onTouchMove={(e) => e.preventDefault()}
     >
       <div
         className="absolute inset-0 bg-white/40 backdrop-blur-[3px]"

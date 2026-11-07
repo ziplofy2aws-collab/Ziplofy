@@ -19,7 +19,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
-import { showBusy } from '@/stores/busyStore';
+import { showNavBusy } from '@/stores/busyStore';
 import { useI18n } from '@/lib/i18n';
 import { adminHeaderSearchClass } from '@/components/layout/admin-header';
 import { filterClientNavCatalog } from '@/lib/filter-client-nav';
@@ -112,10 +112,10 @@ export default function ClientGlobalSearch({
 
   const goTo = useCallback(
     (href: string) => {
-      showBusy('Loading…');
       router.push(href);
       setQuery('');
       close();
+      showNavBusy(href);
     },
     [router, close]
   );
