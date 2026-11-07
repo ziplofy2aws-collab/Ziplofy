@@ -19,7 +19,7 @@ interface StoreDropdownProps {
 }
 
 const storeAvatarClass =
-  'flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black';
+  'flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-emerald-500 text-xs font-semibold text-white';
 
 const menuItemClass =
   'flex w-full items-center gap-2 px-3 py-2 text-left text-[13px] text-admin-text transition-colors hover:bg-admin-row-hover';
@@ -179,18 +179,18 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center gap-2 rounded-lg bg-admin-header-control px-2.5 py-1.5">
+      <div className="flex items-center gap-2 rounded-xl border border-admin-border bg-admin-header-control px-2.5 py-1.5 shadow-[0_4px_14px_rgba(15,23,42,0.04)]">
         <div className={storeAvatarClass}>...</div>
-        <span className="text-sm text-white">Loading...</span>
+        <span className="text-sm text-admin-text">Loading...</span>
       </div>
     );
   }
 
   if (error || !activeStore) {
     return (
-      <div className="flex items-center gap-2 rounded-lg bg-admin-header-control px-2.5 py-1.5">
+      <div className="flex items-center gap-2 rounded-xl border border-admin-border bg-admin-header-control px-2.5 py-1.5 shadow-[0_4px_14px_rgba(15,23,42,0.04)]">
         <div className={storeAvatarClass}>?</div>
-        <span className="text-sm text-white">No Store</span>
+        <span className="text-sm text-admin-text">No Store</span>
       </div>
     );
   }
@@ -202,15 +202,15 @@ const StoreDropdown: React.FC<StoreDropdownProps> = ({ onStoreChange }) => {
           ref={buttonRef}
           type="button"
           onClick={handleClick}
-          className="flex items-center gap-2 rounded-lg bg-admin-header-control px-2.5 py-1.5 transition-colors hover:bg-admin-header-control-hover"
+          className="flex items-center gap-2 rounded-xl border border-admin-border bg-admin-header-control px-2.5 py-1.5 shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition-colors hover:bg-admin-header-control-hover"
         >
           <div className={storeAvatarClass}>
             {getStoreInitials(activeStore.storeName)}
           </div>
-          <span className="max-w-[100px] truncate text-sm font-medium text-white">
+          <span className="max-w-[100px] truncate text-sm font-medium text-admin-text">
             {activeStore.storeName}
           </span>
-          <ChevronDownIcon className="h-4 w-4 text-[#b5b5b5]" />
+          <ChevronDownIcon className="h-4 w-4 text-admin-text-subdued" />
         </button>
 
         {isOpen && (

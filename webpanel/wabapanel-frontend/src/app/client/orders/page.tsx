@@ -110,7 +110,7 @@ export default function OrdersPage() {
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {[
           { label: 'Total Orders', value: String(stats.total), icon: <ShoppingCart className="h-4 w-4 text-blue-700" />, tint: 'bg-blue-50' },
-          { label: 'Pending', value: String(stats.pending), icon: <Package className="h-4 w-4 text-amber-700" />, tint: 'bg-amber-50' },
+          { label: 'Pending', value: String(stats.pending), icon: <Package className="h-4 w-4 text-[#0f766e]" />, tint: 'bg-[#eef8f0]' },
           { label: 'Delivered', value: String(stats.delivered), icon: <Truck className="h-4 w-4 text-emerald-700" />, tint: 'bg-emerald-50' },
           { label: 'Paid Revenue', value: money(stats.revenue, revenueCur), icon: <ShoppingCart className="h-4 w-4 text-emerald-700" />, tint: 'bg-emerald-50' },
         ].map((stat) => (

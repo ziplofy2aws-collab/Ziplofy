@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import AdminSidebar from '@/components/layout/AdminSidebar';
 import Header from '@/components/layout/Header';
+import AppStatusScreen from '@/components/status/AppStatusScreen';
+import PageTransition from '@/components/transitions/PageTransition';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, user, loadUser, isLoading } = useAuthStore();
@@ -24,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [ready, user, router]);
 
   if (isLoading || !ready) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" /></div>;
+    return <AppStatusScreen variant="loading" />;
   }
 
   return (
@@ -33,7 +35,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header isAdmin />
         <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
       </div>
     </div>

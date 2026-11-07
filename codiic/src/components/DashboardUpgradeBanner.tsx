@@ -14,7 +14,7 @@ export default function DashboardUpgradeBanner() {
   if (!open) return null;
 
   return (
-    <div className="relative flex flex-col gap-3 rounded-xl border border-admin-border bg-admin-surface px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+    <div className="relative flex flex-col gap-3 rounded-2xl border border-admin-border bg-white/70 px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.06)] backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:px-5">
       <div className="flex min-w-0 items-start gap-3 sm:items-center">
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-admin-secondary">
           <SparklesIcon className="h-4 w-4 text-admin-text-secondary" aria-hidden />

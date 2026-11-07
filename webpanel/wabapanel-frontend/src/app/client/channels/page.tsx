@@ -7,16 +7,23 @@ import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  dashboardNoticeClass,
+  dashboardSafetyClass,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
-const primaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
 const cardClass = `${dashboardCardShell} space-y-4 !p-5`;
-const helpBoxClass = 'space-y-1 rounded-lg border border-admin-border bg-[#f6f6f7] p-3 text-[12px] text-admin-text-secondary';
-const codeChip = 'rounded bg-white px-1 font-mono text-[11px] text-admin-text ring-1 ring-inset ring-admin-border';
-const enableLabel = 'flex cursor-pointer items-center gap-2 text-[13px] text-admin-text';
+const helpBoxClass =
+  'space-y-1 rounded-2xl border border-white/70 bg-white/40 p-3.5 text-[12px] leading-relaxed text-[#6b7a74] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md';
+const codeChip =
+  'rounded-md border border-white/80 bg-white/75 px-1.5 py-0.5 font-mono text-[11px] text-[#101828] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]';
+const enableLabel = 'flex cursor-pointer items-center gap-2 text-[13px] font-medium text-[#101828]';
+const iconTile =
+  'flex h-10 w-10 items-center justify-center rounded-xl border border-white/70 bg-white/55 text-[#00896F] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] backdrop-blur-md';
 
 function Spinner() {
   return (
@@ -242,8 +249,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50">
-              <MessageSquare className="h-5 w-5 text-emerald-700" />
+            <div className={iconTile}>
+              <MessageSquare className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">WhatsApp Business</h2>
@@ -252,7 +259,7 @@ export default function ChannelsPage() {
           </div>
           <div className="flex items-center gap-3">
             <StatusPill ok={waConnected} label={waConnected ? 'Connected' : 'Not connected'} />
-            <Link href="/client/whatsapp" className="inline-flex items-center gap-1 text-[13px] font-semibold text-[#005bd3] hover:underline">
+            <Link href="/client/whatsapp" className="inline-flex items-center gap-1 text-[13px] font-semibold text-[#0f766e] hover:underline">
               Configure <ExternalLink className="h-3 w-3" />
             </Link>
           </div>
@@ -263,8 +270,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-50">
-              <QrCode className="h-5 w-5 text-green-700" />
+            <div className={iconTile}>
+              <QrCode className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">WhatsApp by QR</h2>
@@ -375,7 +382,7 @@ export default function ChannelsPage() {
                 {(qr.customLimit || 0) > 0 && (
                   <button
                     type="button"
-                    className="text-[11px] font-medium text-[#005bd3] hover:underline"
+                    className="text-[11px] font-medium text-[#0f766e] hover:underline"
                     onClick={async () => {
                       try {
                         await waqrApi.settings(0);
@@ -396,18 +403,73 @@ export default function ChannelsPage() {
           </div>
         )}
 
-        <div className="space-y-2 rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <p className="flex items-center gap-1.5 text-[12px] font-semibold text-amber-900">
-            <ShieldAlert className="h-4 w-4" /> Stay safe — read before connecting
-          </p>
-          <ul className="list-disc space-y-1 pl-4 text-[12px] text-amber-900">
-            <li>This uses WhatsApp Web (not the official API). It is against WhatsApp&apos;s Terms of Service and carries a <b>risk of your number being banned</b>. Use a secondary number, not your main personal/business number.</li>
-            <li>Our safety engine protects you automatically: new numbers start with a small daily limit that grows over 2 weeks (number warm-up), messages are sent with human-like random delays and typing indicators.</li>
-            <li>Only message people who know you or have contacted you first. Never send bulk promotions to unknown numbers — that is the fastest way to get banned.</li>
-            <li>Avoid sending the same text repeatedly. Personalize messages and keep a healthy reply rate (if nobody replies, slow down).</li>
-            <li>Keep your phone connected to the internet. If the number gets banned or logged out, the channel pauses automatically and you will see it here.</li>
-            <li>For bulk campaigns, official templates and green-tick verification, use the official <b>WhatsApp Business API</b> channel above.</li>
-          </ul>
+        <div className={dashboardSafetyClass}>
+          <div
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(0,137,111,0.12),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(212,244,216,0.45),transparent_40%)]"
+            aria-hidden
+          />
+          <div className="relative space-y-3">
+            <div className="flex items-start gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#aee9d1]/90 bg-white/70 text-[#00896F] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+                <ShieldAlert className="h-4 w-4" />
+              </span>
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#0f766e]/80">
+                  Important
+                </p>
+                <h3 className="mt-0.5 text-[14px] font-semibold tracking-tight text-[#101828]">
+                  Stay safe — read before connecting
+                </h3>
+              </div>
+            </div>
+            <ul className="space-y-2.5 text-[12.5px] leading-relaxed text-[#3d4a45]">
+              <li className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00896F]" />
+                <span>
+                  This uses WhatsApp Web (not the official API). It is against WhatsApp&apos;s Terms of
+                  Service and carries a <strong className="font-semibold text-[#101828]">risk of your number being banned</strong>.
+                  Use a secondary number, not your main personal/business number.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                <span>
+                  Our safety engine protects you automatically: new numbers start with a small daily
+                  limit that grows over 2 weeks (number warm-up), messages are sent with human-like
+                  random delays and typing indicators.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00896F]" />
+                <span>
+                  Only message people who know you or have contacted you first. Never send bulk
+                  promotions to unknown numbers — that is the fastest way to get banned.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                <span>
+                  Avoid sending the same text repeatedly. Personalize messages and keep a healthy
+                  reply rate (if nobody replies, slow down).
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                <span>
+                  Keep your phone connected to the internet. If the number gets banned or logged out,
+                  the channel pauses automatically and you will see it here.
+                </span>
+              </li>
+              <li className="flex gap-2">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#00896F]" />
+                <span>
+                  For bulk campaigns, official templates and green-tick verification, use the official{' '}
+                  <strong className="font-semibold text-[#0f766e]">WhatsApp Business API</strong> channel
+                  above.
+                </span>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -415,8 +477,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-              <FbIcon className="h-5 w-5 text-blue-700" />
+            <div className={iconTile}>
+              <FbIcon className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">Facebook Messenger</h2>
@@ -429,24 +491,24 @@ export default function ChannelsPage() {
           </label>
         </div>
         {fbCfg?.oneClick && (
-          <div className="space-y-2 rounded-lg border border-blue-200 bg-blue-50 p-3">
+          <div className="space-y-2 rounded-2xl border border-[#aee9d1]/80 bg-[#eef8f0]/70 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md">
             {fbCfg.connected ? (
-              <p className="text-[13px] text-blue-900">Connected{fbCfg.pageName ? `: ${fbCfg.pageName}` : ''} — messages of this Page arrive in your Inbox.</p>
+              <p className="text-[13px] text-[#101828]">Connected{fbCfg.pageName ? `: ${fbCfg.pageName}` : ''} — messages of this Page arrive in your Inbox.</p>
             ) : (
-              <p className="text-[13px] text-blue-900">Connect your Facebook Page in one click — no Page ID or token needed.</p>
+              <p className="text-[13px] text-[#101828]">Connect your Facebook Page in one click — no Page ID or token needed.</p>
             )}
             <button type="button" className={primaryBtn} disabled={fbBusy} onClick={connectFbOneClick}>
               {fbBusy ? <Spinner /> : null} {fbCfg.connected ? 'Reconnect with Facebook' : 'Connect with Facebook'}
             </button>
             {fbPages.length > 0 && (
               <div className="space-y-1">
-                <p className="text-[12px] text-admin-text-secondary">Choose the Page to connect:</p>
+                <p className="text-[12px] text-[#6b7a74]">Choose the Page to connect:</p>
                 {fbPages.map((p) => (
                   <button
                     key={p.id}
                     type="button"
                     onClick={() => chooseFbPage(p.id)}
-                    className="block w-full rounded-lg border border-admin-border bg-white px-3 py-2 text-left text-[13px] text-admin-text hover:bg-[#f6f6f7]"
+                    className="block w-full rounded-xl border border-white/70 bg-white/70 px-3 py-2 text-left text-[13px] text-[#101828] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] hover:bg-white/90"
                   >
                     {p.name}
                   </button>
@@ -474,8 +536,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-pink-50">
-              <Camera className="h-5 w-5 text-pink-700" />
+            <div className={iconTile}>
+              <Camera className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">Instagram DM</h2>
@@ -504,8 +566,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50">
-              <Send className="h-5 w-5 text-sky-700" />
+            <div className={iconTile}>
+              <Send className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">Telegram</h2>
@@ -536,8 +598,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-50">
-              <Send className="h-5 w-5 text-sky-700" />
+            <div className={iconTile}>
+              <Send className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">Personal Telegram</h2>
@@ -670,8 +732,8 @@ export default function ChannelsPage() {
       <div className={cardClass}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-orange-50">
-              <Mail className="h-5 w-5 text-orange-700" />
+            <div className={iconTile}>
+              <Mail className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-[14px] font-semibold text-admin-text">Email Inbox</h2>
@@ -704,8 +766,8 @@ export default function ChannelsPage() {
         </div>
       </div>
 
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-[12px] text-amber-900">
-        <b>Webhook setup (one-time, in Meta App Dashboard):</b> Callback URL:{' '}
+      <div className={dashboardNoticeClass}>
+        <b className="font-semibold text-[#101828]">Webhook setup (one-time, in Meta App Dashboard):</b> Callback URL:{' '}
         <code className={codeChip}>{(typeof window !== 'undefined' ? window.location.origin : '')}/api/webhook/whatsapp</code>
         {' '}— Verify token is the same as your WhatsApp webhook. Subscribe to the &quot;messages&quot; field in both the Page and Instagram products.
       </div>

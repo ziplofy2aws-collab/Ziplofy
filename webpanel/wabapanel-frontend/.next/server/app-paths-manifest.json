@@ -1,9 +1,8 @@
 {
-  "/auth/sso/page": "app/auth/sso/page.js",
-  "/auth/login/page": "app/auth/login/page.js",
+  "/client/chat/page": "app/client/chat/page.js",
   "/client/dashboard/page": "app/client/dashboard/page.js",
-  "/client/clinic/queue/page": "app/client/clinic/queue/page.js",
-  "/client/clinic/calendar/page": "app/client/clinic/calendar/page.js",
-  "/client/clinic/settings/page": "app/client/clinic/settings/page.js",
-  "/client/choose-services/page": "app/client/choose-services/page.js"
+  "/client/automations/page": "app/client/automations/page.js",
+  "/client/online-store/page": "app/client/online-store/page.js",
+  "/client/leads/page": "app/client/leads/page.js",
+  "/client/themes/page": "app/client/themes/page.js"
 }

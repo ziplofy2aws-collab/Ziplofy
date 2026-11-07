@@ -22,16 +22,54 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   if (token) headers.set('Authorization', `Bearer ${token}`);
 
   const res = await fetch(`${API_URL}${path}`, { ...init, headers });
-  const data = (await res.json().catch(() => ({}))) as T & { message?: string; success?: boolean };
+  const data = (await res.json().catch(() => ({}))) as T & {
+    message?: string;
+    success?: boolean;
+    needsVerification?: boolean;
+    email?: string;
+    emailSent?: boolean;
+    devOtp?: string;
+  };
   if (!res.ok) {
-    throw new Error(data.message || `Request failed (${res.status})`);
+    const err = new Error(data.message || `Request failed (${res.status})`) as Error & {
+      needsVerification?: boolean;
+      email?: string;
+      emailSent?: boolean;
+      devOtp?: string;
+    };
+    err.needsVerification = Boolean(data.needsVerification);
+    err.email = data.email;
+    err.emailSent = data.emailSent;
+    err.devOtp = data.devOtp;
+    throw err;
   }
   return data;
 }
 
 export const api = {
-  register: (body: { name: string; email: string; password: string }) =>
-    request<SessionResponse>('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
+  register: (body: { name: string; email: string; password: string; phone: string }) =>
+    request<
+      SessionResponse & {
+        needsVerification?: boolean;
+        email?: string;
+        message?: string;
+        emailSent?: boolean;
+        devOtp?: string;
+      }
+    >('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
+  verifyEmailOtp: (body: { email: string; code: string }) =>
+    request<{ success: boolean; message?: string; email?: string }>('/auth/verify-email-otp', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  resendEmailOtp: (body: { email: string }) =>
+    request<{ success: boolean; message?: string; emailSent?: boolean; devOtp?: string }>(
+      '/auth/resend-email-otp',
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+      }
+    ),
   login: (body: { email: string; password: string }) =>
     request<SessionResponse>('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
   google: (credential: string) =>

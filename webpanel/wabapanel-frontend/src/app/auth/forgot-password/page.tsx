@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Mail, ArrowLeft } from 'lucide-react';
 import Input from '@/components/ui/Input';
-import Button from '@/components/ui/Button';
 import AuthShell from '@/components/AuthShell';
 import { authApi } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -52,7 +52,11 @@ export default function ForgotPasswordPage() {
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input label="Email" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required icon={<Mail className="w-4 h-4" />} />
-          <Button type="submit" className="w-full" loading={loading}>Send Reset Link</Button>
+          {loading ? (
+            <FlowButtonLoading text="Sending…" />
+          ) : (
+            <FlowButton type="submit" text="Send Reset Link" className="w-full" />
+          )}
         </form>
       )}
     </AuthShell>

@@ -13,6 +13,8 @@ import {
   LogOut,
   Plus,
   Store,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import { displayPersonName } from "@/lib/brand";
 import { GATEWAY_LOGOUT_URL, useAuthStore } from "@/stores/authStore";
@@ -26,10 +28,19 @@ import {
   adminHeaderDropdownClass,
   adminHeaderDropdownItemClass,
   adminHeaderIconButtonClass,
+  adminHeaderPlanChipClass,
   workspaceAvatarClass,
 } from "./admin-header";
 import ClientGlobalSearch from "./ClientGlobalSearch";
-import { adminListPrimaryButtonClass } from "./dashboard-ui";
+import AppFormModal, { appModalFieldClass, appModalLabelClass } from "@/components/ui/AppFormModal";
+
+function roleDisplay(role?: string | null) {
+  if (!role) return "Member";
+  if (role === "vendor") return "Vendor";
+  if (role === "super_admin") return "Super admin";
+  if (role === "admin") return "Admin";
+  return role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 interface Notification {
   _id: string;
@@ -80,6 +91,23 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
   const { lang, setLang } = useI18n();
   const [showLang, setShowLang] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const [showPlan, setShowPlan] = useState(false);
+  const planRef = useRef<HTMLDivElement>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    try {
+      setSidebarOpen(localStorage.getItem('clientSidebarOpen') !== '0');
+    } catch {
+      /* ignore */
+    }
+    const onToggle = (e: Event) => {
+      const open = (e as CustomEvent<{ open?: boolean }>).detail?.open;
+      if (typeof open === 'boolean') setSidebarOpen(open);
+    };
+    window.addEventListener('client-sidebar-toggle', onToggle as EventListener);
+    return () => window.removeEventListener('client-sidebar-toggle', onToggle as EventListener);
+  }, []);
 
   const showWallet = !isAdmin && user?.role !== "super_admin" && user?.role !== "admin";
   const canManageStores =
@@ -96,6 +124,7 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setShowNotif(false);
       if (langRef.current && !langRef.current.contains(e.target as Node)) setShowLang(false);
       if (wsRef.current && !wsRef.current.contains(e.target as Node)) setShowWsDropdown(false);
+      if (planRef.current && !planRef.current.contains(e.target as Node)) setShowPlan(false);
     };
     document.addEventListener("mousedown", onClick);
     return () => document.removeEventListener("mousedown", onClick);
@@ -145,12 +174,14 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
   };
 
   const handleCreateStore = async () => {
-    if (!storeName.trim() || storeDescription.trim().length < 10) {
-      setCreateStoreError("Name required; description must be at least 10 characters.");
-      return;
-    }
     setCreatingStore(true);
     setCreateStoreError(null);
+    if (!storeName.trim() || storeDescription.trim().length < 10) {
+      setCreateStoreError("Name required; description must be at least 10 characters.");
+      setCreatingStore(false);
+      return;
+    }
+    const started = Date.now();
     try {
       await createStore({
         storeName: storeName.trim(),
@@ -166,37 +197,124 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
           "Failed to create store"
       );
     } finally {
+      const wait = Math.max(0, 500 - (Date.now() - started));
+      if (wait) await new Promise((r) => window.setTimeout(r, wait));
       setCreatingStore(false);
     }
   };
 
+  const userRole = roleDisplay((user as { role?: string } | null)?.role);
+  const planLabel = "Free plan";
+
   if (shopify) {
     return (
       <>
-      <header className={`admin-shopify-header ${adminHeaderClass} bg-black`}>
-        <div className="grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 md:grid-cols-[minmax(0,1fr)_minmax(220px,500px)_minmax(0,1fr)]">
-          {/* Brand — left */}
-          <div className="flex min-w-0 items-center justify-start">
+      <header className={adminHeaderClass}>
+        <div className="grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 sm:gap-3 md:grid-cols-[minmax(0,1fr)_minmax(220px,440px)_minmax(0,1fr)] md:px-4">
+          {/* Brand — logo + Free plan dropdown */}
+          <div className="relative z-[1] flex min-w-0 items-center justify-start gap-2">
+            <button
+              type="button"
+              className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-transparent text-[#101828] transition-colors hover:border-[#e8efe9] hover:bg-[#f4faf5] lg:inline-flex"
+              title={sidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
+              aria-label={sidebarOpen ? 'Collapse sidebar' : 'Open sidebar'}
+              onClick={() => {
+                const next = !sidebarOpen;
+                setSidebarOpen(next);
+                try {
+                  localStorage.setItem('clientSidebarOpen', next ? '1' : '0');
+                } catch {
+                  /* ignore */
+                }
+                window.dispatchEvent(new CustomEvent('client-sidebar-toggle', { detail: { open: next } }));
+              }}
+            >
+              {sidebarOpen ? (
+                <PanelLeftClose className="h-[16px] w-[16px]" strokeWidth={1.75} />
+              ) : (
+                <PanelLeftOpen className="h-[16px] w-[16px]" strokeWidth={1.75} />
+              )}
+            </button>
             <Link
               href="/client/dashboard"
-              className="inline-flex shrink-0 items-center rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              className="inline-flex shrink-0 items-center rounded-[10px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#b7e4c0]"
               aria-label="Go to dashboard"
             >
-              <span className="font-['Poppins',system-ui,sans-serif] text-[20px] font-extrabold italic tracking-tight text-white">
-                Codiic
-              </span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo_with_text.webp"
+                alt="Codiic"
+                className="h-7 w-auto object-contain sm:h-8"
+              />
             </Link>
+            <div className="relative hidden sm:block" ref={planRef}>
+              <button
+                type="button"
+                onClick={() => setShowPlan(!showPlan)}
+                className={adminHeaderPlanChipClass}
+                aria-expanded={showPlan}
+                aria-haspopup="listbox"
+                aria-label={`${planLabel} menu`}
+              >
+                <span>Free Plan</span>
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-[#5f6f68]" strokeWidth={2.25} />
+              </button>
+              {showPlan && (
+                <div className={`${adminHeaderDropdownClass} left-0 right-auto w-64 animate-[orbitly-pop_140ms_ease-out]`}>
+                  <div className="border-b border-[#e8efe9]/80 px-3 py-2.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a9a93]">
+                      Current plan
+                    </p>
+                    <p className="mt-0.5 text-[13px] font-semibold text-[#101828]">{planLabel}</p>
+                  </div>
+                  {(workspaces?.length || 0) > 0 ? (
+                    <div className="py-1">
+                      <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8a9a93]">
+                        Workspaces
+                      </p>
+                      {workspaces.map((ws) => (
+                        <button
+                          key={ws._id}
+                          type="button"
+                          onClick={() => {
+                            void switchWorkspace(ws._id);
+                            setShowPlan(false);
+                          }}
+                          className={adminHeaderDropdownItemClass(ws._id === currentWorkspace?._id)}
+                        >
+                          <Building2 className="h-4 w-4 shrink-0 text-[#6b7a74]" />
+                          <span className="min-w-0 flex-1 truncate text-left">
+                            {displayPersonName(ws.name) || "Workspace"}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                  {showWallet ? (
+                    <div className="border-t border-[#e8efe9]/80 py-1">
+                      <Link
+                        href="/client/billing"
+                        onClick={() => setShowPlan(false)}
+                        className={adminHeaderDropdownItemClass()}
+                      >
+                        <Wallet className="h-4 w-4 shrink-0 text-[#6b7a74]" />
+                        <span>Billing & plans</span>
+                      </Link>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Global search — true center */}
-          <div className="flex w-full min-w-0 justify-center md:max-w-[500px]">
-            <ClientGlobalSearch mobileIconOnly />
+          {/* Centered global search (Ctrl + K) */}
+          <div className="relative z-0 flex w-full min-w-0 justify-center overflow-visible md:max-w-[440px]">
+            <ClientGlobalSearch mobileIconOnly className="min-w-0 max-w-full" />
           </div>
 
-          {/* Actions — right */}
-          <div className="flex items-center justify-end gap-1.5">
-            <PwaInstallButton variant="dark" />
-
+          {/* Language · compact profile · notifications */}
+          <div className="relative z-[1210] flex shrink-0 items-center justify-end gap-1 sm:gap-1.5">
+            <PwaInstallButton variant="light" iconOnly />
             {!isAdmin && (
               <div className="relative" ref={langRef}>
                 <button
@@ -205,14 +323,14 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                   title="Change panel language"
                   className={adminHeaderControlClass}
                 >
-                  <Globe className="h-4 w-4 text-[#b5b5b5]" />
-                  <span className="hidden sm:inline">
+                  <Globe className="h-4 w-4 text-[#6b7a74]" />
+                  <span className="hidden lg:inline">
                     {(LANGUAGES.find((l) => l.code === lang) || LANGUAGES[0]).name}
                   </span>
-                  <ChevronDown className="h-3.5 w-3.5 text-[#b5b5b5]" />
+                  <ChevronDown className="h-3.5 w-3.5 text-[#6b7a74]" />
                 </button>
                 {showLang && (
-                  <div className={`${adminHeaderDropdownClass} max-h-80 w-44 overflow-y-auto py-1`}>
+                  <div className={`${adminHeaderDropdownClass} max-h-80 w-44 overflow-y-auto py-1 animate-[orbitly-pop_140ms_ease-out]`}>
                     {LANGUAGES.map((l) => (
                       <button
                         key={l.code}
@@ -235,39 +353,45 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
               <button
                 type="button"
                 onClick={() => setShowWsDropdown(!showWsDropdown)}
-                className={adminHeaderControlClass}
+                className={`${adminHeaderControlClass} gap-2 pl-1.5 pr-2`}
                 aria-label="Account menu"
               >
                 <div className={workspaceAvatarClass}>
-                  {getInitials(profileLabel)}
+                  {getInitials(displayPersonName(user?.name) || profileLabel)}
                 </div>
-                <span className="hidden max-w-[140px] truncate sm:inline">
-                  {activeStore?.storeName || profileLabel}
-                </span>
-                <ChevronDown className="h-4 w-4 text-[#b5b5b5]" />
+                <div className="hidden min-w-0 text-left md:block">
+                  <div className="max-w-[128px] truncate text-[13px] font-semibold leading-tight text-[#101828]">
+                    {displayPersonName(user?.name) || activeStore?.storeName || profileLabel}
+                  </div>
+                  <div className="max-w-[128px] truncate text-[10px] font-medium leading-tight text-[#8a9a93]">
+                    {userRole}
+                  </div>
+                </div>
+                <ChevronDown className="hidden h-3.5 w-3.5 text-[#6b7a74] sm:block" />
               </button>
               {showWsDropdown && (
-                <div className={`${adminHeaderDropdownClass} w-64`}>
-                  {currentWorkspace && (
-                    <div className="border-b border-[#e3e3e3] bg-[#f7f7f7] px-3 py-2.5">
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#aeea00] text-xs font-semibold text-black">
-                          {getInitials(profileLabel)}
+                <div className={`${adminHeaderDropdownClass} w-64 animate-[orbitly-pop_140ms_ease-out]`}>
+                  <div className="border-b border-[#e8efe9]/80 px-3 py-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className={workspaceAvatarClass}>
+                        {getInitials(displayPersonName(user?.name) || profileLabel)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-[13px] font-semibold text-[#101828]">
+                          {displayPersonName(user?.name) || profileLabel}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-[13px] font-semibold text-[#303030]">
-                            {displayPersonName(currentWorkspace.name) || profileLabel}
-                          </div>
-                          {displayPersonName(user?.name) && (
-                            <div className="truncate text-[11px] text-[#8a8a8a]">{displayPersonName(user?.name)}</div>
-                          )}
+                        <div className="truncate text-[11px] text-[#8a9a93]">
+                          {userRole}
+                          {currentWorkspace?.name
+                            ? ` · ${displayPersonName(currentWorkspace.name)}`
+                            : ""}
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
 
                   {showWallet && (
-                    <div className="border-b border-[#e3e3e3] bg-white py-1">
+                    <div className="border-b border-[#e8efe9]/80 py-1">
                       <Link
                         href="/client/billing"
                         onClick={() => setShowWsDropdown(false)}
@@ -318,7 +442,7 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                     </div>
                   )}
 
-                  <div className="bg-white py-1">
+                  <div className="py-1">
                     <button
                       type="button"
                       onClick={() => {
@@ -345,24 +469,24 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                 className={`${adminHeaderIconButtonClass} relative`}
                 aria-label="Notifications"
               >
-                <Bell className="h-5 w-5" />
+                <Bell className="h-[18px] w-[18px]" strokeWidth={1.75} />
                 {notifs.length > 0 && (
-                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
+                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
                 )}
               </button>
               {showNotif && (
-                <div className="admin-header-dropdown absolute right-0 top-full z-50 mt-1.5 flex max-h-96 w-80 flex-col overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-lg">
-                  <div className="flex items-center justify-between border-b border-[#e3e3e3] p-3">
-                    <h4 className="text-sm font-semibold text-[#303030]">Notifications</h4>
+                <div className={`${adminHeaderDropdownClass} flex max-h-96 w-[min(20rem,calc(100vw-1.5rem))] flex-col overflow-hidden p-0 animate-[orbitly-pop_140ms_ease-out]`}>
+                  <div className="flex items-center justify-between border-b border-[#e8efe9]/80 px-3 py-2.5">
+                    <h4 className="text-sm font-semibold text-[#101828]">Notifications</h4>
                     <button
                       type="button"
                       onClick={() => setShowNotif(false)}
-                      className="rounded-lg p-1 text-[#8a8a8a] transition-colors hover:bg-[#f6f6f7]"
+                      className="rounded-lg p-1 text-[#8a8a8a] transition-colors hover:bg-[#f4faf5]"
                     >
                       <X className="h-4 w-4" />
                     </button>
                   </div>
-                  <div className="flex-1 overflow-y-auto bg-white">
+                  <div className="flex-1 overflow-y-auto">
                     {notifLoading ? (
                       <div className="p-6 text-center text-sm text-[#8a8a8a]">Loading...</div>
                     ) : notifs.length === 0 ? (
@@ -371,7 +495,7 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
                       notifs.map((n) => (
                         <div
                           key={n._id}
-                          className="border-b border-[#ebebeb] bg-white px-3 py-2 hover:bg-[#f6f6f7]"
+                          className="border-b border-[#ebebeb]/80 px-3 py-2.5 hover:bg-[#f4faf5]/80"
                         >
                           <p className="text-sm text-[#303030]">
                             <span className="font-medium">{n.user?.name || "System"}</span> {n.action}{" "}
@@ -396,76 +520,46 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
         </div>
       </header>
 
-      {showCreateStore ? (
-        <div className="fixed inset-0 z-[1400] flex items-center justify-center bg-black/30 p-4">
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="create-store-title"
-            className="w-full max-w-md overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-xl"
-          >
-            <div className="flex items-center justify-between border-b border-[#e3e3e3] px-4 py-3">
-              <h2 id="create-store-title" className="text-[15px] font-semibold text-[#303030]">
-                Create new store
-              </h2>
-              <button
-                type="button"
-                onClick={() => setShowCreateStore(false)}
-                className="rounded-lg p-1 text-[#8a8a8a] hover:bg-[#f6f6f7]"
-                aria-label="Close"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="space-y-3 p-4">
-              <p className="text-[12px] text-[#8a8a8a]">
-                A default Informatic subdomain is assigned automatically when the store is created.
-              </p>
-              <label className="block text-[13px]">
-                <span className="mb-1 block font-medium text-[#303030]">Store name</span>
-                <input
-                  value={storeName}
-                  onChange={(e) => setStoreName(e.target.value)}
-                  className="w-full rounded-lg border border-[#e3e3e3] px-3 py-2 text-[13px] outline-none focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3]/30"
-                  placeholder="Acme Website"
-                  maxLength={100}
-                />
-              </label>
-              <label className="block text-[13px]">
-                <span className="mb-1 block font-medium text-[#303030]">Description</span>
-                <textarea
-                  value={storeDescription}
-                  onChange={(e) => setStoreDescription(e.target.value)}
-                  rows={3}
-                  className="w-full rounded-lg border border-[#e3e3e3] px-3 py-2 text-[13px] outline-none focus:border-[#005bd3] focus:ring-1 focus:ring-[#005bd3]/30"
-                  placeholder="What this Informatic site is for…"
-                  maxLength={500}
-                />
-              </label>
-              {createStoreError ? (
-                <p className="text-[12px] text-red-600">{createStoreError}</p>
-              ) : null}
-            </div>
-            <div className="flex justify-end gap-2 border-t border-[#e3e3e3] bg-[#fafafa] px-4 py-3">
-              <button
-                type="button"
-                onClick={() => setShowCreateStore(false)}
-                className="rounded-md border border-[#e3e3e3] bg-white px-3 py-2 text-[13px] font-medium text-[#303030] hover:bg-white"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={creatingStore}
-                onClick={() => void handleCreateStore()}
-                className={`${adminListPrimaryButtonClass} disabled:opacity-60`}
-              >
-                {creatingStore ? "Creating…" : "Create store"}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <AppFormModal
+        open={showCreateStore}
+        eyebrow="New store"
+        title="Create store"
+        description="A default Informatic subdomain is assigned automatically when the store is created."
+        onClose={() => setShowCreateStore(false)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleCreateStore();
+        }}
+        confirmLabel="Create store"
+        confirmLoadingLabel="Creating…"
+        loading={creatingStore}
+        error={createStoreError}
+      >
+        <label className={appModalLabelClass}>
+          Store name <span className="text-emerald-600">*</span>
+          <input
+            value={storeName}
+            onChange={(e) => setStoreName(e.target.value)}
+            className={appModalFieldClass}
+            placeholder="Acme Website"
+            maxLength={100}
+            disabled={creatingStore}
+            autoFocus
+          />
+        </label>
+        <label className={appModalLabelClass}>
+          Description
+          <textarea
+            value={storeDescription}
+            onChange={(e) => setStoreDescription(e.target.value)}
+            rows={3}
+            className={`${appModalFieldClass} min-h-[100px] resize-y`}
+            placeholder="What this Informatic site is for…"
+            maxLength={500}
+            disabled={creatingStore}
+          />
+        </label>
+      </AppFormModal>
       </>
     );
   }

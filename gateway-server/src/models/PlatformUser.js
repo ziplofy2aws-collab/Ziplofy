@@ -4,9 +4,13 @@ const platformUserSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
+    phone: { type: String, trim: true, default: '' },
     hashedPassword: { type: String },
     provider: { type: String, enum: ['local', 'google'], default: 'local' },
     googleId: { type: String, default: '' },
+    emailVerified: { type: Boolean, default: false },
+    emailOtpHash: { type: String, default: '' },
+    emailOtpExpire: { type: Date },
     onboardingStatus: {
       type: String,
       enum: ['auth', 'awaiting_choice', 'provisioning', 'complete'],
@@ -26,6 +30,11 @@ const platformUserSchema = new mongoose.Schema(
     modulesChosen: { type: Boolean, default: false },
     selectedModules: { type: [String], default: [] },
     businessName: { type: String, trim: true, default: '' },
+    billingTaxId: { type: String, trim: true, default: '' },
+    billingAddress: { type: String, trim: true, default: '' },
+    preferredTimezone: { type: String, trim: true, default: '' },
+    preferredLanguage: { type: String, trim: true, default: '' },
+    profileComplete: { type: Boolean, default: false },
     destination: {
       type: String,
       enum: ['codiic', 'webpanel'],

@@ -6,18 +6,20 @@ import Badge from '@/components/ui/Badge';
 import { workspaceApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  dashboardNoticeCompactClass,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
-const primaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
 const dangerBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-300 bg-white px-3 py-1.5 text-[13px] font-medium text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-200/80 bg-white/60 px-3.5 py-2 text-[13px] font-medium text-red-600 backdrop-blur-md transition-colors hover:bg-red-50/80 disabled:cursor-not-allowed disabled:opacity-50';
 const cardClass = `${dashboardCardShell} !p-5`;
-const metaCell = 'rounded-lg border border-admin-border bg-[#f6f6f7] p-3.5';
-const metaLabel = 'mb-1 text-[12px] font-medium text-admin-text-secondary';
-const metaValue = 'text-[13px] font-semibold text-admin-text';
+const metaCell = 'rounded-2xl border border-white/70 bg-white/45 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md';
+const metaLabel = 'mb-1 text-[12px] font-medium text-[#6b7a74]';
+const metaValue = 'text-[13px] font-semibold text-[#101828]';
 
 function Spinner() {
   return (
@@ -307,8 +309,8 @@ export default function WhatsAppPage() {
             </div>
 
             {(!wa.displayName || !wa.phoneNumber) && (
-              <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
-                <p className="text-[13px] text-amber-800">Display Name / Phone Number not available — your Access Token may have expired. Update your token or click Refresh.</p>
+              <div className={`mb-4 ${dashboardNoticeCompactClass}`}>
+                <p className="text-[13px] text-[#3d4a45]">Display Name / Phone Number not available — your Access Token may have expired. Update your token or click Refresh.</p>
               </div>
             )}
 
@@ -454,8 +456,8 @@ export default function WhatsAppPage() {
                   </div>
                 </div>
                 {health.errors.length > 0 && (
-                  <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
-                    {health.errors.map((e, i) => <p key={i} className="text-[12px] text-amber-800">{e}</p>)}
+                  <div className={`mt-3 ${dashboardNoticeCompactClass}`}>
+                    {health.errors.map((e, i) => <p key={i} className="text-[12px] text-[#3d4a45]">{e}</p>)}
                   </div>
                 )}
               </>
@@ -548,8 +550,8 @@ export default function WhatsAppPage() {
                   </button>
                 </div>
               </div>
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
-                <p className="text-[12px] text-amber-900">Subscribe to <strong>messages</strong> webhook field in Meta Developer Portal to receive incoming WhatsApp messages.</p>
+              <div className={dashboardNoticeCompactClass}>
+                <p className="text-[12px] text-[#3d4a45]">Subscribe to <strong className="font-semibold text-[#101828]">messages</strong> webhook field in Meta Developer Portal to receive incoming WhatsApp messages.</p>
               </div>
             </div>
           </div>

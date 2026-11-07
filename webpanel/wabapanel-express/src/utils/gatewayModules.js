@@ -42,6 +42,22 @@ const INDUSTRY_MODULE = {
   other_service: 'serviceBusiness',
   tour_travel: 'travel',
 };
+
+/** Service-sector businesses selectable in CRM "Choose your business" (no ecommerce). */
+const SERVICE_INDUSTRY_IDS = new Set(Object.keys(INDUSTRY_MODULE));
+
+const SERVICE_BUSINESS_OPTIONS = [
+  { id: 'healthcare', label: 'Healthcare' },
+  { id: 'education', label: 'Education' },
+  { id: 'real_estate', label: 'Real estate' },
+  { id: 'agency', label: 'Agency / consulting' },
+  { id: 'legal', label: 'Legal' },
+  { id: 'hospitality', label: 'Hospitality' },
+  { id: 'salon', label: 'Salon / spa' },
+  { id: 'tour_travel', label: 'Tour & travel' },
+  { id: 'other_service', label: 'Other service' },
+];
+
 const SECTOR_MODULE_IDS = new Set(MODULES.filter((m) => m.sector).map((m) => m.id));
 
 function lockedModuleIds(industry) {
@@ -122,6 +138,8 @@ function publicCatalog(industry, selectedModules) {
 module.exports = {
   MODULES,
   INDUSTRY_MODULE,
+  SERVICE_INDUSTRY_IDS,
+  SERVICE_BUSINESS_OPTIONS,
   SECTOR_MODULE_IDS,
   normalizeSelectedModules,
   defaultLaunchModules,

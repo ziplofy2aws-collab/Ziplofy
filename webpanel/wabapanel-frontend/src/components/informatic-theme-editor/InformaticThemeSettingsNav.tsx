@@ -408,7 +408,7 @@ function WhatsAppWidgetPanel({
         onChange={handleEnabledChange}
       />
       {missingPhone ? (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-900">
+        <p className="rounded-xl border border-[#aee9d1]/80 bg-[#eef8f0]/70 px-3 py-2 text-[12px] text-[#3d4a45]">
           Add a WhatsApp number below (with country code, digits only). The button stays hidden until
           a number is set.
           {workspacePhone ? ' Your connected WhatsApp number can be used automatically.' : null}

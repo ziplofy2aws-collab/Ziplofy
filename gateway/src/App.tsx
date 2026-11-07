@@ -2,16 +2,10 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { api, applySession, clearToken, getToken, goToSso } from './api';
-import BusinessNamePage from './pages/BusinessNamePage';
-import IndustryPage from './pages/IndustryPage';
+import LoadingOnly from './components/LoadingOnly';
 import LaunchingPage from './pages/LaunchingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-
-function RequireAuth({ children }: { children: ReactNode }) {
-  if (!getToken()) return <Navigate to="/login" replace />;
-  return children;
-}
 
 function SessionRedirect({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -25,28 +19,43 @@ function SessionRedirect({ children }: { children: ReactNode }) {
       return;
     }
     if (!getToken()) {
+      if (location.pathname === '/launching') navigate('/login', { replace: true });
       setReady(true);
       return;
     }
+    if (location.pathname === '/launching') {
+      setReady(true);
+      return;
+    }
+
     let cancelled = false;
     api
       .me()
       .then((data) => {
         if (cancelled) return;
         applySession(data);
+        if (data.needsVerification) {
+          if (location.pathname !== '/login') navigate('/login', { replace: true });
+          setReady(true);
+          return;
+        }
         if (data.redirect?.ssoUrl) {
           goToSso(data.redirect.ssoUrl);
           return;
         }
-        const next = data.nextPath || '/choose-industry';
         const publicAuth = location.pathname === '/login' || location.pathname === '/register';
-        if (publicAuth) navigate(next, { replace: true });
+        if (publicAuth) {
+          navigate('/launching', { replace: true });
+        }
         setReady(true);
       })
       .catch(() => {
         if (!cancelled) {
           clearToken();
           setReady(true);
+          if (location.pathname !== '/login' && location.pathname !== '/register') {
+            navigate('/login', { replace: true });
+          }
         }
       });
     return () => {
@@ -55,13 +64,7 @@ function SessionRedirect({ children }: { children: ReactNode }) {
   }, [location.pathname, navigate]);
 
   if (!ready) {
-    return (
-      <div className="shell">
-        <div className="card">
-          <p className="sub">Loading your account…</p>
-        </div>
-      </div>
-    );
+    return <LoadingOnly />;
   }
   return children;
 }
@@ -70,37 +73,16 @@ export default function App() {
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
   const routes = (
     <SessionRedirect>
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/logout" element={<Navigate to="/login" replace />} />
-      <Route path="/register" element={<RegisterPage />} />
-      <Route
-        path="/choose-industry"
-        element={
-          <RequireAuth>
-            <IndustryPage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/business-name"
-        element={
-          <RequireAuth>
-            <BusinessNamePage />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/launching"
-        element={
-          <RequireAuth>
-            <LaunchingPage />
-          </RequireAuth>
-        }
-      />
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/logout" element={<Navigate to="/login" replace />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/launching" element={<LaunchingPage />} />
+        <Route path="/choose-industry" element={<Navigate to="/launching" replace />} />
+        <Route path="/business-name" element={<Navigate to="/launching" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
     </SessionRedirect>
   );
 

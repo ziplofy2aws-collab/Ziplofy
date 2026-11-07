@@ -8,15 +8,18 @@ import WaTextarea from '@/components/ui/WaTextarea';
 import { smartBroadcastApi, tagApi, segmentApi, mediaApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  dashboardNoticeClass,
+  dashboardFieldClass,
+  dashboardLabelClass,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
-const primaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
-const inputClass =
-  'w-full rounded-lg border border-admin-border bg-white px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30';
-const labelClass = 'mb-1 block text-[12px] font-medium text-admin-text-secondary';
+const inputClass = dashboardFieldClass;
+const labelClass = dashboardLabelClass;
 const cardClass = `${dashboardCardShell} !p-5`;
 const tableShell = `${dashboardCardShell} overflow-hidden !p-0`;
 
@@ -307,11 +310,11 @@ export default function SmartBroadcastPage() {
         </button>
       </div>
 
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-[13px] text-amber-900">
+      <div className={`${dashboardNoticeClass} text-[13px]`}>
         <div className="flex items-start gap-2">
-          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
+          <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-[#00896F]" />
           <div>
-            <b>Advanced feature — use responsibly.</b> Meta may re-categorize, pause or restrict a template/number if content does not match the utility category. The sending WhatsApp number carries this risk. Send slowly, keep opt-outs, and stop if a template is paused.
+            <b className="font-semibold text-[#101828]">Advanced feature — use responsibly.</b> Meta may re-categorize, pause or restrict a template/number if content does not match the utility category. The sending WhatsApp number carries this risk. Send slowly, keep opt-outs, and stop if a template is paused.
             {!acknowledged && (
               <label className="mt-2 flex cursor-pointer items-center gap-2 font-medium">
                 <input type="checkbox" checked={acknowledged} onChange={(e) => setAcknowledged(e.target.checked)} />

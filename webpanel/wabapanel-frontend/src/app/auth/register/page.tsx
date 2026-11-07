@@ -5,13 +5,15 @@ import { useRouter } from 'next/navigation';
 import { GATEWAY_URL } from '@/lib/gateway';
 import {
   MessageSquare, Gift, Megaphone, BadgeCheck, Bot,
-  Eye, EyeOff, Info, MailCheck, Loader2,
+  Eye, EyeOff, Info, MailCheck,
 } from 'lucide-react';
 import useBranding from '@/lib/useBranding';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
+import { authPageBackgroundStyle } from '@/lib/authBackground';
+import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
 
 const FEATURES = [
   {
@@ -164,7 +166,7 @@ export default function RegisterPage() {
 
   if (redirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f1f1f1]">
+      <div className="min-h-screen flex items-center justify-center" style={authPageBackgroundStyle}>
         <p className="text-[#98A2B3] text-sm">Redirecting to sign up…</p>
       </div>
     );
@@ -172,8 +174,8 @@ export default function RegisterPage() {
 
   if (verificationSent) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f1f1f1] px-4">
-        <div className="w-full max-w-md bg-white rounded-2xl border border-[#e3e3e3] shadow-sm p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center px-4" style={authPageBackgroundStyle}>
+        <div className="w-full max-w-md bg-white/95 rounded-2xl border border-[#e3e3e3] shadow-sm p-8 text-center backdrop-blur-sm">
           <div className="w-16 h-16 bg-[#ecfdf5] rounded-full flex items-center justify-center mx-auto mb-4">
             <MailCheck className="w-8 h-8 text-[#059669]" />
           </div>
@@ -194,9 +196,9 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2" style={authPageBackgroundStyle}>
       {/* ── Left promo panel ── */}
-      <aside className="relative hidden lg:flex flex-col bg-[#ecfdf5] px-10 xl:px-14 py-8 overflow-hidden">
+      <aside className="relative hidden lg:flex flex-col bg-white/35 px-10 xl:px-14 py-8 overflow-hidden backdrop-blur-[2px]">
         <div className="absolute -right-20 top-24 w-72 h-72 rounded-full bg-[#059669]/10 blur-3xl pointer-events-none" />
         <div className="absolute -left-16 bottom-20 w-64 h-64 rounded-full bg-[#99f6e4]/20 blur-3xl pointer-events-none" />
 
@@ -265,7 +267,7 @@ export default function RegisterPage() {
       </aside>
 
       {/* ── Right form panel ── */}
-      <section className="bg-white flex flex-col min-h-screen px-5 sm:px-10 lg:px-12 xl:px-16 py-6 lg:py-8">
+      <section className="bg-white/90 flex flex-col min-h-screen px-5 sm:px-10 lg:px-12 xl:px-16 py-6 lg:py-8 backdrop-blur-sm">
         <div className="flex items-center justify-between lg:justify-end mb-6">
           <Link href="/" className="lg:hidden flex items-center gap-2">
             {brand.logo ? (
@@ -355,19 +357,18 @@ export default function RegisterPage() {
                 }
               />
 
-              <button
-                type="submit"
-                disabled={!canSubmit || loading}
-                className={`mt-2 w-full h-12 rounded-xl font-semibold text-[15px] transition flex items-center justify-center gap-2 ${
-                  canSubmit && !loading
-                    ? 'text-white shadow-[0_8px_20px_rgba(5,150,105,0.22)] hover:brightness-105'
-                    : 'bg-[#D0D5DD] text-white cursor-not-allowed'
-                }`}
-                style={canSubmit && !loading ? { background: 'linear-gradient(95deg, #059669 0%, #0d9488 55%, #14b8a6 100%)' } : undefined}
-              >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                Start Your FREE FOREVER Plan
-              </button>
+              <div className="mt-2">
+                {loading ? (
+                  <FlowButtonLoading text="Creating account…" />
+                ) : (
+                  <FlowButton
+                    type="submit"
+                    text="Start Your FREE FOREVER Plan"
+                    className="w-full"
+                    disabled={!canSubmit}
+                  />
+                )}
+              </div>
             </form>
 
             <GoogleSignInButton

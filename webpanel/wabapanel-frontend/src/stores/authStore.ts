@@ -217,14 +217,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ features });
       return;
     }
+    const prev =
+      (user as unknown as { featureOverrides?: Record<string, unknown> }).featureOverrides || {};
     set({
       features,
       user: {
         ...user,
         featureOverrides: {
-          ...((user as unknown as { featureOverrides?: Record<string, unknown> }).featureOverrides || {}),
+          ...prev,
           selectedModules,
           industry,
+          // Keep manage-profile completion when services/business change.
+          profileComplete: Boolean(prev.profileComplete),
         },
       } as User,
     });

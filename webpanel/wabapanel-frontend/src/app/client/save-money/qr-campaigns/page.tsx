@@ -10,7 +10,7 @@ import CampaignReportModal from '@/components/campaigns/CampaignReportModal';
 import { campaignApi, presetMessageApi, segmentApi, tagApi, pipelineApi } from '@/lib/api';
 import type { Campaign, Segment, Tag } from '@/types';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import { adminContentColumnClass, dashboardNoticeClass, dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 
 const primaryBtn =
   'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
@@ -196,8 +196,8 @@ export default function QrCampaignsPage() {
         </button>
       </div>
 
-      <div className={`${dashboardCardShell} flex items-start gap-2 border-amber-200 bg-amber-50 text-[13px] text-amber-800`}>
-        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0" />
+      <div className={`${dashboardNoticeClass} flex items-start gap-2 text-[13px]`}>
+        <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-[#00896F]" />
         <span>Messages go from your <b>Web WhatsApp (QR)</b> number with human-like delays and a daily safety limit (warm-up). If the limit is reached, the campaign pauses and <b>auto-resumes the next day</b>. Bulk sending via Web WhatsApp always carries some ban risk — keep content non-spammy.</span>
       </div>
 
@@ -272,8 +272,8 @@ export default function QrCampaignsPage() {
             <p className="text-[11px] text-admin-text-subdued">Har message ke beech {form.minInterval}-{form.maxInterval}s ka random gap. 0 = no delay (fastest, higher ban risk).</p>
           </div>
 
-          <div className="space-y-2 rounded-lg border border-amber-100 bg-amber-50/40 p-3">
-            <p className="text-xs font-medium text-admin-text">Schedule (optional) — leave empty to keep as draft and start manually</p>
+          <div className={`${dashboardNoticeCompactClass} space-y-2 py-3`}>
+            <p className="text-xs font-medium text-[#101828]">Schedule (optional) — leave empty to keep as draft and start manually</p>
             <div className="flex gap-2">
               <input type="datetime-local" value={createSchedAt} onChange={(e) => setCreateSchedAt(e.target.value)}
                 className={`${fieldClass} flex-1`} />
@@ -284,7 +284,7 @@ export default function QrCampaignsPage() {
                 <option value="monthly">Monthly</option>
               </select>
             </div>
-            {createSchedAt && <p className="text-[11px] text-amber-700">Campaign will run automatically at the selected time{createSchedRec !== 'none' ? ` and repeat ${createSchedRec}` : ''}.</p>}
+            {createSchedAt && <p className="text-[11px] text-[#3d4a45]">Campaign will run automatically at the selected time{createSchedRec !== 'none' ? ` and repeat ${createSchedRec}` : ''}.</p>}
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

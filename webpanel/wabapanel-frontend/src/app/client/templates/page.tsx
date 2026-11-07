@@ -11,19 +11,18 @@ import WhatsAppPhonePreview from '@/components/WhatsAppPhonePreview';
 import { templateApi, mediaApi } from "@/lib/api";
 import type { Template } from '@/types';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  dashboardFieldClass,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
-const secondaryBtn =
-  'inline-flex items-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-40';
+const fieldClass = dashboardFieldClass;
 
-const primaryBtn =
-  'inline-flex items-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-40';
-
-const fieldClass =
-  'w-full rounded-lg border border-admin-border bg-white px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued focus:outline-none focus:ring-2 focus:ring-admin-border';
-
-const chipSelected = 'bg-admin-text border-admin-text text-white';
-const chipUnselected = 'bg-white border-admin-border text-admin-text hover:bg-[#f6f6f7]';
+const chipSelected = 'bg-[#00896F] border-[#00896F] text-white';
+const chipUnselected = 'bg-white/60 border-white/70 text-[#303030] hover:bg-white/85';
 
 interface TemplateButton {
   type: 'QUICK_REPLY' | 'URL' | 'PHONE_NUMBER' | 'CATALOG';
@@ -454,7 +453,7 @@ export default function TemplatesPage() {
               </label>
               {form.isCarousel && (
                 <div className="mt-3 space-y-4">
-                  <p className="text-[12px] text-amber-600">For carousels, the Header above and Buttons below are ignored — each card has its own image/video + 1-2 buttons. Meta rule: all cards must have the same number and type of buttons.</p>
+                  <p className="text-[12px] text-[#0f766e]">For carousels, the Header above and Buttons below are ignored — each card has its own image/video + 1-2 buttons. Meta rule: all cards must have the same number and type of buttons.</p>
                   {form.cards.map((card, ci) => (
                     <div key={ci} className="space-y-2 rounded-lg border border-admin-border bg-[#f6f6f7] p-3">
                       <div className="flex items-center justify-between">

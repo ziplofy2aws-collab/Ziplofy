@@ -28,7 +28,7 @@ const labelClass = 'mb-1 block text-[12px] font-medium text-admin-text-secondary
 
 const statusColor: Record<string, string> = {
   open: 'bg-blue-50 text-blue-700 ring-blue-600/15',
-  awaiting_reply: 'bg-amber-50 text-amber-700 ring-amber-600/15',
+  awaiting_reply: 'bg-[#eef8f0] text-[#0f766e] ring-[#00896F]/20',
   answered: 'bg-emerald-50 text-emerald-700 ring-emerald-600/15',
   closed: 'bg-[#f6f6f7] text-admin-text-secondary ring-admin-border',
 };

@@ -10,11 +10,11 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export default function Input({ label, error, icon, className = '', ...props }: InputProps) {
   return (
     <div className="w-full">
-      {label && <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>}
+      {label && <label className="mb-1.5 block text-[13px] font-semibold text-slate-800">{label}</label>}
       <div className="relative">
-        {icon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">{icon}</div>}
+        {icon && <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-[#8a9a93]">{icon}</div>}
         <input
-          className={`w-full rounded-xl border border-gray-200 bg-gray-50/50 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 transition-colors focus:bg-white focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-50 disabled:text-gray-500 ${icon ? 'pl-10' : ''} ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''} ${className}`}
+          className={`w-full rounded-2xl border border-white/80 bg-white/75 px-3.5 py-2.5 text-sm text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition placeholder:text-slate-400 focus:border-emerald-400/70 focus:bg-white/90 focus:ring-4 focus:ring-emerald-500/15 disabled:opacity-60 ${icon ? 'pl-10' : ''} ${error ? 'border-red-400 focus:border-red-400 focus:ring-red-500/20' : ''} ${className}`}
           {...props}
         />
       </div>
