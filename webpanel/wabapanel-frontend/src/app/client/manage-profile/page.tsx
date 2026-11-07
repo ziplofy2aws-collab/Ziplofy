@@ -8,6 +8,7 @@ import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import AppStatusScreen from '@/components/status/AppStatusScreen';
 import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
+import { hideBusy, showBusy } from '@/stores/busyStore';
 
 type ProfileForm = {
   name: string;
@@ -93,6 +94,8 @@ export default function ManageProfilePage() {
 
   const saveStep = async () => {
     setSaving(true);
+    showBusy(step === 2 ? 'Finishing…' : 'Saving…');
+    const started = Date.now();
     try {
       let payload: Record<string, unknown>;
       if (step === 0) {
@@ -142,6 +145,9 @@ export default function ManageProfilePage() {
         'Could not save profile';
       toast.error(message);
     } finally {
+      const wait = Math.max(0, 500 - (Date.now() - started));
+      if (wait) await new Promise((r) => window.setTimeout(r, wait));
+      hideBusy();
       setSaving(false);
     }
   };

@@ -17,6 +17,7 @@ import AppStatusScreen from '@/components/status/AppStatusScreen';
 import AuthPageBackdrop, { BrandMark } from '@/components/status/AuthPageBackdrop';
 import PageTransition from '@/components/transitions/PageTransition';
 import { FlowButton } from '@/components/ui/flow-button';
+import DashboardBusyBridge from '@/components/status/DashboardBusyBridge';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -173,6 +174,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <I18nProvider>
         <CallProvider>
           <NotificationProvider />
+          <DashboardBusyBridge />
           {children}
         </CallProvider>
       </I18nProvider>
@@ -191,6 +193,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <I18nProvider>
         <CallProvider>
           <NotificationProvider />
+          <DashboardBusyBridge />
           <AuthPageBackdrop>
             {!hideChrome ? (
               <header className="px-4 pt-4 sm:px-6">
@@ -219,6 +222,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     <I18nProvider>
       <CallProvider>
         <NotificationProvider />
+        <DashboardBusyBridge />
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
         <div className="client-orbitly-shell flex h-screen flex-col overflow-hidden antialiased text-admin-text">
           <Header variant="shopify" />

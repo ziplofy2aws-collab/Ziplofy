@@ -61,11 +61,11 @@ export default function PwaInstallButton({
     variant === 'dark'
       ? 'admin-header-control flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-white transition-colors'
       : iconOnly
-        ? 'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#e8efe9] bg-white/70 text-[#00896F] shadow-sm backdrop-blur-md transition-all duration-200 hover:bg-[#eef8f0]'
+        ? 'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#e8efe9] bg-white text-[#00896F] shadow-[0_1px_2px_rgba(15,61,46,0.06)] transition-all duration-200 hover:border-[#cfe8dc] hover:bg-[#eef8f0] hover:shadow-sm'
         : 'flex items-center gap-1.5 rounded-full bg-[#00896F] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#007a63]';
 
   return (
-    <div className="relative shrink-0">
+    <div className="relative z-[1] shrink-0 isolate">
       <button
         type="button"
         onClick={handleClick}
@@ -73,7 +73,7 @@ export default function PwaInstallButton({
         aria-label="Install App"
         className={btnClass}
       >
-        <Download className="h-4 w-4" />
+        <Download className="h-4 w-4" strokeWidth={2} />
         {!iconOnly && <span className="hidden sm:inline">Install App</span>}
       </button>
       {showHelp && !canPrompt && (

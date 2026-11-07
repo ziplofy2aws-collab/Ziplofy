@@ -4,19 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { Building2, X } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { authApi, workspaceApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { fireConfettiFireworks } from '@/lib/confettiFireworks';
 import AppStatusScreen from '@/components/status/AppStatusScreen';
 import WorkspaceCongrats from '@/components/status/WorkspaceCongrats';
-import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
+import { FlowButton } from '@/components/ui/flow-button';
+import AppFormModal, { appModalFieldClass, appModalLabelClass } from '@/components/ui/AppFormModal';
 
 const glassPanel =
   'overflow-hidden rounded-[28px] border border-white/70 bg-white/45 shadow-[0_24px_60px_rgba(15,23,42,0.10)] backdrop-blur-2xl';
-const fieldClass =
-  'mt-1.5 w-full rounded-2xl border border-white/80 bg-white/75 px-3.5 py-3 text-[14px] text-slate-900 outline-none transition placeholder:text-slate-400 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] focus:border-emerald-400/70 focus:bg-white/90 focus:ring-4 focus:ring-emerald-500/15';
-const labelClass = 'block text-[13px] font-semibold text-slate-800';
 
 type Phase = 'ready' | 'checking' | 'celebrating' | 'entering';
 
@@ -30,6 +28,7 @@ export default function CreateWorkspacePage() {
   const [saving, setSaving] = useState(false);
   const [portalReady, setPortalReady] = useState(false);
   const [continuing, setContinuing] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
     setPortalReady(true);
@@ -83,11 +82,14 @@ export default function CreateWorkspacePage() {
 
   const create = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaving(true);
+    setFormError(null);
     if (name.trim().length < 2) {
-      toast.error('Enter a workspace name');
+      setFormError('Enter a workspace name (at least 2 characters).');
+      setSaving(false);
       return;
     }
-    setSaving(true);
+    const started = Date.now();
     try {
       await workspaceApi.create({ name: name.trim(), description: description.trim() });
       try {
@@ -106,9 +108,12 @@ export default function CreateWorkspacePage() {
       const message =
         (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
         'Could not create workspace';
+      setFormError(message);
       toast.error(message);
       setPhase('ready');
     } finally {
+      const wait = Math.max(0, 500 - (Date.now() - started));
+      if (wait) await new Promise((r) => window.setTimeout(r, wait));
       setSaving(false);
     }
   };
@@ -156,82 +161,56 @@ export default function CreateWorkspacePage() {
           Get started by creating your first workspace to manage your campaigns and website.
         </p>
         <div className="mt-6">
-          <FlowButton text="Create First Workspace" className="w-full" onClick={() => setOpen(true)} />
+          <FlowButton
+            text="Create First Workspace"
+            className="w-full"
+            onClick={() => {
+              setFormError(null);
+              setOpen(true);
+            }}
+          />
         </div>
       </div>
 
-      {open ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button
-            type="button"
-            aria-label="Close dialog"
-            className="absolute inset-0 bg-slate-900/25 backdrop-blur-[3px]"
+      <AppFormModal
+        open={open}
+        eyebrow="New workspace"
+        title="Create workspace"
+        description="Each workspace keeps campaigns, contacts, and channels organized for one business."
+        onClose={() => setOpen(false)}
+        onSubmit={create}
+        confirmLabel="Create workspace"
+        confirmLoadingLabel="Creating…"
+        loading={saving}
+        error={formError}
+      >
+        <label className={appModalLabelClass}>
+          Workspace name <span className="text-emerald-600">*</span>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={appModalFieldClass}
+            placeholder="e.g. Main business"
+            required
+            minLength={2}
+            maxLength={100}
+            autoFocus
             disabled={saving}
-            onClick={() => setOpen(false)}
           />
-          <form
-            onSubmit={create}
-            className={`relative ${glassPanel} w-full max-w-md space-y-4 px-5 py-6 sm:px-7 sm:py-7`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">
-                  New workspace
-                </p>
-                <h3 className="mt-1 text-[18px] font-semibold tracking-tight text-slate-900">
-                  Create workspace
-                </h3>
-              </div>
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => setOpen(false)}
-                className="rounded-xl border border-white/80 bg-white/55 p-2 text-slate-500 transition hover:bg-white/80 hover:text-slate-800 disabled:opacity-50"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            <label className={labelClass}>
-              Workspace name <span className="text-emerald-600">*</span>
-              <input
-                className={fieldClass}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Main business"
-                required
-                minLength={2}
-                autoFocus
-              />
-            </label>
-
-            <label className={labelClass}>
-              Description
-              <textarea
-                className={`${fieldClass} min-h-[100px] resize-y`}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Optional short description"
-              />
-            </label>
-
-            <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:items-center sm:justify-end">
-              <FlowButton
-                type="button"
-                text="Cancel"
-                className="sm:w-auto sm:min-w-[120px]"
-                disabled={saving}
-                onClick={() => setOpen(false)}
-              />
-              {saving ? (
-                <FlowButtonLoading text="Creating…" className="sm:w-auto sm:min-w-[190px]" />
-              ) : (
-                <FlowButton type="submit" text="Create workspace" className="sm:w-auto sm:min-w-[190px]" />
-              )}
-            </div>
-          </form>
-        </div>
-      ) : null}
+        </label>
+        <label className={appModalLabelClass}>
+          Description
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            className={`${appModalFieldClass} min-h-[100px] resize-y`}
+            placeholder="Optional short description"
+            maxLength={500}
+            disabled={saving}
+          />
+        </label>
+      </AppFormModal>
     </div>
   );
 }

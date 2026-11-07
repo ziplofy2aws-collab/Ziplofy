@@ -19,6 +19,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
+import { showBusy } from '@/stores/busyStore';
 import { useI18n } from '@/lib/i18n';
 import { adminHeaderSearchClass } from '@/components/layout/admin-header';
 import { filterClientNavCatalog } from '@/lib/filter-client-nav';
@@ -111,6 +112,7 @@ export default function ClientGlobalSearch({
 
   const goTo = useCallback(
     (href: string) => {
+      showBusy('Loading…');
       router.push(href);
       setQuery('');
       close();
@@ -306,7 +308,7 @@ export default function ClientGlobalSearch({
           )
         : null}
 
-      <div ref={rootRef} className={`relative z-[1202] w-full ${className}`}>
+      <div ref={rootRef} className={`relative w-full min-w-0 ${open ? 'z-[1202]' : 'z-0'} ${className}`}>
         {mobileIconOnly ? (
           <>
             <button

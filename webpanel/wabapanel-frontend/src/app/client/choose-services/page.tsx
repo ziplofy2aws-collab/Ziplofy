@@ -7,6 +7,7 @@ import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
 import { fireServiceUnlockConfetti } from '@/lib/confettiFireworks';
+import { hideBusy, showBusy } from '@/stores/busyStore';
 
 type CatalogModule = { id: string; label: string; locked: boolean; selected: boolean };
 
@@ -51,9 +52,11 @@ export default function ChooseServicesPage() {
       .filter((mod) => (mod.id === item.id ? !mod.selected : mod.selected))
       .map((mod) => mod.id);
     setSavingId(item.id);
+    showBusy(willAdd ? 'Adding service…' : 'Updating services…');
     setModules((current) =>
       current.map((mod) => (mod.id === item.id ? { ...mod, selected: !mod.selected } : mod))
     );
+    const started = Date.now();
     try {
       const res = await authApi.updateModules(next);
       const data = res.data.data;
@@ -73,6 +76,9 @@ export default function ChooseServicesPage() {
       toast.error('Could not update services');
       load();
     } finally {
+      const wait = Math.max(0, 500 - (Date.now() - started));
+      if (wait) await new Promise((r) => window.setTimeout(r, wait));
+      hideBusy();
       setSavingId('');
     }
   };
