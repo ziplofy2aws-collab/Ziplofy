@@ -687,7 +687,7 @@ export default function InformaticThemeEditor() {
       </header>
 
       {useCatalog && !storeId ? (
-        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-center text-[12px] text-amber-950">
+        <div className="border-b border-[#aee9d1]/80 bg-[#eef8f0]/80 px-4 py-2 text-center text-[12px] text-[#3d4a45]">
           Select a store from the account menu to save theme changes to the server. Until then, edits are kept in
           this browser only.
         </div>

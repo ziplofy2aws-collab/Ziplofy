@@ -422,7 +422,7 @@ function LoginForm() {
                     </div>
                   )}
                   {needsVerification && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+                    <div className="rounded-xl border border-[#aee9d1]/80 bg-gradient-to-br from-[#eef8f0]/95 via-white/55 to-white/40 p-3 text-sm leading-relaxed text-[#3d4a45] shadow-[0_8px_28px_rgba(15,61,46,0.05),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-xl">
                       Your email is not verified yet.{' '}
                       <button type="button" onClick={handleResend} className="font-semibold text-[#047857] underline">
                         Resend verification email

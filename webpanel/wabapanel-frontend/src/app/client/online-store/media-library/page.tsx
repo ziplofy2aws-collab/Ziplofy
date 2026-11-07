@@ -12,7 +12,7 @@ import {
   Trash2,
   Upload,
 } from 'lucide-react';
-import { adminContentColumnClass, adminListPrimaryButtonClass } from '@/components/layout/dashboard-ui';
+import { adminContentColumnClass, adminListPrimaryButtonClass, dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 import { selectActiveStore, useStoreStore } from '@/stores/storeStore';
 import {
   applyS3MetaFromListResponse,
@@ -289,7 +289,7 @@ export default function OnlineStoreMediaLibraryPage() {
       </header>
 
       {!storeId ? (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-950">
+        <div className={`${dashboardNoticeCompactClass} py-3 text-[13px]`}>
           Select a store from the account menu to upload media for your online store.
         </div>
       ) : null}

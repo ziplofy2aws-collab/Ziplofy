@@ -148,11 +148,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return <AppStatusScreen variant="loading" />;
   }
 
-  if (!isAuthenticated || !user) return null;
+  if (!isAuthenticated || !user) {
+    return <AppStatusScreen variant="loading" />;
+  }
 
   {
     const r = (user as unknown as { role?: string })?.role;
-    if (r === 'admin' || r === 'super_admin') return null;
+    if (r === 'admin' || r === 'super_admin') {
+      return <AppStatusScreen variant="loading" />;
+    }
   }
 
   const role = (user as unknown as { role?: string })?.role;

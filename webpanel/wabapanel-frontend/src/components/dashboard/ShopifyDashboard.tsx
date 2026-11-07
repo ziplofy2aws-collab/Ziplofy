@@ -16,7 +16,7 @@ export const statColorStyles: Record<StatColor, { icon: string; bar: string }> =
   purple: { icon: 'bg-[#f5f0ff] text-[#7c3aed]', bar: 'from-[#c4b5fd] to-[#a78bfa]' },
   orange: { icon: 'bg-[#fff7ed] text-[#ea580c]', bar: 'from-[#fdba74] to-[#fb923c]' },
   red: { icon: 'bg-[#fef2f2] text-[#dc2626]', bar: 'from-[#fca5a5] to-[#f87171]' },
-  amber: { icon: 'bg-[#fffbeb] text-[#d97706]', bar: 'from-[#fcd34d] to-[#fbbf24]' },
+  amber: { icon: 'bg-[#eef8f0] text-[#0f766e]', bar: 'from-[#6ee7b0] to-[#14b8a6]' },
   indigo: { icon: 'bg-[#eef2ff] text-[#4f46e5]', bar: 'from-[#a5b4fc] to-[#818cf8]' },
   rose: { icon: 'bg-[#fff1f2] text-[#e11d48]', bar: 'from-[#fda4af] to-[#fb7185]' },
 };

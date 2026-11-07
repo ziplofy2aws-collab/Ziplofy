@@ -101,12 +101,12 @@ function SsoExchange() {
     );
   }
 
-  return <AppStatusScreen variant="loading" silent />;
+  return <AppStatusScreen variant="loading" />;
 }
 
 export default function SsoPage() {
   return (
-    <Suspense fallback={<AppStatusScreen variant="loading" silent />}>
+    <Suspense fallback={<AppStatusScreen variant="loading" />}>
       <SsoExchange />
     </Suspense>
   );

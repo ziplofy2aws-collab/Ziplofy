@@ -64,7 +64,7 @@ const navItems: NavItem[] = [
       { label: 'Facebook Inbox', href: '/client/chat?channel=facebook', icon: <FaFacebook className="w-4 h-4 text-blue-600" /> },
       { label: 'Telegram Bot Inbox', href: '/client/chat?channel=telegram', icon: <FaTelegram className="w-4 h-4 text-sky-500" /> },
       { label: 'Personal Telegram Inbox', href: '/client/chat?channel=telegram_personal', icon: <FaTelegram className="w-4 h-4 text-sky-600" /> },
-      { label: 'Email Inbox', href: '/client/chat?channel=email', icon: <FaEnvelope className="w-4 h-4 text-orange-500" /> },
+      { label: 'Email Inbox', href: '/client/chat?channel=email', icon: <FaEnvelope className="w-4 h-4 text-[#00896F]" /> },
     ],
   },
   {

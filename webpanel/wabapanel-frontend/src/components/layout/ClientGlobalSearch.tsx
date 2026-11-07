@@ -19,7 +19,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
-import { showNavBusy } from '@/stores/busyStore';
+import * as busyStore from '@/stores/busyStore';
 import { useI18n } from '@/lib/i18n';
 import { adminHeaderSearchClass } from '@/components/layout/admin-header';
 import { filterClientNavCatalog } from '@/lib/filter-client-nav';
@@ -42,12 +42,14 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 }
 
 const resultRowClass = (active: boolean) =>
-  `flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors rounded-xl mx-1 ${
-    active ? 'bg-[#eef8f0]' : 'hover:bg-[#f4faf5]'
+  `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+    active
+      ? 'bg-[#eef8f0] ring-1 ring-inset ring-[#aee9d1]/80'
+      : 'hover:bg-[#f4faf6]'
   }`;
 
 const sectionLabelClass =
-  'px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#8a9a93]';
+  'sticky top-0 z-[1] bg-[#fbfdfc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#8a9a93]';
 
 type ClientGlobalSearchProps = {
   className?: string;
@@ -112,10 +114,15 @@ export default function ClientGlobalSearch({
 
   const goTo = useCallback(
     (href: string) => {
-      router.push(href);
       setQuery('');
       close();
-      showNavBusy(href);
+      // Prefer nav busy (URL + page-ready); fall back if HMR left the named export undefined.
+      if (typeof busyStore.showNavBusy === 'function') {
+        busyStore.showNavBusy(href);
+      } else if (typeof busyStore.showBusy === 'function') {
+        busyStore.showBusy();
+      }
+      router.push(href);
     },
     [router, close]
   );
@@ -185,7 +192,13 @@ export default function ClientGlobalSearch({
           onMouseEnter={() => setActiveIndex(idx)}
           onClick={() => goTo(item.href)}
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f1f1f1] text-[#616161]">
+          <span
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border text-[#00896F] ${
+              active
+                ? 'border-[#aee9d1] bg-white'
+                : 'border-[#e8efe9] bg-[#f7fbf8]'
+            }`}
+          >
             {item.section === 'Inbox' ? (
               <MessageSquare className="h-4 w-4" aria-hidden />
             ) : item.title === 'Dashboard' ? (
@@ -195,11 +208,11 @@ export default function ClientGlobalSearch({
             )}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] font-medium text-[#303030]">{title}</span>
-            <span className="mt-0.5 block truncate text-xs text-[#8a8a8a]">{breadcrumb}</span>
+            <span className="block truncate text-[13px] font-medium text-[#101828]">{title}</span>
+            <span className="mt-0.5 block truncate text-xs text-[#8a9a93]">{breadcrumb}</span>
           </span>
           <ArrowRight
-            className={`h-3.5 w-3.5 shrink-0 ${active ? 'text-[#616161]' : 'text-[#e3e3e3]'}`}
+            className={`h-3.5 w-3.5 shrink-0 ${active ? 'text-[#00896F]' : 'text-[#d0d9d4]'}`}
             aria-hidden
           />
         </button>
@@ -264,7 +277,7 @@ export default function ClientGlobalSearch({
         <div className="py-1">{renderResultsList()}</div>
       )}
 
-      <div className="border-t border-[#ebebeb] px-3 py-2 text-[11px] text-[#8a8a8a]">
+      <div className="sticky bottom-0 border-t border-[#e8efe9] bg-[#fbfdfc] px-3 py-2 text-[11px] text-[#8a9a93]">
         <span className="hidden sm:inline">↑↓ navigate · Enter open · Esc close</span>
         <span className="sm:hidden">Tap a result to open</span>
       </div>
@@ -276,7 +289,7 @@ export default function ClientGlobalSearch({
       ref={panelRef}
       id={listId}
       role="listbox"
-      className="admin-header-dropdown absolute left-0 right-0 top-full z-[1300] mt-2 max-h-[min(70vh,480px)] overflow-y-auto rounded-2xl border border-white/50 bg-white/60 py-1.5 shadow-[0_16px_40px_rgba(15,61,46,0.14),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-2xl animate-[orbitly-pop_140ms_ease-out]"
+      className="absolute left-0 right-0 top-full z-[1300] mt-2 max-h-[min(70vh,480px)] isolate overflow-y-auto overscroll-contain rounded-2xl border border-[#e8efe9] bg-[#fbfdfc] py-1.5 shadow-[0_18px_48px_rgba(15,61,46,0.18)] animate-[orbitly-pop_140ms_ease-out]"
     >
       {renderPanelBody()}
     </div>
@@ -286,7 +299,7 @@ export default function ClientGlobalSearch({
     <div
       id={`${listId}-mobile`}
       role="listbox"
-      className="max-h-[min(65vh,420px)] overflow-y-auto bg-white py-1.5"
+      className="max-h-[min(65vh,420px)] isolate overflow-y-auto overscroll-contain bg-[#fbfdfc] py-1.5"
     >
       {renderPanelBody()}
     </div>
@@ -298,8 +311,9 @@ export default function ClientGlobalSearch({
         ? createPortal(
             <div
               aria-hidden
-              /* Keep left rail clickable — sidebar sits at z-[1100]; do not cover it. */
-              className="fixed inset-0 z-[1090] bg-[#0f3d2e]/15 transition-[opacity,left] lg:left-[var(--client-sidebar-w,248px)]"
+              /* Dim page under search so sidebar/page colors don't bleed into the panel. */
+              className="fixed inset-0 z-[1090] bg-[#0f3d2e]/28 backdrop-blur-[2px] transition-[opacity,left] lg:left-[var(--client-sidebar-w,248px)]"
+              style={{ WebkitBackdropFilter: 'blur(2px)' }}
               onMouseDown={() => {
                 close();
               }}
@@ -325,7 +339,7 @@ export default function ClientGlobalSearch({
             </button>
             {mobileExpanded && (
               <div className="fixed inset-x-3 top-[3.75rem] z-[1300] md:hidden">
-                <div className="overflow-hidden rounded-2xl border border-[#e8efe9] bg-white shadow-[0_16px_40px_rgba(15,61,46,0.14)]">
+                <div className="isolate overflow-hidden rounded-2xl border border-[#e8efe9] bg-[#fbfdfc] shadow-[0_18px_48px_rgba(15,61,46,0.18)]">
                   <div className="border-b border-[#e8efe9] bg-[#f7fbf8] p-2">{searchInput}</div>
                   {mobileResultsPanel}
                 </div>

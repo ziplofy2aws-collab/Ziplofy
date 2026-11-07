@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbars while keeping scroll / swipe */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 :root {
   --background: #f3faf5;
   --foreground: #101828;
@@ -46,14 +55,14 @@ html.dark .admin-shopify-header {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-/* Header dropdown menus — soft glass panel */
+/* Header dropdown menus — solid Orbitly panel (no page bleed-through on scroll) */
 .admin-header-dropdown {
-  background-color: rgba(255, 255, 255, 0.62) !important;
-  border-color: rgba(255, 255, 255, 0.5) !important;
+  background-color: #fbfdfc !important;
+  border-color: #e8efe9 !important;
   color: #303030;
-  box-shadow: 0 16px 40px rgba(15, 61, 46, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 18px 48px rgba(15, 61, 46, 0.16);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .admin-header-dropdown-item {
   background-color: transparent;
@@ -114,6 +123,21 @@ button:active { transform: scale(0.98); }
   --orbitly-mint: #d4f4d8;
   --orbitly-mint-soft: #eef8f0;
   --orbitly-ink: #101828;
+  --orbitly-accent: #00896F;
+  /* Remap legacy admin tokens so every client page inherits Orbitly colors */
+  --page-background-color: transparent;
+  --admin-sidebar: #eef8f0;
+  --admin-surface: rgba(255, 255, 255, 0.62);
+  --admin-secondary: #eef8f0;
+  --admin-border: #e8efe9;
+  --admin-divider: #e8efe9;
+  --admin-row-hover: rgba(238, 248, 240, 0.9);
+  --admin-table-header: rgba(247, 251, 248, 0.92);
+  --admin-fill: #e8efe9;
+  --admin-text: #101828;
+  --admin-text-secondary: #6b7a74;
+  --admin-text-subdued: #8a9a93;
+  --admin-accent: #00896F;
   background-color: #f3faf5;
   background-image:
     radial-gradient(ellipse 70% 55% at 8% 18%, rgba(187, 247, 208, 0.55), transparent 58%),
@@ -125,6 +149,111 @@ button:active { transform: scale(0.98); }
 }
 .client-orbitly-main {
   background: transparent;
+}
+
+/* Unify flat white / black CTAs inside the client shell */
+.client-orbitly-main button.bg-admin-text,
+.client-orbitly-main a.bg-admin-text,
+.client-orbitly-main .bg-admin-text.text-white {
+  background-color: var(--orbitly-accent) !important;
+  box-shadow: 0 6px 16px rgba(0, 137, 111, 0.22);
+}
+.client-orbitly-main button.bg-admin-text:hover,
+.client-orbitly-main a.bg-admin-text:hover,
+.client-orbitly-main .bg-admin-text.text-white:hover {
+  background-color: #007a63 !important;
+}
+.client-orbitly-main .hover\:bg-\[\#1a1a1a\]:hover {
+  background-color: #007a63 !important;
+}
+.client-orbitly-main .focus\:ring-\[\#005bd3\]\/30:focus,
+.client-orbitly-main .focus\:ring-\[\#005bd3\]:focus {
+  --tw-ring-color: rgba(0, 137, 111, 0.28) !important;
+}
+.client-orbitly-main .focus\:border-\[\#005bd3\]:focus {
+  border-color: rgba(0, 137, 111, 0.55) !important;
+}
+.client-orbitly-main .text-\[\#005bd3\] {
+  color: #0f766e !important;
+}
+
+/* Remap legacy amber/yellow warning surfaces to Orbitly mint */
+.client-orbitly-main .bg-amber-50,
+.client-orbitly-main .bg-amber-50\/40,
+.client-orbitly-main .bg-amber-50\/50,
+.client-orbitly-main .bg-amber-50\/60,
+.client-orbitly-main .bg-amber-50\/80,
+.client-orbitly-main .bg-amber-50\/90,
+.client-orbitly-main .bg-amber-100,
+.client-orbitly-main .bg-yellow-50,
+.client-orbitly-main .bg-yellow-100,
+.client-orbitly-main .hover\:bg-amber-50:hover,
+.client-orbitly-main .hover\:bg-yellow-50:hover {
+  background-color: rgba(238, 248, 240, 0.92) !important;
+}
+.client-orbitly-main .border-amber-100,
+.client-orbitly-main .border-amber-200,
+.client-orbitly-main .border-amber-200\/70,
+.client-orbitly-main .border-amber-200\/80,
+.client-orbitly-main .border-amber-300,
+.client-orbitly-main .border-yellow-200 {
+  border-color: rgba(174, 233, 209, 0.85) !important;
+}
+.client-orbitly-main .text-amber-500,
+.client-orbitly-main .text-amber-600,
+.client-orbitly-main .text-amber-700,
+.client-orbitly-main .text-amber-800,
+.client-orbitly-main .text-amber-800\/75,
+.client-orbitly-main .text-amber-900,
+.client-orbitly-main .text-amber-950,
+.client-orbitly-main .text-yellow-500,
+.client-orbitly-main .text-yellow-600,
+.client-orbitly-main .text-yellow-700,
+.client-orbitly-main .hover\:text-amber-600:hover,
+.client-orbitly-main .hover\:text-yellow-600:hover {
+  color: #0f766e !important;
+}
+.client-orbitly-main .bg-amber-500,
+.client-orbitly-main .bg-amber-600,
+.client-orbitly-main .hover\:bg-amber-600:hover,
+.client-orbitly-main .hover\:bg-amber-700:hover {
+  background-color: #00896F !important;
+}
+.client-orbitly-main .ring-amber-200,
+.client-orbitly-main .ring-amber-600\/15 {
+  --tw-ring-color: rgba(0, 137, 111, 0.2) !important;
+}
+.client-orbitly-main .bg-orange-50,
+.client-orbitly-main .bg-orange-50\/60,
+.client-orbitly-main .bg-orange-100 {
+  background-color: rgba(238, 248, 240, 0.85) !important;
+}
+.client-orbitly-main .text-orange-600,
+.client-orbitly-main .text-orange-700 {
+  color: #0f766e !important;
+}
+.client-orbitly-main .border-orange-100,
+.client-orbitly-main .border-orange-200 {
+  border-color: rgba(174, 233, 209, 0.8) !important;
+}
+
+/* Soft glass panels for common white cards/tables inside client pages */
+.client-orbitly-main .rounded-xl.border.border-admin-border.bg-white,
+.client-orbitly-main .rounded-lg.border.border-admin-border.bg-white,
+.client-orbitly-main .rounded-2xl.border.border-admin-border.bg-white {
+  background: rgba(255, 255, 255, 0.58) !important;
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  box-shadow:
+    0 8px 28px rgba(15, 61, 46, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.client-orbitly-main .bg-\[\#fafafa\],
+.client-orbitly-main .bg-\[\#f6f6f7\],
+.client-orbitly-main .bg-\[\#f7f7f7\],
+.client-orbitly-main .bg-\[\#f1f1f1\] {
+  background-color: rgba(238, 248, 240, 0.72) !important;
 }
 .client-orbitly-aside {
   background:

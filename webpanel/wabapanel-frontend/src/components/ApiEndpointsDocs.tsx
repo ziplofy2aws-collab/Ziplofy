@@ -2,6 +2,7 @@
 import React from 'react';
 import { Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { dashboardNoticeClass } from '@/components/layout/dashboard-ui';
 
 const BASE = (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/api$/, '') + '/api/v1';
 
@@ -229,8 +230,8 @@ export default function AllEndpoints({ KEY }: { KEY: string }) {
           curl={`curl -X DELETE ${BASE}/webhooks/WEBHOOK_ID -H "X-API-Key: ${KEY}"`} />
       </Section>
 
-      <div className="space-y-1 rounded-xl border border-amber-200 bg-amber-50/80 p-4 text-[12px] leading-relaxed text-amber-900">
-        <p className="font-semibold text-amber-950">Notes</p>
+      <div className={`${dashboardNoticeClass} space-y-1`}>
+        <p className="font-semibold text-[#101828]">Notes</p>
         <p>• All responses are JSON: {'{"success": true, "data": ...}'} — on error {'{"success": false, "message": "..."}'}</p>
         <p>• Phone numbers include the country code, without + (e.g. 919876543210)</p>
         <p>• 401 for auth failures, 400 for invalid input, 404 when not found</p>

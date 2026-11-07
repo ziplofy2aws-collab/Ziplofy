@@ -16,6 +16,7 @@ import {
   adminListTableHeadClass,
   adminListTableHeadRowClass,
 } from '@/components/admin-list-ui';
+import { dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 import { storeBlogApi, type StoreBlogItem } from '@/lib/store-blog';
 import { selectActiveStore, useStoreStore } from '@/stores/storeStore';
 
@@ -144,7 +145,7 @@ export function StoreBlogsManagePage() {
   if (!storeId) {
     return (
       <div className={adminListPageInnerClass}>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-950">
+        <div className={`${dashboardNoticeCompactClass} py-3 text-[13px]`}>
           Select a store from the account menu to manage blogs.
         </div>
       </div>

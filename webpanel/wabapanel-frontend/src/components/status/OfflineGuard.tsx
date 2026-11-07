@@ -3,15 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import AppStatusScreen from './AppStatusScreen';
 
-/**
- * Full-screen offline overlay. Mount once near the app root.
- */
+/** Full-screen offline overlay — loader only. */
 export default function OfflineGuard() {
   const [offline, setOffline] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const sync = () => setOffline(typeof navigator !== 'undefined' && !navigator.onLine);
     sync();
+    setReady(true);
     window.addEventListener('online', sync);
     window.addEventListener('offline', sync);
     return () => {
@@ -20,6 +20,6 @@ export default function OfflineGuard() {
     };
   }, []);
 
-  if (!offline) return null;
+  if (!ready || !offline) return null;
   return <AppStatusScreen variant="offline" />;
 }

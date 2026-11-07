@@ -64,13 +64,13 @@ export function isSameClientHref(href: string): boolean {
 /** Dashboard-wide busy veil — keep ActionBusyOverlay mounted in client layout. */
 export const useBusyStore = create<BusyState>((set) => ({
   count: 0,
-  label: 'Please wait',
+  label: 'Loading',
   pendingHref: null,
   navPending: false,
   show: (label) =>
     set((s) => ({
       count: s.count > 0 ? s.count : 1,
-      label: (label && label.trim()) || s.label || 'Please wait',
+      label: (label && label.trim()) || s.label || 'Loading',
     })),
   hide: () => set((s) => ({ count: Math.max(0, s.count - 1), pendingHref: null, navPending: false })),
   reset: () => {
@@ -79,7 +79,7 @@ export const useBusyStore = create<BusyState>((set) => ({
     pageReady = false;
     expectsPageTransition = false;
     navStartedAt = 0;
-    set({ count: 0, label: 'Please wait', pendingHref: null, navPending: false });
+    set({ count: 0, label: 'Loading', pendingHref: null, navPending: false });
   },
 }));
 
@@ -144,7 +144,7 @@ export function signalPageReady() {
  * Same-page clicks → no loader.
  * Clears only after URL arrives AND page is ready (not merely on URL change).
  */
-export function showNavBusy(href?: string, label = 'Loading…'): boolean {
+export function showNavBusy(href?: string, label = 'Loading'): boolean {
   if (typeof window === 'undefined') return false;
 
   if (href && isSameClientHref(href)) {
@@ -163,7 +163,7 @@ export function showNavBusy(href?: string, label = 'Loading…'): boolean {
 
   useBusyStore.setState({
     count: 1,
-    label: label || 'Loading…',
+    label: label || 'Loading',
     pendingHref: normalized?.full ?? null,
     navPending: true,
   });

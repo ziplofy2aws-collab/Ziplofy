@@ -18,7 +18,7 @@ import {
   THEME_EDITOR_STATIC_CONFIG,
   isStaticInformaticThemeEditorMode,
 } from '@/config/informatic-theme-editor-static.config';
-import { adminContentColumnClass, adminListPrimaryButtonClass } from '@/components/layout/dashboard-ui';
+import { adminContentColumnClass, adminListPrimaryButtonClass, dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 import { InformaticThemePreviewModal } from '@/components/themes/InformaticThemePreviewModal';
 import {
   informaticInstalledThemesApi,
@@ -402,7 +402,7 @@ export default function ThemesPage() {
       ) : null}
 
       {!activeStoreId ? (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-950">
+        <div className={`${dashboardNoticeCompactClass} py-3 text-[13px]`}>
           Select a store from the header to install themes and save customizations.
         </div>
       ) : (
@@ -447,7 +447,7 @@ export default function ThemesPage() {
       </header>
 
       {loadError ? (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-950">
+        <div className={`${dashboardNoticeCompactClass} py-3 text-[13px]`}>
           {loadError} Ensure codiic-server is running and{' '}
           <code className="rounded bg-white/70 px-1">CODIIC_API_URL</code> is set on wabapanel-express.
         </div>

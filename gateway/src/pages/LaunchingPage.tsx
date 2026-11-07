@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, applySession, goToSso } from '../api';
+import LoadingOnly from '../components/LoadingOnly';
 import { FlowButton } from '../components/ui/flow-button';
 import type { SessionResponse } from '../types';
 
@@ -47,33 +48,31 @@ export default function LaunchingPage() {
     };
   }, [retryKey]);
 
+  if (!error) {
+    return <LoadingOnly />;
+  }
+
   return (
     <div className="shell">
       <div className="card">
         <h1 className="brand">Opening your workspace</h1>
-        {error ? (
-          <>
-            <div className="err">{error}</div>
-            <p className="sub" style={{ marginTop: 12 }}>
-              Make sure webpanel API (:5001) and app (:3002) are running, then retry.
-            </p>
-            <div style={{ marginTop: 16 }}>
-              <FlowButton
-                text="Retry"
-                onClick={() => {
-                  launchInflight = null;
-                  setError('');
-                  setRetryKey((n) => n + 1);
-                }}
-              />
-            </div>
-            <p className="switch" style={{ marginTop: 16 }}>
-              <Link to="/login">Back to login</Link>
-            </p>
-          </>
-        ) : (
-          <p className="sub">Provisioning your account and signing you in…</p>
-        )}
+        <div className="err">{error}</div>
+        <p className="sub" style={{ marginTop: 12 }}>
+          Make sure webpanel API (:5001) and app (:3002) are running, then retry.
+        </p>
+        <div style={{ marginTop: 16 }}>
+          <FlowButton
+            text="Retry"
+            onClick={() => {
+              launchInflight = null;
+              setError('');
+              setRetryKey((n) => n + 1);
+            }}
+          />
+        </div>
+        <p className="switch" style={{ marginTop: 16 }}>
+          <Link to="/login">Back to login</Link>
+        </p>
       </div>
     </div>
   );

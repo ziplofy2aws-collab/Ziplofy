@@ -9,6 +9,8 @@ import Badge from '@/components/ui/Badge';
 import { dashboardApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { displayPersonName } from '@/lib/brand';
+import AppStatusScreen from '@/components/status/AppStatusScreen';
+import { useBusyStore } from '@/stores/busyStore';
 import {
   adminContentColumnClass,
   dashboardChartCardShell,
@@ -61,6 +63,8 @@ export default function DashboardPage() {
   const { user, currentWorkspace } = useAuthStore();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  // Nav already shows ActionBusyOverlay — don't stack a second Lottie under it.
+  const navBusy = useBusyStore((s) => s.count > 0 || s.navPending);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -98,20 +102,12 @@ export default function DashboardPage() {
   const whatsappConnected = !!(currentWorkspace?.whatsapp?.isConnected || data?.whatsappConnected);
 
   if (loading) {
+    if (navBusy) {
+      return <div className={`${adminContentColumnClass} min-h-[60vh]`} aria-busy="true" />;
+    }
     return (
-      <div className={adminContentColumnClass}>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="min-h-[120px] animate-pulse rounded-2xl border border-[#e8efe9] bg-white/80 shadow-sm"
-            />
-          ))}
-        </div>
-        <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="min-h-[320px] animate-pulse rounded-2xl border border-[#e8efe9] bg-white/80 shadow-sm" />
-          <div className="min-h-[320px] animate-pulse rounded-2xl border border-[#e8efe9] bg-white/80 shadow-sm" />
-        </div>
+      <div className={`${adminContentColumnClass} flex min-h-[60vh] items-center justify-center`}>
+        <AppStatusScreen variant="loading" fullScreen={false} />
       </div>
     );
   }
@@ -210,10 +206,10 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {(
                 [
-                  { label: 'Marketing', rate: data.rateCard.marketing, box: 'border-emerald-100 bg-emerald-50', text: 'text-emerald-700' },
-                  { label: 'Utility', rate: data.rateCard.utility, box: 'border-blue-100 bg-blue-50', text: 'text-blue-700' },
-                  { label: 'Authentication', rate: data.rateCard.authentication, box: 'border-purple-100 bg-purple-50', text: 'text-purple-700' },
-                  { label: 'Service', rate: data.rateCard.service, box: 'border-orange-100 bg-orange-50', text: 'text-orange-700' },
+                  { label: 'Marketing', rate: data.rateCard.marketing, box: 'border-[#aee9d1]/80 bg-gradient-to-br from-[#eef8f0]/95 via-white/55 to-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md', text: 'text-[#0f766e]' },
+                  { label: 'Utility', rate: data.rateCard.utility, box: 'border-[#aee9d1]/70 bg-white/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md', text: 'text-[#00896F]' },
+                  { label: 'Authentication', rate: data.rateCard.authentication, box: 'border-white/70 bg-[#eef8f0]/70 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md', text: 'text-[#0f766e]' },
+                  { label: 'Service', rate: data.rateCard.service, box: 'border-[#aee9d1]/80 bg-gradient-to-br from-white/60 via-[#eef8f0]/80 to-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md', text: 'text-[#00896F]' },
                 ] as const
               ).map(({ label, rate, box, text }) => (
                 <div key={label} className={`rounded-lg border px-3 py-2.5 ${box}`}>

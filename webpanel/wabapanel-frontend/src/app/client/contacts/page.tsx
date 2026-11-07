@@ -10,14 +10,14 @@ import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import type { Contact, Tag } from '@/types';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardFieldClass,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
-const primaryBtn =
-  'inline-flex items-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex items-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:opacity-50';
-const filterSelect =
-  'rounded-lg border border-admin-border bg-white px-2.5 py-1.5 text-[13px] text-admin-text focus:border-[#005bd3] focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30';
+const filterSelect = `${dashboardFieldClass} w-auto min-w-[140px] py-1.5`;
 
 const PAGE_SIZE_OPTIONS = [20, 50, 100, 200];
 
@@ -255,7 +255,7 @@ export default function ContactsPage() {
   const statusPill = (status: string) => {
     const map: Record<string, string> = {
       active: 'bg-[#cdfee1] text-[#0d6b38] ring-[#0d6b38]/15',
-      opted_out: 'bg-amber-50 text-amber-700 ring-amber-600/15',
+      opted_out: 'bg-[#eef8f0] text-[#0f766e] ring-[#00896F]/20',
       blocked: 'bg-red-50 text-red-700 ring-red-600/15',
     };
     const label = status === 'opted_out' ? 'Unsubscribed' : status;
@@ -372,7 +372,7 @@ export default function ContactsPage() {
             {optedOutCount > 0 && (
               <>
                 {' · '}
-                <button type="button" onClick={() => { setPage(1); setStatusFilter('opted_out'); }} className="font-medium text-amber-700 hover:underline">
+                <button type="button" onClick={() => { setPage(1); setStatusFilter('opted_out'); }} className="font-medium text-[#0f766e] hover:underline">
                   {optedOutCount} unsubscribed
                 </button>
               </>
@@ -495,7 +495,7 @@ export default function ContactsPage() {
                       toast.success(optedOut ? 'Contact re-subscribed' : 'Contact unsubscribed');
                     } catch { toast.error('Failed to update'); }
                   }}
-                  className={`flex w-full items-center justify-center rounded-lg border px-3 py-2 text-[13px] font-medium ${detailContact.status === 'opted_out' ? 'border-[#aee9d1] text-[#0d6b38] hover:bg-[#f1f8f5]' : 'border-amber-200 text-amber-700 hover:bg-amber-50'}`}
+                  className={`flex w-full items-center justify-center rounded-lg border px-3 py-2 text-[13px] font-medium ${detailContact.status === 'opted_out' ? 'border-[#aee9d1] text-[#0d6b38] hover:bg-[#f1f8f5]' : 'border-[#aee9d1]/80 text-[#0f766e] hover:bg-[#eef8f0]'}`}
                 >
                   {detailContact.status === 'opted_out' ? 'Re-subscribe (opt-in)' : 'Unsubscribe (opt-out)'}
                 </button>

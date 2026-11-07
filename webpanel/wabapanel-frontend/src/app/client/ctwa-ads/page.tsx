@@ -5,7 +5,12 @@ import { Plus, Trash2, Edit, Target, TrendingUp, MousePointer, DollarSign, Pause
 import api, { workspaceApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 import {
   appModalFieldClass,
   appModalGlassPanel,
@@ -13,10 +18,6 @@ import {
 } from '@/components/ui/AppFormModal';
 import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
 
-const primaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
 const tagChip =
   'inline-flex items-center gap-1 rounded-full border border-white/80 bg-white/70 px-2.5 py-1 text-[12px] font-medium text-slate-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]';
 const modalOverlayClass =
@@ -107,7 +108,7 @@ const datePresets = [
 
 const statusColors: Record<string, string> = {
   active: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/15',
-  paused: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-600/15',
+  paused: 'bg-[#eef8f0] text-[#0f766e] ring-1 ring-inset ring-[#00896F]/20',
   completed: 'bg-[#f6f6f7] text-admin-text-secondary ring-1 ring-inset ring-admin-border',
   draft: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/15',
 };
@@ -445,7 +446,7 @@ export default function CTWAAdsPage() {
 
       {needsAdsToken && (
         <div className={dashboardCardShell}>
-          <p className="text-[13px] font-semibold text-admin-text">Ads access token {wa?.adsAccessToken ? <span className="font-normal text-emerald-700">(saved ✓)</span> : <span className="font-normal text-amber-700">(required for Sync from Meta)</span>}</p>
+          <p className="text-[13px] font-semibold text-admin-text">Ads access token {wa?.adsAccessToken ? <span className="font-normal text-emerald-700">(saved ✓)</span> : <span className="font-normal text-[#0f766e]">(required for Sync from Meta)</span>}</p>
           <p className="mt-1 text-[12px] text-admin-text-secondary">Your WhatsApp is connected via embedded/coexistence signup, so its token has no ads permission. Create a System User token in Meta Business Settings with <strong>ads_read</strong> permission (and your Ad Account assigned) and paste it here. Messaging keeps using your existing token — this one is only for ads sync.</p>
           <div className="mt-3 flex gap-2">
             <input type="password" placeholder={wa?.adsAccessToken ? 'Replace saved token (EAAG...)' : 'Paste ads access token (EAAG...)'} value={adsToken} onChange={(e) => setAdsToken(e.target.value)} className={inputClass + ' flex-1'} />
@@ -511,7 +512,7 @@ export default function CTWAAdsPage() {
             <div className="flex items-center gap-3 border-b border-admin-border bg-[#f6f6f7] px-4 py-2.5 text-[13px]">
               <span className="font-medium text-admin-text">{selectedIds.length} selected</span>
               <button type="button" onClick={() => bulkSetStatus('active')} disabled={bulkBusy} className={secondaryBtn}><Play className="h-3.5 w-3.5" /> Activate</button>
-              <button type="button" onClick={() => bulkSetStatus('paused')} disabled={bulkBusy} className={`${secondaryBtn} border-amber-300 text-amber-700 hover:bg-amber-50`}><Pause className="h-3.5 w-3.5" /> Pause</button>
+              <button type="button" onClick={() => bulkSetStatus('paused')} disabled={bulkBusy} className={`${secondaryBtn} border-[#aee9d1] text-[#0f766e] hover:bg-[#eef8f0]`}><Pause className="h-3.5 w-3.5" /> Pause</button>
               <button type="button" onClick={bulkDelete} disabled={bulkBusy} className={`${secondaryBtn} border-red-300 text-red-600 hover:bg-red-50`}><Trash2 className="h-3.5 w-3.5" /> Delete</button>
               <button type="button" onClick={() => setSelectedIds([])} className="ml-auto text-admin-text-secondary hover:text-admin-text">Clear</button>
             </div>

@@ -8,12 +8,12 @@ import AccountSecurity from '@/components/AccountSecurity';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi, workspaceApi } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
-
-const primaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7]';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  primaryBtn,
+  secondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
 const WEBHOOK_EVENTS: { value: string; label: string }[] = [
   { value: 'message.received', label: 'Incoming messages (real-time)' },

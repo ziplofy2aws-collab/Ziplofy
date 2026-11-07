@@ -8,7 +8,7 @@ import Textarea from '@/components/ui/Textarea';
 import Select from '@/components/ui/Select';
 import { automationApi, teamApi, templateApi, uploadApi } from '@/lib/api';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import { adminContentColumnClass, dashboardCardShell, dashboardNoticeClass } from '@/components/layout/dashboard-ui';
 
 const primaryBtn = 'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
 const secondaryBtn = 'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7]';
@@ -408,12 +408,12 @@ export default function AutomationsHub() {
       <Modal isOpen={modal === 'feedback'} onClose={() => setModal(null)} title="Feedback / Rating (⭐ stars)" size="md">
         <div className="space-y-4">
           {fbReport && fbReport.total > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 space-y-1">
-              <p className="text-sm font-semibold text-gray-800">⭐ {fbReport.avg} average — {fbReport.total} ratings</p>
-              <div className="flex gap-2 text-[11px] text-gray-600">
+            <div className={`${dashboardNoticeClass} space-y-1`}>
+              <p className="text-sm font-semibold text-[#101828]">⭐ {fbReport.avg} average — {fbReport.total} ratings</p>
+              <div className="flex gap-2 text-[11px] text-[#3d4a45]">
                 {[5, 4, 3, 2, 1].map(r => <span key={r}>{r}★: {fbReport.dist[r] || 0}</span>)}
               </div>
-              <div className="max-h-52 overflow-y-auto divide-y divide-yellow-100 mt-1">
+              <div className="max-h-52 overflow-y-auto divide-y divide-[#aee9d1]/60 mt-1">
                 {fbReport.recent.slice(0, 5).map((f, i) => (
                   <div key={i} className="flex items-center justify-between py-1 text-[11px]">
                     <span className="text-gray-700">{'⭐'.repeat(f.rating)} <span className="font-medium">{f.name}</span>{f.phone ? <span className="text-gray-400"> · {f.phone}</span> : null}</span>

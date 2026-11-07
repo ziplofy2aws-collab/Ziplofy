@@ -5,10 +5,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/global-error.js"
     ],
-    "/client/workspace/page": [
+    "/client/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/workspace/page.js"
+      "static/chunks/app/client/dashboard/page.js"
     ],
     "/client/layout": [
       "static/chunks/webpack.js",
@@ -21,176 +21,30 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/client/manage-profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/manage-profile/page.js"
-    ],
     "/auth/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/auth/login/page.js"
-    ],
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
-    "/auth/sso/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/auth/sso/page.js"
-    ],
-    "/client/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/dashboard/page.js"
-    ],
-    "/client/online-store/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/page.js"
-    ],
-    "/client/chat/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/chat/page.js"
-    ],
-    "/client/choose-services/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-services/page.js"
-    ],
-    "/client/subscriptions/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/subscriptions/page.js"
-    ],
-    "/client/billing/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/billing/page.js"
-    ],
-    "/client/support/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/support/page.js"
-    ],
-    "/client/choose-business/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-business/page.js"
-    ],
-    "/client/whatsapp/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/whatsapp/page.js"
-    ],
-    "/client/channels/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/channels/page.js"
-    ],
-    "/client/themes/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/client/themes/page.css",
-      "static/chunks/app/client/themes/page.js"
-    ],
-    "/client/online-store/media-library/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/media-library/page.js"
-    ],
-    "/client/online-store/blogs/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/blogs/page.js"
-    ],
-    "/client/appointments/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/appointments/page.js"
-    ],
-    "/client/settings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/settings/page.js"
-    ],
-    "/client/user-guide/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/user-guide/page.js"
     ],
     "/client/analytics/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/client/analytics/page.js"
     ],
-    "/client/legal/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/legal/page.js"
-    ],
     "/client/ctwa-ads/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/client/ctwa-ads/page.js"
     ],
-    "/client/templates/page": [
+    "/auth/sso/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/templates/page.js"
+      "static/chunks/app/auth/sso/page.js"
     ],
-    "/client/save-money/templates/page": [
+    "/client/manage-profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/save-money/templates/page.js"
-    ],
-    "/client/save-money/campaigns/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/save-money/campaigns/page.js"
-    ],
-    "/client/legal/hearings/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/legal/hearings/page.js"
-    ],
-    "/client/broadcasts/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/broadcasts/page.js"
-    ],
-    "/client/contacts/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/contacts/page.js"
-    ],
-    "/client/smart-broadcast/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/smart-broadcast/page.js"
-    ],
-    "/client/pipelines/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/pipelines/page.js"
-    ],
-    "/client/api-docs/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/api-docs/page.js"
-    ],
-    "/client/automations/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/automations/page.js"
-    ],
-    "/client/save-money/qr-campaigns/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/save-money/qr-campaigns/page.js"
+      "static/chunks/app/client/manage-profile/page.js"
     ]
   }
 }

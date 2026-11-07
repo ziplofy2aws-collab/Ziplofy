@@ -8,17 +8,24 @@ import toast from 'react-hot-toast';
 import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
 
 const primaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#00896F] px-3.5 py-2 text-[13px] font-medium text-white shadow-[0_6px_16px_rgba(0,137,111,0.25)] transition-all hover:bg-[#007a63] disabled:cursor-not-allowed disabled:opacity-50';
 const secondaryBtn =
-  'inline-flex items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-1.5 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
+  'inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/60 bg-white/50 px-3.5 py-2 text-[13px] font-medium text-[#303030] backdrop-blur-md transition-all hover:bg-white/75 disabled:cursor-not-allowed disabled:opacity-50';
 const inputClass =
-  'w-full rounded-lg border border-admin-border bg-white px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30';
+  'w-full rounded-2xl border border-white/80 bg-white/75 px-3.5 py-2.5 text-[13px] text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] outline-none transition placeholder:text-slate-400 focus:border-emerald-400/70 focus:bg-white/90 focus:ring-4 focus:ring-emerald-500/15';
 const labelClass = 'mb-1 block text-[12px] font-medium text-admin-text-secondary';
 const cardClass = `${dashboardCardShell} !p-5`;
-const chipSelected = 'border-admin-text bg-admin-text text-white';
-const chipUnselected = 'border-admin-border bg-white text-admin-text hover:bg-[#f6f6f7]';
+const chipSelected =
+  'border-[#aee9d1] bg-gradient-to-r from-[#e8f5a8]/95 via-[#d4f4d8] to-[#c8efe0] text-[#0f3d2e] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_6px_16px_rgba(15,61,46,0.08)]';
+const chipUnselected =
+  'border-[#e8efe9] bg-white/80 text-[#3d4a45] hover:border-[#aee9d1] hover:bg-[#f7fbf8]';
+/** Selected option — same lime→mint gradient as the Orbitly sidebar active pill. */
 const selectChip = (on: boolean) =>
-  `rounded-lg border p-3 cursor-pointer transition-colors ${on ? 'border-admin-text bg-[#f6f6f7]' : 'border-admin-border hover:bg-[#fafafa]'}`;
+  `cursor-pointer rounded-2xl border p-3.5 transition-all duration-200 ${
+    on
+      ? 'border-[#c5e6a8]/90 bg-gradient-to-r from-[#e8f5a8]/95 via-[#d4f4d8] to-[#c8efe0] text-[#0f3d2e] shadow-[inset_0_1px_0_rgba(255,255,255,0.75),0_8px_20px_rgba(15,61,46,0.1)] ring-1 ring-[#aee9d1]/50'
+      : 'border-[#e8efe9] bg-white/70 text-[#3d4a45] hover:border-[#aee9d1] hover:bg-[#f7fbf8]'
+  }`;
 const modalOverlayClass =
   'fixed inset-0 z-[1300] flex items-center justify-center p-4 sm:p-6';
 const modalPanelClass =
@@ -272,8 +279,8 @@ export default function AICallingPage() {
           ].map(o => (
             <label key={o.v} className={selectChip(ct.mode === o.v)}>
               <input type="radio" name="ctmode" className="hidden" checked={ct.mode === o.v} onChange={() => setCt(prev => ({ ...prev, mode: o.v }))} />
-              <p className="text-[13px] font-medium text-admin-text">{o.l}</p>
-              <p className="text-[12px] text-admin-text-secondary">{o.d}</p>
+              <p className={`text-[13px] font-semibold ${ct.mode === o.v ? 'text-[#0f3d2e]' : 'text-[#101828]'}`}>{o.l}</p>
+              <p className={`mt-0.5 text-[12px] ${ct.mode === o.v ? 'text-[#3d4a45]/85' : 'text-[#6b7a74]'}`}>{o.d}</p>
             </label>
           ))}
         </div>

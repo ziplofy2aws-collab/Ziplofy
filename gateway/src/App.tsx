@@ -2,6 +2,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { api, applySession, clearToken, getToken, goToSso } from './api';
+import LoadingOnly from './components/LoadingOnly';
 import LaunchingPage from './pages/LaunchingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -63,13 +64,7 @@ function SessionRedirect({ children }: { children: ReactNode }) {
   }, [location.pathname, navigate]);
 
   if (!ready) {
-    return (
-      <div className="shell">
-        <div className="card">
-          <p className="sub">Loading your account…</p>
-        </div>
-      </div>
-    );
+    return <LoadingOnly />;
   }
   return children;
 }

@@ -25,7 +25,7 @@ export default function ActionBusyOverlay({
   const data = useMemo(() => getLoadingAnimationData(), []);
 
   const open = Boolean(openProp) || count > 0;
-  const label = labelProp || storeLabel || 'Please wait';
+  const label = labelProp || storeLabel || 'Loading';
 
   useEffect(() => {
     setMounted(true);
@@ -82,9 +82,6 @@ export default function ActionBusyOverlay({
           layout={{ fit: 'contain', align: [0.5, 0.5] }}
         />
       </div>
-      <p className="relative mt-1 max-w-[16rem] px-4 text-center text-[13px] font-medium text-slate-700 sm:text-[14px]">
-        {label}
-      </p>
     </div>,
     document.body
   );
