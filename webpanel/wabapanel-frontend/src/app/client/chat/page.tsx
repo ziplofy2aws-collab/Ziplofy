@@ -1,6 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search, Send, Paperclip, Smile, Reply,
   Sticker as StickerIcon,
@@ -8,6 +9,8 @@ import {
   MessageSquare, X, UserPlus, Video, Mic, Phone, PhoneCall,
   Zap, LayoutTemplate, ClipboardList, Bot, Check as CheckIcon, PiggyBank, Plus,
   Download , StickyNote, Trash2, Bell, Pencil, IndianRupee, Tag as TagIcon, Share2, Calendar, ShoppingBag, CheckSquare, Mail, GitBranch, MapPin, Pin,
+  ChevronDown, ChevronRight, ChevronLeft, Sparkles, Receipt, Power, GripVertical, Flame,
+  Maximize2, Minimize2,
 } from 'lucide-react';
 import WhatsAppPhonePreview from '@/components/WhatsAppPhonePreview';
 import { conversationApi, teamApi, noteApi, paymentLinkApi, formApi, tagApi, contactApi, catalogApi, integrationApi, workspaceApi, waqrApi, pipelineApi, aiSettingsApi, crmApi } from '@/lib/api';
@@ -20,6 +23,21 @@ import type { Conversation, Message } from '@/types';
 import Badge from '@/components/ui/Badge';
 import ImageUploadInput from '@/components/ui/ImageUploadInput';
 import toast from 'react-hot-toast';
+import { dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
+import { appModalGlassPanel, appModalFieldClass } from '@/components/ui/AppFormModal';
+
+/** Orbitly glass dialog shell — matches workspace / create-template modals. */
+const chatGlassBackdrop =
+  'fixed inset-0 z-50 flex items-center justify-center p-4';
+const chatGlassScrim = 'absolute inset-0 bg-slate-900/25 backdrop-blur-[3px]';
+const chatGlassCloseBtn =
+  'rounded-xl border border-white/80 bg-white/55 p-2 text-slate-500 transition hover:bg-white/80 hover:text-slate-800';
+const chatGlassItem =
+  'mb-2 w-full rounded-2xl border border-white/70 bg-white/55 p-3.5 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] transition hover:bg-white/80 disabled:opacity-50';
+const chatGlassPrimary =
+  'inline-flex items-center justify-center rounded-xl bg-[#00896F] px-4 py-2 text-[13px] font-medium text-white shadow-[0_6px_16px_rgba(0,137,111,0.25)] transition hover:bg-[#007a63] disabled:opacity-50';
+const chatGlassSecondary =
+  'inline-flex items-center justify-center rounded-xl border border-white/70 bg-white/50 px-4 py-2 text-[13px] font-medium text-[#303030] backdrop-blur-md transition hover:bg-white/75';
 
 interface ChatTemplate {
   _id: string; name: string; category?: string; body: string; status?: string; language?: string;
@@ -27,6 +45,10 @@ interface ChatTemplate {
   header?: { type?: string; content?: string; mediaUrl?: string };
   buttons?: Array<{ type?: string; text: string }>;
 }
+
+/** WhatsApp Web doodle wallpaper (matches real WA chat canvas). */
+const WA_DOODLE =
+  "url(\"data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23c8c0b6' stroke-width='1.4' opacity='0.28'%3E%3Ccircle cx='20' cy='20' r='6'/%3E%3Cpath d='M70 15 l10 10 M80 15 l-10 10'/%3E%3Crect x='95' y='40' width='14' height='10' rx='2'/%3E%3Cpath d='M15 70 q6 -10 12 0 q-6 10 -12 0'/%3E%3Ccircle cx='60' cy='60' r='5'/%3E%3Cpath d='M40 100 h16 M48 92 v16'/%3E%3Cpath d='M90 90 a8 8 0 1 0 8 8'/%3E%3C/g%3E%3C/svg%3E\")";
 
 function WindowTimer({ messages, channel }: { messages: Message[]; channel: string }) {
   const [now, setNow] = useState(Date.now());
@@ -38,7 +60,7 @@ function WindowTimer({ messages, channel }: { messages: Message[]; channel: stri
   const left = lastInbound + 24 * 60 * 60 * 1000 - now;
   if (left <= 0) return <span className="inline-flex items-center gap-1 text-[11px] font-medium text-red-500 whitespace-nowrap" title="24-hour window closed — only approved templates can be sent now">⏱ Window closed — template only</span>;
   const h = Math.floor(left / 3600000), mn = Math.floor((left % 3600000) / 60000);
-  return <span className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-600 whitespace-nowrap" title="Time left in the WhatsApp 24-hour customer service window — free-form messages allowed until it closes">⏱ Closes in {h}h {mn}m</span>;
+  return <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#0f766e] whitespace-nowrap" title="Time left in the WhatsApp 24-hour customer service window — free-form messages allowed until it closes">⏱ Closes in {h}h {mn}m</span>;
 }
 
 const getContactName = (conv: Conversation): string => {
@@ -143,6 +165,92 @@ function ChatPageInner() {
     telegram: { label: 'Telegram Bot', href: '/client/channels' },
     telegram_personal: { label: 'Personal Telegram', href: '/client/channels' },
     email: { label: 'Email Inbox', href: '/client/channels' },
+  };
+
+  /** Per-channel inbox chrome (WhatsApp-style layout, brand colors). */
+  type InboxTheme = {
+    title: string;
+    subtitle: string;
+    barBg: string;
+    accent: string;
+    accentHover: string;
+    softBg: string;
+    softBorder: string;
+    rowBorder: string;
+    rowHover: string;
+    rowActive: string;
+    titleText: string;
+    mutedText: string;
+    unread: string;
+    searchRing: string;
+    canvasBg: string;
+    pillOn: string;
+    btnOn: string;
+  };
+  const INBOX_THEMES: Record<string, InboxTheme> = {
+    whatsapp: {
+      title: 'WhatsApp', subtitle: 'Business API inbox',
+      barBg: 'bg-[#00a884]', accent: '#00a884', accentHover: '#008f72',
+      softBg: 'bg-[#f0f2f5]', softBorder: 'border-[#e9edef]', rowBorder: 'border-[#f0f2f5]',
+      rowHover: 'hover:bg-[#f5f6f6]', rowActive: 'bg-[#f0f2f5]',
+      titleText: 'text-[#111b21]', mutedText: 'text-[#667781]', unread: 'bg-[#25d366]',
+      searchRing: 'focus:ring-[#00a884]/25', canvasBg: '#efeae2',
+      pillOn: 'bg-[#00a884] text-white shadow-sm', btnOn: 'bg-[#d9fdd3] border-[#00a884]/40 text-[#008069]',
+    },
+    whatsapp_qr: {
+      title: 'WhatsApp QR', subtitle: 'Linked device inbox',
+      barBg: 'bg-[#00a884]', accent: '#00a884', accentHover: '#008f72',
+      softBg: 'bg-[#f0f2f5]', softBorder: 'border-[#e9edef]', rowBorder: 'border-[#f0f2f5]',
+      rowHover: 'hover:bg-[#f5f6f6]', rowActive: 'bg-[#f0f2f5]',
+      titleText: 'text-[#111b21]', mutedText: 'text-[#667781]', unread: 'bg-[#25d366]',
+      searchRing: 'focus:ring-[#00a884]/25', canvasBg: '#efeae2',
+      pillOn: 'bg-[#00a884] text-white shadow-sm', btnOn: 'bg-[#d9fdd3] border-[#00a884]/40 text-[#008069]',
+    },
+    instagram: {
+      title: 'Instagram', subtitle: 'Direct messages',
+      barBg: 'bg-gradient-to-r from-[#833AB4] via-[#E1306C] to-[#F77737]', accent: '#E1306C', accentHover: '#C13584',
+      softBg: 'bg-[#faf5f8]', softBorder: 'border-[#f0e4ec]', rowBorder: 'border-[#f3e8ef]',
+      rowHover: 'hover:bg-[#fdf6fa]', rowActive: 'bg-[#fceef6]',
+      titleText: 'text-[#262626]', mutedText: 'text-[#8e8e8e]', unread: 'bg-[#E1306C]',
+      searchRing: 'focus:ring-[#E1306C]/25', canvasBg: '#faf5f8',
+      pillOn: 'bg-[#E1306C] text-white shadow-sm', btnOn: 'bg-[#fce7f3] border-[#E1306C]/35 text-[#C13584]',
+    },
+    facebook: {
+      title: 'Messenger', subtitle: 'Facebook inbox',
+      barBg: 'bg-[#0084FF]', accent: '#0084FF', accentHover: '#006aff',
+      softBg: 'bg-[#f0f2f5]', softBorder: 'border-[#e4e6eb]', rowBorder: 'border-[#eef0f3]',
+      rowHover: 'hover:bg-[#f5f6f7]', rowActive: 'bg-[#e7f3ff]',
+      titleText: 'text-[#050505]', mutedText: 'text-[#65676b]', unread: 'bg-[#0084FF]',
+      searchRing: 'focus:ring-[#0084FF]/25', canvasBg: '#f0f2f5',
+      pillOn: 'bg-[#0084FF] text-white shadow-sm', btnOn: 'bg-[#e7f3ff] border-[#0084FF]/35 text-[#006aff]',
+    },
+    telegram: {
+      title: 'Telegram', subtitle: 'Bot inbox',
+      barBg: 'bg-[#2AABEE]', accent: '#2AABEE', accentHover: '#229ED9',
+      softBg: 'bg-[#f0f4f8]', softBorder: 'border-[#e3ebf2]', rowBorder: 'border-[#edf2f7]',
+      rowHover: 'hover:bg-[#f5f9fc]', rowActive: 'bg-[#e8f6fd]',
+      titleText: 'text-[#0e1621]', mutedText: 'text-[#707579]', unread: 'bg-[#2AABEE]',
+      searchRing: 'focus:ring-[#2AABEE]/25', canvasBg: '#8ecae6',
+      pillOn: 'bg-[#2AABEE] text-white shadow-sm', btnOn: 'bg-[#e8f6fd] border-[#2AABEE]/35 text-[#229ED9]',
+    },
+    telegram_personal: {
+      title: 'Telegram', subtitle: 'Personal account inbox',
+      barBg: 'bg-[#229ED9]', accent: '#229ED9', accentHover: '#1c8bbd',
+      softBg: 'bg-[#f0f4f8]', softBorder: 'border-[#e3ebf2]', rowBorder: 'border-[#edf2f7]',
+      rowHover: 'hover:bg-[#f5f9fc]', rowActive: 'bg-[#e8f6fd]',
+      titleText: 'text-[#0e1621]', mutedText: 'text-[#707579]', unread: 'bg-[#229ED9]',
+      searchRing: 'focus:ring-[#229ED9]/25', canvasBg: '#8ecae6',
+      pillOn: 'bg-[#229ED9] text-white shadow-sm', btnOn: 'bg-[#e8f6fd] border-[#229ED9]/35 text-[#1c8bbd]',
+    },
+    email: {
+      title: 'Gmail', subtitle: 'Email inbox',
+      barBg: 'bg-[#EA4335]', accent: '#EA4335', accentHover: '#d33426',
+      softBg: 'bg-[#f6f8fc]', softBorder: 'border-[#e8eaed]', rowBorder: 'border-[#f1f3f4]',
+      rowHover: 'hover:bg-[#f8f9fa]', rowActive: 'bg-[#fce8e6]',
+      titleText: 'text-[#202124]', mutedText: 'text-[#5f6368]', unread: 'bg-[#EA4335]',
+      searchRing: 'focus:ring-[#EA4335]/25', canvasBg: '#f6f8fc',
+      pillOn: 'bg-[#EA4335] text-white shadow-sm', btnOn: 'bg-[#fce8e6] border-[#EA4335]/35 text-[#d33426]',
+    },
   };
   const notConnected = channelFilter !== 'all' && channelConn !== null && channelConn[channelFilter] === false;
   const [qrNewMsg, setQrNewMsg] = useState(false);
@@ -359,10 +467,10 @@ function ChatPageInner() {
     const ls = (conv.contact as { leadScore?: string })?.leadScore;
     const se = (conv as { sentiment?: string }).sentiment;
     return (<>
-      {ls === 'hot' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-red-100 text-red-700 align-middle font-medium">🔥 Hot</span>}
+      {ls === 'hot' && <span className="ml-1 inline-flex items-center gap-0.5 text-[10px] px-1 py-0.5 rounded bg-red-100 text-red-700 align-middle font-medium"><Flame className="w-2.5 h-2.5" />Hot</span>}
       {ls === 'warm' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-orange-100 text-orange-700 align-middle font-medium">Warm</span>}
       {ls === 'cold' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700 align-middle font-medium">Cold</span>}
-      {se === 'negative' && <span className="ml-1 text-[11px] align-middle" title="Customer seems unhappy">😟</span>}
+      {se === 'negative' && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-rose-100 text-rose-700 align-middle font-medium" title="Customer seems unhappy">Neg</span>}
     </>);
   };
   const [typingAgent, setTypingAgent] = useState<string | null>(null);
@@ -485,15 +593,116 @@ function ChatPageInner() {
   const [fileAccept, setFileAccept] = useState('*/*');
   const [submitting, setSubmitting] = useState(false);
   const attachMenuRef = useRef<HTMLDivElement>(null);
-  const [showAssignMenu, setShowAssignMenu] = useState(false);
-  const [showPipelineMenu, setShowPipelineMenu] = useState(false);
-  const [pipelineMenuPos, setPipelineMenuPos] = useState<{top: number; left: number} | null>(null);
   const [pipelines, setPipelines] = useState<{ _id: string; name: string; stages?: { name: string }[]; deals?: { _id: string; contact?: string | { _id: string }; stage: string }[] }[]>([]);
   const [agents, setAgents] = useState<Array<{_id: string; name: string; email?: string}>>([]);
   const [togglingAI, setTogglingAI] = useState(false);
   const [aiCalling, setAiCalling] = useState(false);
-  const assignMenuRef = useRef<HTMLDivElement>(null);
-  const [assignMenuPos, setAssignMenuPos] = useState<{top: number; left: number} | null>(null);
+  const [showChatAiMenu, setShowChatAiMenu] = useState(false);
+  const [chatAiSub, setChatAiSub] = useState<'assign' | 'pipeline' | null>(null);
+  const [chatAiMenuPos, setChatAiMenuPos] = useState<{ top: number; left: number } | null>(null);
+  const chatAiMenuRef = useRef<HTMLDivElement>(null);
+  const chatAiBtnRef = useRef<HTMLButtonElement>(null);
+
+  const [chatAiPortalReady, setChatAiPortalReady] = useState(false);
+  useEffect(() => { setChatAiPortalReady(true); }, []);
+
+  const LIST_W_MIN = 240;
+  const LIST_W_MAX = 560;
+  const LIST_W_DEFAULT = 360;
+  const [listWidth, setListWidth] = useState(LIST_W_DEFAULT);
+  const [listResizing, setListResizing] = useState(false);
+  const [waFullscreen, setWaFullscreen] = useState(false);
+  const listResizeRef = useRef<{ startX: number; startW: number } | null>(null);
+  const listWidthRef = useRef(LIST_W_DEFAULT);
+  const chatShellRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = Number(localStorage.getItem('chat_list_width'));
+      if (Number.isFinite(saved) && saved >= LIST_W_MIN && saved <= LIST_W_MAX) {
+        setListWidth(saved);
+        listWidthRef.current = saved;
+      }
+      if (localStorage.getItem('wa_chat_fullscreen') === '1') setWaFullscreen(true);
+    } catch { /* ignore */ }
+  }, []);
+
+  const toggleWaFullscreen = useCallback(() => {
+    setWaFullscreen((prev) => {
+      const next = !prev;
+      try { localStorage.setItem('wa_chat_fullscreen', next ? '1' : '0'); } catch { /* ignore */ }
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!listResizing) return;
+    const onMove = (e: PointerEvent) => {
+      const s = listResizeRef.current;
+      if (!s) return;
+      const shellW = chatShellRef.current?.clientWidth || window.innerWidth;
+      const max = Math.min(LIST_W_MAX, Math.max(LIST_W_MIN, shellW - 320));
+      const next = Math.min(max, Math.max(LIST_W_MIN, s.startW + (e.clientX - s.startX)));
+      listWidthRef.current = next;
+      setListWidth(next);
+    };
+    const onUp = () => {
+      setListResizing(false);
+      listResizeRef.current = null;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      try { localStorage.setItem('chat_list_width', String(listWidthRef.current)); } catch { /* ignore */ }
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+    };
+  }, [listResizing]);
+
+  const startListResize = (e: React.PointerEvent) => {
+    e.preventDefault();
+    listResizeRef.current = { startX: e.clientX, startW: listWidth };
+    setListResizing(true);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  };
+
+  const openChatAiMenu = () => {
+    const btn = chatAiBtnRef.current;
+    if (!btn) return;
+    const rect = btn.getBoundingClientRect();
+    const menuW = 208;
+    const estH = 280;
+    let left = Math.min(Math.max(8, rect.left), window.innerWidth - menuW - 8);
+    let top = rect.bottom + 6;
+    if (top + estH > window.innerHeight - 8) {
+      top = Math.max(8, window.innerHeight - estH - 8);
+    }
+    setChatAiMenuPos({ top, left });
+    setChatAiSub(null);
+    setShowChatAiMenu(true);
+  };
+
+  const closeChatAiMenu = useCallback(() => {
+    setShowChatAiMenu(false);
+    setChatAiSub(null);
+    setChatAiMenuPos(null);
+  }, []);
+
+  useEffect(() => {
+    if (!showChatAiMenu) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeChatAiMenu(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [showChatAiMenu, closeChatAiMenu]);
+
+  useEffect(() => {
+    closeChatAiMenu();
+  }, [selectedConv?._id, closeChatAiMenu]);
 
   useEffect(() => {
     teamApi.listAgents().then(res => {
@@ -518,7 +727,6 @@ function ChatPageInner() {
         await pipelineApi.addDeal(pipelineId, { title: `${name} - Chat`, value: 0, contact: contactId, stage, status: 'open' });
         toast.success(`Added to "${stage}"`);
       }
-      setShowPipelineMenu(false);
       pipelineApi.list().then(r => setPipelines(r.data?.data || [])).catch(() => {});
     } catch {
       toast.error('Failed to update pipeline');
@@ -530,7 +738,6 @@ function ChatPageInner() {
     try {
       await conversationApi.assign(selectedConv._id, agentId);
       setSelectedConv({ ...selectedConv, assignedAgent: agents.find(a => a._id === agentId) });
-      setShowAssignMenu(false);
       toast.success('Assigned successfully');
     } catch {
       toast.error('Failed to assign');
@@ -1291,10 +1498,14 @@ function ChatPageInner() {
   };
 
   const getStatusIcon = (status: string) => {
+    const ch = (selectedConv as unknown as { channel?: string } | null)?.channel || '';
+    const wa = ch === 'whatsapp' || ch === 'whatsapp_qr';
+    const muted = wa ? 'text-[#667781]' : 'text-admin-text-subdued';
+    const read = wa ? 'text-[#53bdeb]' : 'text-blue-500';
     switch (status) {
-      case 'sent': return <Check className="w-3 h-3 text-admin-text-subdued" />;
-      case 'delivered': return <CheckCheck className="w-3 h-3 text-admin-text-subdued" />;
-      case 'read': return <CheckCheck className="w-3 h-3 text-blue-500" />;
+      case 'sent': return <Check className={`w-3 h-3 ${muted}`} />;
+      case 'delivered': return <CheckCheck className={`w-3 h-3 ${muted}`} />;
+      case 'read': return <CheckCheck className={`w-3 h-3 ${read}`} />;
       case 'failed': return <AlertCircle className="w-3 h-3 text-red-500" />;
       default: return <Clock className="w-3 h-3 text-gray-300" />;
     }
@@ -1583,8 +1794,55 @@ function ChatPageInner() {
   // for Telegram / Instagram / Facebook / Email chats.
   const selectedChannel = (selectedConv as unknown as { channel?: string } | null)?.channel || 'whatsapp';
   const isWaChat = selectedChannel === 'whatsapp';
+  const isWaThread = selectedChannel === 'whatsapp' || selectedChannel === 'whatsapp_qr';
+  const inboxTheme = INBOX_THEMES[channelFilter] || null;
+  const isInboxChannelView = !!inboxTheme;
+  const inboxFullscreen = isInboxChannelView && waFullscreen;
   // Channels where free-form sends work (Pay / Preset / Invoice / Chat AI)
   const isMsgChat = ['whatsapp', 'whatsapp_qr', 'telegram', 'telegram_personal', 'facebook', 'instagram'].includes(selectedChannel);
+  const threadTheme = INBOX_THEMES[selectedChannel] || inboxTheme;
+
+  useEffect(() => {
+    if (!inboxFullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setWaFullscreen(false);
+        try { localStorage.setItem('wa_chat_fullscreen', '0'); } catch { /* ignore */ }
+      }
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [inboxFullscreen]);
+
+  const handleResolveConv = async () => {
+    if (!selectedConv) return;
+    try {
+      const r = await conversationApi.resolve(selectedConv._id);
+      const st = r.data?.data?.status || 'closed';
+      const resolved = st === 'closed';
+      setSelectedConv({ ...selectedConv, status: st, isResolved: resolved } as Conversation);
+      setConversations(prev => prev.map(c => c._id === selectedConv._id ? ({ ...c, status: st, isResolved: resolved } as Conversation) : c));
+      toast.success(resolved ? 'Conversation resolved' : 'Conversation reopened');
+    } catch { /* empty */ }
+  };
+
+  const handleAiSummary = async () => {
+    if (!selectedConv || summarizing) return;
+    setSummarizing(true);
+    try {
+      const r = await conversationApi.aiSummary(selectedConv._id);
+      setAiSummaryText(r.data?.data?.summary || 'No summary');
+    } catch (err: unknown) {
+      const e = err as { response?: { data?: { message?: string } } };
+      setAiSummaryText(e.response?.data?.message || 'Summary failed');
+    }
+    setSummarizing(false);
+  };
 
   const getConversationPreview = (conv: Conversation) => {
     const text = conv.lastMessage?.text || '';
@@ -1598,28 +1856,106 @@ function ChatPageInner() {
     return text || getContactSubtitle(conv) || '';
   };
 
+  const inboxTitle =
+    isInboxChannelView ? 'Chats'
+      : channelFilter === 'instagram' ? 'Instagram'
+      : channelFilter === 'facebook' ? 'Facebook'
+      : channelFilter === 'telegram' ? 'Telegram Bot'
+      : channelFilter === 'telegram_personal' ? 'Personal Telegram'
+      : channelFilter === 'email' ? 'Email'
+      : 'Conversations';
+
   return (
-    <div className="flex h-[calc(100vh-7rem)] overflow-hidden rounded-xl border border-admin-border bg-white shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]">
-      {/* Conversation List */}
-      <div className={`w-full md:w-80 lg:w-96 border-r border-admin-border flex flex-col ${selectedConv ? 'hidden md:flex' : 'flex'}`}>
-        <div className="p-4 border-b border-admin-border space-y-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[15px] font-semibold tracking-tight text-admin-text">{channelFilter === 'whatsapp' ? 'WhatsApp' : channelFilter === 'whatsapp_qr' ? 'WhatsApp QR' : channelFilter === 'instagram' ? 'Instagram' : channelFilter === 'facebook' ? 'Facebook' : channelFilter === 'telegram' ? 'Telegram Bot' : channelFilter === 'telegram_personal' ? 'Personal Telegram' : channelFilter === 'email' ? 'Email' : 'Conversations'}</h2>
-            <div className="flex items-center gap-2">
-              <span className="text-xs bg-[#f1f1f1] text-admin-text px-2 py-0.5 rounded-full">
+    <>
+    {inboxFullscreen ? <div className="h-[calc(100vh-7rem)] w-full" aria-hidden /> : null}
+    <div
+      ref={chatShellRef}
+      className={`flex min-h-0 overflow-hidden bg-white transition-[border-radius,box-shadow] duration-200 ease-out ${
+        listResizing ? 'select-none' : ''
+      } ${
+        inboxFullscreen
+          /* Stay inside app chrome: below top nav, right of sidebar — never cover them */
+          ? 'fixed top-14 bottom-0 right-0 left-0 z-[60] h-auto w-auto rounded-none border-0 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] lg:left-[var(--client-sidebar-w,72px)] animate-[orbitly-pop_160ms_ease-out]'
+          : `relative z-0 h-[calc(100vh-7rem)] rounded-xl border ${isInboxChannelView ? `${inboxTheme!.softBorder} shadow-[0_12px_28px_rgba(11,20,26,0.12)]` : 'border-admin-border shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]'}`
+      }`}
+    >
+      {/* Conversation List — branded inbox: full-screen list ↔ full-screen chat */}
+      <div
+        className={`relative flex min-h-0 flex-col overflow-hidden border-r transition-[width,opacity] duration-200 ease-out ${
+          isInboxChannelView ? `${inboxTheme!.softBorder} bg-white` : 'border-admin-border'
+        } ${
+          selectedConv
+            ? 'hidden h-full shrink-0 md:flex w-full md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]'
+            : 'flex h-full w-full shrink-0 md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]'
+        }`}
+        style={{ ['--chat-list-w' as string]: `${listWidth}px` }}
+      >
+        {isInboxChannelView && inboxTheme && (
+          <div className={`flex items-center justify-between gap-2 px-3 py-1.5 text-white shrink-0 ${inboxTheme.barBg}`}>
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-white/15 shrink-0 text-[13px] font-bold">
+                {channelFilter.startsWith('whatsapp') ? (
+                  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current" aria-hidden>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                ) : channelFilter === 'instagram' ? 'IG'
+                  : channelFilter === 'facebook' ? 'f'
+                  : channelFilter.startsWith('telegram') ? 'TG'
+                  : channelFilter === 'email' ? '✉' : '•'}
+              </div>
+              <div className="min-w-0">
+                <p className="text-[13px] font-semibold leading-tight truncate">{inboxTheme.title}</p>
+                <p className="text-[10px] text-white/80 truncate">{inboxTheme.subtitle}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-semibold whitespace-nowrap">
+                {notConnected ? 'Not connected' : 'Connected ✓'}
+              </span>
+              <button
+                type="button"
+                onClick={toggleWaFullscreen}
+                className="flex h-7 w-7 items-center justify-center rounded-md bg-white/15 text-white transition hover:bg-white/25"
+                title={inboxFullscreen ? 'Exit full screen (Esc)' : 'Open full screen'}
+                aria-label={inboxFullscreen ? 'Exit full screen' : 'Open full screen'}
+              >
+                {inboxFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+              </button>
+            </div>
+          </div>
+        )}
+        {/* Compact sticky header — keeps ≥6 chats visible */}
+        <div className={`shrink-0 space-y-1 border-b px-2.5 py-1.5 min-w-0 ${isInboxChannelView && inboxTheme ? `${inboxTheme.softBorder} ${inboxTheme.softBg}` : 'border-admin-border bg-white'}`}>
+          <div className="flex items-center gap-2 min-w-0">
+            <h2 className={`shrink-0 text-[13px] font-semibold tracking-tight ${isInboxChannelView && inboxTheme ? inboxTheme.titleText : 'text-admin-text'}`}>{inboxTitle}</h2>
+            <div className="relative min-w-0 flex-1">
+              <Search className={`absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 ${isInboxChannelView && inboxTheme ? inboxTheme.mutedText : 'text-admin-text-subdued'}`} />
+              <input
+                type="text"
+                placeholder={isInboxChannelView ? (channelFilter === 'email' ? 'Search mail' : 'Search or start new chat') : 'Search interactions'}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-8 pr-2.5 py-1 text-[12px] focus:outline-none focus:ring-2 ${isInboxChannelView && inboxTheme ? `rounded-lg border-0 bg-white ${inboxTheme.titleText} placeholder:opacity-60 ${inboxTheme.searchRing}` : 'rounded-lg border border-admin-border bg-[#f6f6f7] focus:ring-[#005bd3]/30'}`}
+              />
+            </div>
+            <div className="flex shrink-0 items-center gap-1">
+              <span
+                className={`text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${isInboxChannelView ? 'bg-white' : 'bg-[#f1f1f1] text-admin-text'}`}
+                style={isInboxChannelView && inboxTheme ? { color: inboxTheme.accent } : undefined}
+              >
                 {Math.max(convTotal, conversations.length)}
               </span>
-              <button onClick={() => { setBulkMode(!bulkMode); setBulkSelected(new Set()); }} className={`p-1.5 rounded-lg border text-xs ${bulkMode ? 'bg-[#f1f1f1] border-admin-border text-admin-text' : 'border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]'}`} title="Bulk select">
+              <button onClick={() => { setBulkMode(!bulkMode); setBulkSelected(new Set()); }} className={`p-1 rounded-md border ${bulkMode ? (isInboxChannelView && inboxTheme ? inboxTheme.btnOn : 'bg-[#f1f1f1] border-admin-border text-admin-text') : (isInboxChannelView ? 'border-[#d1d7db] text-[#54656f] hover:bg-white' : 'border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]')}`} title="Bulk select">
                 <CheckSquare className="w-3.5 h-3.5" />
               </button>
               <div className="relative">
                 <button onClick={() => setExportMenu(exportMenu === 'all' ? null : 'all')}
-                  className="p-1.5 rounded-lg border border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]"
+                  className={`p-1 rounded-md border ${isInboxChannelView ? 'border-[#d1d7db] text-[#54656f] hover:bg-white' : 'border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]'}`}
                   title="Export all chats (backup)">
                   <Download className="w-3.5 h-3.5" />
                 </button>
                 {exportMenu === 'all' && (
-                  <div className="absolute right-0 top-8 z-20 bg-white border rounded-lg shadow-lg py-1 w-28">
+                  <div className="absolute right-0 top-7 z-20 bg-white border rounded-lg shadow-lg py-1 w-28">
                     {['csv', 'pdf', 'html'].map(fm => (
                       <button key={fm} onClick={() => handleExportAll(fm)} className="w-full text-left px-3 py-1.5 text-xs hover:bg-[#f6f6f7] uppercase">{fm}</button>
                     ))}
@@ -1628,104 +1964,108 @@ function ChatPageInner() {
               </div>
               {channelFilter !== 'facebook' && channelFilter !== 'instagram' && (
               <button onClick={() => { if (channelFilter === 'email') { openEmailCompose('new'); } else if (channelFilter === 'whatsapp_qr') { setQrNewMsg(true); } else if (channelFilter === 'telegram' || channelFilter === 'telegram_personal') { setTgNewMsg(true); } else { setShowNewMsg(true); } }}
-                className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-admin-text text-white hover:bg-[#1a1a1a]"
+                className={`flex items-center gap-0.5 px-2 py-1 text-[11px] font-medium rounded-md text-white ${isInboxChannelView ? '' : 'bg-admin-text hover:bg-[#1a1a1a]'}`}
+                style={isInboxChannelView && inboxTheme ? { backgroundColor: inboxTheme.accent } : undefined}
                 title={channelFilter === 'email' ? 'Compose a new email' : 'Send a template to any number (no need to save the contact)'}>
-                <Plus className="w-3.5 h-3.5" /> {channelFilter === 'email' ? 'New Email' : 'New Msg'}
+                <Plus className="w-3 h-3" /> New
               </button>
               )}
             </div>
           </div>
           {notConnected && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-center justify-between gap-2">
-              <p className="text-xs text-amber-800"><b>{CHANNEL_META[channelFilter]?.label || 'This channel'}</b> is not connected yet.</p>
-              <Link href={CHANNEL_META[channelFilter]?.href || '/client/channels'} className="shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg bg-admin-text text-white hover:bg-[#1a1a1a]">Connect</Link>
+            <div className={`${dashboardNoticeCompactClass} flex items-center justify-between gap-2 py-2`}>
+              <p className="text-xs text-[#3d4a45]"><b className="text-[#101828]">{CHANNEL_META[channelFilter]?.label || 'This channel'}</b> is not connected yet.</p>
+              <Link
+                href={CHANNEL_META[channelFilter]?.href || '/client/channels'}
+                className={`shrink-0 px-2.5 py-1 text-xs font-medium rounded-lg text-white ${isInboxChannelView ? '' : 'bg-admin-text hover:bg-[#1a1a1a]'}`}
+                style={isInboxChannelView && inboxTheme ? { backgroundColor: inboxTheme.accent } : undefined}
+              >Connect</Link>
             </div>
           )}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-admin-text-subdued" />
-            <input
-              type="text"
-              placeholder="Search interactions"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-admin-border bg-[#f6f6f7] text-sm focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30"
-            />
-          </div>
           {bulkMode && bulkSelected.size > 0 && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-[#f6f6f7] border-b border-admin-border">
+            <div className="flex items-center gap-2 px-2 py-1.5 bg-[#f6f6f7] rounded-md">
               <span className="text-xs font-medium text-admin-text">{bulkSelected.size} selected</span>
-              <button onClick={() => handleBulkAction('close')} className="px-2 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700">Close All</button>
-              <button onClick={() => handleBulkAction('delete')} className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
-              <button onClick={() => setBulkSelected(new Set())} className="ml-auto text-xs text-admin-text-secondary hover:text-admin-text">Clear</button>
+              <button onClick={() => handleBulkAction('close')} className="px-2 py-0.5 text-[11px] bg-gray-600 text-white rounded hover:bg-gray-700">Close All</button>
+              <button onClick={() => handleBulkAction('delete')} className="px-2 py-0.5 text-[11px] bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+              <button onClick={() => setBulkSelected(new Set())} className="ml-auto text-[11px] text-admin-text-secondary hover:text-admin-text">Clear</button>
             </div>
           )}
           {msgResults.length > 0 && (
-            <div className="max-h-56 overflow-y-auto border rounded-lg divide-y">
-              <p className="px-3 py-1.5 text-[11px] font-semibold text-admin-text-subdued uppercase bg-[#f6f6f7]">Messages ({msgResults.length})</p>
+            <div className="max-h-40 overflow-y-auto border rounded-lg divide-y">
+              <p className="px-3 py-1 text-[11px] font-semibold text-admin-text-subdued uppercase bg-[#f6f6f7]">Messages ({msgResults.length})</p>
               {msgResults.map(m => (
                 <button key={m._id}
                   onClick={() => {
                     const conv = conversations.find(c => c._id === m.conversation);
                     if (conv) { setSearchQuery(''); setMsgResults([]); loadMessages(conv); }
                   }}
-                  className="w-full text-left px-3 py-2 hover:bg-[#f6f6f7]">
+                  className="w-full text-left px-3 py-1.5 hover:bg-[#f6f6f7]">
                   <p className="text-xs font-medium text-gray-800">{m.contact?.name || m.contact?.phone || 'Unknown'} <span className="text-admin-text-subdued font-normal">· {new Date(m.createdAt).toLocaleDateString('en-IN')}</span></p>
                   <p className="text-xs text-admin-text-secondary truncate">{m.direction === 'outbound' ? 'You: ' : ''}{m.text}</p>
                 </button>
               ))}
             </div>
           )}
-          <div className="flex items-center gap-1.5">
-            <TagIcon className="w-3.5 h-3.5 text-admin-text-subdued shrink-0" />
+          {/* One horizontal filter slider: labels · stages · status · sort · lead */}
+          <div className="-mx-0.5 flex items-center gap-1 overflow-x-auto overscroll-x-contain px-0.5 scrollbar-hide touch-pan-x">
+            <TagIcon className="w-3 h-3 text-admin-text-subdued shrink-0" />
             <select value={labelFilter} onChange={e => setLabelFilter(e.target.value)}
-              className="flex-1 min-w-0 px-2 py-1 border border-admin-border rounded-lg text-xs text-admin-text-secondary bg-white">
+              className={`shrink-0 max-w-[7.5rem] px-2 py-0.5 border rounded-full text-[11px] bg-white ${isInboxChannelView ? 'border-[#d1d7db] text-[#54656f]' : 'border-admin-border text-admin-text-secondary'}`}>
               <option value="all">All labels</option>
-              <option value="__reminder">⏰ Reminder set</option>
+              <option value="__reminder">Reminder set</option>
               {allTags.map(t => <option key={t._id} value={t._id}>{t.name}</option>)}
             </select>
             <select value={stageFilter} onChange={e => setStageFilter(e.target.value)}
-              className="flex-1 min-w-0 px-2 py-1 border border-admin-border rounded-lg text-xs text-admin-text-secondary bg-white">
+              className={`shrink-0 max-w-[7.5rem] px-2 py-0.5 border rounded-full text-[11px] bg-white ${isInboxChannelView ? 'border-[#d1d7db] text-[#54656f]' : 'border-admin-border text-admin-text-secondary'}`}>
               <option value="all">All stages</option>
               <option value="__none__">No stage</option>
               {allStages.map(s => <option key={s._id} value={s._id}>{s.name}</option>)}
             </select>
-          </div>
-          <div className="flex gap-0.5 items-center">
+            <span className={`mx-0.5 h-3 w-px shrink-0 ${isInboxChannelView ? 'bg-[#d1d7db]' : 'bg-admin-border'}`} aria-hidden />
             {['all', 'unread', 'active', 'assigned', 'unassigned', 'resolved'].map((f) => (
               <button
                 key={f}
+                type="button"
                 onClick={() => setFilter(f)}
-                className={`px-1.5 py-0.5 text-[10px] rounded-full whitespace-nowrap ${filter === f ? 'bg-admin-text text-white' : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]'}`}
+                className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition ${filter === f ? (isInboxChannelView && inboxTheme ? inboxTheme.pillOn : 'bg-admin-text text-white') : (isInboxChannelView ? 'bg-white text-[#54656f] hover:bg-[#e9edef]' : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]')}`}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
+                {f === 'unread' && isInboxChannelView && conversations.reduce((n, c) => n + (c.unreadCount || 0), 0) > 0 ? ` ${conversations.reduce((n, c) => n + (c.unreadCount || 0), 0)}` : ''}
               </button>
             ))}
+            <span className={`mx-0.5 h-3 w-px shrink-0 ${isInboxChannelView ? 'bg-[#d1d7db]' : 'bg-admin-border'}`} aria-hidden />
             <select
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value as 'newest' | 'oldest' | 'unread')}
               title="Sort conversations"
-              className="ml-auto text-[10px] border border-admin-border rounded-full px-1.5 py-0.5 bg-white text-admin-text-secondary focus:outline-none focus:ring-1 focus:ring-[#005bd3]/30"
+              className={`min-w-[6.5rem] shrink-0 text-[11px] border rounded-full px-2 py-0.5 bg-white focus:outline-none ${isInboxChannelView ? 'border-[#d1d7db] text-[#54656f]' : 'border-admin-border text-admin-text-secondary focus:ring-1 focus:ring-[#005bd3]/30'}`}
             >
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
               <option value="unread">Unread first</option>
             </select>
-          </div>
-          <div className="flex gap-1">
-            {[['all', 'All'], ['hot', '\ud83d\udd25 Hot'], ['warm', 'Warm'], ['cold', 'Cold']].map(([v, l]) => (
+            {([
+              { v: 'all', label: 'All' },
+              { v: 'hot', label: 'Hot', icon: true },
+              { v: 'warm', label: 'Warm' },
+              { v: 'cold', label: 'Cold' },
+            ] as Array<{ v: string; label: string; icon?: boolean }>).map(({ v, label, icon }) => (
               <button
                 key={v}
+                type="button"
                 onClick={() => setLeadFilter(v)}
-                className={`px-2 py-0.5 text-[10px] rounded-full whitespace-nowrap ${leadFilter === v ? (v === 'hot' ? 'bg-red-600 text-white' : v === 'warm' ? 'bg-orange-500 text-white' : v === 'cold' ? 'bg-blue-600 text-white' : 'bg-admin-text text-white') : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]'}`}
+                className={`inline-flex shrink-0 items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition ${leadFilter === v ? (v === 'hot' ? 'bg-red-600 text-white' : v === 'warm' ? 'bg-orange-500 text-white' : v === 'cold' ? 'bg-blue-600 text-white' : (isInboxChannelView && inboxTheme ? inboxTheme.pillOn : 'bg-admin-text text-white')) : (isInboxChannelView ? 'bg-white text-[#54656f] hover:bg-[#e9edef]' : 'bg-[#f1f1f1] text-admin-text-secondary hover:bg-[#e8e8e8]')}`}
               >
-                {l}
+                {icon ? <Flame className="w-2.5 h-2.5" /> : null}
+                {label}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Chats slide up / down */}
         <div
-          className="flex-1 overflow-y-auto"
+          className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] scroll-smooth p-2"
           onScroll={(e) => {
             const el = e.currentTarget;
             if (el.scrollHeight - el.scrollTop - el.clientHeight < 200 && hasMoreConvs && !convsLoadingMore && !loadingConvs) {
@@ -1742,30 +2082,50 @@ function ChatPageInner() {
             </div>
           ) : (
             filteredConversations.map((conv) => (
-              <div key={conv._id} className="relative group">
+              <div key={conv._id} className="relative group mb-1">
               <button
                 onClick={() => { if (bulkMode) { setBulkSelected(prev => { const n = new Set(prev); if (n.has(conv._id)) n.delete(conv._id); else n.add(conv._id); return n; }); } else { loadMessages(conv); } }}
-                className={`w-full text-left p-4 border-b border-gray-100 hover:bg-[#f6f6f7] transition-colors ${selectedConv?._id === conv._id ? 'bg-[#f1f1f1]' : ''} ${bulkSelected.has(conv._id) ? 'bg-blue-50' : ''}`}
+                className={`w-full text-left rounded-xl transition-colors ${isInboxChannelView && inboxTheme ? `px-3 py-2 ${inboxTheme.rowHover}` : 'p-4 hover:bg-[#f6f6f7]'} ${selectedConv?._id === conv._id ? (isInboxChannelView && inboxTheme ? inboxTheme.rowActive : 'bg-[#f1f1f1]') : ''} ${bulkSelected.has(conv._id) ? 'bg-blue-50' : ''}`}
               >
-                <div className="flex items-start gap-3">
+                <div className={`flex items-center ${isInboxChannelView ? 'gap-2.5' : 'gap-3'}`}>
                   {bulkMode && (
-                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 mt-2.5 ${bulkSelected.has(conv._id) ? 'bg-admin-text border-admin-text text-white' : 'border-gray-300'}`}>
-                      {bulkSelected.has(conv._id) && <Check className="w-3 h-3" />}
+                    <div className={`w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 ${bulkSelected.has(conv._id) ? 'bg-admin-text border-admin-text text-white' : 'border-gray-300'}`}>
+                      {bulkSelected.has(conv._id) && <Check className="w-2.5 h-2.5" />}
                     </div>
                   )}
-                  <ContactAvatar conv={conv} size={40} />
+                  <ContactAvatar conv={conv} size={isInboxChannelView ? 32 : 40} />
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className={`text-sm font-medium truncate ${hasReminder(conv) ? 'text-red-600' : 'text-admin-text'}`}>{hasReminder(conv) && <Bell className="w-3 h-3 inline mr-1 text-red-500" />}{getContactName(conv)}{(conv as { pinnedAt?: string }).pinnedAt && <Pin className="w-3 h-3 inline ml-1 text-admin-text align-middle" fill="currentColor" />}{leadBadge(conv)}{(conv.status === 'closed' || (conv as { isResolved?: boolean }).isResolved) && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-admin-text text-white align-middle font-medium">Resolved</span>}{hasReminder(conv) && <span className="ml-1 text-[10px] text-red-500 font-normal">{new Date(reminderContacts[getContactId(conv)]).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>}{(conv as { channel?: string }).channel === 'facebook' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700 align-middle">FB</span> : null}{(conv as { channel?: string }).channel === 'instagram' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-pink-100 text-pink-700 align-middle">IG</span> : null}{(conv as { channel?: string }).channel === 'whatsapp_qr' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-[#f1f1f1] text-admin-text align-middle">QR</span> : null}{(conv as { channel?: string }).channel === 'telegram' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700 align-middle">TG</span> : null}{(conv as { channel?: string }).channel === 'telegram_personal' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700 align-middle">TG-P</span> : null}{(conv as { channel?: string }).channel === 'email' ? <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-orange-100 text-orange-700 align-middle">Email</span> : null}</p>
-                      <span className="text-xs text-admin-text-subdued shrink-0 ml-1">{fmtListTime(conv.updatedAt)}</span>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <p className={`min-w-0 flex-1 truncate text-[13px] font-medium leading-tight ${hasReminder(conv) ? 'text-red-600' : (isInboxChannelView && inboxTheme ? inboxTheme.titleText : 'text-admin-text')}`}>
+                        {hasReminder(conv) && <Bell className="w-3 h-3 inline mr-1 text-red-500" />}
+                        {getContactName(conv)}
+                      </p>
+                      {(conv as { pinnedAt?: string }).pinnedAt && <Pin className="w-3 h-3 shrink-0 text-admin-text" fill="currentColor" />}
+                      {leadBadge(conv)}
+                      {(conv.status === 'closed' || (conv as { isResolved?: boolean }).isResolved) && (
+                        <span
+                          className="shrink-0 text-[9px] px-1 py-px rounded text-white font-medium"
+                          style={{ backgroundColor: isInboxChannelView && inboxTheme ? inboxTheme.accent : '#303030' }}
+                        >Resolved</span>
+                      )}
+                      {!isInboxChannelView && (conv as { channel?: string }).channel === 'facebook' ? <span className="shrink-0 text-[10px] px-1 py-0.5 rounded bg-blue-100 text-blue-700">FB</span> : null}
+                      {!isInboxChannelView && (conv as { channel?: string }).channel === 'instagram' ? <span className="shrink-0 text-[10px] px-1 py-0.5 rounded bg-pink-100 text-pink-700">IG</span> : null}
+                      {!isInboxChannelView && (conv as { channel?: string }).channel === 'whatsapp_qr' ? <span className="shrink-0 text-[10px] px-1 py-0.5 rounded bg-[#f1f1f1] text-admin-text">QR</span> : null}
+                      {!isInboxChannelView && (conv as { channel?: string }).channel === 'telegram' ? <span className="shrink-0 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700">TG</span> : null}
+                      {!isInboxChannelView && (conv as { channel?: string }).channel === 'telegram_personal' ? <span className="shrink-0 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700">TG-P</span> : null}
+                      {!isInboxChannelView && (conv as { channel?: string }).channel === 'email' ? <span className="shrink-0 text-[10px] px-1 py-0.5 rounded bg-orange-100 text-orange-700">Email</span> : null}
+                      <span
+                        className={`text-[11px] shrink-0 ml-auto ${isInboxChannelView && inboxTheme ? (conv.unreadCount > 0 ? 'font-semibold' : inboxTheme.mutedText) : 'text-admin-text-subdued'}`}
+                        style={isInboxChannelView && inboxTheme && conv.unreadCount > 0 ? { color: inboxTheme.accent } : undefined}
+                      >{fmtListTime(conv.updatedAt)}</span>
                     </div>
-                    <div className="flex items-center justify-between mt-0.5">
-                      <p className="text-xs text-admin-text-secondary truncate">{getConversationPreview(conv)}</p>
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <p className={`text-[11px] truncate leading-tight ${isInboxChannelView && inboxTheme ? inboxTheme.mutedText : 'text-admin-text-secondary'}`}>{getConversationPreview(conv)}</p>
                       {conv.unreadCount > 0 && (
-                        <span className="bg-admin-text text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{conv.unreadCount}</span>
+                        <span className={`${isInboxChannelView && inboxTheme ? inboxTheme.unread : 'bg-admin-text'} text-white text-[10px] rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center font-semibold shrink-0`}>{conv.unreadCount}</span>
                       )}
                     </div>
-                    {(getContactTags(conv).length > 0 || getContactBadges(conv).length > 0 || (conv.tags && conv.tags.length > 0) || getContactStages(conv).length > 0) && (
+                    {!isInboxChannelView && (getContactTags(conv).length > 0 || getContactBadges(conv).length > 0 || (conv.tags && conv.tags.length > 0) || getContactStages(conv).length > 0) && (
                       <div className="flex gap-1 mt-1 flex-wrap">
                         {getContactStages(conv).map((st) => (
                           <span key={st._id} className="text-[10px] px-1.5 py-0.5 rounded-full font-medium border" style={{ backgroundColor: (st.color || '#8B5CF6') + '18', color: st.color || '#8B5CF6', borderColor: (st.color || '#8B5CF6') + '55' }}>{st.name}</span>
@@ -1788,9 +2148,9 @@ function ChatPageInner() {
                 <button
                   onClick={(e) => { e.stopPropagation(); togglePin(conv); }}
                   title={(conv as { pinnedAt?: string }).pinnedAt ? 'Unpin chat' : 'Pin chat to top'}
-                  className="absolute top-1/2 -translate-y-1/2 right-2 p-1.5 rounded-full bg-white shadow border border-gray-100 text-admin-text-secondary opacity-0 group-hover:opacity-100 hover:bg-[#f6f6f7] transition-opacity"
+                  className="absolute top-1/2 -translate-y-1/2 right-1.5 p-1 rounded-full bg-white shadow border border-gray-100 text-admin-text-secondary opacity-0 group-hover:opacity-100 hover:bg-[#f6f6f7] transition-opacity"
                 >
-                  <Pin className="w-3.5 h-3.5" fill={(conv as { pinnedAt?: string }).pinnedAt ? 'currentColor' : 'none'} />
+                  <Pin className="w-3 h-3" fill={(conv as { pinnedAt?: string }).pinnedAt ? 'currentColor' : 'none'} />
                 </button>
               )}
               </div>
@@ -1802,78 +2162,157 @@ function ChatPageInner() {
             </div>
           )}
         </div>
+
+        {/* Drag to resize — only when list + chat share the screen (desktop) */}
+        <div
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize conversations panel"
+          title="Drag to make Conversations bigger or smaller"
+          onPointerDown={startListResize}
+          onDoubleClick={() => {
+            listWidthRef.current = LIST_W_DEFAULT;
+            setListWidth(LIST_W_DEFAULT);
+            try { localStorage.setItem('chat_list_width', String(LIST_W_DEFAULT)); } catch { /* ignore */ }
+          }}
+          className={`absolute inset-y-0 -right-1 z-30 w-3 cursor-col-resize items-center justify-center touch-none group ${
+            !selectedConv ? 'hidden' : 'hidden md:flex'
+          } ${listResizing ? 'bg-admin-text/10' : 'hover:bg-admin-text/5'}`}
+        >
+          <span className={`pointer-events-none h-full w-0.5 rounded-full transition-colors ${
+            listResizing ? 'bg-admin-text' : 'bg-admin-border group-hover:bg-admin-text'
+          }`} />
+          <span className={`pointer-events-none absolute flex h-7 w-3.5 items-center justify-center rounded-full border border-admin-border bg-white text-admin-text-subdued shadow-sm opacity-0 transition-opacity group-hover:opacity-100 ${
+            listResizing ? 'opacity-100' : ''
+          }`}>
+            <GripVertical className="w-2.5 h-2.5" />
+          </span>
+        </div>
       </div>
 
       {/* Chat Area */}
       {selectedConv ? (
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col animate-[orbitly-pop_160ms_ease-out]">
           {/* Chat header */}
-          <div className="border-b border-admin-border bg-white">
+          <div className={`border-b relative z-20 overflow-visible ${threadTheme ? `${threadTheme.softBorder} ${threadTheme.softBg}` : 'border-admin-border bg-white'}`}>
             {/* Row 1: Contact info + quick utility icons */}
-            <div className="px-4 py-3 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-3 min-w-0 shrink-0 max-w-[55%] sm:max-w-none">
-                <button onClick={() => setSelectedConv(null)} className="md:hidden text-admin-text-secondary mr-1">
-                  <X className="w-5 h-5" />
+            <div className="px-3 py-2 sm:px-4 flex items-center justify-between gap-2">
+              <div className="flex min-w-0 max-w-[46%] flex-1 items-center gap-2 sm:max-w-[42%] sm:gap-3 lg:max-w-[36%]">
+                <button
+                  type="button"
+                  onClick={() => setSelectedConv(null)}
+                  className={`mr-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
+                    threadTheme
+                      ? `${threadTheme.mutedText} hover:bg-black/5`
+                      : 'text-admin-text-secondary hover:bg-[#f6f6f7]'
+                  } ${isInboxChannelView ? '' : 'md:hidden'}`}
+                  title="Back to chats"
+                  aria-label="Back to chats"
+                >
+                  <ChevronLeft className="h-5 w-5" />
                 </button>
-                <ContactAvatar conv={selectedConv} gradient size={40} />
-                <div className="min-w-0">
+                <ContactAvatar conv={selectedConv} gradient size={36} />
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-semibold text-admin-text truncate">{getContactName(selectedConv)}</p>
+                    <p className={`text-sm font-semibold truncate ${threadTheme ? threadTheme.titleText : 'text-admin-text'}`}>{getContactName(selectedConv)}</p>
+                    {!threadTheme && (
                     <Badge variant={selectedConv.status === 'active' ? 'success' : selectedConv.status === 'resolved' ? 'info' : 'warning'}>
                       {selectedConv.status}
                     </Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
-                    <p className="text-xs text-admin-text-secondary">{getContactSubtitle(selectedConv)}</p>
+                    <p className={`text-xs ${threadTheme ? threadTheme.mutedText : 'text-admin-text-secondary'}`}>{getContactSubtitle(selectedConv)}</p>
                     <WindowTimer messages={messages} channel={(selectedConv as unknown as { channel?: string })?.channel || 'whatsapp'} />
                     {presence && (selectedConv as unknown as { channel?: string })?.channel === 'whatsapp_qr' && (
                       presence.online
-                        ? <span className="text-xs text-admin-text font-medium">● online</span>
+                        ? <span className={`text-xs font-medium ${isWaThread ? 'text-[#00a884]' : 'text-admin-text'}`}>● online</span>
                         : presence.lastSeen
-                          ? <span className="text-xs text-admin-text-subdued">last seen {new Date(presence.lastSeen * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                          ? <span className={`text-xs ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`}>last seen {new Date(presence.lastSeen * 1000).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                           : null
                     )}
                   </div>
                 </div>
               </div>
-              {/* Utility icons row */}
-              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide min-w-0">
-                <div className="relative" ref={stageMenuRef}>
+              {/* One-line toolbar: Chat AI + Stage / Labels / Pay / Notes / Search / Export */}
+              <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5 overflow-x-auto overscroll-x-contain scrollbar-hide">
+                {isMsgChat && (
+                <button
+                  ref={chatAiBtnRef}
+                  type="button"
+                  onClick={() => { if (showChatAiMenu) closeChatAiMenu(); else openChatAiMenu(); }}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border py-1.5 pl-2 pr-2 text-xs font-semibold shadow-sm transition-all whitespace-nowrap ${
+                    isWaThread
+                      ? (chatAiOn || showChatAiMenu
+                        ? 'border-[#00a884]/35 bg-[#d9fdd3] text-[#008069] hover:bg-[#c8f7c0]'
+                        : 'border-[#d1d7db] bg-white text-[#54656f] hover:bg-[#f0f2f5]')
+                      : (chatAiOn || showChatAiMenu
+                        ? 'border-[#aee9d1] bg-[#eef8f0] text-[#0f766e]'
+                        : 'border-[#e8efe9] bg-white text-[#6b7a74] hover:border-[#aee9d1] hover:bg-[#f7fbf8]')
+                  }`}
+                  title="Chat AI tools"
+                >
+                  <span className={`flex h-5 w-5 items-center justify-center rounded-full ${chatAiOn ? (isWaThread ? 'bg-[#00a884] text-white' : 'bg-[#00896F] text-white') : 'bg-[#eef0ef] text-[#8a9a93]'}`}>
+                    <Bot className="h-3 w-3" />
+                  </span>
+                  <span className="hidden sm:inline">Chat AI</span>
+                  <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-bold tracking-wide ${
+                    chatAiOn
+                      ? (isWaThread ? 'bg-[#00a884] text-white' : 'bg-[#00896F] text-white')
+                      : 'bg-[#f1f4f2] text-[#8a9a93]'
+                  }`}>{chatAiOn ? 'ON' : 'OFF'}</span>
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showChatAiMenu ? 'rotate-180' : ''} ${isWaThread ? 'text-[#667781]' : 'text-[#8a9a93]'}`} />
+                </button>
+                )}
+
+                {(() => {
+                  const toolBtn = (active?: boolean) =>
+                    `inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11px] font-semibold transition-all whitespace-nowrap ${
+                      active
+                        ? (isWaThread ? 'border-[#00a884]/35 bg-[#d9fdd3] text-[#008069]' : 'border-[#aee9d1] bg-[#eef8f0] text-[#0f766e]')
+                        : (isWaThread
+                          ? 'border-[#d1d7db] bg-white text-[#54656f] hover:bg-[#f0f2f5]'
+                          : 'border-[#e8efe9] bg-white text-[#6b7a74] hover:border-[#aee9d1] hover:bg-[#f7fbf8]')
+                    }`;
+                  return (
+                    <>
+                <div className="relative shrink-0" ref={stageMenuRef}>
                   <button
+                    type="button"
                     onClick={(e) => {
                       const r = e.currentTarget.getBoundingClientRect();
                       setStageMenuPos({ top: r.bottom + 4, right: Math.max(8, window.innerWidth - r.right) });
                       setStageMenu(!stageMenu);
                     }}
-                    className={`flex flex-col items-center justify-center px-2 py-1 rounded-lg transition-all ${stageMenu ? 'bg-violet-50 text-violet-600' : 'text-admin-text-secondary hover:text-admin-text hover:bg-[#f6f6f7]'}`}
+                    className={toolBtn(stageMenu)}
                     title="Assign stage"
                   >
-                    <GitBranch className="w-4 h-4" />
-                    <span className="text-[9px] mt-0.5 font-medium">Stage</span>
+                    <GitBranch className="h-3.5 w-3.5" />
+                    <span>Stage</span>
                   </button>
                   {stageMenu && (
-                    <div className="fixed z-50 bg-white border rounded-xl shadow-lg py-1 w-48 max-h-64 overflow-y-auto" style={{ top: stageMenuPos.top, right: stageMenuPos.right }}>
+                    <div className="fixed z-50 max-h-64 w-48 overflow-y-auto rounded-xl border border-[#e8efe9] bg-[#fbfdfc] py-1 shadow-[0_16px_40px_rgba(15,61,46,0.14)]" style={{ top: stageMenuPos.top, right: stageMenuPos.right }}>
                       {allStages.length === 0 ? (
-                        <p className="px-3 py-2 text-xs text-admin-text-subdued">No stages yet — create them under Contacts &gt; Stages</p>
+                        <p className="px-3 py-2 text-xs text-[#8a9a93]">No stages yet — create them under Contacts &gt; Stages</p>
                       ) : (
                         <>
-                          <p className="px-3 py-1 text-[10px] text-admin-text-subdued">Select one or more stages</p>
+                          <p className="px-3 py-1 text-[10px] text-[#8a9a93]">Select one or more stages</p>
                           {allStages.map(s => {
                             const active = getContactStageIds(selectedConv).includes(s._id);
                             return (
-                              <button key={s._id} onClick={() => toggleContactStage(s._id)}
-                                className="w-full flex items-center justify-between px-3 py-1.5 text-xs hover:bg-[#f6f6f7]">
+                              <button key={s._id} type="button" onClick={() => toggleContactStage(s._id)}
+                                className="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-[#eef8f0]">
                                 <span className="flex items-center gap-2">
-                                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.color || '#8B5CF6' }} />
+                                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: s.color || '#00896F' }} />
                                   {s.name}
                                 </span>
-                                {active && <CheckIcon className="w-3.5 h-3.5 text-admin-text" />}
+                                {active && <CheckIcon className="h-3.5 w-3.5 text-[#00896F]" />}
                               </button>
                             );
                           })}
                           {getContactStageIds(selectedConv).length > 0 && (
-                            <button onClick={() => { applyContactStages([]); setStageMenu(false); }}
-                              className="w-full px-3 py-1.5 text-xs text-left text-admin-text-subdued hover:bg-[#f6f6f7] border-t">
+                            <button type="button" onClick={() => { applyContactStages([]); setStageMenu(false); }}
+                              className="w-full border-t border-[#e8efe9] px-3 py-1.5 text-left text-xs text-[#8a9a93] hover:bg-[#eef8f0]">
                               Clear all stages
                             </button>
                           )}
@@ -1882,33 +2321,34 @@ function ChatPageInner() {
                     </div>
                   )}
                 </div>
-                <div className="relative" ref={labelMenuRef}>
+                <div className="relative shrink-0" ref={labelMenuRef}>
                   <button
+                    type="button"
                     onClick={(e) => {
                       const r = e.currentTarget.getBoundingClientRect();
                       setLabelMenuPos({ top: r.bottom + 4, right: Math.max(8, window.innerWidth - r.right) });
                       setLabelMenu(!labelMenu);
                     }}
-                    className={`flex flex-col items-center justify-center px-2 py-1 rounded-lg transition-all ${labelMenu ? 'bg-[#f1f1f1] text-admin-text' : 'text-admin-text-secondary hover:text-admin-text hover:bg-[#f6f6f7]'}`}
+                    className={toolBtn(labelMenu)}
                     title="Assign labels"
                   >
-                    <TagIcon className="w-4 h-4" />
-                    <span className="text-[9px] mt-0.5 font-medium">Labels</span>
+                    <TagIcon className="h-3.5 w-3.5" />
+                    <span>Labels</span>
                   </button>
                   {labelMenu && (
-                    <div className="fixed z-50 bg-white border rounded-xl shadow-lg py-1 w-48 max-h-64 overflow-y-auto" style={{ top: labelMenuPos.top, right: labelMenuPos.right }}>
+                    <div className="fixed z-50 max-h-64 w-48 overflow-y-auto rounded-xl border border-[#e8efe9] bg-[#fbfdfc] py-1 shadow-[0_16px_40px_rgba(15,61,46,0.14)]" style={{ top: labelMenuPos.top, right: labelMenuPos.right }}>
                       {allTags.length === 0 ? (
-                        <p className="px-3 py-2 text-xs text-admin-text-subdued">No labels yet — create them under Contacts &gt; Labels</p>
+                        <p className="px-3 py-2 text-xs text-[#8a9a93]">No labels yet — create them under Contacts &gt; Labels</p>
                       ) : allTags.map(t => {
                         const active = getContactTags(selectedConv).some(x => x._id === t._id);
                         return (
-                          <button key={t._id} onClick={() => { toggleContactLabel(t._id); setLabelMenu(false); }}
-                            className="w-full flex items-center justify-between px-3 py-1.5 text-xs hover:bg-[#f6f6f7]">
+                          <button key={t._id} type="button" onClick={() => { toggleContactLabel(t._id); setLabelMenu(false); }}
+                            className="flex w-full items-center justify-between px-3 py-1.5 text-xs hover:bg-[#eef8f0]">
                             <span className="flex items-center gap-2">
-                              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: t.color || '#10b981' }} />
+                              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: t.color || '#10b981' }} />
                               {t.name}
                             </span>
-                            {active && <CheckIcon className="w-3.5 h-3.5 text-admin-text" />}
+                            {active && <CheckIcon className="h-3.5 w-3.5 text-[#00896F]" />}
                           </button>
                         );
                       })}
@@ -1916,254 +2356,289 @@ function ChatPageInner() {
                   )}
                 </div>
                 {isMsgChat && (
-                <button onClick={handleOpenPay} className="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-admin-text-secondary hover:text-admin-text hover:bg-[#f6f6f7] transition-all" title="Send payment link">
-                  <IndianRupee className="w-4 h-4" />
-                  <span className="text-[9px] mt-0.5 font-medium">Pay</span>
+                <button type="button" onClick={handleOpenPay} className={toolBtn(false)} title="Send payment link">
+                  <IndianRupee className="h-3.5 w-3.5" />
+                  <span>Pay</span>
                 </button>
                 )}
-                <button onClick={handleOpenNotes} className="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-admin-text-secondary hover:text-admin-text hover:bg-[#f6f6f7] transition-all" title="Notes & reminders">
-                  <StickyNote className="w-4 h-4" />
-                  <span className="text-[9px] mt-0.5 font-medium">Notes</span>
+                <button type="button" onClick={handleOpenNotes} className={toolBtn(notesOpen)} title="Notes & reminders">
+                  <StickyNote className="h-3.5 w-3.5" />
+                  <span>Notes</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => { setInChatSearch(!inChatSearch); setInChatQuery(''); setMatchIdx(0); }}
-                  className={`flex flex-col items-center justify-center px-2 py-1 rounded-lg transition-all ${inChatSearch ? 'bg-[#f1f1f1] text-admin-text' : 'text-admin-text-secondary hover:text-admin-text hover:bg-[#f6f6f7]'}`}
+                  className={toolBtn(inChatSearch)}
                   title="Search in this chat"
                 >
-                  <Search className="w-4 h-4" />
-                  <span className="text-[9px] mt-0.5 font-medium">Search</span>
+                  <Search className="h-3.5 w-3.5" />
+                  <span>Search</span>
                 </button>
-                <div className="relative">
+                <div className="relative shrink-0">
                   <button
+                    type="button"
                     onClick={() => setExportMenu(exportMenu === 'chat' ? null : 'chat')}
-                    className="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-admin-text-secondary hover:text-admin-text hover:bg-[#f6f6f7] transition-all"
+                    className={toolBtn(exportMenu === 'chat')}
                     title="Export this chat"
                   >
-                    <Download className="w-4 h-4" />
-                    <span className="text-[9px] mt-0.5 font-medium">Export</span>
+                    <Download className="h-3.5 w-3.5" />
+                    <span>Export</span>
                   </button>
                   {exportMenu === 'chat' && (
-                    <div className="absolute right-0 top-full mt-1 z-20 bg-white border rounded-xl shadow-lg py-1 w-28">
+                    <div className="absolute right-0 top-full z-20 mt-1 w-28 rounded-xl border border-[#e8efe9] bg-[#fbfdfc] py-1 shadow-[0_16px_40px_rgba(15,61,46,0.14)]">
                       {['csv', 'pdf', 'html'].map(fm => (
-                        <button key={fm} onClick={() => handleExportChat(fm)} className="w-full text-left px-3 py-1.5 text-xs hover:bg-[#f6f6f7] uppercase">{fm}</button>
+                        <button key={fm} type="button" onClick={() => handleExportChat(fm)} className="w-full px-3 py-1.5 text-left text-xs uppercase hover:bg-[#eef8f0]">{fm}</button>
                       ))}
                     </div>
                   )}
                 </div>
+                {isInboxChannelView && (
+                <button
+                  type="button"
+                  onClick={toggleWaFullscreen}
+                  className={toolBtn(inboxFullscreen)}
+                  title={inboxFullscreen ? 'Exit full screen (Esc)' : 'Open full screen'}
+                  aria-label={inboxFullscreen ? 'Exit full screen' : 'Open full screen'}
+                >
+                  {inboxFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                  <span className="hidden lg:inline">{inboxFullscreen ? 'Exit' : 'Full'}</span>
+                </button>
+                )}
                 {isWaChat && (
                 <>
-                <div className="w-px h-6 bg-gray-200 mx-1" />
+                <div className="mx-0.5 h-5 w-px shrink-0 bg-[#e8efe9]" />
                 <button
+                  type="button"
                   onClick={() => startCall(getContactPhone(selectedConv), getContactName(selectedConv))}
                   disabled={callActive}
-                  className="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-admin-text hover:bg-[#f6f6f7] transition-all disabled:opacity-50"
+                  className={`${toolBtn(false)} disabled:opacity-50`}
                   title="Call this contact yourself (uses your microphone)"
                 >
-                  <Phone className="w-4 h-4" />
-                  <span className="text-[9px] mt-0.5 font-medium">Call</span>
+                  <Phone className="h-3.5 w-3.5" />
+                  <span>Call</span>
                 </button>
                 <button
+                  type="button"
                   onClick={handleAiCall}
                   disabled={aiCalling}
-                  className="flex flex-col items-center justify-center px-2 py-1 rounded-lg text-indigo-600 hover:bg-indigo-50 transition-all disabled:opacity-50"
+                  className={`${toolBtn(false)} disabled:opacity-50`}
                   title="AI calls the customer and talks to them"
                 >
-                  <PhoneCall className="w-4 h-4" />
-                  <span className="text-[9px] mt-0.5 font-medium">AI Call</span>
+                  <PhoneCall className="h-3.5 w-3.5" />
+                  <span>AI Call</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleAI('call')}
+                  disabled={togglingAI}
+                  className={`${toolBtn(!!selectedConv.aiCallEnabled)} disabled:opacity-50`}
+                  title={selectedConv.aiCallEnabled ? 'Call AI is ON — click to turn off' : 'Turn ON Call AI'}
+                >
+                  <PhoneCall className="h-3.5 w-3.5" />
+                  <span>Call AI</span>
+                  <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${selectedConv.aiCallEnabled ? 'bg-[#00896F] text-white' : 'bg-[#f1f4f2] text-[#8a9a93]'}`}>
+                    {selectedConv.aiCallEnabled ? 'ON' : 'OFF'}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowTemplateModal(true)}
+                  className={toolBtn(false)}
+                  title="Send a template message"
+                >
+                  <LayoutTemplate className="h-3.5 w-3.5" />
+                  <span>Template</span>
                 </button>
                 </>
                 )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
-            {/* Row 2: Action buttons bar */}
-            <div className="px-4 pb-3 flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            {/* Portals / modals (no second toolbar row) */}
+            <>
               {isMsgChat && (
               <>
-              <button
-                onClick={() => handleToggleAI('chat')}
-                disabled={togglingAI}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap disabled:opacity-50 ${chatAiOn ? 'border-admin-border bg-[#f1f1f1] text-admin-text shadow-sm' : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300'}`}
-                title={chatAiOn ? 'Chat AI is ON — click to turn off' : 'Turn ON Chat AI'}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${chatAiOn ? 'bg-admin-text' : 'bg-gray-300'}`} />
-                <Bot className="w-3.5 h-3.5" />
-                Chat AI
-                <span className={`text-[10px] font-bold ${chatAiOn ? 'text-admin-text' : 'text-admin-text-subdued'}`}>{chatAiOn ? 'ON' : 'OFF'}</span>
-              </button>
-              {isWaChat && (
-              <button
-                onClick={() => handleToggleAI('call')}
-                disabled={togglingAI}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all whitespace-nowrap disabled:opacity-50 ${selectedConv.aiCallEnabled ? 'border-admin-border bg-[#f1f1f1] text-admin-text shadow-sm' : 'border-admin-border bg-white text-admin-text-secondary hover:border-gray-300'}`}
-                title={selectedConv.aiCallEnabled ? 'Call AI is ON — click to turn off' : 'Turn ON Call AI'}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${selectedConv.aiCallEnabled ? 'bg-admin-text' : 'bg-gray-300'}`} />
-                <PhoneCall className="w-3.5 h-3.5" />
-                Call AI
-                <span className={`text-[10px] font-bold ${selectedConv.aiCallEnabled ? 'text-admin-text' : 'text-admin-text-subdued'}`}>{selectedConv.aiCallEnabled ? 'ON' : 'OFF'}</span>
-              </button>
-              )}
-              <div className="w-px h-5 bg-gray-200 mx-0.5" />
-              {isWaChat && (
-              <button
-                onClick={() => setShowTemplateModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-admin-border bg-white text-admin-text-secondary hover:border-gray-300 hover:bg-[#f6f6f7] transition-all whitespace-nowrap"
-                title="Send a template message"
-              >
-                <LayoutTemplate className="w-3.5 h-3.5" />
-                Template
-              </button>
-              )}
-              <button
-                onClick={() => setShowPresetModal(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-admin-border bg-[#f1f1f1] text-admin-text hover:bg-[#e8e8e8] transition-all whitespace-nowrap"
-                title="Send a preset message (free)"
-              >
-                <PiggyBank className="w-3.5 h-3.5" />
-                Preset
-              </button>
+                {chatAiPortalReady && showChatAiMenu && chatAiMenuPos && createPortal(
+                  (
+                    <div className="fixed inset-0 z-[20000]" data-chat-ai-portal>
+                    <div className="absolute inset-0 bg-black/20" onClick={closeChatAiMenu} aria-hidden />
+                    <div
+                      ref={chatAiMenuRef}
+                      role="menu"
+                      onClick={(e) => e.stopPropagation()}
+                      className={`absolute w-[208px] max-h-[min(300px,calc(100vh-16px))] overflow-y-auto rounded-xl border bg-white shadow-[0_12px_32px_rgba(11,20,26,0.28)] ${isWaThread ? 'border-[#d1d7db]' : 'border-admin-border'}`}
+                      style={{ top: chatAiMenuPos.top, left: chatAiMenuPos.left }}
+                    >
+                      <div className={`px-2.5 py-2 border-b sticky top-0 z-10 ${isWaThread ? 'border-[#f0f2f5] bg-[#e7f8f2]' : 'border-gray-100 bg-[#f6f6f7]'}`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="min-w-0 flex items-center gap-1.5">
+                            <Power className={`w-3 h-3 shrink-0 ${chatAiOn ? (isWaThread ? 'text-[#00a884]' : 'text-admin-text') : 'text-gray-400'}`} />
+                            <p className={`text-[12px] font-semibold truncate ${isWaThread ? 'text-[#111b21]' : 'text-admin-text'}`}>Chat AI</p>
+                            <span className={`text-[10px] font-bold ${chatAiOn ? (isWaThread ? 'text-[#008069]' : 'text-admin-text') : 'text-gray-400'}`}>{chatAiOn ? 'ON' : 'OFF'}</span>
+                          </div>
+                          <button
+                            type="button"
+                            disabled={togglingAI}
+                            onClick={() => handleToggleAI('chat')}
+                            className={`relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:opacity-50 ${chatAiOn ? (isWaThread ? 'bg-[#00a884]' : 'bg-admin-text') : 'bg-gray-300'}`}
+                            title={chatAiOn ? 'Turn OFF Chat AI' : 'Turn ON Chat AI'}
+                          >
+                            <span className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${chatAiOn ? 'translate-x-4' : ''}`} />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="py-1">
+                        {([
+                          { key: 'preset', label: 'Preset', icon: <PiggyBank className="w-3.5 h-3.5" />, tone: isWaThread ? 'bg-[#e7f8f2] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text', onClick: () => { setShowPresetModal(true); closeChatAiMenu(); } },
+                          { key: 'assign', label: 'Assign', icon: <UserPlus className="w-3.5 h-3.5" />, tone: isWaThread ? 'bg-[#e7f8f2] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text', onClick: () => setChatAiSub(s => s === 'assign' ? null : 'assign'), chevron: true, open: chatAiSub === 'assign' },
+                          { key: 'pipeline', label: 'Pipeline', icon: <GitBranch className="w-3.5 h-3.5" />, tone: isWaThread ? 'bg-[#efe8ff] text-[#6d28d9]' : 'bg-violet-50 text-violet-700', onClick: () => setChatAiSub(s => s === 'pipeline' ? null : 'pipeline'), chevron: true, open: chatAiSub === 'pipeline' },
+                          { key: 'invoice', label: 'Invoice', icon: <Receipt className="w-3.5 h-3.5" />, tone: 'bg-amber-50 text-amber-700', onClick: () => { setShowInvoice(true); closeChatAiMenu(); } },
+                          { key: 'summary', label: summarizing ? 'Summarizing…' : 'Summary', icon: <Sparkles className="w-3.5 h-3.5" />, tone: 'bg-[#eef8f0] text-[#0f766e]', onClick: () => { handleAiSummary(); closeChatAiMenu(); }, disabled: summarizing },
+                        ] as Array<{ key: string; label: string; icon: React.ReactNode; tone: string; onClick: () => void; chevron?: boolean; open?: boolean; disabled?: boolean }>).map((item) => (
+                          <React.Fragment key={item.key}>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              disabled={item.disabled}
+                              onClick={item.onClick}
+                              className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-[12px] transition-colors disabled:opacity-50 ${
+                                item.open
+                                  ? (isWaThread ? 'bg-[#e7f8f2] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text')
+                                  : (isWaThread ? 'text-[#111b21] hover:bg-[#f0f2f5]' : 'text-admin-text hover:bg-[#f6f6f7]')
+                              }`}
+                            >
+                              <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${item.tone}`}>{item.icon}</span>
+                              <span className="flex-1 font-medium">{item.label}</span>
+                              {item.chevron && (
+                                <ChevronRight className={`w-3.5 h-3.5 transition-transform ${item.open ? 'rotate-90' : ''} ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`} />
+                              )}
+                            </button>
+                            {item.key === 'assign' && chatAiSub === 'assign' && (
+                              <div className={`mx-1.5 mb-1 max-h-28 overflow-y-auto rounded-lg border ${isWaThread ? 'border-[#e9edef] bg-[#fafafa]' : 'border-admin-border bg-white'}`}>
+                                {agents.length === 0 && (
+                                  <p className="px-2.5 py-1.5 text-[11px] text-admin-text-subdued">No agents</p>
+                                )}
+                                {agents.map(a => {
+                                  const assignedId = typeof selectedConv?.assignedAgent === 'string' ? selectedConv.assignedAgent : selectedConv?.assignedAgent?._id;
+                                  const isAssigned = assignedId === a._id;
+                                  return (
+                                    <button
+                                      key={a._id}
+                                      type="button"
+                                      onClick={() => { handleAssignAgent(a._id); closeChatAiMenu(); }}
+                                      className={`w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] hover:bg-white ${isAssigned ? (isWaThread ? 'text-[#008069] font-semibold' : 'text-admin-text font-semibold') : 'text-admin-text'}`}
+                                    >
+                                      <span className="truncate">{a.name}</span>
+                                      {isAssigned && <CheckIcon className={`w-3 h-3 ${isWaThread ? 'text-[#00a884]' : 'text-admin-text'}`} />}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                            {item.key === 'pipeline' && chatAiSub === 'pipeline' && (
+                              <div className={`mx-1.5 mb-1 max-h-32 overflow-y-auto rounded-lg border ${isWaThread ? 'border-[#e9edef] bg-[#fafafa]' : 'border-admin-border bg-white'}`}>
+                                {pipelines.length === 0 && (
+                                  <p className="px-2.5 py-1.5 text-[11px] text-admin-text-subdued">No pipeline found</p>
+                                )}
+                                {pipelines.map(p => {
+                                  const cid = typeof selectedConv?.contact === 'string' ? selectedConv?.contact : (selectedConv?.contact as { _id?: string })?._id;
+                                  const currentDeal = p.deals?.find(d => (typeof d.contact === 'string' ? d.contact : d.contact?._id) === cid);
+                                  return (
+                                    <div key={p._id}>
+                                      <p className="px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wide text-admin-text-subdued">{p.name}</p>
+                                      {(p.stages || []).map(s => {
+                                        const isCurrent = currentDeal?.stage === s.name;
+                                        return (
+                                          <button
+                                            key={s.name}
+                                            type="button"
+                                            onClick={() => { handleAddToPipeline(p._id, s.name); closeChatAiMenu(); }}
+                                            className={`w-full flex items-center justify-between px-2.5 py-1.5 text-[11px] hover:bg-white ${isCurrent ? 'text-violet-700 font-semibold' : 'text-admin-text'}`}
+                                          >
+                                            <span className="truncate">{s.name}</span>
+                                            {isCurrent && <CheckIcon className="w-3 h-3 text-violet-600" />}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </React.Fragment>
+                        ))}
+
+                        <div className={`my-0.5 border-t ${isWaThread ? 'border-[#f0f2f5]' : 'border-gray-100'}`} />
+
+                        <button
+                          type="button"
+                          role="menuitem"
+                          onClick={() => { handleResolveConv(); closeChatAiMenu(); }}
+                          className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-[12px] font-semibold transition-colors ${
+                            selectedConv.status === 'closed'
+                              ? 'text-gray-600 hover:bg-gray-50'
+                              : (isWaThread ? 'text-[#008069] hover:bg-[#e7f8f2]' : 'text-admin-text hover:bg-[#f6f6f7]')
+                          }`}
+                        >
+                          <span className={`flex h-6 w-6 items-center justify-center rounded-lg ${selectedConv.status === 'closed' ? 'bg-gray-100 text-gray-600' : (isWaThread ? 'bg-[#d9fdd3] text-[#008069]' : 'bg-[#f1f1f1] text-admin-text')}`}>
+                            <CheckIcon className="w-3.5 h-3.5" />
+                          </span>
+                          <span className="flex-1">{selectedConv.status === 'closed' ? 'Reopen' : 'Resolve'}</span>
+                        </button>
+                      </div>
+                    </div>
+                    </div>
+                  ),
+                  document.body
+                )}
               </>
               )}
-              <div ref={assignMenuRef}>
-                <button
-                  onClick={(e) => {
-                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                    setAssignMenuPos({ top: rect.bottom + 4, left: Math.min(rect.left, window.innerWidth - 240) });
-                    setShowAssignMenu(v => !v);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-admin-border bg-white text-admin-text-secondary hover:border-gray-300 hover:bg-[#f6f6f7] transition-all whitespace-nowrap"
-                  title="Assign to agent"
-                >
-                  <UserPlus className="w-3.5 h-3.5" />
-                  Assign
-                </button>
-                {showAssignMenu && assignMenuPos && (
-                  <>
-                    <div className="fixed inset-0 z-[9998]" onClick={() => setShowAssignMenu(false)} />
-                    <div className="fixed w-56 bg-white border border-admin-border rounded-xl shadow-xl z-[9999] py-1 max-h-64 overflow-y-auto" style={{ top: assignMenuPos.top, left: assignMenuPos.left }}>
-                      <p className="px-3 py-1.5 text-xs font-medium text-admin-text-subdued uppercase border-b">Assign to Agent</p>
-                      {agents.length === 0 && (
-                        <p className="px-3 py-2 text-sm text-admin-text-subdued">No agents available</p>
-                      )}
-                      {agents.map(a => {
-                        const assignedId = typeof selectedConv?.assignedAgent === 'string' ? selectedConv.assignedAgent : selectedConv?.assignedAgent?._id;
-                        const isAssigned = assignedId === a._id;
-                        return (
-                          <button
-                            key={a._id}
-                            onClick={() => handleAssignAgent(a._id)}
-                            className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-[#f6f6f7] ${isAssigned ? 'bg-[#f1f1f1] text-admin-text' : 'text-admin-text'}`}
-                          >
-                            <span className="truncate">{a.name}</span>
-                            {isAssigned && <CheckIcon className="w-4 h-4 text-admin-text" />}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-              </div>
-              <div>
-                <button
-                  onClick={(e) => {
-                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                    setPipelineMenuPos({ top: rect.bottom + 4, left: Math.min(rect.left, window.innerWidth - 260) });
-                    setShowPipelineMenu(v => !v);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-violet-200 bg-violet-50 text-violet-700 hover:bg-violet-100 transition-all whitespace-nowrap"
-                  title="Add this chat to a sales pipeline stage"
-                >
-                  <GitBranch className="w-3.5 h-3.5" />
-                  Pipeline
-                </button>
-                {showPipelineMenu && pipelineMenuPos && (
-                  <>
-                    <div className="fixed inset-0 z-[9998]" onClick={() => setShowPipelineMenu(false)} />
-                    <div className="fixed w-64 bg-white border border-admin-border rounded-xl shadow-xl z-[9999] py-1 max-h-72 overflow-y-auto" style={{ top: pipelineMenuPos.top, left: pipelineMenuPos.left }}>
-                      {pipelines.length === 0 && (
-                        <p className="px-3 py-2 text-sm text-admin-text-subdued">No pipeline found. Create one in Pipelines.</p>
-                      )}
-                      {pipelines.map(p => {
-                        const cid = typeof selectedConv?.contact === 'string' ? selectedConv?.contact : (selectedConv?.contact as { _id?: string })?._id;
-                        const currentDeal = p.deals?.find(d => (typeof d.contact === 'string' ? d.contact : d.contact?._id) === cid);
-                        return (
-                          <div key={p._id}>
-                            <p className="px-3 py-1.5 text-xs font-medium text-admin-text-subdued uppercase border-b">{p.name}</p>
-                            {(p.stages || []).map(s => {
-                              const isCurrent = currentDeal?.stage === s.name;
-                              return (
-                                <button
-                                  key={s.name}
-                                  onClick={() => handleAddToPipeline(p._id, s.name)}
-                                  className={`w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-[#f6f6f7] ${isCurrent ? 'bg-violet-50 text-violet-700' : 'text-admin-text'}`}
-                                >
-                                  <span className="truncate">{s.name}</span>
-                                  {isCurrent && <CheckIcon className="w-4 h-4 text-violet-600" />}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-              </div>
-              {isMsgChat && (
-              <button onClick={() => setShowInvoice(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all whitespace-nowrap"
-                title="Create & send Quotation/Invoice">
-                🧾 Invoice
-              </button>
-              )}
+
               {showInvoice && <InvoiceModal convId={selectedConv._id} onClose={() => setShowInvoice(false)} />}
-              <button
-                onClick={async () => {
-                  if (summarizing) return;
-                  setSummarizing(true);
-                  try {
-                    const r = await conversationApi.aiSummary(selectedConv._id);
-                    setAiSummaryText(r.data?.data?.summary || 'No summary');
-                  } catch (err: unknown) {
-                    const e = err as { response?: { data?: { message?: string } } };
-                    setAiSummaryText(e.response?.data?.message || 'Summary failed');
-                  }
-                  setSummarizing(false);
-                }}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-violet-600 text-white hover:bg-violet-700 transition-all whitespace-nowrap shadow-sm"
-                title="AI summary of conversation"
-              >
-                {summarizing ? '...' : '✨ Summary'}
-              </button>
               {aiSummaryText && (
-                <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setAiSummaryText(null)}>
-                  <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-5" onClick={e => e.stopPropagation()}>
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-bold text-admin-text">✨ AI Summary</h3>
-                      <button onClick={() => setAiSummaryText(null)} className="text-admin-text-subdued hover:text-admin-text-secondary">✕</button>
+                <div
+                  className="fixed inset-0 z-[10000] flex items-center justify-center p-4"
+                  onClick={() => setAiSummaryText(null)}
+                >
+                  <div className="absolute inset-0 bg-slate-900/25 backdrop-blur-[3px]" aria-hidden />
+                  <div
+                    className="relative w-full max-w-md overflow-hidden rounded-[28px] border border-white/70 bg-white/50 p-5 shadow-[0_24px_60px_rgba(15,61,46,0.12),inset_0_1px_0_rgba(255,255,255,0.75)] backdrop-blur-2xl"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_0%,rgba(212,244,216,0.55),transparent_45%),radial-gradient(circle_at_100%_100%,rgba(219,234,254,0.3),transparent_40%)]"
+                      aria-hidden
+                    />
+                    <div className="relative">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <h3 className="inline-flex items-center gap-2 text-[14px] font-semibold tracking-tight text-[#101828]">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-[#aee9d1]/80 bg-[#eef8f0]/80 text-[#00896F] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+                            <Sparkles className="h-4 w-4" />
+                          </span>
+                          AI Summary
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={() => setAiSummaryText(null)}
+                          className="rounded-xl border border-white/70 bg-white/50 p-1.5 text-[#6b7a74] backdrop-blur-md transition hover:bg-white/80 hover:text-[#101828]"
+                          aria-label="Close"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="rounded-2xl border border-white/70 bg-white/45 px-3.5 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]">
+                        <p className="max-h-80 overflow-y-auto whitespace-pre-wrap text-[13px] leading-relaxed text-[#3d4a45]">
+                          {aiSummaryText}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-sm text-admin-text whitespace-pre-wrap max-h-80 overflow-y-auto">{aiSummaryText}</p>
                   </div>
                 </div>
               )}
-              <div className="ml-auto">
-                <button
-                  onClick={async () => {
-                    try {
-                      const r = await conversationApi.resolve(selectedConv._id);
-                      const st = r.data?.data?.status || 'closed';
-                      const resolved = st === 'closed';
-                      setSelectedConv({ ...selectedConv, status: st, isResolved: resolved } as Conversation);
-                      setConversations(prev => prev.map(c => c._id === selectedConv._id ? ({ ...c, status: st, isResolved: resolved } as Conversation) : c));
-                    } catch { /* empty */ }
-                  }}
-                  className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap shadow-sm ${selectedConv.status === 'closed' ? 'bg-gray-600 text-white hover:bg-gray-700' : 'bg-admin-text text-white hover:bg-[#1a1a1a]'}`}
-                  title={selectedConv.status === 'closed' ? 'Reopen conversation' : 'Resolve conversation'}
-                >
-                  {selectedConv.status === 'closed' ? 'Reopen' : 'Resolve'}
-                </button>
-              </div>
-            </div>
+            </>
           </div>
 
           {inChatSearch && (
@@ -2189,7 +2664,14 @@ function ChatPageInner() {
                 loadOlderMessages();
               }
             }}
-            className="flex-1 overflow-y-auto overflow-x-hidden p-4 bg-[#f1f1f1] space-y-3"
+            className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-2 ${isWaThread ? 'bg-[#efeae2]' : threadTheme ? '' : 'bg-[#f1f1f1] space-y-3'}`}
+            style={
+              isWaThread
+                ? { backgroundImage: WA_DOODLE }
+                : threadTheme
+                  ? { backgroundColor: threadTheme.canvasBg }
+                  : undefined
+            }
           >
             {!loadingMsgs && (hasOlder || olderLoading) && (
               <div className="text-center py-2 text-xs text-admin-text-subdued">
@@ -2215,17 +2697,23 @@ function ChatPageInner() {
                   || (selectedConv as unknown as { channel?: string } | null)?.channel === 'email';
                 return (
                 <div key={msg._id} id={`msg-${msg._id}`} className={`group flex min-w-0 ${msg.direction === 'outbound' ? 'justify-end' : 'justify-start'} ${matchIds.includes(msg._id) ? (matchIds[matchIdx] === msg._id ? 'rounded-lg ring-2 ring-amber-400' : 'rounded-lg ring-1 ring-amber-200') : ''}`}>
-                  <div className={`${isEmailMsg ? 'max-w-[98%] w-full' : 'max-w-[85%] sm:max-w-[70%]'} min-w-0 break-words [overflow-wrap:anywhere] rounded-xl px-4 py-2 shadow-sm ${
-                    msg.direction === 'outbound' ? 'bg-[#e8e8e8] text-admin-text rounded-br-sm' : 'bg-white text-admin-text rounded-bl-sm'
+                  <div className={`${isEmailMsg ? 'max-w-[98%] w-full' : 'max-w-[85%] sm:max-w-[70%]'} min-w-0 break-words [overflow-wrap:anywhere] px-3 py-1.5 shadow-sm ${
+                    isWaThread
+                      ? (msg.direction === 'outbound'
+                        ? 'bg-[#d9fdd3] text-[#111b21] rounded-lg rounded-tr-none'
+                        : 'bg-white text-[#111b21] rounded-lg rounded-tl-none')
+                      : (msg.direction === 'outbound'
+                        ? 'bg-[#e8e8e8] text-admin-text rounded-xl rounded-br-sm'
+                        : 'bg-white text-admin-text rounded-xl rounded-bl-sm')
                   }`}>
                     {msg.context?.messageId && (
-                      <div className="mb-1 border-l-4 border-admin-text bg-black/5 rounded px-2 py-1 text-xs text-admin-text-secondary">
-                        <span className="font-medium text-admin-text">{msg.context.from === 'outbound' ? 'You' : 'Customer'}</span>
+                      <div className={`mb-1 border-l-4 rounded px-2 py-1 text-xs ${isWaThread ? 'border-[#00a884] bg-black/[0.04] text-[#667781]' : 'border-admin-text bg-black/5 text-admin-text-secondary'}`}>
+                        <span className={`font-medium ${isWaThread ? 'text-[#008069]' : 'text-admin-text'}`}>{msg.context.from === 'outbound' ? 'You' : 'Customer'}</span>
                         <div className="truncate max-w-[240px]">{msg.context.text || 'Message'}</div>
                       </div>
                     )}
                     {renderMessageContent(msg)}
-                    <div className={`flex items-center justify-end gap-1 mt-1 text-admin-text-subdued`}>
+                    <div className={`flex items-center justify-end gap-1 mt-1 ${isWaThread ? 'text-[#667781]' : 'text-admin-text-subdued'}`}>
                       <span className="text-[10px]">{new Date(msg.createdAt).toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
                       {msg.direction === 'outbound' && getStatusIcon(msg.status)}
                       <button onClick={() => setReactPickerId(reactPickerId === msg._id ? null : msg._id)} className="opacity-0 group-hover:opacity-100 ml-1 p-0.5 hover:text-admin-text transition-opacity" title="React"><Smile className="w-3 h-3" /></button>
@@ -2253,8 +2741,8 @@ function ChatPageInner() {
             )}
             {typingAgent && (
               <div className="flex justify-start">
-                <div className="bg-white rounded-xl px-4 py-2 shadow-sm">
-                  <p className="text-xs text-admin-text-secondary italic">{typingAgent} is typing...</p>
+                <div className={`bg-white px-4 py-2 shadow-sm ${isWaThread ? 'rounded-lg rounded-tl-none' : 'rounded-xl'}`}>
+                  <p className={`text-xs italic ${isWaThread ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>{typingAgent} is typing...</p>
                 </div>
               </div>
             )}
@@ -2262,12 +2750,12 @@ function ChatPageInner() {
           </div>
 
           {/* Message input */}
-          <div className="p-3 border-t border-admin-border bg-white">
+          <div className={`p-3 border-t ${isWaThread ? 'border-[#d1d7db] bg-[#f0f2f5]' : 'border-admin-border bg-white'}`}>
             {replyTo && (
-              <div className="mb-2 flex items-center gap-2 border-l-4 border-admin-text bg-[#f6f6f7] rounded px-3 py-2">
+              <div className={`mb-2 flex items-center gap-2 border-l-4 rounded px-3 py-2 ${isWaThread ? 'border-[#00a884] bg-white' : 'border-admin-text bg-[#f6f6f7]'}`}>
                 <div className="min-w-0 flex-1">
-                  <div className="text-xs font-medium text-admin-text">Replying to {replyTo.direction === 'outbound' ? 'yourself' : 'customer'}</div>
-                  <div className="text-xs text-admin-text-secondary truncate">{replyTo.text || replyTo.media?.caption || `[${replyTo.type}]`}</div>
+                  <div className={`text-xs font-medium ${isWaThread ? 'text-[#008069]' : 'text-admin-text'}`}>Replying to {replyTo.direction === 'outbound' ? 'yourself' : 'customer'}</div>
+                  <div className={`text-xs truncate ${isWaThread ? 'text-[#667781]' : 'text-admin-text-secondary'}`}>{replyTo.text || replyTo.media?.caption || `[${replyTo.type}]`}</div>
                 </div>
                 <button onClick={() => setReplyTo(null)} className="text-admin-text-subdued hover:text-admin-text-secondary"><X className="w-4 h-4" /></button>
               </div>
@@ -2298,9 +2786,9 @@ function ChatPageInner() {
               const assignedName = (typeof selectedConv?.assignedAgent === 'object' && selectedConv?.assignedAgent?.name)
                 || agents.find(a => a._id === assignedId)?.name || 'another agent';
               return (
-                <div className="flex items-center justify-between px-3 py-2 bg-amber-50 border border-amber-200 rounded-xl">
-                  <span className="text-sm text-amber-800 flex items-center gap-1.5">
-                    <UserPlus className="w-4 h-4" /> Taken by {assignedName} — only they can reply
+                <div className={`${dashboardNoticeCompactClass} flex items-center justify-between py-2`}>
+                  <span className="flex items-center gap-1.5 text-sm text-[#3d4a45]">
+                    <UserPlus className="h-4 w-4 text-[#00896F]" /> Taken by {assignedName} — only they can reply
                   </span>
                   <button onClick={async () => {
                     try {
@@ -2308,7 +2796,7 @@ function ChatPageInner() {
                       setSelectedConv({ ...selectedConv!, assignedAgent: { _id: user._id, name: user.name } });
                       toast.success('Chat taken over');
                     } catch { toast.error('Failed to take over'); }
-                  }} className="px-3 py-1.5 text-xs font-medium bg-amber-600 text-white rounded-lg hover:bg-amber-700">
+                  }} className="rounded-lg bg-[#00896F] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#007a63]">
                     Take over
                   </button>
                 </div>
@@ -2340,7 +2828,7 @@ function ChatPageInner() {
                 <button
                   onClick={() => setShowAttachMenu(!showAttachMenu)}
                   disabled={uploading}
-                  className="p-2 text-admin-text-subdued hover:text-admin-text-secondary rounded-lg hover:bg-[#f6f6f7] disabled:opacity-50"
+                  className={`p-2 rounded-lg disabled:opacity-50 ${isWaThread ? 'text-[#54656f] hover:bg-white/70' : 'text-admin-text-subdued hover:text-admin-text-secondary hover:bg-[#f6f6f7]'}`}
                   title="Attach"
                 >
                   {uploading ? (
@@ -2407,9 +2895,9 @@ function ChatPageInner() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey && !isTouch && !e.nativeEvent.isComposing) { e.preventDefault(); handleSend(); }
                   }}
-                  placeholder="Type a message..."
+                  placeholder="Type a message"
                   rows={1}
-                  className="w-full px-4 py-2.5 rounded-xl border border-admin-border bg-[#f6f6f7] text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30 focus:border-[#005bd3]"
+                  className={`w-full px-4 py-2.5 text-sm resize-none focus:outline-none ${isWaThread ? 'rounded-lg border-0 bg-white text-[#111b21] placeholder:text-[#667781] focus:ring-2 focus:ring-[#00a884]/25' : 'rounded-xl border border-admin-border bg-[#f6f6f7] focus:ring-2 focus:ring-[#005bd3]/30 focus:border-[#005bd3]'}`}
                 />
               </div>
               <div className="relative">
@@ -2422,7 +2910,7 @@ function ChatPageInner() {
                     </div>
                   </div>
                 )}
-                <button onClick={() => setShowEmoji(v => !v)} className={`p-2 rounded-lg hover:bg-[#f6f6f7] ${showEmoji ? 'text-admin-text' : 'text-admin-text-subdued hover:text-admin-text-secondary'}`}>
+                <button onClick={() => setShowEmoji(v => !v)} className={`p-2 rounded-lg ${isWaThread ? (showEmoji ? 'text-[#00a884] bg-white/70' : 'text-[#54656f] hover:bg-white/70') : (showEmoji ? 'text-admin-text hover:bg-[#f6f6f7]' : 'text-admin-text-subdued hover:text-admin-text-secondary hover:bg-[#f6f6f7]')}`}>
                   <Smile className="w-5 h-5" />
                 </button>
               </div>
@@ -2492,7 +2980,7 @@ function ChatPageInner() {
               <button
                 onClick={handleSend}
                 disabled={!messageText.trim() || sending}
-                className="p-2.5 bg-admin-text text-white rounded-xl hover:bg-[#1a1a1a] disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`p-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed ${isWaThread ? 'rounded-full bg-[#00a884] hover:bg-[#008f72]' : 'rounded-xl bg-admin-text hover:bg-[#1a1a1a]'}`}
               >
                 <Send className="w-5 h-5" />
               </button>
@@ -2501,11 +2989,20 @@ function ChatPageInner() {
           </div>
         </div>
       ) : (
-        <div className="flex-1 hidden md:flex items-center justify-center bg-[#f1f1f1]">
+        <div
+          className={`flex-1 items-center justify-center ${
+            isInboxChannelView ? 'hidden md:flex' : 'hidden md:flex bg-[#f1f1f1]'
+          }`}
+          style={isInboxChannelView && inboxTheme ? { backgroundColor: inboxTheme.canvasBg } : undefined}
+        >
           <div className="text-center">
             <MessageSquare className="w-16 h-16 text-admin-border mx-auto mb-4" />
-            <h3 className="text-[15px] font-semibold text-admin-text">Select a conversation</h3>
-            <p className="text-[13px] text-admin-text-secondary mt-1">Choose a conversation from the sidebar to begin chatting or send a new message</p>
+            <h3 className="text-[15px] font-semibold text-admin-text">
+              Select a conversation
+            </h3>
+            <p className="mt-1 text-[13px] text-admin-text-secondary">
+              Choose a conversation from the sidebar to begin chatting or send a new message
+            </p>
           </div>
         </div>
       )}
@@ -2606,43 +3103,70 @@ function ChatPageInner() {
           )}
 
       {showTemplateModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => { setShowTemplateModal(false); setTplToSend(null); }}>
-          <div className="bg-white rounded-xl w-full max-w-3xl max-h-[85vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <div className="p-4 border-b flex items-center justify-between shrink-0">
-              <h3 className="font-semibold text-admin-text">Send Template</h3>
-              <button onClick={() => { setShowTemplateModal(false); setTplToSend(null); }} className="text-admin-text-subdued hover:text-admin-text-secondary"><X className="w-5 h-5" /></button>
+        <div className={chatGlassBackdrop}>
+          <button type="button" aria-label="Close" className={chatGlassScrim} onClick={() => { setShowTemplateModal(false); setTplToSend(null); }} />
+          <div
+            role="dialog"
+            aria-modal="true"
+            className={`relative z-10 flex max-h-[min(85vh,760px)] w-full max-w-3xl flex-col ${appModalGlassPanel}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/50 px-5 py-4 sm:px-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">WhatsApp</p>
+                <h3 className="mt-1 text-[18px] font-semibold tracking-tight text-[#101828]">Send Template</h3>
+              </div>
+              <button type="button" onClick={() => { setShowTemplateModal(false); setTplToSend(null); }} className={chatGlassCloseBtn} aria-label="Close">
+                <X className="h-4 w-4" />
+              </button>
             </div>
-            <div className="p-4 overflow-y-auto">
+            <div className="overflow-y-auto px-5 py-4 sm:px-6">
               {tplToSend ? (
-                <div className="flex flex-col md:flex-row gap-5">
-                  <div className="flex-1 space-y-3 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-admin-text">{tplToSend.name}</p>
-                      <span className="text-xs bg-[#f1f1f1] text-admin-text px-2 py-0.5 rounded-full">{tplToSend.category} · {tplToSend.language || 'en'}</span>
+                <div className="flex flex-col gap-5 md:flex-row">
+                  <div className="min-w-0 flex-1 space-y-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[13px] font-semibold text-[#101828]">{tplToSend.name}</p>
+                      <span className="rounded-full border border-white/80 bg-white/70 px-2 py-0.5 text-[11px] text-[#6b7a74]">
+                        {tplToSend.category} · {tplToSend.language || 'en'}
+                      </span>
                     </div>
                     {tplVars.length > 0 ? (
                       <>
-                        <p className="text-xs text-admin-text-secondary">This template has {tplVars.length} variable(s) — fill in the values (live preview below):</p>
+                        <p className="text-[12px] text-[#6b7a74]">This template has {tplVars.length} variable(s) — fill in the values:</p>
                         {tplVars.map((v, i) => (
-                          <input key={i} value={v} placeholder={`Value for {{${i + 1}}}`} onChange={(e) => setTplVars(prev => prev.map((p, idx) => idx === i ? e.target.value : p))} className="w-full px-3 py-2 border border-admin-border rounded-lg text-sm" />
+                          <input
+                            key={i}
+                            value={v}
+                            placeholder={`Value for {{${i + 1}}}`}
+                            onChange={(e) => setTplVars((prev) => prev.map((p, idx) => (idx === i ? e.target.value : p)))}
+                            className={appModalFieldClass}
+                          />
                         ))}
                       </>
                     ) : (
-                      <p className="text-xs text-admin-text-secondary">This template has no variables — send it directly.</p>
+                      <p className="text-[12px] text-[#6b7a74]">This template has no variables — send it directly.</p>
                     )}
                     {waNumbers.length > 1 && (
                       <div>
-                        <label className="block text-xs font-medium text-admin-text mb-1">Send from number</label>
-                        <select value={tplFromNumber} onChange={(e) => setTplFromNumber(e.target.value)}
-                          className="w-full px-3 py-2 border border-admin-border rounded-lg text-sm bg-white">
+                        <label className="mb-1 block text-[12px] font-semibold text-[#3d4a45]">Send from number</label>
+                        <select value={tplFromNumber} onChange={(e) => setTplFromNumber(e.target.value)} className={appModalFieldClass}>
                           <option value="">Conversation&apos;s number (default)</option>
-                          {waNumbers.map(n => <option key={n.id} value={n.id}>{n.label}</option>)}
+                          {waNumbers.map((n) => (
+                            <option key={n.id} value={n.id}>{n.label}</option>
+                          ))}
                         </select>
                       </div>
                     )}
                     <div className="flex justify-end gap-2 pt-2">
-                      <button onClick={() => setTplToSend(null)} className="px-4 py-2 text-sm text-admin-text-secondary border border-admin-border rounded-lg">Back</button>
-                      <button disabled={tplVars.some(v => !v.trim()) || sending} onClick={() => handleSendTemplate(tplToSend, tplVars)} className="px-4 py-2 text-sm bg-admin-text text-white rounded-lg hover:bg-[#1a1a1a] disabled:opacity-50">{sending ? 'Sending...' : 'Send Template'}</button>
+                      <button type="button" onClick={() => setTplToSend(null)} className={chatGlassSecondary}>Back</button>
+                      <button
+                        type="button"
+                        disabled={tplVars.some((v) => !v.trim()) || sending}
+                        onClick={() => handleSendTemplate(tplToSend, tplVars)}
+                        className={chatGlassPrimary}
+                      >
+                        {sending ? 'Sending...' : 'Send Template'}
+                      </button>
                     </div>
                   </div>
                   <div className="mx-auto shrink-0">
@@ -2650,15 +3174,19 @@ function ChatPageInner() {
                   </div>
                 </div>
               ) : templates.length === 0 ? (
-                <p className="text-center text-admin-text-subdued py-8">No approved templates available. Go to Templates page to sync from Meta.</p>
+                <div className="rounded-2xl border border-[#aee9d1]/80 bg-[#eef8f0]/70 px-4 py-8 text-center text-[13px] text-[#6b7a74]">
+                  No approved templates available. Go to Templates to sync from Meta.
+                </div>
               ) : (
                 templates.map((t) => (
-                  <button key={t._id} onClick={() => handlePickTemplate(t)} className="w-full text-left p-3 rounded-lg hover:bg-[#f6f6f7] border border-admin-border mb-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-admin-text">{t.name}</span>
-                      <span className="text-xs bg-[#f1f1f1] text-admin-text px-2 py-0.5 rounded-full">{t.category} · {t.language || 'en'}</span>
+                  <button key={t._id} type="button" onClick={() => handlePickTemplate(t)} className={chatGlassItem}>
+                    <div className="mb-1 flex items-center justify-between gap-2">
+                      <span className="text-[13px] font-semibold text-[#101828]">{t.name}</span>
+                      <span className="rounded-full border border-white/80 bg-white/70 px-2 py-0.5 text-[11px] text-[#6b7a74]">
+                        {t.category} · {t.language || 'en'}
+                      </span>
                     </div>
-                    <p className="text-sm text-admin-text-secondary line-clamp-2">{t.body || 'No preview available'}</p>
+                    <p className="line-clamp-2 text-[12px] text-[#6b7a74]">{t.body || 'No preview available'}</p>
                   </button>
                 ))
               )}
@@ -2668,16 +3196,23 @@ function ChatPageInner() {
       )}
       {/* New Message Modal — send template to any number */}
       {qrNewMsg && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setQrNewMsg(false)}>
-          <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-5 space-y-3" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-semibold text-admin-text">New WhatsApp QR Message</h3>
-            <p className="text-xs text-admin-text-secondary">Send a free-form message to any number — no template needed, no per-message charge. Counts toward the daily safety limit.</p>
+        <div className={chatGlassBackdrop}>
+          <button type="button" aria-label="Close" className={chatGlassScrim} onClick={() => setQrNewMsg(false)} />
+          <div className={`relative z-10 w-full max-w-md space-y-3 ${appModalGlassPanel} px-5 py-5 sm:px-6`} onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">WhatsApp QR</p>
+                <h3 className="mt-1 text-[18px] font-semibold tracking-tight text-[#101828]">New Message</h3>
+                <p className="mt-1.5 text-[13px] text-[#6b7a74]">Free-form to any number — no template charge. Counts toward the daily safety limit.</p>
+              </div>
+              <button type="button" onClick={() => setQrNewMsg(false)} className={chatGlassCloseBtn} aria-label="Close"><X className="h-4 w-4" /></button>
+            </div>
             <input type="tel" placeholder="Phone with country code, e.g. 919876543210" value={qrNewPhone} onChange={(e) => setQrNewPhone(e.target.value)}
-              className="w-full px-3 py-2 border border-admin-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30" />
+              className={appModalFieldClass} />
             <textarea rows={4} placeholder="Type your message..." value={qrNewText} onChange={(e) => setQrNewText(e.target.value)}
-              className="w-full px-3 py-2 border border-admin-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30" />
+              className={appModalFieldClass} />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setQrNewMsg(false)} className="px-3 py-1.5 text-sm rounded-lg border border-admin-border text-admin-text-secondary hover:bg-[#f6f6f7]">Cancel</button>
+              <button type="button" onClick={() => setQrNewMsg(false)} className={chatGlassSecondary}>Cancel</button>
               <button disabled={qrNewSending || !qrNewPhone.trim() || !qrNewText.trim()} onClick={async () => {
                 setQrNewSending(true);
                 try {
@@ -2690,7 +3225,7 @@ function ChatPageInner() {
                   toast.error(e.response?.data?.message || 'Failed to send');
                 }
                 setQrNewSending(false);
-              }} className="px-3 py-1.5 text-sm rounded-lg bg-admin-text text-white hover:bg-[#1a1a1a] disabled:opacity-50">{qrNewSending ? 'Sending...' : 'Send'}</button>
+              }} className={chatGlassPrimary}>{qrNewSending ? 'Sending...' : 'Send'}</button>
             </div>
           </div>
         </div>
@@ -2862,30 +3397,77 @@ function ChatPageInner() {
         </div>
       )}
       {showPresetModal && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowPresetModal(false)}>
-          <div className="bg-white rounded-xl w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="p-4 border-b flex items-center justify-between">
-              <h3 className="font-semibold text-admin-text">Send Preset (Free)</h3>
-              <button onClick={() => setShowPresetModal(false)} className="text-admin-text-subdued hover:text-admin-text-secondary"><X className="w-5 h-5" /></button>
+        <div className={chatGlassBackdrop}>
+          <button type="button" aria-label="Close" className={chatGlassScrim} onClick={() => setShowPresetModal(false)} />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="send-preset-title"
+            className={`relative z-10 flex max-h-[min(80vh,640px)] w-full max-w-lg flex-col ${appModalGlassPanel}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3 border-b border-white/50 px-5 py-4 sm:px-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">Free send</p>
+                <h3 id="send-preset-title" className="mt-1 text-[18px] font-semibold tracking-tight text-[#101828]">
+                  Send Preset
+                </h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed text-[#6b7a74]">
+                  Only goes to customers with an open 24-hr window — no template charge.
+                </p>
+              </div>
+              <button type="button" onClick={() => setShowPresetModal(false)} className={chatGlassCloseBtn} aria-label="Close">
+                <X className="h-4 w-4" />
+              </button>
             </div>
-            <div className="p-4 overflow-y-auto max-h-[60vh]">
-              <p className="text-xs text-admin-text-secondary mb-3">Only goes to customers with an open 24-hr window — no template charge.</p>
+            <div className="overflow-y-auto px-5 py-4 sm:px-6">
               {presets.length === 0 ? (
-                <p className="text-center text-admin-text-subdued py-8">No preset templates. Create one under Save Money &rarr; Preset Templates.</p>
-              ) : presets.map((p) => (
-                <button key={p._id} disabled={sending} onClick={() => handleSendPreset(p._id)} className="w-full text-left p-3 rounded-lg hover:bg-[#f6f6f7] border border-admin-border mb-2 disabled:opacity-50">
-                  <span className="font-medium text-admin-text">{p.name}</span>
-                  <p className="text-sm text-admin-text-secondary line-clamp-2">{p.body}</p>
-                </button>
-              ))}
+                <div className="rounded-2xl border border-[#aee9d1]/80 bg-[#eef8f0]/70 px-4 py-8 text-center">
+                  <p className="text-[13px] font-medium text-[#3d4a45]">No preset templates yet</p>
+                  <p className="mt-1 text-[12px] text-[#6b7a74]">
+                    Create one under Save Money → Preset Templates.
+                  </p>
+                  <Link href="/client/save-money/templates" className={`${chatGlassPrimary} mt-4`} onClick={() => setShowPresetModal(false)}>
+                    Open Preset Templates
+                  </Link>
+                </div>
+              ) : (
+                presets.map((p) => (
+                  <button
+                    key={p._id}
+                    type="button"
+                    disabled={sending}
+                    onClick={() => handleSendPreset(p._id)}
+                    className={chatGlassItem}
+                  >
+                    <span className="text-[13px] font-semibold text-[#101828]">{p.name}</span>
+                    <p className="mt-0.5 line-clamp-2 text-[12px] text-[#6b7a74]">{p.body}</p>
+                  </button>
+                ))
+              )}
               {respResources.length > 0 && (
                 <>
-                  <p className="text-xs font-semibold text-admin-text-secondary uppercase mt-4 mb-2">Response Resources (insert into message box)</p>
+                  <p className="mb-2 mt-4 text-[11px] font-semibold uppercase tracking-wide text-[#8a9a93]">
+                    Response Resources
+                  </p>
                   {respResources.map((r) => (
-                    <button key={r._id} onClick={() => { setMessageText(r.content); setShowPresetModal(false); api.post(`/response-resources/${r._id}/use`).catch(() => {}); }} className="w-full text-left p-3 rounded-lg hover:bg-[#f6f6f7] border border-admin-border mb-2">
-                      <span className="font-medium text-admin-text">{r.title}</span>
-                      {r.shortcut && <span className="ml-2 text-xs bg-[#f1f1f1] text-admin-text-secondary px-1.5 py-0.5 rounded">{r.shortcut}</span>}
-                      <p className="text-sm text-admin-text-secondary line-clamp-2">{r.content}</p>
+                    <button
+                      key={r._id}
+                      type="button"
+                      onClick={() => {
+                        setMessageText(r.content);
+                        setShowPresetModal(false);
+                        api.post(`/response-resources/${r._id}/use`).catch(() => {});
+                      }}
+                      className={chatGlassItem}
+                    >
+                      <span className="text-[13px] font-semibold text-[#101828]">{r.title}</span>
+                      {r.shortcut && (
+                        <span className="ml-2 rounded-md border border-white/80 bg-white/75 px-1.5 py-0.5 text-[11px] text-[#6b7a74]">
+                          {r.shortcut}
+                        </span>
+                      )}
+                      <p className="mt-0.5 line-clamp-2 text-[12px] text-[#6b7a74]">{r.content}</p>
                     </button>
                   ))}
                 </>
@@ -2993,7 +3575,7 @@ function ChatPageInner() {
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {notes.length === 0 && <p className="text-center text-admin-text-subdued text-sm py-8">No notes yet</p>}
               {notes.map(n => (
-                <div key={n._id} className="border rounded-lg p-3 bg-amber-50/50 border-amber-100">
+                <div key={n._id} className="rounded-xl border border-[#aee9d1]/70 bg-[#eef8f0]/60 p-3">
                   <div className="flex justify-between items-start gap-2">
                     <p className="text-sm text-gray-800 whitespace-pre-wrap flex-1">{n.text}</p>
                     <button onClick={() => handleDeleteNote(n._id)} className="p-1 text-admin-text-subdued hover:text-red-500"><Trash2 className="w-3.5 h-3.5" /></button>
@@ -3049,6 +3631,7 @@ function ChatPageInner() {
         </div>
       )}
     </div>
+    </>
   );
 }
 
@@ -3066,7 +3649,7 @@ function InvoiceModal({ convId, onClose }: { convId: string; onClose: () => void
     setSending(true);
     try {
       await conversationApi.sendInvoice(convId, { docType, items: items.filter(i => i.name.trim()), gstPercent: gst, notes });
-      toast.success((docType === 'quotation' ? 'Quotation' : 'Invoice') + ' sent 🧾');
+      toast.success((docType === 'quotation' ? 'Quotation' : 'Invoice') + ' sent');
       onClose();
     } catch (err: unknown) {
       const e = err as { response?: { data?: { message?: string } } };
@@ -3075,42 +3658,53 @@ function InvoiceModal({ convId, onClose }: { convId: string; onClose: () => void
     setSending(false);
   };
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-5 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-bold text-admin-text">🧾 Send Quotation / Invoice</h3>
-          <button onClick={onClose} className="text-admin-text-subdued hover:text-admin-text-secondary">✕</button>
+    <div className={chatGlassBackdrop} onClick={onClose}>
+      <button type="button" aria-label="Close" className={chatGlassScrim} onClick={onClose} />
+      <div className={`relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto ${appModalGlassPanel} px-5 py-5 sm:px-6`} onClick={(e) => e.stopPropagation()}>
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-800/75">Billing</p>
+            <h3 className="mt-1 inline-flex items-center gap-2 text-[18px] font-semibold tracking-tight text-[#101828]">
+              <Receipt className="h-4 w-4 text-[#00896F]" /> Send Quotation / Invoice
+            </h3>
+          </div>
+          <button type="button" onClick={onClose} className={chatGlassCloseBtn} aria-label="Close">
+            <X className="h-4 w-4" />
+          </button>
         </div>
         <div className="space-y-3">
           <div className="flex gap-2">
             {['quotation', 'invoice'].map(t => (
-              <button key={t} onClick={() => setDocType(t)}
-                className={`px-3 py-1.5 text-xs font-medium rounded-lg capitalize ${docType === t ? 'bg-admin-text text-white' : 'bg-[#f1f1f1] text-admin-text-secondary'}`}>{t}</button>
+              <button key={t} type="button" onClick={() => setDocType(t)}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold capitalize transition ${
+                  docType === t
+                    ? 'border-[#aee9d1] bg-gradient-to-r from-[#e8f5a8]/95 via-[#d4f4d8] to-[#c8efe0] text-[#0f3d2e]'
+                    : 'border-[#e8efe9] bg-white/70 text-[#6b7a74] hover:bg-[#f7fbf8]'
+                }`}>{t}</button>
             ))}
           </div>
           <div className="space-y-2">
             {items.map((it, i) => (
-              <div key={i} className="flex gap-2 items-center">
+              <div key={i} className="flex items-center gap-2">
                 <input value={it.name} onChange={e => setItems(items.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
-                  placeholder="Item name" className="flex-1 px-2 py-1.5 border rounded-lg text-sm" />
+                  placeholder="Item name" className={`flex-1 ${appModalFieldClass} !mt-0`} />
                 <input type="number" value={it.qty} min={1} onChange={e => setItems(items.map((x, j) => j === i ? { ...x, qty: Number(e.target.value) } : x))}
-                  className="w-16 px-2 py-1.5 border rounded-lg text-sm" title="Qty" />
+                  className={`w-16 ${appModalFieldClass} !mt-0`} title="Qty" />
                 <input type="number" value={it.price} min={0} onChange={e => setItems(items.map((x, j) => j === i ? { ...x, price: Number(e.target.value) } : x))}
-                  className="w-24 px-2 py-1.5 border rounded-lg text-sm" title="Price (Rs.)" placeholder="Price" />
-                {items.length > 1 && <button onClick={() => setItems(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600">✕</button>}
+                  className={`w-24 ${appModalFieldClass} !mt-0`} title="Price (Rs.)" placeholder="Price" />
+                {items.length > 1 && <button type="button" onClick={() => setItems(items.filter((_, j) => j !== i))} className="text-red-400 hover:text-red-600">✕</button>}
               </div>
             ))}
-            <button onClick={() => setItems([...items, { name: '', qty: 1, price: 0 }])} className="text-xs text-admin-text hover:underline">+ Add item</button>
+            <button type="button" onClick={() => setItems([...items, { name: '', qty: 1, price: 0 }])} className="text-xs font-semibold text-[#0f766e] hover:underline">+ Add item</button>
           </div>
-          <div className="flex gap-3 items-center">
-            <label className="text-xs text-admin-text-secondary">GST %</label>
-            <input type="number" value={gst} min={0} max={28} onChange={e => setGst(Number(e.target.value))} className="w-20 px-2 py-1.5 border rounded-lg text-sm" />
-            <span className="ml-auto text-sm font-bold text-gray-800">Total: Rs. {total.toFixed(2)}</span>
+          <div className="flex items-center gap-3">
+            <label className="text-xs text-[#6b7a74]">GST %</label>
+            <input type="number" value={gst} min={0} max={28} onChange={e => setGst(Number(e.target.value))} className={`w-20 ${appModalFieldClass} !mt-0`} />
+            <span className="ml-auto text-sm font-bold text-[#101828]">Total: Rs. {total.toFixed(2)}</span>
           </div>
           <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes (optional — payment terms, validity...)"
-            className="w-full px-2 py-1.5 border rounded-lg text-sm h-16 resize-y" />
-          <button onClick={send} disabled={sending}
-            className="w-full py-2 bg-admin-text text-white text-sm font-medium rounded-lg hover:bg-[#1a1a1a] disabled:opacity-50">
+            className={`${appModalFieldClass} h-16 resize-y !mt-0`} />
+          <button type="button" onClick={send} disabled={sending} className={`w-full ${chatGlassPrimary}`}>
             {sending ? 'Sending...' : `Send ${docType === 'quotation' ? 'Quotation' : 'Invoice'} PDF on WhatsApp`}
           </button>
         </div>

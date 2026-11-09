@@ -3,7 +3,9 @@ function publicUser(user) {
     id: user._id.toString(),
     name: user.name,
     email: user.email,
+    phone: user.phone || '',
     provider: user.provider,
+    emailVerified: Boolean(user.emailVerified),
     onboardingStatus: user.onboardingStatus,
     selectedService: user.selectedService,
     industryKind: user.industryKind,
@@ -11,17 +13,25 @@ function publicUser(user) {
     modulesChosen: Boolean(user.modulesChosen),
     selectedModules: Array.isArray(user.selectedModules) ? user.selectedModules : [],
     businessName: user.businessName,
+    billingTaxId: user.billingTaxId || '',
+    billingAddress: user.billingAddress || '',
+    preferredTimezone: user.preferredTimezone || '',
+    preferredLanguage: user.preferredLanguage || '',
+    profileComplete: Boolean(user.profileComplete),
     destination: user.destination,
     launchPath: user.launchPath,
   };
 }
 
+/**
+ * After email verification, users log in and are SSO'd into CRM.
+ * Unverified local users stay on /login (client shows OTP).
+ */
 function nextWizardPath(user) {
-  if (user.onboardingStatus === 'complete' && user.destination) {
-    return null;
+  if (user.provider === 'local' && !user.emailVerified) {
+    return '/login';
   }
-  if (!user.industryKind) return '/choose-industry';
-  if (!user.businessName) return '/business-name';
+  // Verified users go to launching / SSO — never null (client must not fall back to /login).
   return '/launching';
 }
 

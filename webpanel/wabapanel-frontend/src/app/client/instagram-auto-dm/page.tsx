@@ -217,7 +217,7 @@ export default function InstagramAutoDmPage() {
       </div>
 
       {!connected && tab === 'automations' && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded p-3 mb-4 text-sm">
+        <div className="mb-4 rounded-xl border border-[#aee9d1]/80 bg-[#eef8f0]/70 px-3 py-2.5 text-sm leading-relaxed text-[#3d4a45] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-md">
           Instagram not connected yet. Go to <button className="underline font-medium" onClick={() => setTab('connect')}>Connect / Settings</button> first.
         </div>
       )}

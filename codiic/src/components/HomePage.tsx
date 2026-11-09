@@ -227,7 +227,7 @@ export default function HomePage() {
                 href={storefrontHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a]"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 px-3.5 py-2 text-[13px] font-semibold text-white shadow-[0_10px_22px_rgba(5,150,105,0.28)] transition hover:brightness-105"
               >
                 <GlobeAltIcon className="h-4 w-4" aria-hidden />
                 Open store
@@ -245,7 +245,7 @@ export default function HomePage() {
                 {[0, 1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="min-h-[280px] animate-pulse rounded-xl border border-admin-border bg-admin-surface"
+                    className="min-h-[280px] animate-pulse rounded-2xl border border-admin-border bg-white/70 shadow-[0_12px_32px_rgba(15,23,42,0.06)] backdrop-blur-xl"
                   />
                 ))}
               </div>

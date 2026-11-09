@@ -13,6 +13,7 @@ import {
   adminListTableHeadClass,
   adminListTableHeadRowClass,
 } from '@/components/admin-list-ui';
+import { dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 import { storeMenuApi, type StoreMenu } from '@/lib/store-menu';
 import { selectActiveStore, useStoreStore } from '@/stores/storeStore';
 
@@ -88,7 +89,7 @@ export function StoreMenusPage() {
   if (!storeId) {
     return (
       <div className={adminListPageInnerClass}>
-        <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-[13px] text-amber-950">
+        <div className={`${dashboardNoticeCompactClass} py-3 text-[13px]`}>
           Select a store from the account menu to manage navigation menus.
         </div>
       </div>

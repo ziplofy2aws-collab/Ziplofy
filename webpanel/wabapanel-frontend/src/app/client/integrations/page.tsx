@@ -5,7 +5,7 @@ import { RefreshCw, Link2, Unlink, ArrowUpDown, Zap, Copy, Send, CheckCircle2, C
 import { integrationApi } from '@/lib/api';
 import { INTEGRATION_GUIDES } from '@/lib/integrationGuides';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import { adminContentColumnClass, dashboardCardShell, dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 
 const primaryBtn =
   'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
@@ -664,7 +664,7 @@ export default function IntegrationsPage() {
                         {g.steps.map((s, i) => <li key={i}>{s}</li>)}
                       </ol>
                       {g.keysUrl && <p className="mt-2 text-[12px] text-admin-text-subdued">Get keys: <span className="break-all font-mono">{g.keysUrl}</span></p>}
-                      {g.note && <p className="mt-2 rounded border border-amber-200 bg-amber-50 p-2 text-[12px] text-amber-800">{g.note}</p>}
+                      {g.note && <p className={`mt-2 ${dashboardNoticeCompactClass}`}>{g.note}</p>}
                     </div>
                   );
                 })()}
@@ -769,7 +769,7 @@ export default function IntegrationsPage() {
                         {SETUP_HINTS[showAuto].steps.map((s, i) => <li key={i}>{s}</li>)}
                       </ol>
                       {SETUP_HINTS[showAuto].note && (
-                        <p className="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-800">
+                        <p className={`mt-2 ${dashboardNoticeCompactClass}`}>
                           ⚠ {SETUP_HINTS[showAuto].note}
                         </p>
                       )}

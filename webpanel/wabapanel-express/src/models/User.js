@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
   address: { type: String, default: '' },
   gstNumber: { type: String, default: '' },
   vendorNotes: { type: String, default: '' },
+  preferredTimezone: { type: String, default: '' },
+  preferredLanguage: { type: String, default: 'en' },
+  /** Gateway platform user id for CRM ↔ gateway sync */
+  platformUserId: { type: String, default: '', index: true },
 }, { timestamps: true });
 
 userSchema.pre('save', async function() {

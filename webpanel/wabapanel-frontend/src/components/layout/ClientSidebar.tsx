@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
@@ -15,10 +15,13 @@ import {
 } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebook, FaTelegram, FaEnvelope } from 'react-icons/fa';
 import { GATEWAY_LOGOUT_URL, useAuthStore } from '@/stores/authStore';
+import { showNavBusy } from '@/stores/busyStore';
 import { displayPersonName } from '@/lib/brand';
 import api from '@/lib/api';
 import { useI18n } from '@/lib/i18n';
 import {
+  ADMIN_SIDEBAR_COLLAPSED_WIDTH,
+  ADMIN_SIDEBAR_WIDTH,
   adminSidebarAsideClass,
   adminSidebarChildItemClass,
   adminSidebarNavItemClass,
@@ -61,7 +64,7 @@ const navItems: NavItem[] = [
       { label: 'Facebook Inbox', href: '/client/chat?channel=facebook', icon: <FaFacebook className="w-4 h-4 text-blue-600" /> },
       { label: 'Telegram Bot Inbox', href: '/client/chat?channel=telegram', icon: <FaTelegram className="w-4 h-4 text-sky-500" /> },
       { label: 'Personal Telegram Inbox', href: '/client/chat?channel=telegram_personal', icon: <FaTelegram className="w-4 h-4 text-sky-600" /> },
-      { label: 'Email Inbox', href: '/client/chat?channel=email', icon: <FaEnvelope className="w-4 h-4 text-orange-500" /> },
+      { label: 'Email Inbox', href: '/client/chat?channel=email', icon: <FaEnvelope className="w-4 h-4 text-[#00896F]" /> },
     ],
   },
   {
@@ -290,6 +293,7 @@ const navItems: NavItem[] = [
   { label: 'CTWA Ads', icon: <Megaphone className="w-5 h-5" />, href: '/client/ctwa-ads' },
   { label: 'Instagram Auto DM', icon: <FaInstagram className="w-5 h-5 text-pink-600" />, href: '/client/instagram-auto-dm' },
   { label: 'API & Developers', icon: <Plug className="w-5 h-5" />, href: '/client/api-docs' },
+  { label: 'Choose your business', icon: <Briefcase className="w-5 h-5" />, href: '/client/choose-business' },
   { label: 'Choose your services', icon: <LayoutGrid className="w-5 h-5" />, href: '/client/choose-services' },
   { label: 'Support', icon: <LifeBuoy className="w-5 h-5" />, href: '/client/support' },
   { label: 'User Guide', icon: <BookOpen className="w-5 h-5" />, href: '/client/user-guide' },
@@ -495,6 +499,7 @@ const ALWAYS_ON_SECTIONS = new Set([
   'Online Store',
   'Settings',
   'Subscription & Plans',
+  'Choose your business',
   'Choose your services',
   'Support',
   'User Guide',
@@ -515,8 +520,54 @@ export default function ClientSidebar() {
 
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopOpen, setDesktopOpen] = useState(true);
   const [portalReady, setPortalReady] = useState(false);
   useEffect(() => { setPortalReady(true); }, []);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('clientSidebarOpen');
+      if (saved === '0') setDesktopOpen(false);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    const w = desktopOpen ? `${ADMIN_SIDEBAR_WIDTH}px` : `${ADMIN_SIDEBAR_COLLAPSED_WIDTH}px`;
+    document.documentElement.style.setProperty('--client-sidebar-w', w);
+  }, [desktopOpen]);
+
+  const toggleDesktop = useCallback(() => {
+    setDesktopOpen((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('clientSidebarOpen', next ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+      window.dispatchEvent(new CustomEvent('client-sidebar-toggle', { detail: { open: next } }));
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const onToggle = (e: Event) => {
+      const open = (e as CustomEvent<{ open?: boolean }>).detail?.open;
+      if (typeof open === 'boolean') {
+        setDesktopOpen(open);
+        try {
+          localStorage.setItem('clientSidebarOpen', open ? '1' : '0');
+        } catch {
+          /* ignore */
+        }
+      } else {
+        toggleDesktop();
+      }
+    };
+    window.addEventListener('client-sidebar-toggle', onToggle as EventListener);
+    return () => window.removeEventListener('client-sidebar-toggle', onToggle as EventListener);
+  }, [toggleDesktop]);
 
   const closeMobile = useCallback(() => setMobileOpen(false), []);
   const { logout, user, features } = useAuthStore();
@@ -677,18 +728,65 @@ export default function ClientSidebar() {
     [expandedSections]
   );
 
+  // Full-bleed pages (chat / WhatsApp inbox etc.) auto-collapse the desktop rail.
+  const wasImmersiveRef = useRef(false);
+  useEffect(() => {
+    const immersive =
+      pathname.startsWith('/client/chat') ||
+      pathname.startsWith('/client/bot-flows') ||
+      pathname.startsWith('/client/automations/flows');
+
+    const setOpen = (open: boolean) => {
+      setDesktopOpen(open);
+      try {
+        localStorage.setItem('clientSidebarOpen', open ? '1' : '0');
+      } catch {
+        /* ignore */
+      }
+      window.dispatchEvent(new CustomEvent('client-sidebar-toggle', { detail: { open } }));
+    };
+
+    if (immersive) {
+      wasImmersiveRef.current = true;
+      setOpen(false);
+      return;
+    }
+
+    if (wasImmersiveRef.current) {
+      wasImmersiveRef.current = false;
+      setOpen(true);
+    }
+  }, [pathname]);
+
+  const collapsed = !desktopOpen;
+
+  const expandSidebar = useCallback(() => {
+    setDesktopOpen(true);
+    try {
+      localStorage.setItem('clientSidebarOpen', '1');
+    } catch {
+      /* ignore */
+    }
+    window.dispatchEvent(new CustomEvent('client-sidebar-toggle', { detail: { open: true } }));
+  }, []);
+
   const sidebar = (
-    <div className="flex flex-col h-full">
-      <nav className="flex-1 overflow-y-auto">
-        <ul className="m-0 list-none p-2">
+    <div
+      className={`flex h-full flex-col transition-[width] duration-300 ease-in-out ${
+        collapsed ? 'w-[72px]' : 'w-[248px]'
+      }`}
+    >
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden">
+        <ul className={`m-0 list-none space-y-0.5 ${collapsed ? 'p-1.5' : 'p-2.5'}`}>
           {filteredNav.map((section) => {
             const hasKids = !!section.children?.length;
-            const openSection = isSectionOpen(section.label);
+            const openSection = !collapsed && isSectionOpen(section.label);
             const leafActive = section.href ? hrefMatches(currentHref, section.href) : false;
 
             const activeChildIndex = hasKids
               ? (section.children || []).findIndex((c) => hrefMatches(currentHref, c.href))
               : -1;
+            const sectionActive = leafActive || activeChildIndex >= 0;
 
             const lineHeight =
               hasKids && openSection && activeChildIndex >= 0
@@ -699,7 +797,7 @@ export default function ClientSidebar() {
               <li key={section.label} className="relative mb-0.5">
                 {hasKids && openSection && lineHeight > 0 && (
                   <div
-                    className="absolute left-[10px] top-0 z-0 w-0.5 bg-admin-border"
+                    className="absolute left-[10px] top-0 z-0 w-0.5 rounded-full bg-[#b7e4c0]"
                     style={{ height: `${lineHeight}px` }}
                     aria-hidden
                   />
@@ -708,98 +806,131 @@ export default function ClientSidebar() {
                 {section.href && !hasKids ? (
                   <Link
                     href={section.href}
+                    title={t(section.label)}
                     onClick={() => {
+                      showNavBusy(section.href);
                       closeMobile();
                       setSearch('');
                     }}
-                    className={adminSidebarNavItemClass(leafActive)}
+                    className={adminSidebarNavItemClass(leafActive, collapsed)}
                   >
                     <span className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">{section.icon}</span>
-                    <span className="flex-1">{t(section.label)}</span>
+                    {!collapsed && <span className="flex-1">{t(section.label)}</span>}
                   </Link>
                 ) : (
                   <>
                     {section.href ? (
-                      <div className="flex items-center gap-0.5">
+                      <div className={`flex items-center ${collapsed ? '' : 'gap-0.5'}`}>
                         <Link
                           href={section.href}
+                          title={t(section.label)}
                           onClick={() => {
+                            showNavBusy(section.href);
                             closeMobile();
                             setSearch('');
-                            if (!openSection) toggleSection(section.label);
+                            if (collapsed) {
+                              expandSidebar();
+                              if (!isSectionOpen(section.label)) toggleSection(section.label);
+                            } else if (!openSection) {
+                              toggleSection(section.label);
+                            }
                           }}
                           className={`${adminSidebarNavItemClass(
-                            leafActive || activeChildIndex >= 0
+                            sectionActive,
+                            collapsed
                           )} min-w-0 flex-1`}
                         >
                           <span className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">{section.icon}</span>
-                          <span className="flex-1">{t(section.label)}</span>
+                          {!collapsed && <span className="flex-1">{t(section.label)}</span>}
                         </Link>
-                        <button
-                          type="button"
-                          onClick={() => toggleSection(section.label)}
-                          className="shrink-0 rounded-md p-2 text-admin-text-subdued hover:bg-admin-row-hover"
-                          aria-label={openSection ? 'Collapse' : 'Expand'}
-                        >
-                          {openSection ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
-                        </button>
+                        {!collapsed && (
+                          <button
+                            type="button"
+                            onClick={() => toggleSection(section.label)}
+                            className="shrink-0 rounded-xl p-2 text-[#8a9a93] hover:bg-[#eef8f0] hover:text-[#0f3d2e]"
+                            aria-label={openSection ? 'Collapse' : 'Expand'}
+                          >
+                            {openSection ? (
+                              <ChevronUp className="h-4 w-4" />
+                            ) : (
+                              <ChevronDown className="h-4 w-4" />
+                            )}
+                          </button>
+                        )}
                       </div>
                     ) : (
                       <button
                         type="button"
-                        onClick={() => toggleSection(section.label)}
-                        className={adminSidebarNavItemClass(false)}
+                        title={t(section.label)}
+                        onClick={() => {
+                          if (collapsed) {
+                            expandSidebar();
+                            if (!isSectionOpen(section.label)) toggleSection(section.label);
+                          } else {
+                            toggleSection(section.label);
+                          }
+                        }}
+                        className={adminSidebarNavItemClass(sectionActive, collapsed)}
                       >
                         <span className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">{section.icon}</span>
-                        <span className="flex-1">{t(section.label)}</span>
-                        <span className="shrink-0 text-admin-text-subdued">
-                          {openSection ? (
-                            <ChevronUp className="h-4 w-4" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4" />
-                          )}
-                        </span>
+                        {!collapsed && (
+                          <>
+                            <span className="flex-1">{t(section.label)}</span>
+                            <span className="shrink-0 text-[#8a9a93]">
+                              {openSection ? (
+                                <ChevronUp className="h-4 w-4" />
+                              ) : (
+                                <ChevronDown className="h-4 w-4" />
+                              )}
+                            </span>
+                          </>
+                        )}
                       </button>
                     )}
 
-                    <div
-                      className={`relative overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out ${
-                        openSection
-                          ? 'max-h-[2000px] opacity-100'
-                          : 'pointer-events-none max-h-0 opacity-0'
-                      }`}
-                    >
-                      <ul className="relative z-10 m-0 list-none">
-                        {section.children?.map((item) => {
-                          const childActive = hrefMatches(currentHref, item.href);
-                          return (
-                            <li key={item.href}>
-                              <Link
-                                href={item.href}
-                                onClick={() => {
-                                  closeMobile();
-                                  const q = item.href.includes('?') ? item.href.slice(item.href.indexOf('?')) : '';
-                                  setSearch(q);
-                                }}
-                                className={adminSidebarChildItemClass(childActive)}
-                              >
-                                <span className="shrink-0 [&>svg]:h-3.5 [&>svg]:w-3.5">{item.icon}</span>
-                                <span className="flex-1">{t(item.label)}</span>
-                                {unreadForHref(item.href) > 0 && (
-                                  <span className="ml-auto min-w-[18px] h-[18px] px-1 rounded-full bg-admin-text text-admin-surface text-[10px] font-semibold flex items-center justify-center">
-                                    {unreadForHref(item.href) > 99 ? '99+' : unreadForHref(item.href)}
+                    {!collapsed && (
+                      <div
+                        className={`relative overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out ${
+                          openSection
+                            ? 'max-h-[2000px] opacity-100'
+                            : 'pointer-events-none max-h-0 opacity-0'
+                        }`}
+                      >
+                        <ul className="relative z-10 m-0 list-none">
+                          {section.children?.map((item) => {
+                            const childActive = hrefMatches(currentHref, item.href);
+                            return (
+                              <li key={item.href}>
+                                <Link
+                                  href={item.href}
+                                  onClick={() => {
+                                    showNavBusy(item.href);
+                                    closeMobile();
+                                    const q = item.href.includes('?')
+                                      ? item.href.slice(item.href.indexOf('?'))
+                                      : '';
+                                    setSearch(q);
+                                  }}
+                                  className={adminSidebarChildItemClass(childActive)}
+                                >
+                                  <span className="shrink-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
+                                    {item.icon}
                                   </span>
-                                )}
-                              </Link>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
+                                  <span className="flex-1">{t(item.label)}</span>
+                                  {unreadForHref(item.href) > 0 && (
+                                    <span className="ml-auto flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#111827] px-1 text-[10px] font-semibold text-white">
+                                      {unreadForHref(item.href) > 99
+                                        ? '99+'
+                                        : unreadForHref(item.href)}
+                                    </span>
+                                  )}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    )}
                   </>
                 )}
               </li>
@@ -809,9 +940,10 @@ export default function ClientSidebar() {
       </nav>
 
       {isImpersonating && (
-        <div className="px-2 py-2 border-t border-admin-border">
+        <div className="border-t border-admin-border px-2 py-2">
           <button
             type="button"
+            title="Back to Admin"
             onClick={() => {
               const at = localStorage.getItem('adminToken');
               if (at) {
@@ -820,37 +952,47 @@ export default function ClientSidebar() {
                 window.location.href = '/admin/dashboard';
               }
             }}
-            className={`${adminSidebarNavItemClass(false)} bg-admin-surface`}
+            className={`${adminSidebarNavItemClass(false, collapsed)} bg-admin-surface`}
           >
             <ArrowLeft className="h-4 w-4 shrink-0" />
-            <span>Back to Admin</span>
+            {!collapsed && <span>Back to Admin</span>}
           </button>
         </div>
       )}
 
-      <div className="mt-auto border-t border-admin-border px-2 py-3">
-        <div className="flex items-center gap-2">
+      <div className={`mt-auto space-y-2 border-t border-[#e8efe9] py-3 ${collapsed ? 'px-1.5' : 'px-2'}`}>
+        <div className={`flex items-center ${collapsed ? 'flex-col gap-1' : 'gap-2'}`}>
           <Link
             href="/client/settings"
-            onClick={closeMobile}
-            className={`${adminSidebarNavItemClass(pathname.startsWith('/client/settings'))} flex-1 min-w-0 !py-1.5`}
+            onClick={() => {
+              showNavBusy('/client/settings');
+              closeMobile();
+            }}
+            className={`${adminSidebarNavItemClass(
+              pathname.startsWith('/client/settings'),
+              collapsed
+            )} ${collapsed ? '' : 'min-w-0 flex-1 !py-1.5'}`}
             title="My Profile"
           >
-            <div className="w-7 h-7 rounded-full bg-admin-fill flex items-center justify-center text-admin-text text-xs font-semibold shrink-0">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#d4f4d8] text-xs font-semibold text-[#0f3d2e]">
               {(displayPersonName(user?.name) || 'U').charAt(0).toUpperCase()}
             </div>
-            <div className="flex-1 min-w-0 text-left">
-              <p className="text-sm font-medium text-admin-text truncate leading-tight">{displayPersonName(user?.name) || 'User'}</p>
-              <p className="text-xs text-admin-text-secondary truncate leading-tight">{user?.email || ''}</p>
-            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1 text-left">
+                <p className="truncate text-sm font-medium leading-tight text-[#101828]">
+                  {displayPersonName(user?.name) || 'User'}
+                </p>
+                <p className="truncate text-xs leading-tight text-[#6b7a74]">{user?.email || ''}</p>
+              </div>
+            )}
           </Link>
           <button
             type="button"
             onClick={() => logout(GATEWAY_LOGOUT_URL)}
             title="Logout"
-            className="p-2 rounded-lg text-admin-text-subdued hover:bg-admin-fill hover:text-admin-text transition-colors shrink-0"
+            className="shrink-0 rounded-xl p-2 text-[#6b7a74] transition-colors hover:bg-[#eef8f0] hover:text-[#0f3d2e]"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -862,13 +1004,17 @@ export default function ClientSidebar() {
       <button
         type="button"
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="lg:hidden fixed top-[4.25rem] left-3 z-[1110] p-2 bg-admin-surface border border-admin-border rounded-lg shadow-sm text-admin-text"
+        className="lg:hidden fixed top-[4.25rem] left-3 z-[1110] rounded-xl border border-white/50 bg-white/55 p-2 text-[#0f3d2e] shadow-sm backdrop-blur-xl"
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
       {/* Spacer keeps main content offset; the real rail is portaled to <body>. */}
-      <div className="hidden w-[240px] shrink-0 lg:block" aria-hidden />
+      <div
+        className="hidden shrink-0 transition-[width] duration-300 ease-in-out lg:block"
+        style={{ width: desktopOpen ? ADMIN_SIDEBAR_WIDTH : ADMIN_SIDEBAR_COLLAPSED_WIDTH }}
+        aria-hidden
+      />
 
       {portalReady
         ? createPortal(
@@ -880,9 +1026,9 @@ export default function ClientSidebar() {
                 />
               )}
               <aside
-                className={`${adminSidebarAsideClass} ${
+                className={`${adminSidebarAsideClass} w-[248px] ${
                   mobileOpen ? 'translate-x-0' : 'max-lg:-translate-x-full'
-                }`}
+                } ${desktopOpen ? 'lg:w-[248px]' : 'lg:w-[72px]'}`}
               >
                 {sidebar}
               </aside>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import Shell from '../components/Shell';
+import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
 import type { IndustryKind } from '../types';
 
 const ECOMMERCE = [
@@ -96,9 +97,16 @@ export default function IndustryPage() {
         </div>
       </div>
       <div style={{ height: 16 }} />
-      <button className="btn" type="button" disabled={!kind || !industry || loading} onClick={continueNext}>
-        {loading ? 'Saving…' : 'Continue'}
-      </button>
+      {loading ? (
+        <FlowButtonLoading text="Saving…" />
+      ) : (
+        <FlowButton
+          text="Continue"
+          className="w-full"
+          disabled={!kind || !industry}
+          onClick={continueNext}
+        />
+      )}
     </Shell>
   );
 }

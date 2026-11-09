@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import Shell from '../components/Shell';
+import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
 import type { SelectedService } from '../types';
 
 export default function ServicePage() {
@@ -50,9 +51,11 @@ export default function ServicePage() {
         </button>
       </div>
       <div style={{ height: 16 }} />
-      <button className="btn" type="button" disabled={!selected || loading} onClick={continueNext}>
-        {loading ? 'Saving…' : 'Continue'}
-      </button>
+      {loading ? (
+        <FlowButtonLoading text="Saving…" />
+      ) : (
+        <FlowButton text="Continue" className="w-full" disabled={!selected} onClick={continueNext} />
+      )}
     </Shell>
   );
 }

@@ -19,6 +19,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
+import * as busyStore from '@/stores/busyStore';
 import { useI18n } from '@/lib/i18n';
 import { adminHeaderSearchClass } from '@/components/layout/admin-header';
 import { filterClientNavCatalog } from '@/lib/filter-client-nav';
@@ -41,12 +42,14 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 }
 
 const resultRowClass = (active: boolean) =>
-  `flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors rounded-lg mx-1 ${
-    active ? 'bg-[#f6f6f7]' : 'hover:bg-[#f6f6f7]'
+  `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+    active
+      ? 'bg-[#eef8f0] ring-1 ring-inset ring-[#aee9d1]/80'
+      : 'hover:bg-[#f4faf6]'
   }`;
 
 const sectionLabelClass =
-  'px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#8a8a8a]';
+  'sticky top-0 z-[1] bg-[#fbfdfc] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#8a9a93]';
 
 type ClientGlobalSearchProps = {
   className?: string;
@@ -111,9 +114,15 @@ export default function ClientGlobalSearch({
 
   const goTo = useCallback(
     (href: string) => {
-      router.push(href);
       setQuery('');
       close();
+      // Prefer nav busy (URL + page-ready); fall back if HMR left the named export undefined.
+      if (typeof busyStore.showNavBusy === 'function') {
+        busyStore.showNavBusy(href);
+      } else if (typeof busyStore.showBusy === 'function') {
+        busyStore.showBusy();
+      }
+      router.push(href);
     },
     [router, close]
   );
@@ -183,7 +192,13 @@ export default function ClientGlobalSearch({
           onMouseEnter={() => setActiveIndex(idx)}
           onClick={() => goTo(item.href)}
         >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#f1f1f1] text-[#616161]">
+          <span
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border text-[#00896F] ${
+              active
+                ? 'border-[#aee9d1] bg-white'
+                : 'border-[#e8efe9] bg-[#f7fbf8]'
+            }`}
+          >
             {item.section === 'Inbox' ? (
               <MessageSquare className="h-4 w-4" aria-hidden />
             ) : item.title === 'Dashboard' ? (
@@ -193,11 +208,11 @@ export default function ClientGlobalSearch({
             )}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-[13px] font-medium text-[#303030]">{title}</span>
-            <span className="mt-0.5 block truncate text-xs text-[#8a8a8a]">{breadcrumb}</span>
+            <span className="block truncate text-[13px] font-medium text-[#101828]">{title}</span>
+            <span className="mt-0.5 block truncate text-xs text-[#8a9a93]">{breadcrumb}</span>
           </span>
           <ArrowRight
-            className={`h-3.5 w-3.5 shrink-0 ${active ? 'text-[#616161]' : 'text-[#e3e3e3]'}`}
+            className={`h-3.5 w-3.5 shrink-0 ${active ? 'text-[#00896F]' : 'text-[#d0d9d4]'}`}
             aria-hidden
           />
         </button>
@@ -206,28 +221,30 @@ export default function ClientGlobalSearch({
   };
 
   const searchInput = (
-    <div className="group relative">
-      <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#b5b5b5] group-focus-within:text-white" />
-      <input
-        ref={inputRef}
-        type="search"
-        role="combobox"
-        aria-expanded={showPanel}
-        aria-controls={listId}
-        aria-autocomplete="list"
-        placeholder="Search pages, sections, tools…"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        onKeyDown={onInputKeyDown}
-        className={`${adminHeaderSearchClass} ${inputClassName}`}
-      />
-      <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-[#262626] px-1.5 py-0.5 text-[10px] font-medium text-[#b5b5b5] sm:inline-block">
-        Ctrl K
-      </kbd>
+    <div className="group relative rounded-full bg-[#00896F] p-[3px] shadow-[0_6px_18px_rgba(0,137,111,0.28)] transition-shadow duration-200 focus-within:shadow-[0_8px_22px_rgba(0,137,111,0.38)]">
+      <div className="relative rounded-full bg-[#f7fbf8] transition-colors group-focus-within:bg-white">
+        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8a9a93] group-focus-within:text-[#00896F]" />
+        <input
+          ref={inputRef}
+          type="search"
+          role="combobox"
+          aria-expanded={showPanel}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          placeholder="Search here..."
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={onInputKeyDown}
+          className={`${adminHeaderSearchClass} ${inputClassName}`}
+        />
+        <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-md border border-[#e8efe9] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#8a9a93] sm:inline-block">
+          Ctrl K
+        </kbd>
+      </div>
     </div>
   );
 
@@ -260,7 +277,7 @@ export default function ClientGlobalSearch({
         <div className="py-1">{renderResultsList()}</div>
       )}
 
-      <div className="border-t border-[#ebebeb] px-3 py-2 text-[11px] text-[#8a8a8a]">
+      <div className="sticky bottom-0 border-t border-[#e8efe9] bg-[#fbfdfc] px-3 py-2 text-[11px] text-[#8a9a93]">
         <span className="hidden sm:inline">↑↓ navigate · Enter open · Esc close</span>
         <span className="sm:hidden">Tap a result to open</span>
       </div>
@@ -272,7 +289,7 @@ export default function ClientGlobalSearch({
       ref={panelRef}
       id={listId}
       role="listbox"
-      className="admin-header-dropdown absolute left-0 right-0 top-full z-[1300] mt-1.5 max-h-[min(70vh,480px)] overflow-y-auto rounded-xl border border-[#e3e3e3] bg-white py-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+      className="absolute left-0 right-0 top-full z-[1300] mt-2 max-h-[min(70vh,480px)] isolate overflow-y-auto overscroll-contain rounded-2xl border border-[#e8efe9] bg-[#fbfdfc] py-1.5 shadow-[0_18px_48px_rgba(15,61,46,0.18)] animate-[orbitly-pop_140ms_ease-out]"
     >
       {renderPanelBody()}
     </div>
@@ -282,7 +299,7 @@ export default function ClientGlobalSearch({
     <div
       id={`${listId}-mobile`}
       role="listbox"
-      className="max-h-[min(65vh,420px)] overflow-y-auto bg-white py-1.5"
+      className="max-h-[min(65vh,420px)] isolate overflow-y-auto overscroll-contain bg-[#fbfdfc] py-1.5"
     >
       {renderPanelBody()}
     </div>
@@ -294,8 +311,9 @@ export default function ClientGlobalSearch({
         ? createPortal(
             <div
               aria-hidden
-              /* Keep left rail clickable — sidebar sits at z-[1100]; do not cover it. */
-              className="fixed inset-0 z-[1090] bg-black/25 transition-opacity lg:left-[240px]"
+              /* Dim page under search so sidebar/page colors don't bleed into the panel. */
+              className="fixed inset-0 z-[1090] bg-[#0f3d2e]/28 backdrop-blur-[2px] transition-[opacity,left] lg:left-[var(--client-sidebar-w,248px)]"
+              style={{ WebkitBackdropFilter: 'blur(2px)' }}
               onMouseDown={() => {
                 close();
               }}
@@ -304,7 +322,7 @@ export default function ClientGlobalSearch({
           )
         : null}
 
-      <div ref={rootRef} className={`relative z-[1202] w-full ${className}`}>
+      <div ref={rootRef} className={`relative w-full min-w-0 ${open ? 'z-[1202]' : 'z-0'} ${className}`}>
         {mobileIconOnly ? (
           <>
             <button
@@ -314,15 +332,15 @@ export default function ClientGlobalSearch({
                 setOpen(true);
                 window.setTimeout(() => inputRef.current?.focus(), 0);
               }}
-              className="admin-header-control inline-flex items-center justify-center rounded-lg p-2 md:hidden"
+              className="inline-flex items-center justify-center rounded-xl p-2 text-[#6b7a74] transition-colors hover:bg-[#eef8f0] md:hidden"
               aria-label="Search"
             >
-              <Search className="h-4 w-4 text-[#b5b5b5]" />
+              <Search className="h-4 w-4" />
             </button>
             {mobileExpanded && (
               <div className="fixed inset-x-3 top-[3.75rem] z-[1300] md:hidden">
-                <div className="overflow-hidden rounded-xl border border-[#e3e3e3] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.22)]">
-                  <div className="border-b border-[#ebebeb] bg-black p-2">{searchInput}</div>
+                <div className="isolate overflow-hidden rounded-2xl border border-[#e8efe9] bg-[#fbfdfc] shadow-[0_18px_48px_rgba(15,61,46,0.18)]">
+                  <div className="border-b border-[#e8efe9] bg-[#f7fbf8] p-2">{searchInput}</div>
                   {mobileResultsPanel}
                 </div>
               </div>

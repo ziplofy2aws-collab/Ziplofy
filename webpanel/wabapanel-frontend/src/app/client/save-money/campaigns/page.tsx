@@ -11,7 +11,7 @@ import { campaignApi, presetMessageApi, segmentApi, tagApi, pipelineApi, mediaAp
 import type { Campaign, Segment, Tag } from '@/types';
 import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import { adminContentColumnClass, dashboardCardShell, dashboardNoticeCompactClass } from '@/components/layout/dashboard-ui';
 
 const primaryBtn =
   'inline-flex items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-1.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
@@ -340,8 +340,8 @@ export default function PresetCampaignsPage() {
               </div>
             </div>
           )}
-          <div className="border rounded-lg p-3 bg-amber-50/40 border-amber-100 space-y-2">
-            <p className="text-xs font-medium text-admin-text">Schedule (optional) — leave empty to keep as draft and start manually</p>
+          <div className={`${dashboardNoticeCompactClass} space-y-2 py-3`}>
+            <p className="text-xs font-medium text-[#101828]">Schedule (optional) — leave empty to keep as draft and start manually</p>
             <div className="flex gap-2">
               <input type="datetime-local" value={createSchedAt} onChange={(e) => setCreateSchedAt(e.target.value)}
                 className={`${fieldClass} flex-1`} />
@@ -352,7 +352,7 @@ export default function PresetCampaignsPage() {
                 <option value="monthly">Monthly</option>
               </select>
             </div>
-            {createSchedAt && <p className="text-[11px] text-amber-700">Campaign will run automatically at the selected time{createSchedRec !== 'none' ? ` and repeat ${createSchedRec}` : ''}.</p>}
+            {createSchedAt && <p className="text-[11px] text-[#3d4a45]">Campaign will run automatically at the selected time{createSchedRec !== 'none' ? ` and repeat ${createSchedRec}` : ''}.</p>}
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

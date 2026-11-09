@@ -218,7 +218,7 @@ export default function AdminNavbarSearch() {
       <div ref={rootRef} className="relative z-[1202] w-full">
         <div className="relative group">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5">
-            <MagnifyingGlassIcon className="h-4 w-4 text-[#b5b5b5] group-focus-within:text-white" />
+            <MagnifyingGlassIcon className="h-4 w-4 text-admin-text-subdued group-focus-within:text-emerald-600" />
           </div>
           <input
             ref={inputRef}
@@ -235,9 +235,9 @@ export default function AdminNavbarSearch() {
             }}
             onFocus={() => setOpen(true)}
             onKeyDown={onInputKeyDown}
-            className="h-9 w-full rounded-full border-0 bg-admin-header-control py-0 pl-8 pr-14 text-sm text-white placeholder:text-[#b5b5b5] transition-colors focus:bg-admin-header-control-hover focus:outline-none focus:ring-1 focus:ring-white/20"
+            className="h-9 w-full rounded-full border border-admin-border bg-admin-header-control py-0 pl-8 pr-14 text-sm text-admin-text placeholder:text-admin-text-subdued shadow-[0_4px_14px_rgba(15,23,42,0.04)] transition-colors focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/25"
           />
-          <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-white/15 bg-admin-header-control-hover px-1.5 py-0.5 text-[10px] font-medium text-[#b5b5b5] sm:inline-block">
+          <kbd className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded border border-admin-border bg-admin-secondary px-1.5 py-0.5 text-[10px] font-medium text-admin-text-subdued sm:inline-block">
             Ctrl K
           </kbd>
         </div>

@@ -14,6 +14,17 @@ export interface User {
   staffType?: '' | 'doctor' | 'receptionist';
   lastLogin: string;
   createdAt: string;
+  companyName?: string;
+  address?: string;
+  gstNumber?: string;
+  preferredTimezone?: string;
+  preferredLanguage?: string;
+  platformUserId?: string;
+  featureOverrides?: {
+    selectedModules?: string[];
+    industry?: string;
+    profileComplete?: boolean;
+  };
 }
 
 export interface Workspace {

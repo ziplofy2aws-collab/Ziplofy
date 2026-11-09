@@ -10,9 +10,9 @@ export interface BadgeProps {
 
 const variantStyles = {
   success: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-600/15',
-  warning: 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-600/15',
+  warning: 'bg-[#eef8f0] text-[#0f766e] ring-1 ring-inset ring-[#00896F]/20',
   danger: 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/15',
-  info: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/15',
+  info: 'bg-[#eef8f0]/80 text-[#0f766e] ring-1 ring-inset ring-[#00896F]/15',
   default: 'bg-gray-50 text-gray-600 ring-1 ring-inset ring-gray-500/15',
 };
 

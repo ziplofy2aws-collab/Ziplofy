@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  MessageSquare, Eye, EyeOff, Lock, Loader2,
+  MessageSquare, Eye, EyeOff, Lock,
   CheckCircle2, Megaphone,
 } from 'lucide-react';
 import useBranding from '@/lib/useBranding';
@@ -13,6 +13,8 @@ import { authApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { isAxiosError } from 'axios';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
+import { authPageBackgroundStyle } from '@/lib/authBackground';
+import { FlowButton, FlowButtonLoading } from '@/components/ui/flow-button';
 
 const TRUSTED = ['Adani', 'Tata', 'Godrej', 'Asian Paints', 'CEAT', 'Sobha', 'Physics Wallah', 'Vivo'];
 
@@ -210,16 +212,16 @@ function LoginForm() {
 
   if (redirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f1f1f1]">
+      <div className="min-h-screen flex items-center justify-center" style={authPageBackgroundStyle}>
         <p className="text-[#98A2B3] text-sm">Redirecting to sign in…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2" style={authPageBackgroundStyle}>
       {/* ── Left marketing panel ── */}
-      <aside className="relative hidden lg:flex flex-col bg-[#ecfdf5] px-10 xl:px-14 py-8 overflow-hidden">
+      <aside className="relative hidden lg:flex flex-col bg-white/35 px-10 xl:px-14 py-8 overflow-hidden backdrop-blur-[2px]">
         <div className="absolute -right-16 top-32 w-80 h-80 rounded-full bg-[#059669]/10 blur-3xl pointer-events-none" />
         <div className="absolute left-10 bottom-40 w-56 h-56 rounded-full bg-[#99f6e4]/25 blur-3xl pointer-events-none" />
 
@@ -304,7 +306,7 @@ function LoginForm() {
       </aside>
 
       {/* ── Right form panel ── */}
-      <section className="bg-white flex flex-col min-h-screen px-5 sm:px-10 lg:px-12 xl:px-16 py-6 lg:py-8">
+      <section className="bg-white/90 flex flex-col min-h-screen px-5 sm:px-10 lg:px-12 xl:px-16 py-6 lg:py-8 backdrop-blur-sm">
         <div className="flex items-center justify-between lg:justify-end mb-6">
           <Link href="/" className="lg:hidden flex items-center gap-2">
             {brand.logo ? (
@@ -353,19 +355,16 @@ function LoginForm() {
                     autoFocus
                     className="w-full h-12 rounded-xl border border-[#e3e3e3] px-3.5 text-[15px] text-center tracking-[0.35em] font-semibold outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                   />
-                  <button
-                    type="submit"
-                    disabled={loading || code.trim().length < 4}
-                    className={`w-full h-12 rounded-xl font-semibold text-[15px] transition flex items-center justify-center gap-2 ${
-                      code.trim().length >= 4 && !loading
-                        ? 'text-white shadow-[0_8px_20px_rgba(5,150,105,0.22)] hover:brightness-105'
-                        : 'bg-[#D0D5DD] text-white cursor-not-allowed'
-                    }`}
-                    style={code.trim().length >= 4 && !loading ? { background: 'linear-gradient(95deg, #059669 0%, #0d9488 55%, #14b8a6 100%)' } : undefined}
-                  >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                    Verify & Continue
-                  </button>
+                  {loading ? (
+                    <FlowButtonLoading text="Verifying…" />
+                  ) : (
+                    <FlowButton
+                      type="submit"
+                      text="Verify & Continue"
+                      className="w-full"
+                      disabled={code.trim().length < 4}
+                    />
+                  )}
                   <div className="flex items-center justify-between text-sm pt-1">
                     <button type="button" onClick={() => { setTwoFA(null); setCode(''); }} className="text-[#667085] hover:text-[#101828]">
                       Back to login
@@ -423,7 +422,7 @@ function LoginForm() {
                     </div>
                   )}
                   {needsVerification && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-900">
+                    <div className="rounded-xl border border-[#aee9d1]/80 bg-gradient-to-br from-[#eef8f0]/95 via-white/55 to-white/40 p-3 text-sm leading-relaxed text-[#3d4a45] shadow-[0_8px_28px_rgba(15,61,46,0.05),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-xl">
                       Your email is not verified yet.{' '}
                       <button type="button" onClick={handleResend} className="font-semibold text-[#047857] underline">
                         Resend verification email
@@ -431,19 +430,16 @@ function LoginForm() {
                     </div>
                   )}
 
-                  <button
-                    type="submit"
-                    disabled={!canSubmit || loading}
-                    className={`w-full h-12 rounded-xl font-semibold text-[15px] transition flex items-center justify-center gap-2 ${
-                      canSubmit && !loading
-                        ? 'text-white shadow-[0_8px_20px_rgba(5,150,105,0.22)] hover:brightness-105'
-                        : 'bg-[#D0D5DD] text-white cursor-not-allowed'
-                    }`}
-                    style={canSubmit && !loading ? { background: 'linear-gradient(95deg, #059669 0%, #0d9488 55%, #14b8a6 100%)' } : undefined}
-                  >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                    {blocked ? `Blocked (${fmt(blockRemaining)})` : 'Continue'}
-                  </button>
+                  {loading ? (
+                    <FlowButtonLoading text="Signing in…" />
+                  ) : (
+                    <FlowButton
+                      type="submit"
+                      text={blocked ? `Blocked (${fmt(blockRemaining)})` : 'Continue'}
+                      className="w-full"
+                      disabled={!canSubmit}
+                    />
+                  )}
                 </form>
 
                 <GoogleSignInButton
@@ -469,7 +465,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#f1f1f1]"><p className="text-[#98A2B3] text-sm">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center" style={authPageBackgroundStyle}><p className="text-[#98A2B3] text-sm">Loading...</p></div>}>
       <LoginForm />
     </Suspense>
   );

@@ -9,14 +9,18 @@ import { useAuthStore } from '@/stores/authStore';
 import toast from 'react-hot-toast';
 import type { Plan } from '@/types';
 import ManualPaymentModal, { ManualInfo } from '@/components/billing/ManualPaymentModal';
-import { adminContentColumnClass, dashboardCardShell } from '@/components/layout/dashboard-ui';
+import {
+  adminContentColumnClass,
+  dashboardCardShell,
+  dashboardFieldClass,
+  dashboardNoticeClass,
+  primaryBtn as orbitPrimaryBtn,
+  secondaryBtn as orbitSecondaryBtn,
+} from '@/components/layout/dashboard-ui';
 
-const primaryBtn =
-  'inline-flex w-full items-center justify-center gap-1.5 rounded-lg bg-admin-text px-3 py-2 text-[13px] font-semibold text-white transition-colors hover:bg-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-50';
-const secondaryBtn =
-  'inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-admin-border bg-white px-3 py-2 text-[13px] font-medium text-admin-text transition-colors hover:bg-[#f6f6f7] disabled:cursor-not-allowed disabled:opacity-50';
-const fieldClass =
-  'rounded-lg border border-admin-border bg-white px-3 py-2 text-[13px] text-admin-text placeholder:text-admin-text-subdued focus:outline-none focus:ring-2 focus:ring-[#005bd3]/30';
+const primaryBtn = `${orbitPrimaryBtn} w-full`;
+const secondaryBtn = `${orbitSecondaryBtn} w-full`;
+const fieldClass = dashboardFieldClass;
 const modalOverlayClass = 'fixed inset-0 z-[1300] flex items-center justify-center p-4 sm:p-6';
 const modalPanelClass =
   'relative z-10 w-full max-w-sm overflow-hidden rounded-xl border border-admin-border bg-white shadow-[0_16px_48px_rgba(16,24,40,0.18)]';
@@ -309,13 +313,13 @@ export default function SubscriptionsPage() {
       </div>
 
       {pendingPayments.length > 0 && (
-        <div className={`${dashboardCardShell} border-amber-200 bg-amber-50`}>
+        <div className={dashboardNoticeClass}>
           <div className="flex items-start gap-3">
-            <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+            <Clock className="mt-0.5 h-5 w-5 shrink-0 text-[#00896F]" />
             <div>
-              <p className="text-[13px] font-semibold text-amber-800">Payment approval pending</p>
+              <p className="text-[13px] font-semibold text-[#101828]">Payment approval pending</p>
               {pendingPayments.map(p => (
-                <p key={p._id} className="mt-1 text-[13px] text-amber-700">
+                <p key={p._id} className="mt-1 text-[13px] text-[#3d4a45]">
                   {p.plan?.name || 'Plan'} — ₹{p.amount} (submitted {new Date(p.createdAt).toLocaleDateString('en-IN')}). Your payment is under review; the plan will be activated once the admin approves it.
                 </p>
               ))}

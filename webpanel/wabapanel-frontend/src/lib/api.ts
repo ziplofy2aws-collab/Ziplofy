@@ -62,11 +62,25 @@ export const authApi = {
   ssoExchange: (ticket: string) => api.post('/auth/sso/exchange', { ticket }),
   modules: () => api.get('/auth/modules'),
   updateModules: (selectedModules: string[]) => api.put('/auth/modules', { selectedModules }),
+  businessOptions: () => api.get('/auth/business'),
+  updateIndustry: (industry: string) => api.put('/auth/industry', { industry }),
+  onboardingStatus: () => api.get('/auth/onboarding'),
+  saveOnboardingProfile: (data: Record<string, unknown>) => api.put('/auth/onboarding/profile', data),
   googleConfig: () => api.get('/auth/google/config'),
   adminLogin: (data: { email: string; password: string }) => api.post('/auth/admin/login', data),
   register: (data: { name: string; email: string; password: string; phone?: string }) => api.post('/auth/register', data),
   getMe: () => api.get('/auth/me'),
-  updateProfile: (data: Partial<{ name: string; phone: string; avatar: string }>) => api.put('/auth/profile', data),
+  updateProfile: (data: Partial<{
+    name: string;
+    phone: string;
+    avatar: string;
+    email: string;
+    companyName: string;
+    address: string;
+    gstNumber: string;
+    preferredTimezone: string;
+    preferredLanguage: string;
+  }>) => api.put('/auth/profile', data),
   changePassword: (data: { currentPassword: string; newPassword: string }) => api.put('/auth/change-password', data),
   forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
   verifyEmail: (token: string) => api.post('/auth/verify-email', { token }),
@@ -248,7 +262,7 @@ export const waqrApi = {
 export const workspaceApi = {
   list: () => api.get('/workspaces'),
   get: (id: string) => api.get(`/workspaces/${id}`),
-  create: (data: { name: string }) => api.post('/workspaces', data),
+  create: (data: { name: string; description?: string }) => api.post('/workspaces', data),
   update: (id: string, data: object) => api.put(`/workspaces/${id}`, data),
   delete: (id: string) => api.delete(`/workspaces/${id}`),
   addMember: (id: string, data: { email: string; role: string }) => api.post(`/workspaces/${id}/members`, data),

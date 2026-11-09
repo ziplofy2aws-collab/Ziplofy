@@ -37,6 +37,8 @@ import { StoreRolesProvider } from "./contexts/store-roles.context";
 import { StoreSecuritySettingsProvider } from "./contexts/store-security-settings.context";
 import { CreateThemePoweredByLoader } from "./create-theme/chrome/CreateThemePoweredByLoader";
 import { TesseraeThemeEditorLoader } from "./components/themes/TesseraeThemeEditorLoader";
+import AppStatusScreen from "./components/status/AppStatusScreen";
+import OfflineGuard from "./components/status/OfflineGuard";
 
 // Lazy-loaded page components (code splitting)
 const BasicElementor = lazy(() => import("./pages/themes/BasicElementor"));
@@ -317,15 +319,12 @@ import { VendorProvider } from "./contexts/vendor.context";
 const NAVBAR_HEIGHT = 56; // keep consistent with Sidebar offset (h-14 = 56px)
 
 const PageLoader: React.FC = () => (
-  <div className="flex min-h-[280px] w-full items-center justify-center px-4 py-16">
-    <div className="flex flex-col items-center gap-4 rounded-2xl border border-gray-200/80 bg-white px-12 py-10 shadow-sm">
-      <div
-        className="h-10 w-10 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600"
-        aria-hidden
-      />
-      <p className="text-sm font-medium text-gray-600">Loading page…</p>
-    </div>
-  </div>
+  <AppStatusScreen
+    variant="loading"
+    fullScreen={false}
+    title="Loading page"
+    subtitle="Almost there…"
+  />
 );
 
 function LegacyBlogPostRedirect() {
@@ -379,7 +378,7 @@ const AdminApp: React.FC = () => {
             lockMainScroll ? "flex flex-col overflow-hidden" : "overflow-y-auto",
             isFullScreen || isSettings || isLiveView
               ? "bg-transparent p-0"
-              : "bg-page-background-color p-4 sm:p-6 lg:p-8",
+              : "bg-transparent p-4 sm:p-6 lg:p-8",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -754,6 +753,7 @@ const App: React.FC = () => {
         <CountryTaxOverrideProvider>
         <TaxAndDutiesGlobalSettingsProvider>
           <Router>
+          <OfflineGuard />
           <Toaster
             position="bottom-center"
             gutter={12}

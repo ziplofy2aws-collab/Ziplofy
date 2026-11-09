@@ -80,7 +80,7 @@ export default function InvoicesPage() {
     finally { setSubSending(false); }
   };
 
-  const statusColor = (s: string) => (s === "paid" || s === "active" || s === "completed") ? "bg-emerald-100 text-emerald-700" : (s === "pending") ? "bg-amber-100 text-amber-700" : (s === "expired" || s === "cancelled" || s === "failed") ? "bg-red-100 text-red-700" : "bg-[#f1f1f1] text-admin-text-secondary";
+  const statusColor = (s: string) => (s === "paid" || s === "active" || s === "completed") ? "bg-emerald-100 text-emerald-700" : (s === "pending") ? "bg-[#eef8f0] text-[#0f766e]" : (s === "expired" || s === "cancelled" || s === "failed") ? "bg-red-100 text-red-700" : "bg-[#f1f1f1] text-admin-text-secondary";
 
   const markPaid = async (id: string) => { try { await invoiceApi.update(id, { status: "paid" }); toast.success("Marked paid"); load(); } catch { toast.error("Failed"); } };
 
