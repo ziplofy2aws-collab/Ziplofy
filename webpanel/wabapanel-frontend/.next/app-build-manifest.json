@@ -26,35 +26,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/client/layout.js"
     ],
-    "/client/manage-profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/manage-profile/page.js"
-    ],
     "/client/workspace/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/client/workspace/page.js"
     ],
-    "/client/online-store/page": [
+    "/client/choose-business/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/online-store/page.js"
-    ],
-    "/client/subscriptions/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/subscriptions/page.js"
+      "static/chunks/app/client/choose-business/page.js"
     ],
     "/client/choose-services/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/client/choose-services/page.js"
     ],
-    "/client/choose-business/page": [
+    "/client/manage-profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-business/page.js"
+      "static/chunks/app/client/manage-profile/page.js"
     ],
     "/client/chat/page": [
       "static/chunks/webpack.js",
@@ -66,36 +56,41 @@
       "static/chunks/main-app.js",
       "static/chunks/app/client/channels/page.js"
     ],
-    "/client/settings/page": [
+    "/client/templates/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/settings/page.js"
+      "static/chunks/app/client/templates/page.js"
     ],
-    "/client/ai-settings/page": [
+    "/client/broadcasts/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/ai-settings/page.js"
+      "static/chunks/app/client/broadcasts/page.js"
     ],
-    "/client/whatsapp/page": [
+    "/client/smart-broadcast/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/whatsapp/page.js"
+      "static/chunks/app/client/smart-broadcast/page.js"
     ],
-    "/client/automations/page": [
+    "/client/online-store/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/automations/page.js"
-    ],
-    "/client/leads/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/leads/page.js"
+      "static/chunks/app/client/online-store/page.js"
     ],
     "/client/themes/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/client/themes/page.css",
       "static/chunks/app/client/themes/page.js"
+    ],
+    "/client/themes/create/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/client/themes/create/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

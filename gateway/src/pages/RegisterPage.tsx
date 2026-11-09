@@ -12,7 +12,9 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpEmail, setOtpEmail] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [devOtp, setDevOtp] = useState('');
@@ -29,9 +31,13 @@ export default function RegisterPage() {
 
   async function onSendOtp(e: FormEvent) {
     e.preventDefault();
-    setLoading(true);
     setError('');
     setInfo('');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    setLoading(true);
     try {
       const data = await api.register({ name, email, password, phone });
       if (data.needsVerification) {
@@ -181,6 +187,43 @@ export default function RegisterPage() {
             onClick={() => setShowPassword((v) => !v)}
           >
             {showPassword ? (
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
+                <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M10.6 10.7a2 2 0 0 0 2.7 2.7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <path d="M9.9 5.2A10.5 10.5 0 0 1 12 5c5 0 8.5 4.5 9.5 6-.4.7-1.3 2-2.8 3.3M6.1 6.2C4.4 7.5 3.3 9.1 2.5 11c1 1.5 4.5 6 9.5 6 1.2 0 2.3-.2 3.3-.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
+                <path d="M2.5 12C3.5 10.5 7 6 12 6s8.5 4.5 9.5 6c-1 1.5-4.5 6-9.5 6s-8.5-4.5-9.5-6Z" stroke="currentColor" strokeWidth="1.8" />
+                <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.8" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        <label className="auth-label" htmlFor="confirmPassword">
+          Confirm password
+        </label>
+        <div className="auth-field">
+          <input
+            id="confirmPassword"
+            className="auth-input"
+            style={{ paddingLeft: 14 }}
+            type={showConfirmPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            minLength={6}
+            placeholder="Retype your password"
+            required
+            disabled={awaitingOtp || loading}
+          />
+          <button
+            type="button"
+            className="auth-field__toggle"
+            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+            onClick={() => setShowConfirmPassword((v) => !v)}
+          >
+            {showConfirmPassword ? (
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
                 <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 <path d="M10.6 10.7a2 2 0 0 0 2.7 2.7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />

@@ -1884,15 +1884,11 @@ function ChatPageInner() {
         className={`relative flex min-h-0 flex-col overflow-hidden border-r transition-[width,opacity] duration-200 ease-out ${
           isInboxChannelView ? `${inboxTheme!.softBorder} bg-white` : 'border-admin-border'
         } ${
-          isInboxChannelView
-            ? selectedConv
-              ? 'hidden'
-              : 'flex h-full w-full shrink-0'
-            : selectedConv
-              ? 'hidden h-full shrink-0 md:flex w-full md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]'
-              : 'flex h-full w-full shrink-0 md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]'
+          selectedConv
+            ? 'hidden h-full shrink-0 md:flex w-full md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]'
+            : 'flex h-full w-full shrink-0 md:w-[var(--chat-list-w)] md:min-w-[240px] md:max-w-[560px]'
         }`}
-        style={isInboxChannelView && selectedConv ? undefined : { ['--chat-list-w' as string]: `${listWidth}px` }}
+        style={{ ['--chat-list-w' as string]: `${listWidth}px` }}
       >
         {isInboxChannelView && inboxTheme && (
           <div className={`flex items-center justify-between gap-2 px-3 py-1.5 text-white shrink-0 ${inboxTheme.barBg}`}>
@@ -2069,7 +2065,7 @@ function ChatPageInner() {
 
         {/* Chats slide up / down */}
         <div
-          className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] scroll-smooth"
+          className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain touch-pan-y [-webkit-overflow-scrolling:touch] scroll-smooth p-2"
           onScroll={(e) => {
             const el = e.currentTarget;
             if (el.scrollHeight - el.scrollTop - el.clientHeight < 200 && hasMoreConvs && !convsLoadingMore && !loadingConvs) {
@@ -2086,10 +2082,10 @@ function ChatPageInner() {
             </div>
           ) : (
             filteredConversations.map((conv) => (
-              <div key={conv._id} className="relative group">
+              <div key={conv._id} className="relative group mb-1">
               <button
                 onClick={() => { if (bulkMode) { setBulkSelected(prev => { const n = new Set(prev); if (n.has(conv._id)) n.delete(conv._id); else n.add(conv._id); return n; }); } else { loadMessages(conv); } }}
-                className={`w-full text-left border-b transition-colors ${isInboxChannelView && inboxTheme ? `px-3 py-1.5 ${inboxTheme.rowBorder} ${inboxTheme.rowHover}` : 'p-4 border-gray-100 hover:bg-[#f6f6f7]'} ${selectedConv?._id === conv._id ? (isInboxChannelView && inboxTheme ? inboxTheme.rowActive : 'bg-[#f1f1f1]') : ''} ${bulkSelected.has(conv._id) ? 'bg-blue-50' : ''}`}
+                className={`w-full text-left rounded-xl transition-colors ${isInboxChannelView && inboxTheme ? `px-3 py-2 ${inboxTheme.rowHover}` : 'p-4 hover:bg-[#f6f6f7]'} ${selectedConv?._id === conv._id ? (isInboxChannelView && inboxTheme ? inboxTheme.rowActive : 'bg-[#f1f1f1]') : ''} ${bulkSelected.has(conv._id) ? 'bg-blue-50' : ''}`}
               >
                 <div className={`flex items-center ${isInboxChannelView ? 'gap-2.5' : 'gap-3'}`}>
                   {bulkMode && (
@@ -2167,7 +2163,7 @@ function ChatPageInner() {
           )}
         </div>
 
-        {/* Drag to resize — only when list + chat share the screen (non-WhatsApp desktop) */}
+        {/* Drag to resize — only when list + chat share the screen (desktop) */}
         <div
           role="separator"
           aria-orientation="vertical"
@@ -2180,7 +2176,7 @@ function ChatPageInner() {
             try { localStorage.setItem('chat_list_width', String(LIST_W_DEFAULT)); } catch { /* ignore */ }
           }}
           className={`absolute inset-y-0 -right-1 z-30 w-3 cursor-col-resize items-center justify-center touch-none group ${
-            isInboxChannelView || !selectedConv ? 'hidden' : 'hidden md:flex'
+            !selectedConv ? 'hidden' : 'hidden md:flex'
           } ${listResizing ? 'bg-admin-text/10' : 'hover:bg-admin-text/5'}`}
         >
           <span className={`pointer-events-none h-full w-0.5 rounded-full transition-colors ${
@@ -2995,7 +2991,7 @@ function ChatPageInner() {
       ) : (
         <div
           className={`flex-1 items-center justify-center ${
-            isInboxChannelView ? 'hidden' : 'hidden md:flex bg-[#f1f1f1]'
+            isInboxChannelView ? 'hidden md:flex' : 'hidden md:flex bg-[#f1f1f1]'
           }`}
           style={isInboxChannelView && inboxTheme ? { backgroundColor: inboxTheme.canvasBg } : undefined}
         >
