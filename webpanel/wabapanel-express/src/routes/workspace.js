@@ -6,7 +6,7 @@ const {
   listApiWebhooks, addApiWebhook, deleteApiWebhook,
 } = require('../controllers/workspaceController');
 const {
-  handleEmbeddedSignup, getEmbeddedSignupConfig, disconnectWhatsApp,
+  handleEmbeddedSignup, getEmbeddedSignupConfig, updateMetaAppConfig, getOAuthUrl, getConnectionStatus, disconnectWhatsApp,
 } = require('../controllers/embeddedSignupController');
 
 router.use(protect);
@@ -26,6 +26,9 @@ router.post("/:id/whatsapp/refresh", workspaceParamMember, refreshWhatsAppDetail
 router.get('/:id/whatsapp/health', workspaceParamMember, getWhatsAppHealth);
 router.post('/:id/whatsapp/embedded-signup', workspaceParamOwner, handleEmbeddedSignup);
 router.get('/:id/whatsapp/embedded-signup/config', workspaceParamMember, getEmbeddedSignupConfig);
+router.get('/:id/whatsapp/oauth-url', workspaceParamMember, getOAuthUrl);
+router.get('/:id/whatsapp/connection', workspaceParamMember, getConnectionStatus);
+router.put('/:id/whatsapp/meta-app', workspaceParamOwner, updateMetaAppConfig);
 router.post('/:id/whatsapp/disconnect', workspaceParamOwner, disconnectWhatsApp);
 
 module.exports = router;

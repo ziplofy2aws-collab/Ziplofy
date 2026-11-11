@@ -22,6 +22,14 @@ const workspaceSchema = new mongoose.Schema({
     qualityRating: { type: String, default: '' },
     webhookSecret: { type: String, default: '' },
     paymentConfiguration: { type: String, default: '' },
+    // Optional: tenant's own Meta app for Embedded Signup. When set, this
+    // workspace onboards through its own Meta developer app instead of the
+    // platform-wide one configured by the admin.
+    metaApp: {
+      appId: { type: String, default: '' },
+      appSecret: { type: String, default: '' },
+      configId: { type: String, default: '' },
+    },
     extraNumbers: [{
       phoneNumberId: { type: String, default: '' },
       phoneNumber: { type: String, default: '' },
