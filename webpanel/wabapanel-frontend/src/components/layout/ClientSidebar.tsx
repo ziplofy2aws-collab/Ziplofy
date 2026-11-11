@@ -294,7 +294,7 @@ const navItems: NavItem[] = [
   { label: 'Instagram Auto DM', icon: <FaInstagram className="w-5 h-5 text-pink-600" />, href: '/client/instagram-auto-dm' },
   { label: 'API & Developers', icon: <Plug className="w-5 h-5" />, href: '/client/api-docs' },
   { label: 'Choose your business', icon: <Briefcase className="w-5 h-5" />, href: '/client/choose-business' },
-  { label: 'Choose your services', icon: <LayoutGrid className="w-5 h-5" />, href: '/client/choose-services' },
+
   { label: 'Support', icon: <LifeBuoy className="w-5 h-5" />, href: '/client/support' },
   { label: 'User Guide', icon: <BookOpen className="w-5 h-5" />, href: '/client/user-guide' },
 ];
@@ -594,7 +594,10 @@ export default function ClientSidebar() {
   // Filter nav items based on admin per-client feature controls
   const itemVisible = (href: string) => {
     const adminKey = ADMIN_FEATURE_MAP[href];
-    if (adminKey && features[adminKey] === false) return false;
+    // All options are visible by default; only an explicit admin disable hides them.
+    // Service selection no longer gates the sidebar, so module flags are not treated
+    // as hidden by default — only featureOverrides that came from admin toggles.
+    if (adminKey && features[adminKey] === false && features[`${adminKey}__adminLocked`] === true) return false;
     return true;
   };
   const unlockedNav = useMemo(() => navItems.map(section => ({
@@ -606,18 +609,12 @@ export default function ClientSidebar() {
   }), [features]);
 
   const selectedModules = (user as unknown as { featureOverrides?: { selectedModules?: string[] } })?.featureOverrides?.selectedModules;
-  const moduleNav = useMemo(() => {
-    if (!Array.isArray(selectedModules)) return unlockedNav;
-    return unlockedNav.filter((section) => {
-      if (ALWAYS_ON_SECTIONS.has(section.label)) return true;
-      if (section.label === 'Inbox' && selectedModules.includes('whatsapp')) return true;
-      if (section.label === 'Channels' && selectedModules.includes('whatsapp')) return true;
-      const moduleId = SECTION_MODULE[section.label];
-      if (!moduleId) return true;
-      if (SECTOR_MODULE_IDS.has(moduleId) && features[moduleId] === true) return true;
-      return selectedModules.includes(moduleId);
-    });
-  }, [unlockedNav, selectedModules, features]);
+  const moduleNav = useMemo(() => unlockedNav.filter((section) => {
+    // Sector sections still gate on the chosen industry (backend derives the flag).
+    const moduleId = SECTION_MODULE[section.label];
+    if (moduleId && SECTOR_MODULE_IDS.has(moduleId)) return features[moduleId] === true;
+    return true;
+  }), [unlockedNav, features]);
 
   // Granular agent permissions: when an agent has module permissions set,
   // only the allowed modules are shown

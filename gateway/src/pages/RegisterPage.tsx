@@ -6,11 +6,49 @@ import AuthSplit from '../components/AuthSplit';
 import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
 import { continueAfterSession } from '../lib/sessionNav';
 
+const DIAL_CODES = [
+  { region: 'IN', dial: '+91', label: 'IN +91' },
+  { region: 'US', dial: '+1', label: 'US +1' },
+  { region: 'CA', dial: '+1', label: 'CA +1' },
+  { region: 'GB', dial: '+44', label: 'UK +44' },
+  { region: 'AE', dial: '+971', label: 'AE +971' },
+  { region: 'AU', dial: '+61', label: 'AU +61' },
+  { region: 'SG', dial: '+65', label: 'SG +65' },
+  { region: 'DE', dial: '+49', label: 'DE +49' },
+  { region: 'FR', dial: '+33', label: 'FR +33' },
+  { region: 'SA', dial: '+966', label: 'SA +966' },
+  { region: 'QA', dial: '+974', label: 'QA +974' },
+  { region: 'BD', dial: '+880', label: 'BD +880' },
+  { region: 'NP', dial: '+977', label: 'NP +977' },
+  { region: 'LK', dial: '+94', label: 'LK +94' },
+  { region: 'MY', dial: '+60', label: 'MY +60' },
+  { region: 'ID', dial: '+62', label: 'ID +62' },
+  { region: 'PH', dial: '+63', label: 'PH +63' },
+  { region: 'PK', dial: '+92', label: 'PK +92' },
+  { region: 'ZA', dial: '+27', label: 'ZA +27' },
+  { region: 'NG', dial: '+234', label: 'NG +234' },
+];
+
+const CHECKS: Record<'name' | 'email' | 'phone' | 'password', (v: string) => string> = {
+  name: (v) =>
+    v.trim() && !/^[A-Za-z][A-Za-z .'-]{1,49}$/.test(v.trim())
+      ? "Name can only contain letters, spaces and . - '"
+      : '',
+  email: (v) =>
+    v.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? 'Enter a valid email address' : '',
+  phone: (v) => (v && !/^\d{7,15}$/.test(v) ? 'Enter a valid phone number (7–15 digits)' : ''),
+  password: (v) => (v && v.length < 6 ? 'Password must be at least 6 characters' : ''),
+};
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [countryCode, setCountryCode] = useState(() => {
+    const region = (typeof navigator !== 'undefined' ? navigator.language : '').split('-')[1]?.toUpperCase();
+    return DIAL_CODES.find((c) => c.region === region)?.dial || '+91';
+  });
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +58,7 @@ export default function RegisterPage() {
   const [devOtp, setDevOtp] = useState('');
   const [awaitingOtp, setAwaitingOtp] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -33,13 +72,18 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
     setInfo('');
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+    const errors = {
+      name: CHECKS.name(name),
+      email: CHECKS.email(email),
+      phone: CHECKS.phone(phone),
+      password: CHECKS.password(password),
+      confirmPassword: password !== confirmPassword ? 'Passwords do not match' : '',
+    };
+    setFieldErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
     setLoading(true);
     try {
-      const data = await api.register({ name, email, password, phone });
+      const data = await api.register({ name, email, password, phone: `${countryCode}${phone}` });
       if (data.needsVerification) {
         setOtpEmail(data.email || email);
         setAwaitingOtp(true);
@@ -121,14 +165,15 @@ export default function RegisterPage() {
           <input
             id="name"
             className="auth-input"
-            style={{ paddingLeft: 14 }}
+            style={{ paddingLeft: 14, borderColor: fieldErrors.name ? '#dc2626' : undefined }}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { const v = e.target.value; setName(v); setFieldErrors((p) => ({ ...p, name: CHECKS.name(v) })); }}
             placeholder="Your name"
             required
             disabled={awaitingOtp || loading}
           />
         </div>
+        {fieldErrors.name ? <p style={{ margin: '-8px 0 10px', fontSize: 11, color: '#dc2626' }}>{fieldErrors.name}</p> : null}
 
         <label className="auth-label" htmlFor="email">
           Email
@@ -137,32 +182,64 @@ export default function RegisterPage() {
           <input
             id="email"
             className="auth-input"
-            style={{ paddingLeft: 14 }}
+            style={{ paddingLeft: 14, borderColor: fieldErrors.email ? '#dc2626' : undefined }}
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { const v = e.target.value; setEmail(v); setFieldErrors((p) => ({ ...p, email: CHECKS.email(v) })); }}
             placeholder="Enter your email"
             required
             disabled={awaitingOtp || loading}
           />
         </div>
+        {fieldErrors.email ? <p style={{ margin: '-8px 0 10px', fontSize: 11, color: '#dc2626' }}>{fieldErrors.email}</p> : null}
 
         <label className="auth-label" htmlFor="phone">
           Phone number
         </label>
         <div className="auth-field">
-          <input
-            id="phone"
-            className="auth-input"
-            style={{ paddingLeft: 14 }}
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+91 98765 43210"
-            required
-            disabled={awaitingOtp || loading}
-          />
+          <div className="auth-input" style={{ display: 'flex', alignItems: 'center', padding: 0, overflow: 'hidden', borderColor: fieldErrors.phone ? '#dc2626' : undefined }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '100%', flexShrink: 0, borderRight: '1px solid var(--auth-line)' }}>
+              <select
+                aria-label="Country code"
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                disabled={awaitingOtp || loading}
+                style={{
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  border: 'none',
+                  background: 'transparent',
+                  font: 'inherit',
+                  fontSize: '0.92rem',
+                  color: 'inherit',
+                  height: '100%',
+                  padding: '0 20px 0 14px',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                {DIAL_CODES.map((c) => (
+                  <option key={`${c.region}-${c.dial}`} value={c.dial}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <span aria-hidden style={{ position: 'absolute', right: 7, fontSize: 10, color: 'var(--auth-muted)', pointerEvents: 'none' }}>▾</span>
+            </div>
+            <input
+              id="phone"
+              type="tel"
+              inputMode="numeric"
+              value={phone}
+              onChange={(e) => { const v = e.target.value.replace(/\D/g, ''); setPhone(v); setFieldErrors((p) => ({ ...p, phone: CHECKS.phone(v) })); }}
+              placeholder="98765 43210"
+              required
+              disabled={awaitingOtp || loading}
+              style={{ flex: 1, minWidth: 0, border: 'none', background: 'transparent', outline: 'none', font: 'inherit', fontSize: '0.92rem', height: '100%', padding: '0 14px 0 12px', color: 'inherit' }}
+            />
+          </div>
         </div>
+        {fieldErrors.phone ? <p style={{ margin: '-8px 0 10px', fontSize: 11, color: '#dc2626' }}>{fieldErrors.phone}</p> : null}
 
         <label className="auth-label" htmlFor="password">
           Password
@@ -171,10 +248,10 @@ export default function RegisterPage() {
           <input
             id="password"
             className="auth-input"
-            style={{ paddingLeft: 14 }}
+            style={{ paddingLeft: 14, borderColor: fieldErrors.password ? '#dc2626' : undefined }}
             type={showPassword ? 'text' : 'password'}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => { const v = e.target.value; setPassword(v); setFieldErrors((p) => ({ ...p, password: CHECKS.password(v), confirmPassword: confirmPassword && v !== confirmPassword ? 'Passwords do not match' : '' })); }}
             minLength={6}
             placeholder="Min 6 characters"
             required
@@ -200,6 +277,7 @@ export default function RegisterPage() {
             )}
           </button>
         </div>
+        {fieldErrors.password ? <p style={{ margin: '-8px 0 10px', fontSize: 11, color: '#dc2626' }}>{fieldErrors.password}</p> : null}
 
         <label className="auth-label" htmlFor="confirmPassword">
           Confirm password
@@ -208,10 +286,10 @@ export default function RegisterPage() {
           <input
             id="confirmPassword"
             className="auth-input"
-            style={{ paddingLeft: 14 }}
+            style={{ paddingLeft: 14, borderColor: fieldErrors.confirmPassword ? '#dc2626' : undefined }}
             type={showConfirmPassword ? 'text' : 'password'}
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => { const v = e.target.value; setConfirmPassword(v); setFieldErrors((p) => ({ ...p, confirmPassword: v && v !== password ? 'Passwords do not match' : '' })); }}
             minLength={6}
             placeholder="Retype your password"
             required
@@ -237,6 +315,7 @@ export default function RegisterPage() {
             )}
           </button>
         </div>
+        {fieldErrors.confirmPassword ? <p style={{ margin: '-8px 0 10px', fontSize: 11, color: '#dc2626' }}>{fieldErrors.confirmPassword}</p> : null}
 
         {!awaitingOtp ? (
           loading ? (

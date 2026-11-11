@@ -1812,10 +1812,38 @@ function ChatPageInner() {
     };
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('wa-immersive');
+    const aside = document.body.querySelector('aside');
+    const headerEl = document.body.querySelector('header');
+    // Hovering either edge reveals sidebar + navbar together, docking the chat
+    // inside them; moving back into the chat hides both again.
+    const onMove = (e: MouseEvent) => {
+      const b = document.body.classList;
+      if (e.clientX <= 14 || e.clientY <= 12) {
+        if (!b.contains('wa-peek')) {
+          b.add('wa-peek');
+          // Expand the sidebar so it reveals fully labeled, like normal mode.
+          window.dispatchEvent(new CustomEvent('client-sidebar-toggle', { detail: { open: true, source: 'wa-peek' } }));
+        }
+      } else if (e.clientX > 280 && e.clientY > 80 && !aside?.matches(':hover') && !headerEl?.matches(':hover')) {
+        b.remove('wa-peek');
+      }
+    };
+    window.addEventListener('mousemove', onMove);
     window.addEventListener('keydown', onKey);
+    // Sidebar toggle button pins the sidebar open and docks the chat beside it.
+    const onToggle = (e: Event) => {
+      const detail = (e as CustomEvent<{ open?: boolean; source?: string }>).detail;
+      if (detail?.source === 'wa-peek') return;
+      document.body.classList.toggle('wa-pin-side', !!detail?.open);
+    };
+    window.addEventListener('client-sidebar-toggle', onToggle as EventListener);
     return () => {
       document.body.style.overflow = prevOverflow;
+      document.body.classList.remove('wa-immersive', 'wa-peek', 'wa-pin-side');
+      window.removeEventListener('mousemove', onMove);
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('client-sidebar-toggle', onToggle as EventListener);
     };
   }, [inboxFullscreen]);
 
@@ -1874,8 +1902,8 @@ function ChatPageInner() {
         listResizing ? 'select-none' : ''
       } ${
         inboxFullscreen
-          /* Stay inside app chrome: below top nav, right of sidebar — never cover them */
-          ? 'fixed top-14 bottom-0 right-0 left-0 z-[60] h-auto w-auto rounded-none border-0 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] lg:left-[var(--client-sidebar-w,72px)] animate-[orbitly-pop_160ms_ease-out]'
+          /* Immersive: covers the whole viewport; sidebar/header slide out on edge hover */
+          ? 'wa-immersive-shell fixed inset-0 z-[60] h-auto w-auto rounded-none border-0 shadow-[0_0_0_1px_rgba(0,0,0,0.06)] animate-[orbitly-pop_160ms_ease-out]'
           : `relative z-0 h-[calc(100vh-7rem)] rounded-xl border ${isInboxChannelView ? `${inboxTheme!.softBorder} shadow-[0_12px_28px_rgba(11,20,26,0.12)]` : 'border-admin-border shadow-[0_1px_2px_rgba(16,24,40,0.06),0_1px_3px_rgba(16,24,40,0.04)]'}`
       }`}
     >
