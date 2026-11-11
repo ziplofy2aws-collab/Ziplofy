@@ -612,3 +612,182 @@ html.dark ::-webkit-scrollbar-track { background-color: #1f2937; }
     background-clip: unset;
   }
 }
+
+/* WhatsApp immersive fullscreen: chat covers viewport; sidebar & top nav
+   hide off-canvas, leaving a thin hover sliver that slides them back out. */
+body.wa-immersive aside:not(.wa-immersive-shell aside),
+body.wa-immersive nav:not(.wa-immersive-shell nav) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 80;
+  transform: translateX(calc(-100% + 12px));
+  transition: transform 220ms ease;
+}
+body.wa-immersive aside:not(.wa-immersive-shell aside):hover,
+body.wa-immersive nav:not(.wa-immersive-shell nav):hover {
+  transform: translateX(0);
+}
+body.wa-immersive header:not(.wa-immersive-shell header) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  transform: translateY(calc(-100% + 10px));
+  transition: transform 220ms ease;
+}
+body.wa-immersive header:not(.wa-immersive-shell header):hover {
+  transform: translateY(0);
+}
+
+/* Fully hidden chrome in immersive mode — revealed by edge-trigger classes. */
+body.wa-immersive aside:not(.wa-immersive-shell aside),
+body.wa-immersive nav:not(.wa-immersive-shell nav) {
+  transform: translateX(-102%);
+}
+body.wa-immersive.wa-peek-side aside:not(.wa-immersive-shell aside),
+body.wa-immersive.wa-peek-side nav:not(.wa-immersive-shell nav),
+body.wa-immersive aside:not(.wa-immersive-shell aside):hover,
+body.wa-immersive nav:not(.wa-immersive-shell nav):hover {
+  transform: translateX(0);
+}
+body.wa-immersive header:not(.wa-immersive-shell header) {
+  transform: translateY(-102%);
+}
+body.wa-immersive.wa-peek-top header:not(.wa-immersive-shell header),
+body.wa-immersive header:not(.wa-immersive-shell header):hover {
+  transform: translateY(0);
+}
+
+/* Immersive fixes: shell covers the whole viewport edge-to-edge and the
+   revealed sidebar sits flush — no gaps at the corners. */
+body.wa-immersive .wa-immersive-shell {
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+body.wa-immersive aside:not(.wa-immersive-shell aside),
+body.wa-immersive nav:not(.wa-immersive-shell nav) {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin: 0;
+  border-radius: 0;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: none;
+}
+body.wa-immersive.wa-peek-side aside:not(.wa-immersive-shell aside),
+body.wa-immersive.wa-peek-side nav:not(.wa-immersive-shell nav) {
+  box-shadow: 24px 0 48px -24px rgba(0, 0, 0, 0.35);
+}
+
+/* Pinned sidebar in immersive mode: toggle button docks it and shifts chat. */
+body.wa-immersive.wa-pin-side aside:not(.wa-immersive-shell aside),
+body.wa-immersive.wa-pin-side nav:not(.wa-immersive-shell nav) {
+  transform: translateX(0);
+  box-shadow: none;
+}
+body.wa-immersive.wa-pin-side .wa-immersive-shell {
+  left: var(--client-sidebar-w, 72px) !important;
+  width: calc(100vw - var(--client-sidebar-w, 72px)) !important;
+  transition: left 220ms ease, width 220ms ease;
+}
+
+/* Combined edge-reveal: both bars open together, chat docks inside them. */
+body.wa-immersive.wa-peek aside:not(.wa-immersive-shell aside),
+body.wa-immersive.wa-peek nav:not(.wa-immersive-shell nav) {
+  transform: translateX(0);
+}
+body.wa-immersive.wa-peek header:not(.wa-immersive-shell header) {
+  transform: translateY(0);
+}
+body.wa-immersive.wa-peek .wa-immersive-shell {
+  left: var(--client-sidebar-w, 72px) !important;
+  top: 56px !important;
+  width: calc(100vw - var(--client-sidebar-w, 72px)) !important;
+  height: calc(100vh - 56px) !important;
+  transition: left 220ms ease, top 220ms ease, width 220ms ease, height 220ms ease;
+}
+
+/* Sidebar tiles below the navbar — header owns the full top strip. */
+body.wa-immersive aside:not(.wa-immersive-shell aside),
+body.wa-immersive nav:not(.wa-immersive-shell nav) {
+  top: 56px;
+  height: calc(100vh - 56px);
+}
+body.wa-immersive header:not(.wa-immersive-shell header) {
+  z-index: 85;
+}
+
+/* Peeked sidebar opens fully expanded (248px) and chat docks beside it. */
+body.wa-immersive.wa-peek aside:not(.wa-immersive-shell aside),
+body.wa-immersive.wa-peek nav:not(.wa-immersive-shell nav) {
+  transform: translateX(0);
+  width: 248px !important;
+  overflow-y: auto;
+}
+body.wa-immersive.wa-peek .wa-immersive-shell {
+  left: 248px !important;
+  width: calc(100vw - 248px) !important;
+}
+
+/* Sidebar spans full height under the navbar — its own top spacing clears
+   the header, so no extra offset (removes the dead space above Dashboard). */
+body.wa-immersive aside:not(.wa-immersive-shell aside),
+body.wa-immersive nav:not(.wa-immersive-shell nav) {
+  top: 0;
+  height: 100vh;
+}
+
+/* Sidebar sits below the navbar without its built-in top spacer — Dashboard
+   lands right under the bar, no overlap, no dead space. */
+body.wa-immersive aside:not(.wa-immersive-shell aside),
+body.wa-immersive nav:not(.wa-immersive-shell nav) {
+  top: 56px;
+  height: calc(100vh - 56px);
+  padding-top: 0 !important;
+}
+body.wa-immersive aside:not(.wa-immersive-shell aside) > *:first-child,
+body.wa-immersive nav:not(.wa-immersive-shell nav) > *:first-child {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Don't restyle navs nested inside the sidebar — only the aside itself moves. */
+body.wa-immersive aside:not(.wa-immersive-shell aside) nav {
+  position: static !important;
+  transform: none !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+/* Bulletproof trigger: hide chrome whenever the immersive shell exists in DOM,
+   regardless of body-class state. */
+body:has(.wa-immersive-shell) aside.client-orbitly-aside,
+body:has(.wa-immersive-shell) aside:not(.wa-immersive-shell aside) {
+  transform: translateX(-102%) !important;
+}
+body:has(.wa-immersive-shell) header.client-orbitly-header,
+body:has(.wa-immersive-shell) header:not(.wa-immersive-shell header) {
+  transform: translateY(-102%) !important;
+}
+body:has(.wa-immersive-shell).wa-peek aside.client-orbitly-aside,
+body:has(.wa-immersive-shell).wa-peek aside:not(.wa-immersive-shell aside),
+body:has(.wa-immersive-shell).wa-pin-side aside.client-orbitly-aside,
+body:has(.wa-immersive-shell).wa-pin-side aside:not(.wa-immersive-shell aside) {
+  transform: translateX(0) !important;
+}
+body:has(.wa-immersive-shell).wa-peek header.client-orbitly-header,
+body:has(.wa-immersive-shell).wa-peek header:not(.wa-immersive-shell header) {
+  transform: translateY(0) !important;
+}

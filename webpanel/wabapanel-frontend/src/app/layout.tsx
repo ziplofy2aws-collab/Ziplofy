@@ -76,7 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
   // Prefer the panel's own share image, then its logo, so a white-label install
   // never leaks the default (Codiic Panel-branded) screenshot in WhatsApp/social previews.
   const ogImage: string = seo.ogImage || brand.logo || '/assets/panel-dashboard.png';
-  const favicon: string = brand.favicon || '/favicon.ico';
+  const favicon: string = brand.favicon || '/logo_with_text.webp';
   // iOS home-screen icon must be a square PNG; the raw logo is often rectangular,
   // so use the backend's squared pwa-icon (logo composited on a white square) when a
   // brand logo exists — this makes the panel's own logo show as the installed app icon.
