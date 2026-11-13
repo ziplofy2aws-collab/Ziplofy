@@ -16,21 +16,6 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/auth/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/auth/login/page.js"
-    ],
-    "/client/chat/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/chat/page.js"
-    ],
-    "/client/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/layout.js"
-    ],
     "/auth/sso/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -41,10 +26,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/client/dashboard/page.js"
     ],
-    "/client/workspace/page": [
+    "/client/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/workspace/page.js"
+      "static/chunks/app/client/layout.js"
+    ],
+    "/client/online-store/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/client/online-store/page.js"
     ],
     "/client/themes/page": [
       "static/chunks/webpack.js",
@@ -52,50 +42,15 @@
       "static/css/app/client/themes/page.css",
       "static/chunks/app/client/themes/page.js"
     ],
-    "/client/choose-business/page": [
+    "/client/themes/create/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-business/page.js"
+      "static/chunks/app/client/themes/create/page.js"
     ],
-    "/client/whatsapp/page": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/client/whatsapp/page.js"
-    ],
-    "/admin/one-click-signup/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin/one-click-signup/page.js"
-    ],
-    "/admin/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/admin/layout.js"
-    ],
-    "/client/channels/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/channels/page.js"
-    ],
-    "/client/manage-profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/manage-profile/page.js"
-    ],
-    "/client/subscriptions/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/subscriptions/page.js"
-    ],
-    "/client/instagram-auto-dm/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/instagram-auto-dm/page.js"
-    ],
-    "/client/billing/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/billing/page.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

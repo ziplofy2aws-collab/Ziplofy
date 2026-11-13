@@ -27,10 +27,22 @@ import {
   adminSidebarNavItemClass,
 } from './admin-sidebar';
 
+type NavGroup = 'main' | 'growth' | 'industry' | 'system' | 'resources';
+
+const NAV_GROUP_ORDER: NavGroup[] = ['main', 'growth', 'industry', 'system', 'resources'];
+const NAV_GROUP_LABELS: Record<NavGroup, string> = {
+  main: 'Main Hub',
+  growth: 'Growth & Marketing',
+  industry: 'Industry',
+  system: 'System',
+  resources: 'Help & Resources',
+};
+
 interface NavItem {
   label: string;
   icon: React.ReactNode;
   href?: string;
+  group?: NavGroup;
   children?: { label: string; href: string; icon: React.ReactNode }[];
 }
 
@@ -52,11 +64,26 @@ function hrefMatches(current: string, href: string): boolean {
 }
 
 const navItems: NavItem[] = [
-  { label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, href: '/client/dashboard' },
-  { label: 'Analytics', icon: <BarChart3 className="w-5 h-5" />, href: '/client/analytics' },
+  { label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" />, href: '/client/dashboard', group: 'main' },
+  {
+    label: 'Website',
+    icon: <Store className="w-5 h-5" />,
+    href: '/client/online-store',
+    group: 'main',
+    children: [
+      { label: 'Themes', href: '/client/themes', icon: <Paintbrush className="w-4 h-4" /> },
+      { label: 'Media Library', href: '/client/online-store/media-library', icon: <ImageIcon className="w-4 h-4" /> },
+      { label: 'Blogs', href: '/client/online-store/blogs', icon: <BookOpen className="w-4 h-4" /> },
+      { label: 'Pages', href: '/client/online-store/pages', icon: <FileText className="w-4 h-4" /> },
+      { label: 'Menus', href: '/client/online-store/menus', icon: <List className="w-4 h-4" /> },
+      { label: 'Policies', href: '/client/online-store/policies', icon: <Scale className="w-4 h-4" /> },
+    ],
+  },
+  { label: 'Analytics', icon: <BarChart3 className="w-5 h-5" />, href: '/client/analytics', group: 'growth' },
   {
     label: 'Inbox',
     icon: <MessageCircle className="w-5 h-5" />,
+    group: 'main',
     children: [
       { label: 'WhatsApp Inbox', href: '/client/chat?channel=whatsapp', icon: <FaWhatsapp className="w-4 h-4 text-green-600" /> },
       { label: 'WhatsApp QR Inbox', href: '/client/chat?channel=whatsapp_qr', icon: <FaWhatsapp className="w-4 h-4 text-emerald-500" /> },
@@ -70,6 +97,7 @@ const navItems: NavItem[] = [
   {
     label: 'Campaigns',
     icon: <Send className="w-5 h-5" />,
+    group: 'growth',
     children: [
       { label: 'Message Templates', href: '/client/templates', icon: <FileText className="w-4 h-4" /> },
       { label: 'Broadcast', href: '/client/broadcasts', icon: <Send className="w-4 h-4" /> },
@@ -80,6 +108,7 @@ const navItems: NavItem[] = [
   {
     label: 'Save Money',
     icon: <PiggyBank className="w-5 h-5" />,
+    group: 'growth',
     children: [
       { label: 'Preset Templates', href: '/client/save-money/templates', icon: <FileText className="w-4 h-4" /> },
       { label: 'Preset Campaigns', href: '/client/save-money/campaigns', icon: <Send className="w-4 h-4" /> },
@@ -89,6 +118,7 @@ const navItems: NavItem[] = [
   {
     label: 'Contacts',
     icon: <Users className="w-5 h-5" />,
+    group: 'main',
     children: [
       { label: 'Contact Directory', href: '/client/contacts', icon: <Users className="w-4 h-4" /> },
       { label: 'Segments', href: '/client/segments', icon: <Layers className="w-4 h-4" /> },
@@ -101,16 +131,18 @@ const navItems: NavItem[] = [
   {
     label: 'Lead CRM',
     icon: <Milestone className="w-5 h-5" />,
+    group: 'main',
     children: [
       { label: 'Lead Dashboard', href: '/client/lead-dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
       { label: 'Lead Report', href: '/client/call-center', icon: <PhoneCall className="w-4 h-4" /> },
       { label: 'CRM 360', href: '/client/crm', icon: <History className="w-4 h-4" /> },
     ],
   },
-  { label: 'Pipeline Board', icon: <Kanban className="w-5 h-5" />, href: '/client/pipelines' },
+  { label: 'Pipeline Board', icon: <Kanban className="w-5 h-5" />, href: '/client/pipelines', group: 'main' },
   {
     label: 'Automation',
     icon: <Zap className="w-5 h-5" />,
+    group: 'growth',
     children: [
       { label: 'Automation Flows', href: '/client/automations', icon: <Zap className="w-4 h-4" /> },
       { label: 'Bulk AI Calls', href: '/client/bulk-calls', icon: <Phone className="w-4 h-4" /> },
@@ -126,6 +158,7 @@ const navItems: NavItem[] = [
   {
     label: 'Clinic',
     icon: <Stethoscope className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'OPD Queue', href: '/client/clinic/queue', icon: <ClipboardList className="w-4 h-4" /> },
       { label: 'Consult', href: '/client/clinic/consult', icon: <Pill className="w-4 h-4" /> },
@@ -138,6 +171,7 @@ const navItems: NavItem[] = [
   {
     label: 'Edtech',
     icon: <GraduationCap className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Institute', href: '/client/edtech/overview', icon: <LayoutDashboard className="w-4 h-4" /> },
       { label: 'Courses', href: '/client/edtech/courses', icon: <BookOpen className="w-4 h-4" /> },
@@ -151,6 +185,7 @@ const navItems: NavItem[] = [
   {
     label: 'Real Estate',
     icon: <Building2 className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/real-estate', icon: <Building2 className="w-4 h-4" /> },
       { label: 'Properties', href: '/client/real-estate/properties', icon: <Building2 className="w-4 h-4" /> },
@@ -163,6 +198,7 @@ const navItems: NavItem[] = [
   {
     label: 'Agency',
     icon: <Briefcase className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/agency', icon: <Briefcase className="w-4 h-4" /> },
       { label: 'Clients', href: '/client/agency/clients', icon: <Users className="w-4 h-4" /> },
@@ -175,6 +211,7 @@ const navItems: NavItem[] = [
   {
     label: 'Legal',
     icon: <Scale className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/legal', icon: <Scale className="w-4 h-4" /> },
       { label: 'Clients', href: '/client/legal/clients', icon: <Users className="w-4 h-4" /> },
@@ -187,6 +224,7 @@ const navItems: NavItem[] = [
   {
     label: 'Hospitality',
     icon: <Hotel className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/hospitality', icon: <Hotel className="w-4 h-4" /> },
       { label: 'Reservations & Bookings', href: '/client/hospitality/reservations', icon: <CalendarCheck className="w-4 h-4" /> },
@@ -199,6 +237,7 @@ const navItems: NavItem[] = [
   {
     label: 'Salon & Spa',
     icon: <Scissors className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/salon', icon: <Scissors className="w-4 h-4" /> },
       { label: 'Appointments', href: '/client/salon/bookings', icon: <CalendarCheck className="w-4 h-4" /> },
@@ -211,6 +250,7 @@ const navItems: NavItem[] = [
   {
     label: 'Service Business',
     icon: <Wrench className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/service-business', icon: <Wrench className="w-4 h-4" /> },
       { label: 'Services', href: '/client/service-business/services', icon: <ShoppingBag className="w-4 h-4" /> },
@@ -223,6 +263,7 @@ const navItems: NavItem[] = [
   {
     label: 'Tour & Travel',
     icon: <Plane className="w-5 h-5" />,
+    group: 'industry',
     children: [
       { label: 'Overview', href: '/client/travel', icon: <Plane className="w-4 h-4" /> },
       { label: 'Tour Packages', href: '/client/travel/packages', icon: <Package className="w-4 h-4" /> },
@@ -235,6 +276,7 @@ const navItems: NavItem[] = [
   {
     label: 'Leads & Commerce',
     icon: <ShoppingBag className="w-5 h-5" />,
+    group: 'growth',
     children: [
       { label: 'All Leads', href: '/client/leads', icon: <FormInput className="w-4 h-4" /> },
       { label: 'Lead Gen Forms', href: '/client/forms', icon: <FormInput className="w-4 h-4" /> },
@@ -245,21 +287,9 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    label: 'Online Store',
-    icon: <Store className="w-5 h-5" />,
-    href: '/client/online-store',
-    children: [
-      { label: 'Themes', href: '/client/themes', icon: <Paintbrush className="w-4 h-4" /> },
-      { label: 'Media Library', href: '/client/online-store/media-library', icon: <ImageIcon className="w-4 h-4" /> },
-      { label: 'Blogs', href: '/client/online-store/blogs', icon: <BookOpen className="w-4 h-4" /> },
-      { label: 'Pages', href: '/client/online-store/pages', icon: <FileText className="w-4 h-4" /> },
-      { label: 'Menus', href: '/client/online-store/menus', icon: <List className="w-4 h-4" /> },
-      { label: 'Policies', href: '/client/online-store/policies', icon: <Scale className="w-4 h-4" /> },
-    ],
-  },
-  {
     label: 'Channels',
     icon: <Plug className="w-5 h-5" />,
+    group: 'growth',
     children: [
       { label: 'Channel Config', href: '/client/channels', icon: <Plug className="w-4 h-4" /> },
       { label: 'WhatsApp Settings', href: '/client/whatsapp', icon: <FaWhatsapp className="w-4 h-4 text-green-600" /> },
@@ -268,6 +298,7 @@ const navItems: NavItem[] = [
   {
     label: 'Settings',
     icon: <Settings className="w-5 h-5" />,
+    group: 'system',
     children: [
       { label: 'Organization Teams', href: '/client/teams', icon: <Users className="w-4 h-4" /> },
       { label: 'Agents', href: '/client/agents', icon: <UserPlus className="w-4 h-4" /> },
@@ -283,6 +314,7 @@ const navItems: NavItem[] = [
   {
     label: 'Subscription & Plans',
     icon: <CreditCard className="w-5 h-5" />,
+    group: 'system',
     children: [
       { label: 'Subscription Plans', href: '/client/subscriptions', icon: <Sparkles className="w-4 h-4" /> },
       { label: 'Billing & Wallet', href: '/client/billing', icon: <Wallet className="w-4 h-4" /> },
@@ -290,13 +322,13 @@ const navItems: NavItem[] = [
       { label: 'Invoices', href: '/client/invoices', icon: <FileText className="w-4 h-4" /> },
     ],
   },
-  { label: 'CTWA Ads', icon: <Megaphone className="w-5 h-5" />, href: '/client/ctwa-ads' },
-  { label: 'Instagram Auto DM', icon: <FaInstagram className="w-5 h-5 text-pink-600" />, href: '/client/instagram-auto-dm' },
-  { label: 'API & Developers', icon: <Plug className="w-5 h-5" />, href: '/client/api-docs' },
-  { label: 'Choose your business', icon: <Briefcase className="w-5 h-5" />, href: '/client/choose-business' },
+  { label: 'CTWA Ads', icon: <Megaphone className="w-5 h-5" />, href: '/client/ctwa-ads', group: 'growth' },
+  { label: 'Instagram Auto DM', icon: <FaInstagram className="w-5 h-5 text-pink-600" />, href: '/client/instagram-auto-dm', group: 'growth' },
+  { label: 'API & Developers', icon: <Plug className="w-5 h-5" />, href: '/client/api-docs', group: 'resources' },
+  { label: 'Choose your business', icon: <Briefcase className="w-5 h-5" />, href: '/client/choose-business', group: 'resources' },
 
-  { label: 'Support', icon: <LifeBuoy className="w-5 h-5" />, href: '/client/support' },
-  { label: 'User Guide', icon: <BookOpen className="w-5 h-5" />, href: '/client/user-guide' },
+  { label: 'Support', icon: <LifeBuoy className="w-5 h-5" />, href: '/client/support', group: 'resources' },
+  { label: 'User Guide', icon: <BookOpen className="w-5 h-5" />, href: '/client/user-guide', group: 'resources' },
 ];
 
 // Client route -> admin feature-control key (admin can switch these off per client)
@@ -438,7 +470,7 @@ const SECTION_MODULE: Record<string, string> = {
   'Service Business': 'serviceBusiness',
   'Tour & Travel': 'travel',
   'Leads & Commerce': 'commerce',
-  'Online Store': 'websiteBuilder',
+  'Website': 'websiteBuilder',
   Channels: 'channels',
   Settings: 'settings',
   'Subscription & Plans': 'billing',
@@ -496,7 +528,7 @@ const SECTOR_MODULE_IDS = new Set(['clinic', 'edtech', 'realEstate', 'agency', '
 
 const ALWAYS_ON_SECTIONS = new Set([
   'Dashboard',
-  'Online Store',
+  'Website',
   'Settings',
   'Subscription & Plans',
   'Choose your business',
@@ -519,6 +551,7 @@ export default function ClientSidebar() {
   const currentHref = pathname + search;
 
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
+  const [expandedGroups, setExpandedGroups] = useState<NavGroup[]>([]);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(true);
   const [portalReady, setPortalReady] = useState(false);
@@ -684,6 +717,39 @@ export default function ClientSidebar() {
     return next;
   }, [moduleNav, user?.role, perms, allowedCh, user]);
 
+  const groupedNav = useMemo(() => {
+    const buckets = new Map<NavGroup, NavItem[]>();
+    for (const section of filteredNav) {
+      const g = section.group || 'system';
+      const list = buckets.get(g) || [];
+      list.push(section);
+      buckets.set(g, list);
+    }
+    return NAV_GROUP_ORDER.filter((g) => buckets.has(g)).map((g) => ({
+      group: g,
+      label: NAV_GROUP_LABELS[g],
+      items: buckets.get(g) as NavItem[],
+    }));
+  }, [filteredNav]);
+
+  // Auto-open the group containing the active page; everything else stays collapsed.
+  const activeGroup = useMemo(() => {
+    for (const { group, items } of groupedNav) {
+      const hit = items.some(
+        (sec) =>
+          (sec.href ? hrefMatches(currentHref, sec.href) : false) ||
+          (sec.children || []).some((c) => hrefMatches(currentHref, c.href))
+      );
+      if (hit) return group;
+    }
+    return null;
+  }, [groupedNav, currentHref]);
+
+  useEffect(() => {
+    if (!activeGroup) return;
+    setExpandedGroups((prev) => (prev.includes(activeGroup) ? prev : [...prev, activeGroup]));
+  }, [activeGroup]);
+
   // Stable key so we only expand when the active section actually changes —
   // previously a fresh array every render caused setState → re-render forever
   // after the first navigation into a nested page (sidebar looked "dead").
@@ -723,6 +789,17 @@ export default function ClientSidebar() {
   const isSectionOpen = useCallback(
     (label: string) => expandedSections.includes(label),
     [expandedSections]
+  );
+
+  const toggleGroup = useCallback((group: NavGroup) => {
+    setExpandedGroups((prev) =>
+      prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]
+    );
+  }, []);
+
+  const isGroupOpen = useCallback(
+    (group: NavGroup) => expandedGroups.includes(group),
+    [expandedGroups]
   );
 
   // Full-bleed pages (chat / WhatsApp inbox etc.) auto-collapse the desktop rail.
@@ -775,7 +852,38 @@ export default function ClientSidebar() {
     >
       <nav className="flex-1 overflow-y-auto overflow-x-hidden">
         <ul className={`m-0 list-none space-y-0.5 ${collapsed ? 'p-1.5' : 'p-2.5'}`}>
-          {filteredNav.map((section) => {
+          {groupedNav.map(({ group, label: groupLabel, items }) => {
+            const groupOpen = collapsed || isGroupOpen(group);
+            return (
+            <React.Fragment key={group}>
+              {!collapsed && (
+                <li className="mt-1.5 first:mt-0">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group)}
+                    className={`flex w-full select-none items-center justify-between gap-2 px-3 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition-colors ${
+                      groupOpen ? 'text-[#0f3d2e]' : 'text-[#8a9a93] hover:text-[#0f3d2e]'
+                    }`}
+                  >
+                    <span>{groupLabel}</span>
+                    <ChevronDown
+                      className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${groupOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                </li>
+              )}
+              <div
+                className={
+                  collapsed
+                    ? 'contents'
+                    : `overflow-hidden transition-[max-height,opacity] duration-300 ease-in-out ${
+                        groupOpen
+                          ? 'max-h-[2500px] opacity-100'
+                          : 'pointer-events-none max-h-0 opacity-0'
+                      }`
+                }
+              >
+              {items.map((section) => {
             const hasKids = !!section.children?.length;
             const openSection = !collapsed && isSectionOpen(section.label);
             const leafActive = section.href ? hrefMatches(currentHref, section.href) : false;
@@ -931,6 +1039,10 @@ export default function ClientSidebar() {
                   </>
                 )}
               </li>
+            );
+              })}
+              </div>
+            </React.Fragment>
             );
           })}
         </ul>
