@@ -676,7 +676,7 @@ export function CodiixChatPanel({
           'I can’t check the live theme right now.\n\n' +
           'Open **Online Store → Themes**, or say **“take me to themes”**.',
         adminNavActions: [
-          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
         ],
       };
     }
@@ -698,7 +698,7 @@ export function CodiixChatPanel({
               { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker', primary: true },
             ],
         adminNavActions: [
-          { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+          { id: 'themes', label: 'Open Themes page', path: '/client/themes' },
         ],
       };
     } catch (err: unknown) {
@@ -707,7 +707,7 @@ export function CodiixChatPanel({
       return {
         answer: `${msg}\n\nTry again, or say **“take me to themes”**.`,
         adminNavActions: [
-          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
         ],
       };
     }
@@ -724,7 +724,7 @@ export function CodiixChatPanel({
           'Theme switching isn’t available right now.\n\n' +
           'Say **“take me to themes”** to manage themes on the Themes page.',
         adminNavActions: [
-          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
         ],
       };
     }
@@ -736,7 +736,7 @@ export function CodiixChatPanel({
             'You don’t have any installed or custom themes yet.\n\n' +
             'Open **Themes** to install a catalog theme or create a custom one.',
           adminNavActions: [
-            { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+            { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
           ],
         };
       }
@@ -745,7 +745,7 @@ export function CodiixChatPanel({
           'Here’s a quick list of themes on your store. Tap one to apply it live:',
         themePickActions: picks,
         adminNavActions: [
-          { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+          { id: 'themes', label: 'Open Themes page', path: '/client/themes' },
         ],
       };
     } catch (err: unknown) {
@@ -754,7 +754,7 @@ export function CodiixChatPanel({
       return {
         answer: `${msg}\n\nTry again, or say **“take me to themes”**.`,
         adminNavActions: [
-          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
         ],
       };
     }
@@ -771,7 +771,7 @@ export function CodiixChatPanel({
           'I can’t open the theme editor right now.\n\n' +
           'Say **“take me to themes”** and open your live theme from there.',
         adminNavActions: [
-          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
         ],
       };
     }
@@ -783,7 +783,7 @@ export function CodiixChatPanel({
           { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker' },
         ],
         adminNavActions: [
-          { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+          { id: 'themes', label: 'Open Themes page', path: '/client/themes' },
         ],
       };
     } catch (err: unknown) {
@@ -796,7 +796,7 @@ export function CodiixChatPanel({
           { id: 'change-theme', label: 'Change theme?', action: 'show-theme-picker' },
         ],
         adminNavActions: [
-          { id: 'themes', label: 'Go to Themes', path: '/online-store/themes', primary: true },
+          { id: 'themes', label: 'Go to Themes', path: '/client/themes', primary: true },
         ],
       };
     }
@@ -883,7 +883,7 @@ export function CodiixChatPanel({
           undefined,
           {
             adminNavActions: [
-              { id: 'themes', label: 'Open Themes page', path: '/online-store/themes' },
+              { id: 'themes', label: 'Open Themes page', path: '/client/themes' },
             ],
           },
         );
@@ -920,7 +920,7 @@ export function CodiixChatPanel({
           undefined,
           {
             adminNavActions: [
-              { id: 'themes', label: 'Open Themes page', path: '/online-store/themes', primary: true },
+              { id: 'themes', label: 'Open Themes page', path: '/client/themes', primary: true },
             ],
           },
         );
@@ -1535,7 +1535,7 @@ export function CodiixChatPanel({
                   ? [
                       { id: 'products', label: 'Go to Products', path: '/products' },
                       { id: 'orders', label: 'Go to Orders', path: '/orders' },
-                      { id: 'themes', label: 'Go to Themes', path: '/online-store/themes' },
+                      { id: 'themes', label: 'Go to Themes', path: '/client/themes' },
                     ]
                   : undefined,
             };

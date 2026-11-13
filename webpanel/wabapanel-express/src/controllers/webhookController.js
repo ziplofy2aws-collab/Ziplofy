@@ -582,8 +582,42 @@ async function handleCoexistenceWebhook(change, io) {
 }
 
 // @POST /api/webhook/whatsapp - Incoming messages
+// Validates Meta's X-Hub-Signature-256 when an App Secret is configured.
 const handleWhatsAppWebhook = async (req, res) => {
   try {
+    // Collect every secret this delivery could be signed with: the platform app
+    // plus the tenant's own Meta app when the payload names a phone_number_id
+    // that belongs to a workspace with custom credentials.
+    const secrets = new Set();
+    const platformSecret = process.env.META_APP_SECRET
+      || (await SystemSettings.findOne().select('whatsapp.appSecret').lean())?.whatsapp?.appSecret
+      || '';
+    if (platformSecret) secrets.add(platformSecret);
+    try {
+      const pnid = req.body?.entry?.[0]?.changes?.[0]?.value?.metadata?.phone_number_id;
+      if (pnid) {
+        const wsApp = await Workspace.findOne({
+          $or: [{ 'whatsapp.phoneNumberId': pnid }, { 'whatsapp.extraNumbers.phoneNumberId': pnid }],
+        }).select('whatsapp.metaApp.appSecret').lean();
+        if (wsApp?.whatsapp?.metaApp?.appSecret) secrets.add(wsApp.whatsapp.metaApp.appSecret);
+      }
+    } catch (e) { /* secret lookup is best-effort */ }
+
+    if (secrets.size) {
+      const crypto = require('crypto');
+      const signature = req.headers['x-hub-signature-256'] || '';
+      const sigBuf = Buffer.from(signature);
+      const valid = req.rawBody && [...secrets].some((s) => {
+        const expected = 'sha256=' + crypto.createHmac('sha256', s).update(req.rawBody).digest('hex');
+        const expBuf = Buffer.from(expected);
+        return sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf);
+      });
+      if (!valid) {
+        console.warn('[WH] rejected: invalid X-Hub-Signature-256');
+        return res.status(401).json({ success: false, message: 'Invalid signature' });
+      }
+    }
+
     res.status(200).send('EVENT_RECEIVED');
 
     const body = req.body;

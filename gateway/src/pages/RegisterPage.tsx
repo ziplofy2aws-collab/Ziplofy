@@ -6,29 +6,6 @@ import AuthSplit from '../components/AuthSplit';
 import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
 import { continueAfterSession } from '../lib/sessionNav';
 
-const DIAL_CODES = [
-  { region: 'IN', dial: '+91', label: 'IN +91' },
-  { region: 'US', dial: '+1', label: 'US +1' },
-  { region: 'CA', dial: '+1', label: 'CA +1' },
-  { region: 'GB', dial: '+44', label: 'UK +44' },
-  { region: 'AE', dial: '+971', label: 'AE +971' },
-  { region: 'AU', dial: '+61', label: 'AU +61' },
-  { region: 'SG', dial: '+65', label: 'SG +65' },
-  { region: 'DE', dial: '+49', label: 'DE +49' },
-  { region: 'FR', dial: '+33', label: 'FR +33' },
-  { region: 'SA', dial: '+966', label: 'SA +966' },
-  { region: 'QA', dial: '+974', label: 'QA +974' },
-  { region: 'BD', dial: '+880', label: 'BD +880' },
-  { region: 'NP', dial: '+977', label: 'NP +977' },
-  { region: 'LK', dial: '+94', label: 'LK +94' },
-  { region: 'MY', dial: '+60', label: 'MY +60' },
-  { region: 'ID', dial: '+62', label: 'ID +62' },
-  { region: 'PH', dial: '+63', label: 'PH +63' },
-  { region: 'PK', dial: '+92', label: 'PK +92' },
-  { region: 'ZA', dial: '+27', label: 'ZA +27' },
-  { region: 'NG', dial: '+234', label: 'NG +234' },
-];
-
 const CHECKS: Record<'name' | 'email' | 'phone' | 'password', (v: string) => string> = {
   name: (v) =>
     v.trim() && !/^[A-Za-z][A-Za-z .'-]{1,49}$/.test(v.trim())
@@ -36,7 +13,7 @@ const CHECKS: Record<'name' | 'email' | 'phone' | 'password', (v: string) => str
       : '',
   email: (v) =>
     v.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? 'Enter a valid email address' : '',
-  phone: (v) => (v && !/^\d{7,15}$/.test(v) ? 'Enter a valid phone number (7–15 digits)' : ''),
+  phone: (v) => (!v || !/^\d{10}$/.test(v) ? 'Enter a valid 10-digit mobile number' : ''),
   password: (v) => (v && v.length < 6 ? 'Password must be at least 6 characters' : ''),
 };
 
@@ -45,10 +22,6 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [countryCode, setCountryCode] = useState(() => {
-    const region = (typeof navigator !== 'undefined' ? navigator.language : '').split('-')[1]?.toUpperCase();
-    return DIAL_CODES.find((c) => c.region === region)?.dial || '+91';
-  });
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -83,7 +56,7 @@ export default function RegisterPage() {
     if (Object.values(errors).some(Boolean)) return;
     setLoading(true);
     try {
-      const data = await api.register({ name, email, password, phone: `${countryCode}${phone}` });
+      const data = await api.register({ name, email, password, phone: `+91${phone}` });
       if (data.needsVerification) {
         setOtpEmail(data.email || email);
         setAwaitingOtp(true);
@@ -198,40 +171,16 @@ export default function RegisterPage() {
         </label>
         <div className="auth-field">
           <div className="auth-input" style={{ display: 'flex', alignItems: 'center', padding: 0, overflow: 'hidden', borderColor: fieldErrors.phone ? '#dc2626' : undefined }}>
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', height: '100%', flexShrink: 0, borderRight: '1px solid var(--auth-line)' }}>
-              <select
-                aria-label="Country code"
-                value={countryCode}
-                onChange={(e) => setCountryCode(e.target.value)}
-                disabled={awaitingOtp || loading}
-                style={{
-                  appearance: 'none',
-                  WebkitAppearance: 'none',
-                  border: 'none',
-                  background: 'transparent',
-                  font: 'inherit',
-                  fontSize: '0.92rem',
-                  color: 'inherit',
-                  height: '100%',
-                  padding: '0 20px 0 14px',
-                  outline: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                {DIAL_CODES.map((c) => (
-                  <option key={`${c.region}-${c.dial}`} value={c.dial}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-              <span aria-hidden style={{ position: 'absolute', right: 7, fontSize: 10, color: 'var(--auth-muted)', pointerEvents: 'none' }}>▾</span>
+            <div style={{ display: 'flex', alignItems: 'center', height: '100%', flexShrink: 0, borderRight: '1px solid var(--auth-line)', padding: '0 14px', fontSize: '0.92rem', color: 'inherit' }}>
+              +91
             </div>
             <input
               id="phone"
               type="tel"
               inputMode="numeric"
+              maxLength={10}
               value={phone}
-              onChange={(e) => { const v = e.target.value.replace(/\D/g, ''); setPhone(v); setFieldErrors((p) => ({ ...p, phone: CHECKS.phone(v) })); }}
+              onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 10); setPhone(v); setFieldErrors((p) => ({ ...p, phone: CHECKS.phone(v) })); }}
               placeholder="98765 43210"
               required
               disabled={awaitingOtp || loading}

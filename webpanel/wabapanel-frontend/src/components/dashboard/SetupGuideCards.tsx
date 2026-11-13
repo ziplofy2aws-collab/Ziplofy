@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/authStore';
+import { useStoreStore } from '@/stores/storeStore';
 
 /**
  * Setup-guide cards ported from codiic dashboard (DashboardEmptySetupGuide).
@@ -68,8 +69,8 @@ function SetupCard({ title, description, ctaLabel, href, illustration, connected
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-[17px] font-semibold tracking-tight text-admin-text sm:text-lg">{title}</h3>
           {typeof connected === 'boolean' ? (
-            <span className={`shrink-0 text-[10px] font-bold tracking-wide ${connected ? 'text-emerald-600' : 'text-red-600'}`}>
-              {connected ? 'Connected' : 'NOT CONNECTED'}
+            <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold tracking-wide ${connected ? 'bg-[#cdfee1] text-[#0d6b38]' : 'bg-red-100 text-red-600'}`}>
+              {connected ? 'CONNECTED' : 'NOT CONNECTED'}
             </span>
           ) : null}
         </div>
@@ -268,18 +269,89 @@ function AutomationIllustration() {
   );
 }
 
-// TODO: replace with the actual WhatsApp connect/onboarding URL.
-const WHATSAPP_CONNECT_URL = '#';
+// Per-tenant WhatsApp onboarding page (embedded signup / manual / coexistence).
+const WHATSAPP_CONNECT_URL = '/client/whatsapp';
+
+export function useSetupFlags() {
+  const { currentWorkspace, user, features } = useAuthStore();
+  const stores = useStoreStore((s) => s.stores);
+  const featureOverrides = (user as unknown as { featureOverrides?: Record<string, unknown> })?.featureOverrides || {};
+  return {
+    websiteDone: stores.length > 0,
+    domainDone: stores.some((s) => !!s.subdomain?.customDomain),
+    waConnected: !!currentWorkspace?.whatsapp?.isConnected,
+    crmDone: Boolean(
+      featureOverrides.industry ||
+      (features as Record<string, unknown> | undefined)?.industry ||
+      (user as unknown as { industry?: string })?.industry
+    ),
+  };
+}
 
 export default function SetupGuideCards() {
-  const { currentWorkspace } = useAuthStore();
-  const waConnected = !!currentWorkspace?.whatsapp?.isConnected;
+  const { user } = useAuthStore();
+  const { websiteDone, domainDone, waConnected, crmDone } = useSetupFlags();
+  const firstName = (user?.name || '').trim().split(' ')[0] || 'there';
 
   return (
-    <section aria-label="Workspace setup guide">
+    <section aria-label="Workspace setup guide" className="flex flex-col gap-5">
+      {/* Offer marquee */}
+      <div className="offer-marquee relative -mx-1 overflow-hidden rounded-xl border border-amber-200/70 bg-gradient-to-r from-amber-300/80 via-yellow-200/90 to-amber-300/80 px-3 py-2 shadow-[0_8px_24px_-14px_rgba(217,119,6,0.5)]">
+        <div className="offer-marquee-track">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="flex shrink-0 items-center gap-8 pr-8" aria-hidden={dup === 1}>
+              {[1, 2, 3, 4].map((i) => (
+                <span key={i} className="flex items-center gap-2 whitespace-nowrap text-[12px] font-semibold tracking-wide text-[#7c4a03]">
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber-600" />
+                  Flat 20% off on annual plans — upgrade to Pro before the offer ends
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Welcome header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-[24px] font-semibold tracking-tight text-[#0f2d26]">
+            Welcome, {firstName}
+          </h2>
+          <p className="mt-1 text-[13px] text-[#5f7a72]">
+            Let&apos;s get your workspace ready.
+          </p>
+        </div>
+        <Link
+          href="/client/online-store"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-[0_10px_24px_-10px_rgba(16,185,129,0.7)] transition hover:brightness-[1.05] active:scale-[0.98]"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+          </svg>
+          Open store
+        </Link>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <SetupCard
-          title="WhatsApp Business"
+          title="1. Create website"
+          description="Pick a theme and build your storefront — pages, products and branding all in one place."
+          ctaLabel="Open themes"
+          href="/client/themes"
+          illustration={<PlansIllustration />}
+          connected={websiteDone}
+        />
+        <SetupCard
+          title="2. Connect domain"
+          description="Point your custom domain to your new website so customers find you at your own URL."
+          ctaLabel="Add domain"
+          href="/client/domains"
+          illustration={<AutomationIllustration />}
+          connected={domainDone}
+        />
+        <SetupCard
+          title="3. Connect WhatsApp"
           description="Connect a Cloud API number or an existing WhatsApp Business app number (coexistence)."
           ctaLabel="Connect"
           href={WHATSAPP_CONNECT_URL}
@@ -288,25 +360,12 @@ export default function SetupGuideCards() {
           greenCta
         />
         <SetupCard
-          title="Bots & automation"
-          description="Build bot flows and automate replies, follow-ups and campaigns."
-          ctaLabel="Open automation"
-          href="/client/automations"
-          illustration={<AutomationIllustration />}
-        />
-        <SetupCard
-          title="Subscriptions & plans"
-          description="Manage your plan, billing cycle and the features available to your workspace."
-          ctaLabel="View plans"
-          href="/client/subscriptions"
-          illustration={<PlansIllustration />}
-        />
-        <SetupCard
-          title="AI settings"
-          description="Tune your assistant's model, prompts and behaviour across conversations."
-          ctaLabel="Configure AI"
-          href="/client/ai-settings"
+          title="4. Set up CRM"
+          description="Choose your business type so your CRM, pipelines and inbox match your industry."
+          ctaLabel="Set up"
+          href="/client/choose-business"
           illustration={<AiIllustration />}
+          connected={crmDone}
         />
       </div>
     </section>

@@ -791,3 +791,17 @@ body:has(.wa-immersive-shell).wa-peek header.client-orbitly-header,
 body:has(.wa-immersive-shell).wa-peek header:not(.wa-immersive-shell header) {
   transform: translateY(0) !important;
 }
+
+/* Offer marquee */
+@keyframes offer-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.offer-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: offer-marquee 22s linear infinite;
+}
+.offer-marquee:hover .offer-marquee-track {
+  animation-play-state: paused;
+}
