@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [devOtp, setDevOtp] = useState('');
   const [awaitingOtp, setAwaitingOtp] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -36,13 +37,18 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
     setInfo('');
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
+    const errors = {
+      name: CHECKS.name(name),
+      email: CHECKS.email(email),
+      phone: CHECKS.phone(phone),
+      password: CHECKS.password(password),
+      confirmPassword: password !== confirmPassword ? 'Passwords do not match' : '',
+    };
+    setFieldErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
     setLoading(true);
     try {
-      const data = await api.register({ name, email, password, phone });
+      const data = await api.register({ name, email, password, phone: `+91${phone}` });
       if (data.needsVerification) {
         setOtpEmail(data.email || email);
         setAwaitingOtp(true);
@@ -143,7 +149,7 @@ export default function RegisterPage() {
             id="name"
             className={`${fieldBase} mt-1.5 px-4`}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { const v = e.target.value; setName(v); setFieldErrors((p) => ({ ...p, name: CHECKS.name(v) })); }}
             placeholder="Your name"
             required
             disabled={awaitingOtp || loading}

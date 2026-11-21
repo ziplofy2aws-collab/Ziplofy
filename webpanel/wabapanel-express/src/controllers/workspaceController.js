@@ -466,6 +466,11 @@ const updateWhatsAppConfig = async (req, res) => {
       }
     } catch (e) { /* noop */ }
 
+    // Keep the tenant connection record in sync (status, ids, token lifecycle).
+    try {
+      await require('../services/whatsappConnectionService').syncFromWorkspace(workspace);
+    } catch (e) { console.error('[WA-Connection] sync failed:', e.message); }
+
     res.json({ success: true, data: workspace });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -535,6 +540,17 @@ const getWhatsAppHealth = async (req, res) => {
         }
       }
     }
+
+    // Reflect the token check on the tenant connection record.
+    try {
+      const waConn = require('../services/whatsappConnectionService');
+      if (result.tokenValid) {
+        await waConn.setStatus(workspace._id, 'connected', 'health check ok', { tokenValid: true, lastTokenCheckAt: new Date(), lastTokenError: '' });
+      } else {
+        await waConn.setStatus(workspace._id, 'pending', result.errors[0] || 'access token invalid', { tokenValid: false, lastTokenCheckAt: new Date() });
+      }
+    } catch (e) { /* best-effort */ }
+
     res.json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, message: error.response?.data?.error?.message || error.message });

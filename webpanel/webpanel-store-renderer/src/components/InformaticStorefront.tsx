@@ -232,12 +232,41 @@ export function InformaticStorefront({ store }: { store: StorefrontMeta }) {
   ).trim();
   useThemeFavicon(faviconUrl || null);
 
+  const staticSiteUrl = themeRuntime?.staticSiteUrl || null;
+
+  useEffect(() => {
+    if (staticSiteUrl) {
+      const titleBase = themeRuntime?.themeName || 'Informatic';
+      document.title = store.name ? `${store.name} · ${titleBase}` : titleBase;
+    }
+  }, [staticSiteUrl, store.name, themeRuntime?.themeName]);
+
   if (!themeRuntimeChecked || themeRuntimeLoading) {
     return <BootFallback />;
   }
 
-  if (!themeRuntime?.themeConfig) {
+  if (!themeRuntime?.themeConfig && !staticSiteUrl) {
     return <NoThemeApplied store={store} message={themeRuntimeError} />;
+  }
+
+  // Uploaded static themes render their original HTML/CSS/JS verbatim — the
+  // site keeps its real design, fonts, layout and page routing.
+  if (staticSiteUrl) {
+    return (
+      <iframe
+        src={staticSiteUrl}
+        title={store.name || themeRuntime?.themeName || 'Storefront'}
+        style={{
+          position: 'fixed',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          border: 0,
+          display: 'block',
+          background: '#fff',
+        }}
+      />
+    );
   }
 
   return (

@@ -212,7 +212,7 @@ export const CODIX_ADMIN_INTENTS: CodiixIntent[] = [
       'where is the theme editor',
     ],
     answer:
-      'Themes live under **Online Store → Themes** (`/online-store/themes`).\n\n' +
+      'Themes live under **Online Store → Themes** (`/client/themes`).\n\n' +
       '• Ask **“edit my current theme”** — I’ll open the editor for your live theme in a **new tab**\n' +
       '• Ask **“which theme is applied?”** — see name + custom vs catalog\n' +
       '• Ask **“change theme”** — quick list to apply another theme\n\n' +
@@ -465,7 +465,7 @@ export const CODIX_ADMIN_NAV: CodiixAdminNavTarget[] = [
   {
     id: 'themes',
     label: 'Themes',
-    path: '/online-store/themes',
+    path: '/client/themes',
     keywords: ['themes', 'theme', 'storefront theme'],
     phrases: ['take me to themes', 'open themes', 'go to themes'],
   },

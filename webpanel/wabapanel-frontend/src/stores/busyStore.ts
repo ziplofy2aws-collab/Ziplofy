@@ -67,11 +67,15 @@ export const useBusyStore = create<BusyState>((set) => ({
   label: 'Loading',
   pendingHref: null,
   navPending: false,
-  show: (label) =>
+  show: (label) => {
+    // Backstop: plain busy has no nav lifecycle — never veil forever.
+    if (safetyTimer) clearTimeout(safetyTimer);
+    safetyTimer = setTimeout(() => resetBusy(), 15000);
     set((s) => ({
       count: s.count > 0 ? s.count : 1,
       label: (label && label.trim()) || s.label || 'Loading',
-    })),
+    }));
+  },
   hide: () => set((s) => ({ count: Math.max(0, s.count - 1), pendingHref: null, navPending: false })),
   reset: () => {
     clearNavWatchers();

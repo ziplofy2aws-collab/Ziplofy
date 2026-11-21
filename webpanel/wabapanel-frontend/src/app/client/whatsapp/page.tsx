@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wifi, Settings, CheckCircle, Copy, RefreshCw, Activity, ShieldCheck, AlertTriangle } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Badge from '@/components/ui/Badge';
@@ -33,7 +33,7 @@ function Spinner() {
 export default function WhatsAppPage() {
   const { currentWorkspace } = useAuthStore();
   const wa = currentWorkspace?.whatsapp;
-  const [method, setMethod] = useState<'embedded' | 'qr' | 'manual'>('manual');
+  const [method, setMethod] = useState<'embedded' | 'qr' | 'manual'>('embedded');
   const [manualForm, setManualForm] = useState({
     wabaId: wa?.wabaId || '', phoneNumberId: wa?.phoneNumberId || '',
     businessAccountId: wa?.businessAccountId || '', accessToken: wa?.accessToken || '',
@@ -143,45 +143,104 @@ export default function WhatsAppPage() {
   };
 
   const [submitting, setSubmitting] = useState(false);
-  const [signupConfig, setSignupConfig] = useState<{ enableEmbeddedSignup: boolean; enableManualSignup: boolean; enableCoexistence: boolean; appId: string; configId: string; webhookUrl: string; webhookVerifyToken: string }>({
-    enableEmbeddedSignup: false, enableManualSignup: true, enableCoexistence: false, appId: '', configId: '', webhookUrl: '', webhookVerifyToken: '',
+  const [signupConfig, setSignupConfig] = useState<{ enableEmbeddedSignup: boolean; enableManualSignup: boolean; enableCoexistence: boolean; usingOwnMetaApp: boolean; hasOwnMetaApp: boolean; appId: string; configId: string; webhookUrl: string; webhookVerifyToken: string }>({
+    enableEmbeddedSignup: false, enableManualSignup: true, enableCoexistence: false, usingOwnMetaApp: false, hasOwnMetaApp: false, appId: '', configId: '', webhookUrl: '', webhookVerifyToken: '',
   });
-  // Captured from Embedded Signup session logging (postMessage) — most reliable WABA/phone IDs
-  const sessionInfoRef = useRef<{ wabaId?: string; phoneNumberId?: string }>({});
+  const [metaAppForm, setMetaAppForm] = useState({ appId: '', appSecret: '', configId: '' });
+  const [metaAppSaving, setMetaAppSaving] = useState(false);
+  // Tenant connection record (status lifecycle: connected / pending / disconnected)
+  interface WaConnection {
+    connectionStatus?: 'connected' | 'pending' | 'disconnected';
+    lastError?: string;
+    tokenValid?: boolean;
+    tokenExpiresAt?: string | null;
+    webhookSubscribed?: boolean;
+    businessId?: string;
+  }
+  const [conn, setConn] = useState<WaConnection | null>(null);
 
-  // Embedded Signup session logging: listen for the WABA/phone IDs Meta posts back
+  const loadConnection = async () => {
+    if (!currentWorkspace?._id) return;
+    try {
+      const r = await workspaceApi.getWhatsAppConnection(currentWorkspace._id);
+      setConn(r.data.data);
+    } catch { /* ignore */ }
+  };
+
   useEffect(() => {
-    const onMessage = (event: MessageEvent) => {
-      if (!event.origin.endsWith('facebook.com')) return;
-      try {
-        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-        if (data?.type === 'WA_EMBEDDED_SIGNUP' && data?.data) {
-          sessionInfoRef.current = { wabaId: data.data.waba_id, phoneNumberId: data.data.phone_number_id };
-        }
-      } catch { /* non-JSON messages are ignored */ }
-    };
-    window.addEventListener('message', onMessage);
-    return () => window.removeEventListener('message', onMessage);
+    loadConnection();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentWorkspace?._id, wa?.isConnected]);
+
+  // Handle the redirect back from the backend OAuth callback
+  const { loadUser } = useAuthStore();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const wa = params.get('wa');
+    if (!wa) return;
+    if (wa === 'connected') {
+      toast.success('WhatsApp connected successfully!');
+      loadUser().catch(() => {});
+      loadConnection();
+    } else if (wa === 'error') {
+      toast.error(params.get('msg') || 'WhatsApp connection failed');
+      loadConnection();
+    }
+    window.history.replaceState({}, '', window.location.pathname);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
+  const loadSignupConfig = async () => {
     if (!currentWorkspace?._id) return;
-    workspaceApi.getWhatsAppSignupConfig(currentWorkspace._id).then(r => {
+    try {
+      const r = await workspaceApi.getWhatsAppSignupConfig(currentWorkspace._id);
       const cfg = r.data.data || {};
       setSignupConfig({
         enableEmbeddedSignup: cfg.enableEmbeddedSignup || false,
         enableManualSignup: cfg.enableManualSignup !== false,
         enableCoexistence: cfg.enableCoexistence || false,
+        usingOwnMetaApp: cfg.usingOwnMetaApp || false,
+        hasOwnMetaApp: cfg.hasOwnMetaApp || false,
         appId: cfg.appId || '',
         configId: cfg.configId || '',
         webhookUrl: cfg.webhookUrl || '',
         webhookVerifyToken: cfg.webhookVerifyToken || '',
       });
-      // Auto-select first available method
+      if (cfg.hasOwnMetaApp) {
+        setMetaAppForm((f) => ({ ...f, appId: cfg.appId || f.appId, configId: cfg.configId || f.configId }));
+      }
+      // Embedded stays the default tab — when no app is configured yet it
+      // shows the own-Meta-app form, which is how a tenant enables it.
       if (cfg.enableEmbeddedSignup) setMethod('embedded');
-      else if (cfg.enableManualSignup !== false) setMethod('manual');
-    }).catch(() => {});
+    } catch { /* keep defaults */ }
+  };
+
+  useEffect(() => {
+    loadSignupConfig();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWorkspace?._id]);
+
+  const saveMetaApp = async () => {
+    if (!currentWorkspace?._id || metaAppSaving) return;
+    if (!metaAppForm.appId.trim() || !metaAppForm.configId.trim() || (!metaAppForm.appSecret.trim() && !signupConfig.hasOwnMetaApp)) {
+      toast.error('App ID, App Secret and Config ID are all required');
+      return;
+    }
+    setMetaAppSaving(true);
+    try {
+      await workspaceApi.updateWhatsAppMetaApp(currentWorkspace._id, {
+        appId: metaAppForm.appId.trim(),
+        appSecret: metaAppForm.appSecret.trim(),
+        configId: metaAppForm.configId.trim(),
+      });
+      toast.success('Meta app saved — Embedded signup is now available');
+      await loadSignupConfig();
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || 'Failed to save Meta app');
+    }
+    setMetaAppSaving(false);
+  };
 
   const handleManualConnect = async () => {
     if (submitting) return;
@@ -223,50 +282,23 @@ export default function WhatsAppPage() {
     } catch { toast.error('Failed'); } finally { setSubmitting(false); }
   };
 
-  // Launch WhatsApp Embedded Signup. coexistence=true onboards an existing
-  // WhatsApp Business App number (usable on both the app and Cloud API).
-  const launchSignup = (coexistence: boolean) => {
-    if (!signupConfig.appId) { toast.error('Meta App ID not configured by admin'); return; }
-    sessionInfoRef.current = {};
-    const launchFBLogin = () => {
-      const FB = (window as unknown as { FB?: { login: (cb: (r: { authResponse?: { code?: string } }) => void, opts: object) => void } }).FB;
-      if (!FB) { toast.error('Facebook SDK failed to load. Please disable ad-blockers and try again.'); return; }
-      FB.login((response) => {
-        const code = response.authResponse?.code;
-        if (!code) { toast.error('Facebook login cancelled or failed'); return; }
-        setSaving(true);
-        workspaceApi.embeddedSignup(currentWorkspace!._id, {
-          code, coexistence,
-          wabaId: sessionInfoRef.current.wabaId,
-          phoneNumberId: sessionInfoRef.current.phoneNumberId,
-        }).then((res) => {
-          toast.success(coexistence ? 'WhatsApp Business App number connected!' : 'WhatsApp connected via Embedded Signup!');
-          const updatedWs = res.data.data;
-          if (updatedWs) useAuthStore.setState({ currentWorkspace: { ...currentWorkspace, whatsapp: { ...currentWorkspace?.whatsapp, isConnected: true, connectionMethod: coexistence ? 'coexistence' : 'embedded', ...updatedWs } } as typeof currentWorkspace });
-          window.location.reload();
-        }).catch((err: unknown) => {
-          const error = err as { response?: { data?: { message?: string } } };
-          toast.error(error.response?.data?.message || 'Embedded signup failed');
-        }).finally(() => setSaving(false));
-      }, {
-        config_id: signupConfig.configId || undefined,
-        response_type: 'code',
-        override_default_response_type: true,
-        extras: {
-          setup: {},
-          // Coexistence requires the business-app onboarding flow + session logging (v3)
-          featureType: coexistence ? 'whatsapp_business_app_onboarding' : 'only_waba_sharing',
-          sessionInfoVersion: coexistence ? 3 : 2,
-        },
-      });
-    };
-    if ((window as unknown as { FB?: object }).FB) { launchFBLogin(); return; }
-    (window as unknown as { fbAsyncInit?: () => void }).fbAsyncInit = () => {
-      const FB = (window as unknown as { FB: { init: (o: object) => void } }).FB;
-      FB.init({ appId: signupConfig.appId, cookie: true, xfbml: true, version: 'v21.0' });
-      launchFBLogin();
-    };
-    const s = document.createElement('script'); s.src = 'https://connect.facebook.net/en_US/sdk.js'; s.async = true; document.body.appendChild(s);
+  // Launch WhatsApp Embedded Signup via full-page OAuth redirect — the backend
+  // builds the Facebook URL with all credentials, Meta sends the browser back
+  // to our backend callback which completes onboarding, then lands here again.
+  // coexistence=true onboards an existing WhatsApp Business App number.
+  const launchSignup = async (coexistence: boolean) => {
+    if (!currentWorkspace?._id || saving) return;
+    setSaving(true);
+    try {
+      const r = await workspaceApi.getWhatsAppOAuthUrl(currentWorkspace._id, coexistence);
+      const url = r.data?.data?.url;
+      if (!url) throw new Error('No OAuth URL returned');
+      window.location.href = url;
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(error.response?.data?.message || 'Could not start Facebook signup');
+      setSaving(false);
+    }
   };
 
   return (
@@ -285,6 +317,54 @@ export default function WhatsAppPage() {
           </button>
         )}
       </div>
+
+      {/* Connection status — always visible for every tenant */}
+      {(() => {
+        const status = conn?.connectionStatus || (wa?.isConnected ? 'connected' : 'disconnected');
+        const subtitle = status === 'connected'
+          ? [wa?.displayName, wa?.phoneNumber].filter(Boolean).join(' · ') || 'WhatsApp Business Account linked'
+          : status === 'pending'
+            ? 'Connection needs attention — see below'
+            : 'No WhatsApp Business Account linked';
+        return (
+          <div className={cardClass}>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50">
+                  <svg viewBox="0 0 24 24" className="h-6 w-6 fill-[#1f8a4c]" aria-hidden>
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="flex items-center gap-2 text-[15px] font-semibold text-admin-text">
+                    WhatsApp Business
+                    <Badge variant={status === 'connected' ? 'success' : status === 'pending' ? 'warning' : 'danger'}>
+                      {status === 'connected' ? 'Connected' : status === 'pending' ? 'Pending' : 'Disconnected'}
+                    </Badge>
+                  </h3>
+                  <p className="text-[12px] text-admin-text-secondary">{subtitle}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="rounded-lg p-2 text-admin-text-subdued transition-colors hover:bg-white hover:text-admin-text"
+                title="Refresh status"
+                onClick={() => { loadConnection(); if (wa?.isConnected) loadHealth(); }}
+              >
+                <RefreshCw className={`h-4 w-4 ${healthLoading ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+          </div>
+        );
+      })()}
+
+      {conn?.connectionStatus === 'pending' && (
+        <div className={dashboardNoticeCompactClass}>
+          <p className="text-[13px] text-[#3d4a45]">
+            Your WhatsApp connection needs attention{conn.lastError ? ` — ${conn.lastError}` : ''}. Reconnect below or refresh your access token to restore messaging.
+          </p>
+        </div>
+      )}
 
       {wa?.isConnected ? (
         <>
@@ -349,15 +429,27 @@ export default function WhatsAppPage() {
               <div className={metaCell}>
                 <p className={metaLabel}>Business account ID</p>
                 <div className="flex items-center gap-2">
-                  <p className={`${metaValue} font-mono text-[12px]`}>{wa.businessAccountId || '-'}</p>
+                  <p className={`${metaValue} font-mono text-[12px]`}>{conn?.businessId || wa.businessAccountId || '-'}</p>
                   <button
                     type="button"
                     className="rounded-md p-1 text-admin-text-subdued hover:bg-white hover:text-admin-text"
-                    onClick={() => { navigator.clipboard.writeText(wa.businessAccountId || ''); toast.success('Copied'); }}
+                    onClick={() => { navigator.clipboard.writeText(conn?.businessId || wa.businessAccountId || ''); toast.success('Copied'); }}
                   >
                     <Copy className="h-3.5 w-3.5" />
                   </button>
                 </div>
+              </div>
+              <div className={metaCell}>
+                <p className={metaLabel}>Token expiry</p>
+                <p className={metaValue}>
+                  {conn?.tokenExpiresAt ? new Date(conn.tokenExpiresAt).toLocaleDateString() : 'Never (system token)'}
+                </p>
+              </div>
+              <div className={metaCell}>
+                <p className={metaLabel}>Webhook subscription</p>
+                <Badge variant={conn?.webhookSubscribed ? 'success' : 'default'}>
+                  {conn?.webhookSubscribed ? 'Subscribed' : 'Unknown'}
+                </Badge>
               </div>
             </div>
           </div>
@@ -558,52 +650,67 @@ export default function WhatsAppPage() {
         </>
       ) : (
         <div className="space-y-4">
-          {!signupConfig.enableEmbeddedSignup && !signupConfig.enableManualSignup ? (
-            <div className={`${cardClass} py-10 text-center`}>
-              <Settings className="mx-auto mb-3 h-12 w-12 text-admin-border" />
-              <h3 className="mb-1 text-[15px] font-semibold text-admin-text">No signup method available</h3>
-              <p className="text-[13px] text-admin-text-secondary">Please contact your administrator to enable a WhatsApp signup method.</p>
-            </div>
-          ) : (
-            <>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                {signupConfig.enableEmbeddedSignup && (
-                  <button
-                    type="button"
-                    onClick={() => setMethod('embedded')}
-                    className={`flex-1 rounded-xl border p-4 text-left transition-colors ${
-                      method === 'embedded'
-                        ? 'border-admin-text bg-[#f1f1f1]'
-                        : 'border-admin-border bg-white hover:bg-[#f6f6f7]'
-                    }`}
-                  >
-                    <div className="mb-1 flex items-center gap-2 text-[13px] font-semibold text-admin-text">
-                      <Settings className="h-4 w-4" /> Embedded signup
-                    </div>
-                    <p className="text-[12px] text-admin-text-secondary">Connect via Facebook directly</p>
-                  </button>
-                )}
-                {signupConfig.enableManualSignup && (
-                  <button
-                    type="button"
-                    onClick={() => setMethod('manual')}
-                    className={`flex-1 rounded-xl border p-4 text-left transition-colors ${
-                      method === 'manual'
-                        ? 'border-admin-text bg-[#f1f1f1]'
-                        : 'border-admin-border bg-white hover:bg-[#f6f6f7]'
-                    }`}
-                  >
-                    <div className="mb-1 flex items-center gap-2 text-[13px] font-semibold text-admin-text">
-                      <Wifi className="h-4 w-4" /> Manual setup
-                    </div>
-                    <p className="text-[12px] text-admin-text-secondary">Enter API credentials manually</p>
-                  </button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => setMethod('embedded')}
+              className={`flex-1 rounded-xl border p-4 text-left transition-colors ${
+                method === 'embedded'
+                  ? 'border-admin-text bg-[#f1f1f1]'
+                  : 'border-admin-border bg-white hover:bg-[#f6f6f7]'
+              }`}
+            >
+              <div className="mb-1 flex items-center gap-2 text-[13px] font-semibold text-admin-text">
+                <Settings className="h-4 w-4" /> Embedded signup
+              </div>
+              <p className="text-[12px] text-admin-text-secondary">Connect via Facebook directly</p>
+            </button>
+            {signupConfig.enableManualSignup && (
+              <button
+                type="button"
+                onClick={() => setMethod('manual')}
+                className={`flex-1 rounded-xl border p-4 text-left transition-colors ${
+                  method === 'manual'
+                    ? 'border-admin-text bg-[#f1f1f1]'
+                    : 'border-admin-border bg-white hover:bg-[#f6f6f7]'
+                }`}
+              >
+                <div className="mb-1 flex items-center gap-2 text-[13px] font-semibold text-admin-text">
+                  <Wifi className="h-4 w-4" /> Manual setup
+                </div>
+                <p className="text-[12px] text-admin-text-secondary">Enter API credentials manually</p>
+              </button>
+            )}
+          </div>
+
+          {method === 'embedded' && (
+            <div className={cardClass}>
+              <div className="mb-2 flex items-center gap-2">
+                <h3 className="text-[15px] font-semibold text-admin-text">Embedded signup</h3>
+                {signupConfig.usingOwnMetaApp && (
+                  <Badge variant="default">Your Meta app</Badge>
                 )}
               </div>
 
-              {method === 'embedded' && signupConfig.enableEmbeddedSignup && (
-                <div className={cardClass}>
-                  <h3 className="mb-2 text-[15px] font-semibold text-admin-text">Embedded signup</h3>
+              {!signupConfig.enableEmbeddedSignup ? (
+                <>
+                  <p className="mb-4 text-[13px] text-admin-text-secondary">
+                    One-click signup needs a Meta developer app. Enter your own Meta app credentials below — or ask your administrator to configure the platform app.
+                  </p>
+                  <div className="max-w-lg space-y-4">
+                    <Input label="Meta App ID" value={metaAppForm.appId} onChange={(e) => setMetaAppForm({ ...metaAppForm, appId: e.target.value })} placeholder="e.g. 1234567890123456" />
+                    <Input label="Meta App Secret" type="password" value={metaAppForm.appSecret} onChange={(e) => setMetaAppForm({ ...metaAppForm, appSecret: e.target.value })} placeholder="From Meta Developer Dashboard" />
+                    <Input label="Embedded Signup Config ID" value={metaAppForm.configId} onChange={(e) => setMetaAppForm({ ...metaAppForm, configId: e.target.value })} placeholder="WhatsApp Embedded Signup configuration ID" />
+                    <button type="button" className={primaryBtn} disabled={metaAppSaving} onClick={saveMetaApp}>
+                      {metaAppSaving ? <Spinner /> : null} Save &amp; enable embedded signup
+                    </button>
+                    <p className="text-[12px] text-admin-text-subdued">
+                      Create an app in the Meta Developer Dashboard, add the WhatsApp product, then copy the Embedded Signup configuration ID. Saved credentials are only used for your own workspace.
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
                   <p className="mb-4 text-[13px] text-admin-text-secondary">
                     Connect your WhatsApp Business Account through Facebook. Click the button below — a Facebook popup will open where you can authorize access.
                   </p>
@@ -628,8 +735,10 @@ export default function WhatsAppPage() {
                       </p>
                     </div>
                   )}
-                </div>
+                </>
               )}
+            </div>
+          )}
 
               {method === 'manual' && signupConfig.enableManualSignup && (
                 <div className={cardClass}>
@@ -646,8 +755,6 @@ export default function WhatsAppPage() {
                   </div>
                 </div>
               )}
-            </>
-          )}
         </div>
       )}
     </div>

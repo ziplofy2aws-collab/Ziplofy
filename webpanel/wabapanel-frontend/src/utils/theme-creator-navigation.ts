@@ -6,7 +6,7 @@ export function themeCreatorPathForStore(store: Pick<Store, 'appliedCustomThemeI
   if (customThemeId) {
     return `/themes/create?id=${encodeURIComponent(customThemeId)}`;
   }
-  return '/online-store/themes';
+  return '/client/themes';
 }
 
 export function themeCreatorPathForActiveStore(

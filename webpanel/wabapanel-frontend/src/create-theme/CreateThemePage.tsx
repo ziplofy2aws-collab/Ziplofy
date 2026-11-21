@@ -681,7 +681,7 @@ const CreateThemePage: React.FC<CreateThemePageProps> = ({ mode = 'theme' }) => 
     mode === 'checkout-profile' ||
     location.pathname.startsWith('/checkout/editor') ||
     /^\/themes\/editor\/checkout\/[^/]+/.test(location.pathname);
-  const exitPath = isCheckoutProfile ? '/settings/checkout' : '/online-store/themes';
+  const exitPath = isCheckoutProfile ? '/settings/checkout' : '/client/themes';
 
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();

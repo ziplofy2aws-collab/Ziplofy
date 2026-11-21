@@ -407,7 +407,7 @@ const CODIX_ADMIN_NAV_QUICK = [
   { id: 'products', label: 'Go to Products', path: '/products' },
   { id: 'orders', label: 'Go to Orders', path: '/orders' },
   { id: 'customers', label: 'Go to Customers', path: '/customers' },
-  { id: 'themes', label: 'Go to Themes', path: '/online-store/themes' },
+  { id: 'themes', label: 'Go to Themes', path: '/client/themes' },
   { id: 'discounts', label: 'Go to Discounts', path: '/discounts' },
   { id: 'settings', label: 'Go to Settings', path: '/settings' },
 ];

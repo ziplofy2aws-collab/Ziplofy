@@ -5,16 +5,21 @@
       "static/chunks/main-app.js",
       "static/chunks/app/global-error.js"
     ],
-    "/auth/sso/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/auth/sso/page.js"
+      "static/chunks/app/page.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
+    ],
+    "/auth/sso/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/auth/sso/page.js"
     ],
     "/client/dashboard/page": [
       "static/chunks/webpack.js",
@@ -25,51 +30,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/client/layout.js"
-    ],
-    "/client/workspace/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/workspace/page.js"
-    ],
-    "/client/choose-business/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-business/page.js"
-    ],
-    "/client/choose-services/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/choose-services/page.js"
-    ],
-    "/client/manage-profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/manage-profile/page.js"
-    ],
-    "/client/chat/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/chat/page.js"
-    ],
-    "/client/channels/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/channels/page.js"
-    ],
-    "/client/templates/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/templates/page.js"
-    ],
-    "/client/broadcasts/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/broadcasts/page.js"
-    ],
-    "/client/smart-broadcast/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/client/smart-broadcast/page.js"
     ],
     "/client/online-store/page": [
       "static/chunks/webpack.js",

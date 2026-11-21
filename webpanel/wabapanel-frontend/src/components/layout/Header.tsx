@@ -21,7 +21,6 @@ import { GATEWAY_LOGOUT_URL, useAuthStore } from "@/stores/authStore";
 import { useStoreStore } from "@/stores/storeStore";
 import { useI18n, LANGUAGES } from "@/lib/i18n";
 import api from "@/lib/api";
-import PwaInstallButton from "@/components/PwaInstallButton";
 import {
   adminHeaderClass,
   adminHeaderControlClass,
@@ -314,7 +313,6 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
 
           {/* Language · compact profile · notifications */}
           <div className="relative z-[1210] flex shrink-0 items-center justify-end gap-1 sm:gap-1.5">
-            <PwaInstallButton variant="light" iconOnly />
             {!isAdmin && (
               <div className="relative" ref={langRef}>
                 <button
@@ -579,7 +577,6 @@ export default function Header({ isAdmin, variant = "default" }: HeaderProps = {
         </div>
       </div>
       <div className="flex items-center gap-3">
-        <PwaInstallButton />
         {!isAdmin && user?.role !== "super_admin" && user?.role !== "admin" && (
           <div className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 ring-1 ring-inset ring-emerald-600/10 dark:bg-emerald-900/30 sm:flex">
             <Wallet className="h-4 w-4 text-emerald-600" />

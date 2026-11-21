@@ -699,6 +699,14 @@ function startBackgroundJobs() {
   setInterval(() => { expireOverduePlans().catch((e) => console.error('[Plan Expiry] Error:', e.message)); }, 60 * 60 * 1000);
   setTimeout(() => { expireOverduePlans().catch((e) => console.error('[Plan Expiry] Startup error:', e.message)); }, 45000);
 
+  // WhatsApp token lifecycle sweep (every 6 hours): re-validates each tenant's
+  // Meta access token and moves broken connections to "pending".
+  const waTokenSweep = () => require('./services/whatsappConnectionService')
+    .runTokenLifecycleSweep()
+    .catch((e) => console.error('[WA-TokenSweep] Error:', e.message));
+  setInterval(waTokenSweep, 6 * 60 * 60 * 1000);
+  setTimeout(waTokenSweep, 90000);
+
   // Daily database backup (every 24 hours, keeps last 10)
   setInterval(async () => {
     try { await platform.runBackup(); console.log('[Backup] Daily database backup completed'); }
