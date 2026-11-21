@@ -8,8 +8,10 @@
 #   VITE_GOOGLE_CLIENT_ID    - Google OAuth client id baked into the bundle
 #
 # Optional GitHub Variables:
-#   GATEWAY_EC2_INSTANCE_ID  - target EC2 instance (defaults to the dashboard
-#                              instance below — override if auth runs elsewhere)
+#   GATEWAY_EC2_INSTANCE_ID  - target EC2 instance. If unset, the workflow
+#                              resolves the running instance behind
+#                              GATEWAY_PUBLIC_IP automatically (requires the
+#                              deploy IAM user to have ec2:DescribeInstances).
 #   GATEWAY_API_URL          - public URL of gateway-server (defaults to
 #                              https://auth.codiic.com/api, proxied by nginx
 #                              to gateway-server on 127.0.0.1:3011)
@@ -32,7 +34,9 @@ permissions:
   contents: read
 
 env:
-  GATEWAY_INSTANCE_ID: ${{ vars.GATEWAY_EC2_INSTANCE_ID || 'i-02296fbd5dac02628' }}
+  GATEWAY_INSTANCE_ID: ${{ vars.GATEWAY_EC2_INSTANCE_ID }}
+  # Public IP that gateway.codiic.com currently resolves to — the deploy target.
+  GATEWAY_PUBLIC_IP: 3.26.187.13
   DEPLOY_BUCKET: codiic-dashboard-deploy-965754373653-ap-southeast-2
 
 jobs:
@@ -90,7 +94,26 @@ jobs:
 
           BUCKET="${DEPLOY_BUCKET}"
           KEY="dashboard/gateway/${GITHUB_SHA}.zip"
+
+          # Resolve the EC2 instance hosting gateway.codiic.com from its public
+          # IP, unless an explicit instance id was provided via repo variable.
           INSTANCE_ID="${GATEWAY_INSTANCE_ID}"
+          if [ -z "$INSTANCE_ID" ]; then
+            INSTANCE_ID=$(aws ec2 describe-instances \
+              --filters "Name=ip-address,Values=${GATEWAY_PUBLIC_IP}" \
+                        "Name=instance-state-name,Values=running" \
+              --query 'Reservations[0].Instances[0].InstanceId' \
+              --output text 2>/dev/null || true)
+          fi
+
+          if [ -z "$INSTANCE_ID" ] || [ "$INSTANCE_ID" = "None" ]; then
+            echo "::error::Could not resolve a running EC2 instance for ${GATEWAY_PUBLIC_IP} (gateway.codiic.com)."
+            echo "Set the GATEWAY_EC2_INSTANCE_ID repo variable to the instance hosting the site,"
+            echo "or grant the deploy IAM user ec2:DescribeInstances for auto-resolution."
+            exit 1
+          fi
+
+          echo "Deploy target: instance ${INSTANCE_ID} (${GATEWAY_PUBLIC_IP})"
 
           REMOTE_SCRIPT=$(cat <<EOF
           set -euo pipefail
