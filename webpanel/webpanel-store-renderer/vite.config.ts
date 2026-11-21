@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import fs from 'fs';
 import path from 'path';
 
 /** Dev/preview proxy to webpanel Express (wabapanel-express). */
@@ -29,16 +30,25 @@ function createDevProxy() {
   };
 }
 
+// remote-themes/informatic is a gitignored artifact — use it when materialized
+// (same fallback pattern as wabapanel-frontend/next.config.mjs), else the stub.
+const informaticSrc = path.resolve(import.meta.dirname, '../../remote-themes/informatic/src');
+const informaticMaterialized = fs.existsSync(path.join(informaticSrc, 'index.tsx'));
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
-      '@informatic-theme': path.resolve(import.meta.dirname, './src/informatic-stub'),
-      '@informatic-theme/sdk-shim': path.resolve(
-        import.meta.dirname,
-        './src/informatic-stub/sdk-shim.tsx'
-      ),
+      '@informatic-theme': informaticMaterialized
+        ? informaticSrc
+        : path.resolve(import.meta.dirname, './src/informatic-stub'),
+      '@informatic-theme/sdk-shim': informaticMaterialized
+        ? path.join(informaticSrc, 'sdk-shim.tsx')
+        : path.resolve(
+            import.meta.dirname,
+            './src/informatic-stub/sdk-shim.tsx'
+          ),
       '@render-store/sdk': path.resolve(
         import.meta.dirname,
         './src/shims/render-store-sdk.tsx'

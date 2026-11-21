@@ -33,6 +33,8 @@ export type InformaticThemeRuntime = {
   remoteThemeJsUrl: string | null;
   remoteThemeCssUrl: string | null;
   hasSavedConfig: boolean;
+  /** Uploaded static themes: original site served verbatim — render it directly. */
+  staticSiteUrl?: string | null;
 };
 
 type StorefrontContextType = {
