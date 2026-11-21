@@ -1,10 +1,13 @@
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { api, applySession } from '../api';
-import AuthSplit from '../components/AuthSplit';
-import { FlowButton, FlowButtonLoading } from '../components/ui/flow-button';
+import AuthSplit, { AuthSubmitButton } from '../components/AuthSplit';
 import { continueAfterSession } from '../lib/sessionNav';
+
+const fieldBase =
+  'w-full rounded-xl border border-[#DCE3DF] bg-white py-3 text-[15px] text-[#171923] outline-none transition placeholder:text-[#8A919C] focus:border-[#00B879] focus:ring-4 focus:ring-[#00B879]/15 disabled:cursor-not-allowed disabled:opacity-60';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -107,54 +110,69 @@ export default function RegisterPage() {
 
   return (
     <AuthSplit
-      title="Create your account"
-      subtitle="Enter your details, then verify your email to continue."
+      googleButton={
+        !awaitingOtp && import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
+          <GoogleLogin
+            onSuccess={onGoogle}
+            onError={() => setError('Google sign-in failed')}
+            width={360}
+            containerProps={{
+              className:
+                'absolute inset-0 flex w-full items-center justify-center overflow-hidden opacity-[0.01]',
+              style: { height: '100%' },
+            }}
+          />
+        ) : undefined
+      }
     >
-      {error ? <div className="auth-alert auth-alert--error">{error}</div> : null}
-      {info ? <div className="auth-alert auth-alert--info">{info}</div> : null}
+      {error ? (
+        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
+      {info ? (
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800">
+          {info}
+        </div>
+      ) : null}
 
-      <form className="auth-form" onSubmit={awaitingOtp ? onVerifyOtp : onSendOtp}>
-        <label className="auth-label" htmlFor="name">
+      <form className="space-y-4" onSubmit={awaitingOtp ? onVerifyOtp : onSendOtp}>
+        <label className="block text-sm font-semibold" htmlFor="name">
           Full name
-        </label>
-        <div className="auth-field">
           <input
             id="name"
-            className="auth-input"
-            style={{ paddingLeft: 14 }}
+            className={`${fieldBase} mt-1.5 px-4`}
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name"
             required
             disabled={awaitingOtp || loading}
           />
-        </div>
+        </label>
 
-        <label className="auth-label" htmlFor="email">
+        <label className="block text-sm font-semibold" htmlFor="email">
           Email
+          <span className="relative mt-1.5 block">
+            <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A919C]" />
+            <input
+              id="email"
+              className={`${fieldBase} pl-11 pr-4`}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@company.in"
+              autoComplete="email"
+              required
+              disabled={awaitingOtp || loading}
+            />
+          </span>
         </label>
-        <div className="auth-field">
-          <input
-            id="email"
-            className="auth-input"
-            style={{ paddingLeft: 14 }}
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-            disabled={awaitingOtp || loading}
-          />
-        </div>
 
-        <label className="auth-label" htmlFor="phone">
+        <label className="block text-sm font-semibold" htmlFor="phone">
           Phone number
-        </label>
-        <div className="auth-field">
           <input
             id="phone"
-            className="auth-input"
-            style={{ paddingLeft: 14 }}
+            className={`${fieldBase} mt-1.5 px-4`}
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -162,103 +180,80 @@ export default function RegisterPage() {
             required
             disabled={awaitingOtp || loading}
           />
-        </div>
+        </label>
 
-        <label className="auth-label" htmlFor="password">
+        <label className="block text-sm font-semibold" htmlFor="password">
           Password
+          <span className="relative mt-1.5 block">
+            <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A919C]" />
+            <input
+              id="password"
+              className={`${fieldBase} pl-11 pr-12`}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
+              placeholder="Min 6 characters"
+              autoComplete="new-password"
+              required
+              disabled={awaitingOtp || loading}
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer p-1.5 text-[#8A919C] hover:text-[#171923]"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              onClick={() => setShowPassword((v) => !v)}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </span>
         </label>
-        <div className="auth-field">
-          <input
-            id="password"
-            className="auth-input"
-            style={{ paddingLeft: 14 }}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
-            placeholder="Min 6 characters"
-            required
-            disabled={awaitingOtp || loading}
-          />
-          <button
-            type="button"
-            className="auth-field__toggle"
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
-            onClick={() => setShowPassword((v) => !v)}
-          >
-            {showPassword ? (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
-                <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M10.6 10.7a2 2 0 0 0 2.7 2.7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M9.9 5.2A10.5 10.5 0 0 1 12 5c5 0 8.5 4.5 9.5 6-.4.7-1.3 2-2.8 3.3M6.1 6.2C4.4 7.5 3.3 9.1 2.5 11c1 1.5 4.5 6 9.5 6 1.2 0 2.3-.2 3.3-.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
-                <path d="M2.5 12C3.5 10.5 7 6 12 6s8.5 4.5 9.5 6c-1 1.5-4.5 6-9.5 6s-8.5-4.5-9.5-6Z" stroke="currentColor" strokeWidth="1.8" />
-                <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.8" />
-              </svg>
-            )}
-          </button>
-        </div>
 
-        <label className="auth-label" htmlFor="confirmPassword">
+        <label className="block text-sm font-semibold" htmlFor="confirmPassword">
           Confirm password
+          <span className="relative mt-1.5 block">
+            <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A919C]" />
+            <input
+              id="confirmPassword"
+              className={`${fieldBase} pl-11 pr-12`}
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              minLength={6}
+              placeholder="Retype your password"
+              autoComplete="new-password"
+              required
+              disabled={awaitingOtp || loading}
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer p-1.5 text-[#8A919C] hover:text-[#171923]"
+              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              onClick={() => setShowConfirmPassword((v) => !v)}
+            >
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </span>
         </label>
-        <div className="auth-field">
-          <input
-            id="confirmPassword"
-            className="auth-input"
-            style={{ paddingLeft: 14 }}
-            type={showConfirmPassword ? 'text' : 'password'}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            minLength={6}
-            placeholder="Retype your password"
-            required
-            disabled={awaitingOtp || loading}
-          />
-          <button
-            type="button"
-            className="auth-field__toggle"
-            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-            onClick={() => setShowConfirmPassword((v) => !v)}
-          >
-            {showConfirmPassword ? (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
-                <path d="M3 3l18 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M10.6 10.7a2 2 0 0 0 2.7 2.7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M9.9 5.2A10.5 10.5 0 0 1 12 5c5 0 8.5 4.5 9.5 6-.4.7-1.3 2-2.8 3.3M6.1 6.2C4.4 7.5 3.3 9.1 2.5 11c1 1.5 4.5 6 9.5 6 1.2 0 2.3-.2 3.3-.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden>
-                <path d="M2.5 12C3.5 10.5 7 6 12 6s8.5 4.5 9.5 6c-1 1.5-4.5 6-9.5 6s-8.5-4.5-9.5-6Z" stroke="currentColor" strokeWidth="1.8" />
-                <circle cx="12" cy="12" r="2.5" stroke="currentColor" strokeWidth="1.8" />
-              </svg>
-            )}
-          </button>
-        </div>
 
         {!awaitingOtp ? (
-          loading ? (
-            <FlowButtonLoading text="Sending code…" />
-          ) : (
-            <FlowButton type="submit" text="Verify email" className="w-full" />
-          )
+          <AuthSubmitButton
+            text="Create workspace"
+            loadingText="Sending code…"
+            loading={loading}
+          />
         ) : (
           <>
             {devOtp ? (
-              <p className="auth-otp-hint">
+              <p className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm text-amber-800">
                 Dev code: <strong>{devOtp}</strong>
               </p>
             ) : null}
-            <label className="auth-label" htmlFor="otp">
+            <label className="block text-sm font-semibold" htmlFor="otp">
               Email verification code
-            </label>
-            <div className="auth-field">
               <input
                 id="otp"
-                className="auth-input"
-                style={{ paddingLeft: 14 }}
+                className={`${fieldBase} mt-1.5 px-4`}
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 value={otpCode}
@@ -267,30 +262,31 @@ export default function RegisterPage() {
                 required
                 autoFocus
               />
-            </div>
-            {loading ? (
-              <FlowButtonLoading text="Verifying…" />
-            ) : (
-              <FlowButton
-                type="submit"
-                text="Verify & continue to login"
-                className="w-full"
-                disabled={otpCode.trim().length < 4}
-              />
-            )}
+            </label>
+            <AuthSubmitButton
+              text="Verify & continue to login"
+              loadingText="Verifying…"
+              loading={loading}
+              disabled={otpCode.trim().length < 4}
+            />
           </>
         )}
       </form>
 
       {awaitingOtp ? (
-        <p className="auth-switch">
-          <button type="button" className="auth-text-btn" onClick={onResend} disabled={loading}>
+        <p className="mt-5 text-center text-sm text-[#5A6270]">
+          <button
+            type="button"
+            className="cursor-pointer font-semibold text-[#008F60] hover:underline disabled:opacity-60"
+            onClick={onResend}
+            disabled={loading}
+          >
             Resend OTP
           </button>
           {' · '}
           <button
             type="button"
-            className="auth-text-btn"
+            className="cursor-pointer font-semibold text-[#008F60] hover:underline"
             onClick={() => {
               setAwaitingOtp(false);
               setOtpCode('');
@@ -302,29 +298,7 @@ export default function RegisterPage() {
             Edit details
           </button>
         </p>
-      ) : (
-        <>
-          {import.meta.env.VITE_GOOGLE_CLIENT_ID ? (
-            <>
-              <div className="auth-divider">
-                <span>Or continue with</span>
-              </div>
-              <div className="auth-google">
-                <GoogleLogin
-                  onSuccess={onGoogle}
-                  onError={() => setError('Google sign-in failed')}
-                  theme="outline"
-                  size="large"
-                  width="360"
-                />
-              </div>
-            </>
-          ) : null}
-          <p className="auth-switch">
-            Already have an account? <Link to="/login">Log in</Link>
-          </p>
-        </>
-      )}
+      ) : null}
     </AuthSplit>
   );
 }
