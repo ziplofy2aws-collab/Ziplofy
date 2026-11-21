@@ -13,7 +13,7 @@
 #                              GATEWAY_PUBLIC_IP automatically (requires the
 #                              deploy IAM user to have ec2:DescribeInstances).
 #   GATEWAY_API_URL          - public URL of gateway-server (defaults to
-#                              https://auth.codiic.com/api, proxied by nginx
+#                              https://gateway.codiic.com/api, proxied by nginx
 #                              to gateway-server on 127.0.0.1:3011)
 #
 # Deploy path: /var/www/codiic-gateway (nginx vhost in gateway/deploy/nginx.conf,
@@ -61,7 +61,7 @@ jobs:
       - name: Build Gateway frontend
         working-directory: gateway
         env:
-          VITE_API_URL: ${{ vars.GATEWAY_API_URL || 'https://auth.codiic.com/api' }}
+          VITE_API_URL: ${{ vars.GATEWAY_API_URL || 'https://gateway.codiic.com/api' }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
         run: npm run build
 
