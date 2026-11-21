@@ -79,15 +79,17 @@ jobs:
 
       - name: Upload gateway build to S3
         run: |
+          # Keep the key under dashboard/ — the deploy IAM user
+          # (github-codiic-dashboard-deploy) is only allowed PutObject on that prefix.
           aws s3 cp "$RUNNER_TEMP/codiic-gateway.zip" \
-            "s3://${DEPLOY_BUCKET}/gateway/${GITHUB_SHA}.zip"
+            "s3://${DEPLOY_BUCKET}/dashboard/gateway/${GITHUB_SHA}.zip"
 
       - name: Deploy through AWS Systems Manager
         run: |
           set -euo pipefail
 
           BUCKET="${DEPLOY_BUCKET}"
-          KEY="gateway/${GITHUB_SHA}.zip"
+          KEY="dashboard/gateway/${GITHUB_SHA}.zip"
           INSTANCE_ID="${GATEWAY_INSTANCE_ID}"
 
           REMOTE_SCRIPT=$(cat <<EOF
