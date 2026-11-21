@@ -8,6 +8,20 @@ import { continueAfterSession } from '../lib/sessionNav';
 
 const fieldBase =
   'w-full rounded-xl border border-[#DCE3DF] bg-white py-3 text-[15px] text-[#171923] outline-none transition placeholder:text-[#8A919C] focus:border-[#00B879] focus:ring-4 focus:ring-[#00B879]/15 disabled:cursor-not-allowed disabled:opacity-60';
+const fieldError =
+  'border-red-300 focus:border-red-400 focus:ring-red-500/15';
+
+const CHECKS: Record<'name' | 'email' | 'phone' | 'password', (v: string) => string> = {
+  name: (v) => (v.trim().length >= 2 ? '' : 'Enter your full name'),
+  email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Enter a valid email address'),
+  phone: (v) => (/^\d{10}$/.test(v.trim()) ? '' : 'Enter a 10-digit mobile number'),
+  password: (v) => (v.length >= 6 ? '' : 'Minimum 6 characters'),
+};
+
+function FieldError({ message }: { message?: string }) {
+  if (!message) return null;
+  return <p className="mt-1 text-xs font-medium text-red-600">{message}</p>;
+}
 
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -147,13 +161,14 @@ export default function RegisterPage() {
           Full name
           <input
             id="name"
-            className={`${fieldBase} mt-1.5 px-4`}
+            className={`${fieldBase} mt-1.5 px-4 ${fieldErrors.name ? fieldError : ''}`}
             value={name}
             onChange={(e) => { const v = e.target.value; setName(v); setFieldErrors((p) => ({ ...p, name: CHECKS.name(v) })); }}
             placeholder="Your name"
             required
             disabled={awaitingOtp || loading}
           />
+          <FieldError message={fieldErrors.name} />
         </label>
 
         <label className="block text-sm font-semibold" htmlFor="email">
@@ -162,30 +177,39 @@ export default function RegisterPage() {
             <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A919C]" />
             <input
               id="email"
-              className={`${fieldBase} pl-11 pr-4`}
+              className={`${fieldBase} pl-11 pr-4 ${fieldErrors.email ? fieldError : ''}`}
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { const v = e.target.value; setEmail(v); setFieldErrors((p) => ({ ...p, email: CHECKS.email(v) })); }}
               placeholder="you@company.in"
               autoComplete="email"
               required
               disabled={awaitingOtp || loading}
             />
           </span>
+          <FieldError message={fieldErrors.email} />
         </label>
 
         <label className="block text-sm font-semibold" htmlFor="phone">
           Phone number
-          <input
-            id="phone"
-            className={`${fieldBase} mt-1.5 px-4`}
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+91 98765 43210"
-            required
-            disabled={awaitingOtp || loading}
-          />
+          <span className="relative mt-1.5 block">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[15px] font-medium text-[#5A6270]">
+              +91
+            </span>
+            <input
+              id="phone"
+              className={`${fieldBase} pl-12 pr-4 ${fieldErrors.phone ? fieldError : ''}`}
+              type="tel"
+              inputMode="numeric"
+              value={phone}
+              onChange={(e) => { const v = e.target.value.replace(/\D/g, '').slice(0, 10); setPhone(v); setFieldErrors((p) => ({ ...p, phone: CHECKS.phone(v) })); }}
+              placeholder="98765 43210"
+              autoComplete="tel-national"
+              required
+              disabled={awaitingOtp || loading}
+            />
+          </span>
+          <FieldError message={fieldErrors.phone} />
         </label>
 
         <label className="block text-sm font-semibold" htmlFor="password">
@@ -194,10 +218,10 @@ export default function RegisterPage() {
             <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A919C]" />
             <input
               id="password"
-              className={`${fieldBase} pl-11 pr-12`}
+              className={`${fieldBase} pl-11 pr-12 ${fieldErrors.password ? fieldError : ''}`}
               type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => { const v = e.target.value; setPassword(v); setFieldErrors((p) => ({ ...p, password: CHECKS.password(v) })); }}
               minLength={6}
               placeholder="Min 6 characters"
               autoComplete="new-password"
@@ -213,6 +237,7 @@ export default function RegisterPage() {
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </span>
+          <FieldError message={fieldErrors.password} />
         </label>
 
         <label className="block text-sm font-semibold" htmlFor="confirmPassword">
@@ -221,10 +246,10 @@ export default function RegisterPage() {
             <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A919C]" />
             <input
               id="confirmPassword"
-              className={`${fieldBase} pl-11 pr-12`}
+              className={`${fieldBase} pl-11 pr-12 ${fieldErrors.confirmPassword ? fieldError : ''}`}
               type={showConfirmPassword ? 'text' : 'password'}
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => { const v = e.target.value; setConfirmPassword(v); setFieldErrors((p) => ({ ...p, confirmPassword: password !== v ? 'Passwords do not match' : '' })); }}
               minLength={6}
               placeholder="Retype your password"
               autoComplete="new-password"
@@ -240,6 +265,7 @@ export default function RegisterPage() {
               {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </span>
+          <FieldError message={fieldErrors.confirmPassword} />
         </label>
 
         {!awaitingOtp ? (
