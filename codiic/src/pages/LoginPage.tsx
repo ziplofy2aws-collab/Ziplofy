@@ -76,7 +76,7 @@ export default function LoginPage() {
           onSuccess={handleGoogleSuccess}
           onError={handleGoogleError}
           useOneTap
-          width={360}
+          width={400}
           containerProps={{
             className:
               'absolute inset-0 flex w-full items-center justify-center overflow-hidden opacity-[0.01]',
