@@ -1,4 +1,8 @@
-const CACHE = 'codiic-panel-v1';
+const CACHE = 'codiic-panel-v2';
+
+// Dev servers reuse identical /_next/static chunk paths across rebuilds, so a
+// cache-first strategy serves stale code. Bypass all caching off localhost.
+const IS_DEV_HOST = ['localhost', '127.0.0.1', '::1'].includes(self.location.hostname);
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -12,7 +16,7 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
-  if (e.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (IS_DEV_HOST || e.request.method !== 'GET' || url.origin !== self.location.origin) return;
 
   // Next.js build assets are content-hashed and immutable: serve cache-first for
   // instant repeat loads (a new build produces new hashes, so this never goes stale)

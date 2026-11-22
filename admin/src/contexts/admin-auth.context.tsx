@@ -95,7 +95,7 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         const data = step1.data;
         const body = data.data || data;
         if (body.twoFactorRequired) {
-          return { twoFactorRequired: true, email: body.context?.email || email };
+          return { twoFactorRequired: true, email: body.context?.email || email, devOtp: body.devOtp };
         }
       } catch (e: any) {
         // Fallback to legacy login if 2FA endpoints not present

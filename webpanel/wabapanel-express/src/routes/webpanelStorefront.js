@@ -29,15 +29,25 @@ const {
 } = require('../controllers/webpanelStorefrontLeadGenFormController');
 const { getStorefrontClinic } = require('../controllers/webpanelStorefrontClinicController');
 const {
+  getStorefrontThemeSite,
+  getStorefrontThemeSiteFile,
+} = require('../controllers/webpanelStorefrontThemeSiteController');
+const {
   listStorefrontTravelPackages,
   getStorefrontTravelPackage,
   createStorefrontTravelPackageEnquiry,
+  travellerStorefrontAuth,
+  listTravellerTrips,
 } = require('../controllers/webpanelStorefrontTravelController');
 
 const router = express.Router();
 
 /** Public — no auth; used by webpanel-store-renderer */
 router.get('/:storeId/informatic-theme-runtime', getStorefrontInformaticThemeRuntime);
+router.get('/:storeId/theme-site/:themeId', getStorefrontThemeSite);
+router.get('/:storeId/theme-site/:themeId/*path', getStorefrontThemeSiteFile);
+router.get('/:storeId/theme-site', getStorefrontThemeSite);
+router.get('/:storeId/theme-site/*path', getStorefrontThemeSiteFile);
 router.get('/:storeId/blogs', listStorefrontBlogs);
 router.get('/:storeId/blog-posts', listStorefrontBlogPosts);
 router.get('/:storeId/blog-posts/by-slug/:slug', getStorefrontBlogPostBySlug);
@@ -58,6 +68,8 @@ router.post(
   '/:storeId/travel-packages/:packageId/enquiries',
   createStorefrontTravelPackageEnquiry
 );
+router.post('/:storeId/traveller-auth', travellerStorefrontAuth);
+router.get('/:storeId/traveller-trips', listTravellerTrips);
 router.get(
   '/:storeId/custom-theme-runtime',
   require('../controllers/webpanelStoreCustomThemeController').getStorefrontCustomThemeRuntime

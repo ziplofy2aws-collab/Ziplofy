@@ -1,5 +1,11 @@
 const router = require('express').Router();
+const multer = require('multer');
 const { protect } = require('../middleware/auth');
+
+const mediaUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 25 * 1024 * 1024 },
+});
 const { listStores, getStore, createStore } = require('../controllers/webpanelStoreController');
 const {
   getStoreInformaticThemeConfig,
@@ -15,6 +21,8 @@ const {
 const {
   listStoreMedia,
   registerStoreMedia,
+  uploadStoreMedia,
+  serveStoreMediaFile,
   proxyStoreMediaForEditor,
   deleteStoreMedia,
   deleteAllStoreMedia,
@@ -47,6 +55,9 @@ const {
   deleteStoreMenu,
 } = require('../controllers/webpanelStoreMenuController');
 
+// Public — storefronts serve media anonymously through the S3 proxy.
+router.get('/:storeId/media/file/*key', serveStoreMediaFile);
+
 router.use(protect);
 
 router.get('/', listStores);
@@ -62,6 +73,7 @@ router.delete(
 
 router.get('/:storeId/media', listStoreMedia);
 router.get('/:storeId/media/editor-proxy', proxyStoreMediaForEditor);
+router.post('/:storeId/media/upload', mediaUpload.single('file'), uploadStoreMedia);
 router.post('/:storeId/media/register', registerStoreMedia);
 router.delete('/:storeId/media/all', deleteAllStoreMedia);
 router.delete('/:storeId/media/:mediaId', deleteStoreMedia);

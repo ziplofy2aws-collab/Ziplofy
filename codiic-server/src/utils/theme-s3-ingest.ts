@@ -4,6 +4,7 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   ListObjectsV2Command,
+  PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import fs from 'fs';
 import path from 'path';
@@ -183,6 +184,67 @@ export function publicObjectUrlForKey(key: string): string {
   return `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${key}`;
 }
 
+async function openS3Object(key: string) {
+  try {
+    const out = await s3Client.send(new GetObjectCommand({ Bucket: awsBucket, Key: key }));
+    return out.Body ? out : null;
+  } catch (e: any) {
+    const notFound = e?.name === 'NoSuchKey' || e?.$metadata?.httpStatusCode === 404;
+    if (notFound) return null;
+    throw e;
+  }
+}
+
+/**
+ * Stream an S3 object to an Express response.
+ *
+ * Catalog theme assets are NOT publicly readable on the bucket (ACLs are
+ * disabled and objects are private by design), so browsers must fetch them
+ * through the backend instead of the raw S3 URL.
+ *
+ * Accepts multiple candidate keys — uploads may store filenames raw or
+ * URL-encoded (e.g. `Darjeeling tea.png` vs `Darjeeling%20tea.png`).
+ */
+export async function streamS3ObjectToResponse(
+  keys: string | string[],
+  res: import('express').Response
+): Promise<void> {
+  try {
+    const candidates = Array.isArray(keys) ? keys : [keys];
+    let out = null;
+    for (const key of candidates) {
+      out = await openS3Object(key);
+      if (out) break;
+    }
+    if (!out) {
+      res.status(404).json({ success: false, message: 'File not found' });
+      return;
+    }
+    res.setHeader('Content-Type', out.ContentType || 'application/octet-stream');
+    if (out.ContentLength) res.setHeader('Content-Length', String(out.ContentLength));
+    // Catalog paths are themeId-scoped and immutable — safe to cache hard.
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    const body = out.Body as Readable;
+    // If the client disconnects mid-stream, destroy the S3 stream so its
+    // socket returns to the SDK pool — otherwise aborted downloads leak
+    // connections until every subsequent S3 call queues forever.
+    res.on('close', () => {
+      if (!res.writableEnded) body.destroy();
+    });
+    body.on('error', () => {
+      if (!res.writableEnded) res.end();
+    });
+    body.pipe(res);
+  } catch (e: any) {
+    const notFound = e?.name === 'NoSuchKey' || e?.$metadata?.httpStatusCode === 404;
+    if (!res.headersSent) {
+      res
+        .status(notFound ? 404 : 500)
+        .json({ success: false, message: notFound ? 'File not found' : 'Failed to load file' });
+    }
+  }
+}
+
 export type ThemeContentRoot = { prefix: string; fileCount: number; uploadedAt: Date };
 
 export type ThemeCatalogS3Assets = {
@@ -205,6 +267,22 @@ export async function copyS3ObjectSameBucket(srcKey: string, destKey: string): P
       Bucket: awsBucket,
       CopySource: copySource,
       Key: destKey,
+    })
+  );
+}
+
+/** Write an object directly (server-side import flows that skip browser staging). */
+export async function uploadS3Object(
+  key: string,
+  body: Buffer | string,
+  contentType: string
+): Promise<void> {
+  await s3Client.send(
+    new PutObjectCommand({
+      Bucket: awsBucket,
+      Key: key,
+      Body: body,
+      ContentType: contentType || 'application/octet-stream',
     })
   );
 }

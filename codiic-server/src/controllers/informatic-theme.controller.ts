@@ -8,10 +8,20 @@ import {
   assertInformaticStagingFolderAndAuxiliaryKeys,
   deleteS3Keys,
   informaticStagingThemeFileKey,
+  INFORMATIC_CATALOG_ROOT,
   promoteInformaticFolderUploadToCatalog,
   publicObjectUrlForKey,
 } from '../utils/informatic-theme-s3-ingest';
-import { readS3JsonObject, readS3Utf8Object } from '../utils/theme-s3-ingest';
+import {
+  readS3JsonObject,
+  readS3Utf8Object,
+  streamS3ObjectToResponse,
+} from '../utils/theme-s3-ingest';
+import { awsBucket, awsRegion } from '../utils/s3-client';
+import {
+  importInformaticThemeFromFileList,
+  importInformaticThemeFromZipBuffer,
+} from '../utils/informatic-import/import-static-theme-zip';
 
 function makeSlug(name: string): string {
   const base =
@@ -23,8 +33,31 @@ function makeSlug(name: string): string {
   return `${base}-${uuidv4().slice(0, 8)}`;
 }
 
-function withResolvedS3Urls(s3: Record<string, any>) {
+/**
+ * Absolute public origin of this API, derived from the incoming request.
+ * Catalog assets are private on S3, so browsers must fetch them through
+ * this backend — the URLs we emit need the host the client actually used.
+ */
+export function apiBaseFromReq(req: Request): string {
+  const proto = String(req.get('x-forwarded-proto') || req.protocol || 'http')
+    .split(',')[0]
+    .trim();
+  return `${proto}://${req.get('host')}`;
+}
+
+/** URL that streams a file under `informatic-themes/catalog/<themeId>/` through the backend. */
+export function informaticFileUrl(apiBase: string, themeId: string, relKey: string): string {
+  const encoded = relKey
+    .split('/')
+    .filter(Boolean)
+    .map(encodeURIComponent)
+    .join('/');
+  return `${apiBase}/api/informatic-themes/file/${themeId}/${encoded}`;
+}
+
+function withResolvedS3Urls(s3: Record<string, any>, themeId?: string, apiBase?: string) {
   const out = { ...s3 };
+  const catalogPrefix = themeId ? `${INFORMATIC_CATALOG_ROOT}/${themeId}/` : null;
   for (const field of [
     'reactThemeJs',
     'reactThemeCss',
@@ -34,16 +67,55 @@ function withResolvedS3Urls(s3: Record<string, any>) {
     'thumbnail',
   ] as const) {
     const part = out[field];
-    if (part?.key && !part.url) {
-      out[field] = { ...part, url: publicObjectUrlForKey(part.key) };
+    if (!part?.key) continue;
+    const key = String(part.key);
+    if (catalogPrefix && apiBase && key.startsWith(catalogPrefix)) {
+      out[field] = { ...part, url: informaticFileUrl(apiBase, themeId!, key.slice(catalogPrefix.length)) };
+    } else if (!part.url) {
+      out[field] = { ...part, url: publicObjectUrlForKey(key) };
     }
   }
   return out;
 }
 
-export function formatInformaticThemeForClient(theme: any) {
+/**
+ * Rewrite raw S3 catalog URLs inside a JSON blob (schema/config/manifest) to
+ * the backend file route. Older imports stored private S3 URLs that browsers
+ * cannot read; rewriting at serve time fixes them without re-uploading.
+ */
+function rewriteCatalogS3Urls(value: any, themeId: string, apiBase: string): any {
+  if (value == null) return value;
+  const prefix = `https://${awsBucket}.s3.${awsRegion}.amazonaws.com/${INFORMATIC_CATALOG_ROOT}/${themeId}/`;
+  const walk = (v: any): any => {
+    if (typeof v === 'string') {
+      if (!v.startsWith(prefix)) return v;
+      const rel = v
+        .slice(prefix.length)
+        .split('/')
+        .map((s) => {
+          try {
+            return decodeURIComponent(s);
+          } catch {
+            return s;
+          }
+        })
+        .join('/');
+      return informaticFileUrl(apiBase, themeId, rel);
+    }
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === 'object') {
+      const o: Record<string, any> = {};
+      for (const k of Object.keys(v)) o[k] = walk(v[k]);
+      return o;
+    }
+    return v;
+  };
+  return walk(value);
+}
+
+export function formatInformaticThemeForClient(theme: any, apiBase?: string) {
   const obj = theme?.toObject ? theme.toObject() : { ...theme };
-  const s3 = withResolvedS3Urls(obj.s3Assets ?? {});
+  const s3 = withResolvedS3Urls(obj.s3Assets ?? {}, String(obj._id ?? ''), apiBase);
   return {
     _id: obj._id,
     id: String(obj._id),
@@ -118,7 +190,7 @@ export const listInformaticThemes = asyncErrorHandler(async (req: Request, res: 
 
   res.json({
     success: true,
-    data: docs.map((t) => formatInformaticThemeForClient(t)),
+    data: docs.map((t) => formatInformaticThemeForClient(t, apiBaseFromReq(req))),
     pagination: {
       page: pageNum,
       limit: limitNum,
@@ -134,7 +206,7 @@ export const getInformaticTheme = asyncErrorHandler(async (req: Request, res: Re
   if (!theme) {
     throw new CustomError('Informatic theme not found', 404);
   }
-  res.json({ success: true, data: formatInformaticThemeForClient(theme) });
+  res.json({ success: true, data: formatInformaticThemeForClient(theme, apiBaseFromReq(req)) });
 });
 
 export const createInformaticThemeFromS3 = asyncErrorHandler(async (req: Request, res: Response) => {
@@ -267,8 +339,192 @@ export const createInformaticThemeFromS3 = asyncErrorHandler(async (req: Request
 
   res.status(201).json({
     success: true,
-    data: populated ? formatInformaticThemeForClient(populated) : null,
+    data: populated ? formatInformaticThemeForClient(populated, apiBaseFromReq(req)) : null,
     message: 'Informatic theme created successfully',
+  });
+});
+
+/**
+ * POST /api/informatic-themes/import-zip (multipart, field: `file`)
+ *
+ * One-shot import: unzip → convert static HTML into an editor-compatible
+ * pack (schema/default-config/manifest/theme.js/theme.css) → upload to the
+ * catalog S3 layout → register the InformaticTheme doc.
+ */
+export const importInformaticThemeZip = asyncErrorHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.id as string | undefined;
+  if (!userId) {
+    throw new CustomError('Unauthorized', 401);
+  }
+
+  const file = (req as Request & { file?: Express.Multer.File }).file;
+  if (!file?.buffer?.length) {
+    throw new CustomError('A theme .zip file is required (multipart field `file`).', 400);
+  }
+
+  const { name, description, plan, price, version, tags } = req.body as {
+    name?: string;
+    description?: string;
+    plan?: string;
+    price?: string | number;
+    version?: string;
+    tags?: string;
+  };
+
+  if (!name?.trim() || !plan) {
+    throw new CustomError('name and plan are required', 400);
+  }
+
+  const newId = new Types.ObjectId();
+  const slug = makeSlug(name);
+
+  let imported;
+  try {
+    imported = await importInformaticThemeFromZipBuffer(
+      file.buffer,
+      newId.toString(),
+      name.trim(),
+      apiBaseFromReq(req)
+    );
+  } catch (err: any) {
+    if (err instanceof CustomError) throw err;
+    throw new CustomError(
+      `Theme import failed: ${err?.message || 'unknown error'}`,
+      500
+    );
+  }
+
+  const priceNum = Number(price);
+  const theme = await InformaticTheme.create({
+    _id: newId,
+    name: name.trim(),
+    description,
+    slug,
+    plan,
+    price: Number.isFinite(priceNum) ? priceNum : 0,
+    version: version || '1.0.0',
+    tags: tags ? String(tags).split(',').map((t) => t.trim()).filter(Boolean) : [],
+    s3Assets: imported.s3Assets,
+    manifestSummary: imported.manifestSummary,
+    uploadBy: new Types.ObjectId(userId),
+  });
+
+  const populated = await InformaticTheme.findById(theme._id).populate('uploadBy', 'name email');
+
+  logActivity(req, {
+    action: 'informatic_theme_import_zip',
+    entityType: 'informatic_theme',
+    entityId: theme._id.toString(),
+    entityName: name,
+    summary: `Imported Informatic theme "${name}" from zip`,
+    details: {
+      themeId: theme._id.toString(),
+      slug,
+      plan,
+      version: version || '1.0.0',
+      warnings: imported.warnings,
+      conversion: imported.conversionReport,
+    },
+  }).catch(() => {});
+
+  res.status(201).json({
+    success: true,
+    data: populated ? formatInformaticThemeForClient(populated, apiBaseFromReq(req)) : null,
+    conversion: imported.conversionReport,
+    warnings: imported.warnings,
+    message: 'Informatic theme imported and converted successfully',
+  });
+});
+
+/**
+ * POST /api/informatic-themes/import-folder (multipart, field: `files[]`)
+ *
+ * Same conversion pipeline as import-zip for an unzipped folder upload: each
+ * multipart file carries its folder-relative path (webkitRelativePath from the
+ * browser directory picker), the tree is rebuilt server-side and converted.
+ */
+export const importInformaticThemeFolder = asyncErrorHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.id as string | undefined;
+  if (!userId) {
+    throw new CustomError('Unauthorized', 401);
+  }
+
+  const files = (req as Request & { files?: Express.Multer.File[] }).files ?? [];
+  if (!files.length) {
+    throw new CustomError('Theme folder files are required (multipart field `files`).', 400);
+  }
+
+  const { name, description, plan, price, version, tags } = req.body as {
+    name?: string;
+    description?: string;
+    plan?: string;
+    price?: string | number;
+    version?: string;
+    tags?: string;
+  };
+
+  if (!name?.trim() || !plan) {
+    throw new CustomError('name and plan are required', 400);
+  }
+
+  const newId = new Types.ObjectId();
+  const slug = makeSlug(name);
+
+  let imported;
+  try {
+    imported = await importInformaticThemeFromFileList(
+      files.map((f) => ({ name: f.originalname, buffer: f.buffer })),
+      newId.toString(),
+      name.trim(),
+      apiBaseFromReq(req)
+    );
+  } catch (err: any) {
+    if (err instanceof CustomError) throw err;
+    throw new CustomError(
+      `Theme import failed: ${err?.message || 'unknown error'}`,
+      500
+    );
+  }
+
+  const priceNum = Number(price);
+  const theme = await InformaticTheme.create({
+    _id: newId,
+    name: name.trim(),
+    description,
+    slug,
+    plan,
+    price: Number.isFinite(priceNum) ? priceNum : 0,
+    version: version || '1.0.0',
+    tags: tags ? String(tags).split(',').map((t) => t.trim()).filter(Boolean) : [],
+    s3Assets: imported.s3Assets,
+    manifestSummary: imported.manifestSummary,
+    uploadBy: new Types.ObjectId(userId),
+  });
+
+  const populated = await InformaticTheme.findById(theme._id).populate('uploadBy', 'name email');
+
+  logActivity(req, {
+    action: 'informatic_theme_import_folder',
+    entityType: 'informatic_theme',
+    entityId: theme._id.toString(),
+    entityName: name,
+    summary: `Imported Informatic theme "${name}" from folder`,
+    details: {
+      themeId: theme._id.toString(),
+      slug,
+      plan,
+      version: version || '1.0.0',
+      warnings: imported.warnings,
+      conversion: imported.conversionReport,
+    },
+  }).catch(() => {});
+
+  res.status(201).json({
+    success: true,
+    data: populated ? formatInformaticThemeForClient(populated, apiBaseFromReq(req)) : null,
+    conversion: imported.conversionReport,
+    warnings: imported.warnings,
+    message: 'Informatic theme imported and converted successfully',
   });
 });
 
@@ -280,8 +536,60 @@ export const deleteInformaticTheme = asyncErrorHandler(async (req: Request, res:
   }
   theme.isActive = false;
   await theme.save();
+  dropEditorPackCache(id);
   res.json({ success: true, message: 'Informatic theme deactivated' });
 });
+
+// Editor-pack payloads are immutable per theme — s3Assets are only assigned
+// at import time and never mutated — so the raw S3 reads can be cached
+// indefinitely. Cache misses are coalesced so concurrent editor loads share
+// one upstream read instead of tripling S3 calls.
+const editorPackCache = new Map<
+  string,
+  { at: number; schema: unknown; config: unknown; manifest: unknown }
+>();
+const editorPackInflight = new Map<
+  string,
+  Promise<{ schema: unknown; config: unknown; manifest: unknown }>
+>();
+const EDITOR_PACK_CACHE_TTL_MS = 30 * 60 * 1000;
+
+function dropEditorPackCache(themeId: string): void {
+  editorPackCache.delete(themeId);
+  editorPackInflight.delete(themeId);
+}
+
+async function loadEditorPackJson(id: string, s3: ReturnType<typeof withResolvedS3Urls>) {
+  const fetchJson = async (key?: string) => {
+    if (!key) return null;
+    return readS3JsonObject(key);
+  };
+  const [schema, config, manifest] = await Promise.all([
+    fetchJson(s3.reactThemeSchema?.key),
+    fetchJson(s3.reactThemeDefaultConfig?.key),
+    fetchJson(s3.reactThemeManifest?.key),
+  ]);
+  return { schema, config, manifest };
+}
+
+async function getEditorPackJson(id: string, s3: ReturnType<typeof withResolvedS3Urls>) {
+  const hit = editorPackCache.get(id);
+  if (hit && Date.now() - hit.at < EDITOR_PACK_CACHE_TTL_MS) return hit;
+  const inflight = editorPackInflight.get(id);
+  if (inflight) return inflight;
+  const p = loadEditorPackJson(id, s3)
+    .then((pack) => {
+      editorPackCache.set(id, { at: Date.now(), ...pack });
+      editorPackInflight.delete(id);
+      return pack;
+    })
+    .catch((e) => {
+      editorPackInflight.delete(id);
+      throw e;
+    });
+  editorPackInflight.set(id, p);
+  return p;
+}
 
 export const getInformaticThemeEditorPack = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -289,26 +597,18 @@ export const getInformaticThemeEditorPack = asyncErrorHandler(async (req: Reques
   if (!theme || !theme.isActive) {
     throw new CustomError('Informatic theme not found', 404);
   }
-  const s3 = withResolvedS3Urls(theme.s3Assets ?? {});
+  const apiBase = apiBaseFromReq(req);
+  const s3 = withResolvedS3Urls(theme.s3Assets ?? {}, id, apiBase);
 
-  const fetchJson = async (key?: string) => {
-    if (!key) return null;
-    return readS3JsonObject(key);
-  };
-
-  const [schema, config, manifest] = await Promise.all([
-    fetchJson(s3.reactThemeSchema?.key),
-    fetchJson(s3.reactThemeDefaultConfig?.key),
-    fetchJson(s3.reactThemeManifest?.key),
-  ]);
+  const { schema, config, manifest } = await getEditorPackJson(id, s3);
 
   res.json({
     success: true,
     data: {
-      theme: formatInformaticThemeForClient(theme),
+      theme: formatInformaticThemeForClient(theme, apiBase),
       schema,
-      config,
-      manifest,
+      config: rewriteCatalogS3Urls(config, id, apiBase),
+      manifest: rewriteCatalogS3Urls(manifest, id, apiBase),
       assets: {
         themeJsUrl: s3.reactThemeJs?.url ?? null,
         themeCssUrl: s3.reactThemeCss?.url ?? null,
@@ -321,13 +621,8 @@ function injectHtmlBaseHref(html: string, baseHref: string): string {
   const base = baseHref.endsWith('/') ? baseHref : `${baseHref}/`;
   const baseTag = `<base href="${base}">`;
   let out = html;
-  if (/<base\b[^>]*>/i.test(out)) {
-    out = out.replace(/<base\b[^>]*>/i, baseTag);
-  } else if (/<head[^>]*>/i.test(out)) {
-    out = out.replace(/<head[^>]*>/i, (m) => `${m}\n    ${baseTag}`);
-  } else {
-    out = `${baseTag}\n${out}`;
-  }
+  // Rewrite root-absolute asset paths first so the injected <base> tag's own
+  // href is never touched by the attribute rewrites below.
   out = out.replace(
     /\b(src|href|poster)=(["'])\/(?!\/)([^"']*)\2/gi,
     (_m, attr: string, q: string, p: string) => `${attr}=${q}${base}${p}${q}`
@@ -336,6 +631,13 @@ function injectHtmlBaseHref(html: string, baseHref: string): string {
     /url\(\s*(['"]?)\/(?!\/)([^)"']+)\1\s*\)/gi,
     (_m, q: string, p: string) => `url(${q}${base}${p}${q})`
   );
+  if (/<base\b[^>]*>/i.test(out)) {
+    out = out.replace(/<base\b[^>]*>/i, baseTag);
+  } else if (/<head[^>]*>/i.test(out)) {
+    out = out.replace(/<head[^>]*>/i, (m) => `${m}\n    ${baseTag}`);
+  } else {
+    out = `${baseTag}\n${out}`;
+  }
   return out;
 }
 
@@ -362,7 +664,9 @@ export const getInformaticThemePreview = asyncErrorHandler(async (req: Request, 
     throw new CustomError('Theme preview not available — index.html not found', 404);
   }
 
-  const baseHref = publicObjectUrlForKey(root);
+  // Point relative assets at the preview wildcard route — S3 objects are
+  // private, so browsers must fetch CSS/JS/images through the backend.
+  const baseHref = `/api/informatic-themes/preview/${id}/`;
   const patched = injectHtmlBaseHref(htmlContent, baseHref);
 
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -371,7 +675,7 @@ export const getInformaticThemePreview = asyncErrorHandler(async (req: Request, 
   res.send(patched);
 });
 
-/** Redirect static asset requests to public S3 URLs for catalog preview. */
+/** Stream static preview assets from the private catalog prefix on S3. */
 export const serveInformaticThemePreviewFiles = asyncErrorHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const filePath = (req.params as { 0?: string })[0];
@@ -384,7 +688,7 @@ export const serveInformaticThemePreviewFiles = asyncErrorHandler(async (req: Re
   }
 
   const rel = String(filePath).replace(/^\/+/, '').replace(/\\/g, '/');
-  if (!rel || rel.includes('..')) {
+  if (!rel || rel.split('/').includes('..')) {
     throw new CustomError('Access denied', 403);
   }
 
@@ -395,6 +699,55 @@ export const serveInformaticThemePreviewFiles = asyncErrorHandler(async (req: Re
   }
 
   const root = contentPrefix.endsWith('/') ? contentPrefix : `${contentPrefix}/`;
-  const publicUrl = publicObjectUrlForKey(`${root}${rel}`);
-  return res.redirect(302, publicUrl);
+  const encodedRel = rel.split('/').map(encodeURIComponent).join('/');
+
+  // HTML sub-pages (e.g. packages.html navigated to from index.html) get the
+  // same <base> injection as the index so their relative assets/links keep
+  // resolving through this private preview route.
+  if (/\.html?$/i.test(rel)) {
+    let htmlContent: string | null = null;
+    for (const key of [`${root}${rel}`, `${root}${encodedRel}`]) {
+      htmlContent = await readS3Utf8Object(key);
+      if (htmlContent) break;
+    }
+    if (!htmlContent) throw new CustomError('File not found', 404);
+    const patched = injectHtmlBaseHref(htmlContent, `/api/informatic-themes/preview/${id}/`);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('X-Frame-Options', 'ALLOWALL');
+    res.setHeader('Content-Security-Policy', 'frame-ancestors *');
+    return res.send(patched);
+  }
+
+  await streamS3ObjectToResponse([`${root}${rel}`, `${root}${encodedRel}`], res);
+});
+
+/**
+ * Publicly stream any file stored under `informatic-themes/catalog/<id>/`
+ * (theme/, remote-theme-dist/, thumbnail/). Catalog objects are private on
+ * S3, so all browser-facing asset URLs point at this route.
+ */
+export const serveInformaticThemeFile = asyncErrorHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const filePath = (req.params as { 0?: string })[0];
+  if (!id) throw new CustomError('Theme ID is required', 400);
+  if (!filePath) throw new CustomError('File path is required', 400);
+
+  const theme = await InformaticTheme.findById(id).lean();
+  if (!theme || !theme.isActive) {
+    throw new CustomError('Informatic theme not found', 404);
+  }
+
+  const rel = String(filePath).replace(/^\/+/, '').replace(/\\/g, '/');
+  if (!rel || rel.split('/').includes('..')) {
+    throw new CustomError('Access denied', 403);
+  }
+
+  const encodedRel = rel.split('/').map(encodeURIComponent).join('/');
+  await streamS3ObjectToResponse(
+    [
+      `${INFORMATIC_CATALOG_ROOT}/${id}/${rel}`,
+      `${INFORMATIC_CATALOG_ROOT}/${id}/${encodedRel}`,
+    ],
+    res
+  );
 });

@@ -79,6 +79,12 @@ export function buildS3ObjectUrl(key: string, bucket: string, region: string): s
 
 export function resolveStoreMediaUrl(item: StoreMediaItem): string {
   if (item.url?.startsWith('http')) return item.url;
+  // Server-side proxy paths (`/api/stores/…/media/file/…`) — prefix the API
+  // origin so they resolve from the panel's own origin.
+  if (item.url?.startsWith('/')) {
+    const base = (api.defaults.baseURL || '').replace(/\/api\/?$/, '');
+    return `${base}${item.url}`;
+  }
   const meta = readStoredS3Meta();
   if (meta) return buildS3ObjectUrl(item.key, meta.bucket, meta.region);
   return item.url || '';
@@ -107,7 +113,7 @@ export async function requestImageSignedUrl(payload: {
 
 export async function uploadFileToSignedUrl(
   signedUrl: string,
-  file: File,
+  file: File | Blob,
   contentType: string
 ): Promise<void> {
   const res = await fetch(signedUrl, {
@@ -120,25 +126,21 @@ export async function uploadFileToSignedUrl(
   }
 }
 
+/**
+ * Upload through the server — raster images are compressed server-side
+ * (WebP, max 2048px, ~82% quality) and pushed to S3, so no browser→S3 CORS
+ * or presigned URLs are needed.
+ */
 export async function uploadStoreMediaFile(
   storeId: string,
   file: File
 ): Promise<StoreMediaItem> {
-  const signed = await requestImageSignedUrl({
-    fileName: file.name,
-    fileType: file.type,
-    folder: storeMediaFolder(storeId),
-  });
-  await uploadFileToSignedUrl(signed.signedUrl, file, signed.contentType);
+  const fd = new FormData();
+  fd.append('file', file);
   const res = await api.post<{ success: boolean; data: StoreMediaItem; message?: string }>(
-    `/stores/${storeId}/media/register`,
-    {
-      key: signed.key,
-      originalName: file.name,
-      mimeType: file.type,
-      size: file.size,
-      url: signed.objectUrl,
-    }
+    `/stores/${storeId}/media/upload`,
+    fd,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
   );
   if (!res.data?.success || !res.data.data) {
     throw new Error(res.data?.message || 'Failed to register upload');

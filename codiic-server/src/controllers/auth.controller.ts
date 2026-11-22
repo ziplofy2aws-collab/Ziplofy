@@ -122,18 +122,23 @@ export const adminLoginStep1 = asyncErrorHandler(async (req: Request, res: Respo
   await LoginOtp.deleteMany({ email });
   await LoginOtp.create({ userId: user._id, email, code, expiresAt, attempts: 0 });
 
-  // send email
-  await sendEmail({
-    to: email,
-    subject: "Your codiic Admin Login Code",
-    body: `<p>Your verification code is:</p><h2 style="letter-spacing:4px">${code}</h2><p>This code expires in 5 minutes.</p>`
-  });
+  // send email — non-fatal so OTP login still works when SMTP isn't configured
+  try {
+    await sendEmail({
+      to: email,
+      subject: "Your codiic Admin Login Code",
+      body: `<p>Your verification code is:</p><h2 style="letter-spacing:4px">${code}</h2><p>This code expires in 5 minutes.</p>`
+    });
+  } catch (err) {
+    console.error("Failed to send admin login OTP email:", err);
+  }
 
   res.status(200).json({
     success: true,
     twoFactorRequired: true,
     // return lightweight context so frontend can proceed to otp step
-    context: { email, userId: user._id.toString() }
+    context: { email, userId: user._id.toString() },
+    devOtp: process.env.NODE_ENV !== "production" ? code : undefined
   });
 });
 

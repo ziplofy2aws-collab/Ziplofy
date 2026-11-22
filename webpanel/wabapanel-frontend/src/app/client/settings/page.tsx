@@ -5,6 +5,7 @@ import Input from '@/components/ui/Input';
 import Select from '@/components/ui/Select';
 import Tabs from '@/components/ui/Tabs';
 import AccountSecurity from '@/components/AccountSecurity';
+import DomainsPanel from '@/components/settings/DomainsPanel';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi, workspaceApi } from '@/lib/api';
 import toast from 'react-hot-toast';
@@ -297,6 +298,11 @@ export default function SettingsPage() {
                 <Save className="h-4 w-4" /> {saving ? 'Saving…' : 'Save'}
               </button>
             </div>
+          </div>
+        )},
+        { key: 'domains', label: 'Domains', content: (
+          <div className={dashboardCardShell}>
+            <DomainsPanel />
           </div>
         )},
         { key: 'api', label: 'API & Webhooks', content: (

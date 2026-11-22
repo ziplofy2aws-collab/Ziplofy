@@ -1,6 +1,7 @@
 const axios = require('axios');
 const s3Service = require('../services/s3Service');
 const { patchInformaticEditorPack } = require('../utils/informaticRuntimeTemplates.util');
+const { themeMatchesIndustry } = require('../utils/informaticIndustryData.util');
 const {
   requireCodiicCatalogApiBase,
   mapCodiicCatalogError,
@@ -18,13 +19,8 @@ function injectHtmlBaseHref(html, baseHref) {
   const base = baseHref.endsWith('/') ? baseHref : `${baseHref}/`;
   const baseTag = `<base href="${base}">`;
   let out = html;
-  if (/<base\b[^>]*>/i.test(out)) {
-    out = out.replace(/<base\b[^>]*>/i, baseTag);
-  } else if (/<head[^>]*>/i.test(out)) {
-    out = out.replace(/<head[^>]*>/i, (m) => `${m}\n    ${baseTag}`);
-  } else {
-    out = `${baseTag}\n${out}`;
-  }
+  // Rewrite root-absolute asset paths first so the injected <base> tag's own
+  // href is never touched by the attribute rewrites below.
   out = out.replace(
     /\b(src|href|poster)=(["'])\/(?!\/)([^"']*)\2/gi,
     (_m, attr, q, p) => `${attr}=${q}${base}${p}${q}`
@@ -33,6 +29,13 @@ function injectHtmlBaseHref(html, baseHref) {
     /url\(\s*(['"]?)\/(?!\/)([^)"']+)\1\s*\)/gi,
     (_m, q, p) => `url(${q}${base}${p}${q})`
   );
+  if (/<base\b[^>]*>/i.test(out)) {
+    out = out.replace(/<base\b[^>]*>/i, baseTag);
+  } else if (/<head[^>]*>/i.test(out)) {
+    out = out.replace(/<head[^>]*>/i, (m) => `${m}\n    ${baseTag}`);
+  } else {
+    out = `${baseTag}\n${out}`;
+  }
   return out;
 }
 
@@ -64,7 +67,21 @@ const listInformaticThemes = async (req, res) => {
     const response = await codiicClient().get('/informatic-themes', {
       params: { search, page, limit },
     });
-    res.status(response.status).json(response.data);
+    const body = response.data;
+    // Industry-aware catalog: an explicit ?industry= (the active store's) wins;
+    // otherwise fall back to the signed-in user's industry feature override.
+    // Themes without industry-matching tags remain visible to everyone.
+    const industry =
+      req.query.industry !== undefined
+        ? String(req.query.industry).trim()
+        : String(req.user?.featureOverrides?.industry || '').trim();
+    if (industry && body?.success && Array.isArray(body?.data)) {
+      body.data = body.data.filter((theme) => themeMatchesIndustry(theme?.tags, industry));
+      if (body.pagination && typeof body.pagination.total === 'number') {
+        body.pagination = { ...body.pagination, total: body.data.length };
+      }
+    }
+    res.status(response.status).json(body);
   } catch (err) {
     const mapped = mapCodiicCatalogError(err);
     if (!mapped.body.message) {
@@ -122,7 +139,9 @@ const getInformaticThemePreview = async (req, res) => {
     const indexKey = `${root}index.html`;
     const htmlContent = await s3Service.readUtf8Object(indexKey);
     if (htmlContent) {
-      const baseHref = s3Service.getPublicObjectUrl(root);
+      // S3 catalog objects are private — point relative assets at this API's
+      // preview wildcard route, which streams them from S3.
+      const baseHref = `/api/informatic-themes/preview/${id}/`;
       return sendPreviewHtml(injectHtmlBaseHref(htmlContent, baseHref));
     }
   } catch (localErr) {
@@ -152,36 +171,97 @@ const getInformaticThemePreview = async (req, res) => {
   }
 };
 
-/** @GET /api/informatic-themes/preview/:id/*path — redirect asset requests to public S3 URLs */
+/** @GET /api/informatic-themes/preview/:id/*path — stream private S3 catalog assets */
 const getInformaticThemePreviewAsset = async (req, res) => {
+  const { id } = req.params;
+  const rawPath = req.params.path;
+  const filePath = Array.isArray(rawPath) ? rawPath.join('/') : String(rawPath || '');
+  if (!filePath) {
+    return res.status(400).json({ success: false, message: 'File path is required' });
+  }
+
+  const rel = filePath.replace(/^\/+/, '').replace(/\\/g, '/');
+  if (!rel || rel.split('/').includes('..')) {
+    return res.status(403).json({ success: false, message: 'Access denied' });
+  }
+
   try {
-    const { id } = req.params;
-    const rawPath = req.params.path;
-    const filePath = Array.isArray(rawPath) ? rawPath.join('/') : String(rawPath || '');
-    if (!filePath) {
-      return res.status(400).json({ success: false, message: 'File path is required' });
-    }
-
-    const rel = filePath.replace(/^\/+/, '').replace(/\\/g, '/');
-    if (!rel || rel.includes('..')) {
-      return res.status(403).json({ success: false, message: 'Access denied' });
-    }
-
-    const { contentPrefix } = await fetchCatalogThemeMeta(id);
-    const root = contentRootPrefix(contentPrefix);
-    const publicUrl = s3Service.getPublicObjectUrl(`${root}${rel}`);
-    if (!publicUrl) {
-      return res.status(404).json({ success: false, message: 'File not found' });
-    }
-    return res.redirect(302, publicUrl);
-  } catch (err) {
-    const status = err.statusCode || err.response?.status || 502;
-    res.status(status).json(
-      err.response?.data || {
-        success: false,
-        message: err.message || 'Failed to load Informatic theme preview asset',
+    if (process.env.AWS_ACCESS_KEY_ID) {
+      const { contentPrefix } = await fetchCatalogThemeMeta(id);
+      const root = contentRootPrefix(contentPrefix);
+      // Filenames may be stored raw or URL-encoded — try both.
+      const keys = [
+        `${root}${rel}`,
+        `${root}${rel.split('/').map(encodeURIComponent).join('/')}`,
+      ];
+      let obj = null;
+      for (const key of keys) {
+        try {
+          obj = await s3Service.getObjectBuffer(key);
+          break;
+        } catch (e) {
+          const notFound = e?.name === 'NoSuchKey' || e?.statusCode === 404 || e?.$metadata?.httpStatusCode === 404;
+          if (!notFound) throw e;
+        }
       }
-    );
+      if (!obj) {
+        throw Object.assign(new Error('File not found'), { statusCode: 404 });
+      }
+      // HTML sub-pages get the same <base> injection as the index so internal
+      // navigation keeps resolving through this private preview route.
+      if (/\.html?$/i.test(rel)) {
+        const patched = injectHtmlBaseHref(
+          obj.buffer.toString('utf8'),
+          `/api/informatic-themes/preview/${id}/`
+        );
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.setHeader('X-Frame-Options', 'ALLOWALL');
+        res.setHeader('Content-Security-Policy', 'frame-ancestors *');
+        return res.send(patched);
+      }
+      res.setHeader('Content-Type', obj.contentType);
+      res.setHeader('Content-Length', String(obj.buffer.length));
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      return res.send(obj.buffer);
+    }
+    throw Object.assign(new Error('S3 not configured'), { statusCode: 503 });
+  } catch (localErr) {
+    // Fallback: stream the asset through codiic-server's preview route —
+    // used when this server has no S3 credentials (e.g. local dev).
+    try {
+      const encoded = rel.split('/').map(encodeURIComponent).join('/');
+      const upstream = await codiicClient().get(
+        `/informatic-themes/preview/${id}/${encoded}`,
+        { responseType: 'stream' }
+      );
+      if (upstream.headers['content-type']) {
+        res.setHeader('Content-Type', upstream.headers['content-type']);
+      }
+      if (upstream.headers['content-length']) {
+        res.setHeader('Content-Length', upstream.headers['content-length']);
+      }
+      if (upstream.headers['cache-control']) {
+        res.setHeader('Cache-Control', upstream.headers['cache-control']);
+      }
+      res.on('close', () => {
+        if (!res.writableEnded) upstream.data.destroy();
+      });
+      upstream.data.on('error', () => {
+        if (!res.writableEnded) res.end();
+      });
+      upstream.data.pipe(res);
+      return;
+    } catch (err) {
+      const status = err.response?.status || err.statusCode || 502;
+      const body =
+        err.response?.data && typeof err.response.data.pipe !== 'function'
+          ? err.response.data
+          : {
+              success: false,
+              message: err.message || 'Failed to load Informatic theme preview asset',
+            };
+      res.status(status).json(body);
+    }
   }
 };
 

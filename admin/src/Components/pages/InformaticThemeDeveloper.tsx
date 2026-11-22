@@ -78,6 +78,8 @@ const InformaticThemeDeveloper: React.FC = () => {
     version: "1.0.0",
     tags: "informatic,content",
   });
+  const [uploadMode, setUploadMode] = useState<"zip" | "folder" | "files">("zip");
+  const [themeZipFile, setThemeZipFile] = useState<File | null>(null);
   const [themeFolderFiles, setThemeFolderFiles] = useState<File[]>([]);
   const [reactThemeJsFile, setReactThemeJsFile] = useState<File | null>(null);
   const [reactThemeCssFile, setReactThemeCssFile] = useState<File | null>(null);
@@ -98,8 +100,13 @@ const InformaticThemeDeveloper: React.FC = () => {
     hasUploadPermission("Developer", "Theme Developer");
 
   const { generateThemeAssetSignedUrl, uploadFileToSignedUrl } = useAwsUpload();
-  const { listInformaticThemes, createInformaticThemeFromS3, deactivateInformaticTheme } =
-    useInformaticThemes();
+  const {
+    listInformaticThemes,
+    createInformaticThemeFromS3,
+    importInformaticThemeZip,
+    importInformaticThemeFolder,
+    deactivateInformaticTheme,
+  } = useInformaticThemes();
 
   const signedUrlOpts = { themePipeline: "informatic" as const };
 
@@ -140,6 +147,175 @@ const InformaticThemeDeveloper: React.FC = () => {
       alert((err as Error)?.message || "Failed to deactivate theme");
     } finally {
       setDeletingThemeId(null);
+    }
+  };
+
+  const handleZipUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUploadError(null);
+
+    try {
+      if (!uploadForm.name || !uploadForm.plan) {
+        throw new Error("Please fill in name and plan");
+      }
+      if (!themeZipFile) {
+        throw new Error("Please select a theme .zip file");
+      }
+
+      setIsUploading(true);
+      setUploadProgress({
+        ...PREPARING_UPLOAD_PROGRESS,
+        headline: "Uploading and converting theme package…",
+        fileCounter: themeZipFile.name,
+        remainingCounter: "Server is unzipping and converting",
+        rows: [
+          { id: "zip", label: `Theme package · ${themeZipFile.name}`, status: "uploading" },
+          { id: "convert", label: "Unzip + convert for Theme Editor", status: "pending" },
+          { id: "register", label: "Register Informatic theme in catalog", status: "pending" },
+        ],
+      });
+
+      const fd = new FormData();
+      fd.append("file", themeZipFile);
+      fd.append("name", uploadForm.name);
+      fd.append("description", uploadForm.description);
+      fd.append("plan", uploadForm.plan);
+      fd.append("price", uploadForm.price === "" ? "0" : uploadForm.price);
+      fd.append("version", uploadForm.version || "1.0.0");
+      fd.append("tags", uploadForm.tags);
+
+      const response = await importInformaticThemeZip(fd);
+
+      if (response.data.success) {
+        setUploadProgress({
+          headline: "Informatic theme imported and converted",
+          fileCounter: "3 / 3",
+          remainingCounter: "0 files left",
+          currentLabel: "",
+          currentIndex: 3,
+          totalCount: 3,
+          percent: 100,
+          currentFileBytePercent: 100,
+          rows: [
+            { id: "zip", label: `Theme package · ${themeZipFile.name}`, status: "done" },
+            { id: "convert", label: "Unzip + convert for Theme Editor", status: "done" },
+            { id: "register", label: "Register Informatic theme in catalog", status: "done" },
+          ],
+        });
+        const warnings = (response.data as { warnings?: string[] }).warnings;
+        if (warnings?.length) {
+          setUploadError(`Imported with warnings: ${warnings.slice(0, 3).join(" | ")}`);
+        }
+        await new Promise<void>((resolve) => window.setTimeout(() => resolve(), 600));
+        setUploadForm({
+          name: "",
+          description: "",
+          plan: "free",
+          price: "",
+          version: "1.0.0",
+          tags: "informatic,content",
+        });
+        setThemeZipFile(null);
+        if (!warnings?.length) setIsUploadOpen(false);
+        await loadThemes();
+      } else {
+        throw new Error(response.data.message || "Import failed");
+      }
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as Error)?.message ||
+        "Import failed";
+      setUploadError(msg);
+      setUploadProgress(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFolderUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUploadError(null);
+
+    try {
+      if (!uploadForm.name || !uploadForm.plan) {
+        throw new Error("Please fill in name and plan");
+      }
+      if (!themeFolderFiles.length) {
+        throw new Error("Please select your theme folder");
+      }
+
+      setIsUploading(true);
+      setUploadProgress({
+        ...PREPARING_UPLOAD_PROGRESS,
+        headline: "Uploading and converting theme folder…",
+        fileCounter: `${themeFolderFiles.length} files`,
+        remainingCounter: "Server is converting the theme",
+        rows: [
+          { id: "folder", label: `Theme folder · ${themeFolderFiles.length} files`, status: "uploading" },
+          { id: "convert", label: "Convert for Theme Editor", status: "pending" },
+          { id: "register", label: "Register Informatic theme in catalog", status: "pending" },
+        ],
+      });
+
+      const fd = new FormData();
+      for (const f of themeFolderFiles) {
+        const rel = (f as File & { webkitRelativePath?: string }).webkitRelativePath || f.name;
+        fd.append("files", f, rel);
+      }
+      fd.append("name", uploadForm.name);
+      fd.append("description", uploadForm.description);
+      fd.append("plan", uploadForm.plan);
+      fd.append("price", uploadForm.price === "" ? "0" : uploadForm.price);
+      fd.append("version", uploadForm.version || "1.0.0");
+      fd.append("tags", uploadForm.tags);
+
+      const response = await importInformaticThemeFolder(fd);
+
+      if (response.data.success) {
+        setUploadProgress({
+          headline: "Informatic theme imported and converted",
+          fileCounter: "3 / 3",
+          remainingCounter: "0 files left",
+          currentLabel: "",
+          currentIndex: 3,
+          totalCount: 3,
+          percent: 100,
+          currentFileBytePercent: 100,
+          rows: [
+            { id: "folder", label: `Theme folder · ${themeFolderFiles.length} files`, status: "done" },
+            { id: "convert", label: "Convert for Theme Editor", status: "done" },
+            { id: "register", label: "Register Informatic theme in catalog", status: "done" },
+          ],
+        });
+        const warnings = (response.data as { warnings?: string[] }).warnings;
+        if (warnings?.length) {
+          setUploadError(`Imported with warnings: ${warnings.slice(0, 3).join(" | ")}`);
+        }
+        await new Promise<void>((resolve) => window.setTimeout(() => resolve(), 600));
+        setUploadForm({
+          name: "",
+          description: "",
+          plan: "free",
+          price: "",
+          version: "1.0.0",
+          tags: "informatic,content",
+        });
+        setThemeFolderFiles([]);
+        if (!warnings?.length) setIsUploadOpen(false);
+        await loadThemes();
+      } else {
+        throw new Error(response.data.message || "Import failed");
+      }
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        (err as Error)?.message ||
+        "Import failed";
+      setUploadError(msg);
+      setUploadProgress(null);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -668,7 +844,10 @@ const InformaticThemeDeveloper: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleUpload} className="themeUpload-form">
+            <form
+              onSubmit={uploadMode === "files" ? handleUpload : uploadMode === "folder" ? handleFolderUpload : handleZipUpload}
+              className="themeUpload-form"
+            >
               <div className="themeUpload-body themeUpload-scroll">
                 {uploadError && (
                   <div
@@ -686,6 +865,69 @@ const InformaticThemeDeveloper: React.FC = () => {
                 )}
 
                 <fieldset className="themeUpload-fieldset" disabled={isUploading}>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    marginBottom: 14,
+                    padding: 4,
+                    background: "var(--z-surface, #f1f5f9)",
+                    borderRadius: 8,
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setUploadMode("zip")}
+                    style={{
+                      flex: 1,
+                      padding: "8px 10px",
+                      border: "none",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                      fontWeight: uploadMode === "zip" ? 600 : 400,
+                      background: uploadMode === "zip" ? "#fff" : "transparent",
+                      boxShadow: uploadMode === "zip" ? "0 1px 3px rgba(0,0,0,0.12)" : "none",
+                      color: uploadMode === "zip" ? "var(--z-text, #0f172a)" : "#64748b",
+                    }}
+                  >
+                    Zip package (recommended)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUploadMode("folder")}
+                    style={{
+                      flex: 1,
+                      padding: "8px 10px",
+                      border: "none",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                      fontWeight: uploadMode === "folder" ? 600 : 400,
+                      background: uploadMode === "folder" ? "#fff" : "transparent",
+                      boxShadow: uploadMode === "folder" ? "0 1px 3px rgba(0,0,0,0.12)" : "none",
+                      color: uploadMode === "folder" ? "var(--z-text, #0f172a)" : "#64748b",
+                    }}
+                  >
+                    Theme folder
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setUploadMode("files")}
+                    style={{
+                      flex: 1,
+                      padding: "8px 10px",
+                      border: "none",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                      fontWeight: uploadMode === "files" ? 600 : 400,
+                      background: uploadMode === "files" ? "#fff" : "transparent",
+                      boxShadow: uploadMode === "files" ? "0 1px 3px rgba(0,0,0,0.12)" : "none",
+                      color: uploadMode === "files" ? "var(--z-text, #0f172a)" : "#64748b",
+                    }}
+                  >
+                    Individual files
+                  </button>
+                </div>
+
                 <label>Theme Name *</label>
                 <input
                   type="text"
@@ -742,6 +984,69 @@ const InformaticThemeDeveloper: React.FC = () => {
                   placeholder="informatic, content, blog"
                 />
 
+                {uploadMode === "folder" ? (
+                  <>
+                    <label>Theme folder *</label>
+                    <input
+                      type="file"
+                      multiple
+                      onChange={(e) => setThemeFolderFiles(Array.from(e.target.files || []))}
+                      {...({ webkitdirectory: "", directory: "" } as React.InputHTMLAttributes<HTMLInputElement>)}
+                    />
+                    {themeFolderFiles.length > 0 && (
+                      <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
+                        Selected: {themeFolderFiles.length} file{themeFolderFiles.length === 1 ? "" : "s"}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#64748b",
+                        lineHeight: 1.55,
+                        marginTop: 10,
+                        padding: "10px 12px",
+                        background: "var(--z-surface, #f8fafc)",
+                        borderRadius: 6,
+                      }}
+                    >
+                      Pick your static theme folder (index.html + assets). The server
+                      converts its sections into Theme-Editor-compatible fields (text,
+                      images, colors, buttons) and registers it in the catalog — no
+                      theme.js / schema files needed.
+                    </div>
+                  </>
+                ) : uploadMode === "zip" ? (
+                  <>
+                    <label>Theme package (.zip) *</label>
+                    <input
+                      type="file"
+                      accept=".zip,application/zip,application/x-zip-compressed"
+                      onChange={(e) => setThemeZipFile(e.target.files?.[0] || null)}
+                    />
+                    {themeZipFile && (
+                      <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
+                        Selected: {themeZipFile.name} ({(themeZipFile.size / 1024 / 1024).toFixed(1)} MB)
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#64748b",
+                        lineHeight: 1.55,
+                        marginTop: 10,
+                        padding: "10px 12px",
+                        background: "var(--z-surface, #f8fafc)",
+                        borderRadius: 6,
+                      }}
+                    >
+                      Upload a zip of your static theme (index.html + assets). The server
+                      unzips it, converts sections into Theme-Editor-compatible fields
+                      (text, images, colors, buttons), and registers it in the catalog —
+                      no theme.js / schema files needed.
+                    </div>
+                  </>
+                ) : (
+                  <>
                 <label>Theme folder (content assets) *</label>
                 <input
                   type="file"
@@ -825,6 +1130,8 @@ const InformaticThemeDeveloper: React.FC = () => {
                   <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
                     Selected: {themeManifestFile.name}
                   </div>
+                )}
+                  </>
                 )}
               </fieldset>
               </div>
@@ -956,8 +1263,10 @@ const InformaticThemeDeveloper: React.FC = () => {
                     <>
                       <Loader2 size={16} className="themeUpload-progress__spinner" /> Uploading…
                     </>
-                  ) : (
+                  ) : uploadMode === "files" ? (
                     "Upload to catalog"
+                  ) : (
+                    "Import & convert theme"
                   )}
                 </button>
               </div>

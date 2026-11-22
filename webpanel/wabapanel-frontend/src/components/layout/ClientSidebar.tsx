@@ -11,7 +11,7 @@ import {
   Menu, X, LogOut, Database, FileDown, MessageCircle, ImageIcon, Wrench, BookOpen,
   Megaphone, Wallet, Palette, Brain, Plug, Sparkles, PiggyBank, Shield,
   Puzzle, LifeBuoy, QrCode, History, PhoneCall,   Paintbrush, Store, List, Scale, Stethoscope, ClipboardList, Pill, GraduationCap, LayoutGrid,
-  Building2, Briefcase, Hotel, Scissors, Plane,
+  Building2, Briefcase, Hotel, Scissors, Plane, Globe,
 } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebook, FaTelegram, FaEnvelope } from 'react-icons/fa';
 import { GATEWAY_LOGOUT_URL, useAuthStore } from '@/stores/authStore';
@@ -308,6 +308,7 @@ const navItems: NavItem[] = [
       { label: 'AI Calling Settings', href: '/client/ai-calling', icon: <Phone className="w-4 h-4" /> },
       { label: 'Knowledge Base', href: '/client/knowledge-base', icon: <BookOpen className="w-4 h-4" /> },
       { label: 'Audit Log', href: '/client/audit-log', icon: <Shield className="w-4 h-4" /> },
+      { label: 'Domains', href: '/client/settings/domains', icon: <Globe className="w-4 h-4" /> },
       { label: 'Business Settings', href: '/client/settings', icon: <Wrench className="w-4 h-4" /> },
     ],
   },

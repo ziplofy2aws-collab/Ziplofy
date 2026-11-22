@@ -82,7 +82,38 @@ async function sendInformaticThemeContactEmail(themeConfig, { to, submission, st
   return { sent: true };
 }
 
+/**
+ * Generic per-store theme-SMTP sender (booking status notifications etc).
+ * Returns { sent: boolean, reason?: string }.
+ */
+async function sendInformaticThemeMail(themeConfig, { to, subject, html, replyTo }) {
+  const smtp = readEmailSettings(themeConfig);
+  if (!smtp) {
+    return { sent: false, reason: 'SMTP not configured in theme settings' };
+  }
+  const recipient = String(to || '').trim();
+  if (!recipient) {
+    return { sent: false, reason: 'No recipient' };
+  }
+
+  const transporter = buildTransport(smtp);
+  const fromHeader = smtp.fromName
+    ? `"${smtp.fromName}" <${smtp.from || smtp.user}>`
+    : smtp.from || smtp.user;
+
+  await transporter.sendMail({
+    from: fromHeader,
+    to: recipient,
+    replyTo: replyTo || undefined,
+    subject,
+    html,
+  });
+
+  return { sent: true };
+}
+
 module.exports = {
   readEmailSettings,
   sendInformaticThemeContactEmail,
+  sendInformaticThemeMail,
 };

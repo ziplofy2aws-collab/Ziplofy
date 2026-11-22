@@ -41,6 +41,7 @@
     "pdfkit": "^0.19.1",
     "qrcode": "^1.5.4",
     "razorpay": "^2.9.6",
+    "sharp": "^0.33.5",
     "slugify": "^1.6.9",
     "socket.io": "^4.8.3",
     "speakeasy": "^2.0.0",

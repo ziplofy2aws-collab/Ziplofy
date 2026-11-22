@@ -112,6 +112,7 @@ app.use('/api/custom-themes', require('./routes/webpanelCustomThemes'));
 app.use('/api/aws', require('./routes/webpanelAws'));
 app.use('/api/informatic-themes', require('./routes/informaticThemes'));
 app.use('/api/store-subdomain', require('./routes/webpanelStoreSubdomain'));
+app.use('/api/domains', require('./routes/webpanelStoreDomains'));
 app.use('/api/storefront', require('./routes/webpanelStorefront'));
 app.use('/api/platform', platform.router);
 app.use('/api/workspaces', require('./routes/workspace'));
