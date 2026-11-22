@@ -1,0 +1,95 @@
+# Required GitHub Secrets:
+#   GATEWAY_SERVER_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
+#   (Same EC2 as wabapanel-api — if the same key pair is authorized for
+#   ubuntu@3.26.187.13, reusing WABAPANEL_EXPRESS_EC2_SSH_KEY's value is fine.)
+# EC2 host (hardcoded): 3.26.187.13
+# SSH user (hardcoded): ubuntu
+# Deploy path (hardcoded): /home/ubuntu/Ziplofy/gateway-server
+# PM2 process: gateway-server — this workflow only ever restarts that process.
+# NOTE: wabapanel-api runs on this same EC2 — never restart it from here.
+#
+# Rollback: tar backups land in ~/backups/gateway-server-*.tgz on the server;
+# restore with `tar -xzf <file> -C /home/ubuntu/Ziplofy/gateway-server`
+# then `npm ci --omit=dev && pm2 restart gateway-server`.
+
+name: Deploy gateway-server to EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gateway-server/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gateway-server
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: gateway-server/package-lock.json
+
+      - name: Install dependencies (verify lockfile)
+        run: npm ci
+
+      - name: Backup current deployment on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 3.26.187.13
+          username: ubuntu
+          key: ${{ secrets.GATEWAY_SERVER_EC2_SSH_KEY }}
+          script: |
+            mkdir -p ~/backups
+            tar -czf ~/backups/gateway-server-$(date +%Y%m%d-%H%M%S).tgz \
+              -C /home/ubuntu/Ziplofy/gateway-server \
+              --exclude=node_modules --exclude=uploads --exclude=sessions . \
+              2>/dev/null || true
+
+      - name: Deploy to EC2
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GATEWAY_SERVER_EC2_SSH_KEY }}
+          REMOTE_HOST: 3.26.187.13
+          REMOTE_USER: ubuntu
+          TARGET: /home/ubuntu/Ziplofy/gateway-server
+        with:
+          source: 'gateway-server/'
+          exclude: 'node_modules,.env*,uploads,sessions,ecosystem.config.cjs'
+
+      - name: Install deps and restart PM2 on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 3.26.187.13
+          username: ubuntu
+          key: ${{ secrets.GATEWAY_SERVER_EC2_SSH_KEY }}
+          script: |
+            set -e
+            if [ -f "$HOME/.nvm/nvm.sh" ]; then
+              export NVM_DIR="$HOME/.nvm"
+              . "$NVM_DIR/nvm.sh"
+            fi
+            if command -v fnm >/dev/null 2>&1; then
+              eval "$(fnm env)"
+            fi
+            [ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc" || true
+            echo "Using node: $(command -v node) ($(node -v))"
+            cd /home/ubuntu/Ziplofy/gateway-server
+            npm ci --omit=dev
+            export NODE_ENV=production
+            # Only ever touch the gateway-server PM2 process on this host.
+            if pm2 describe gateway-server >/dev/null 2>&1; then
+              pm2 restart gateway-server --update-env
+            else
+              pm2 start src/index.js --name gateway-server --update-env
+            fi
+            pm2 save

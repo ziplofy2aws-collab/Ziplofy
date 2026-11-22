@@ -1,9 +1,14 @@
 # Required GitHub Secrets:
 #   WABAPANEL_EXPRESS_EC2_SSH_KEY - Private SSH key for EC2 (contents of .pem file)
-# EC2 host (hardcoded): 52.74.78.80 (crm-backend.codiic.com)
+# EC2 host (hardcoded): 3.26.187.13 (crm-backend.codiic.com)
 # SSH user (hardcoded): ubuntu
 # Deploy path (hardcoded): /var/www/wabapanel-express
 # Public URL: https://crm-backend.codiic.com (port 5000 behind nginx)
+#
+# NOTE: gateway-server runs on this same EC2 — this workflow only ever touches
+# PM2 process `wabapanel-api`. Never restart other processes here.
+# Rollback: tar backups land in ~/backups/wabapanel-express-*.tgz on the server;
+# restore with `tar -xzf <file> -C /var/www/wabapanel-express` then `pm2 restart wabapanel-api`.
 
 name: Deploy wabapanel-express to EC2
 
@@ -35,21 +40,34 @@ jobs:
       - name: Install dependencies (verify lockfile)
         run: npm ci
 
+      - name: Backup current deployment on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 3.26.187.13
+          username: ubuntu
+          key: ${{ secrets.WABAPANEL_EXPRESS_EC2_SSH_KEY }}
+          script: |
+            mkdir -p ~/backups
+            tar -czf ~/backups/wabapanel-express-$(date +%Y%m%d-%H%M%S).tgz \
+              -C /var/www/wabapanel-express \
+              --exclude=node_modules --exclude=uploads --exclude=wa_sessions . \
+              2>/dev/null || true
+
       - name: Deploy to EC2
         uses: easingthemes/ssh-deploy@v4
         env:
           SSH_PRIVATE_KEY: ${{ secrets.WABAPANEL_EXPRESS_EC2_SSH_KEY }}
-          REMOTE_HOST: 52.74.78.80
+          REMOTE_HOST: 3.26.187.13
           REMOTE_USER: ubuntu
           TARGET: /var/www/wabapanel-express
         with:
           source: 'webpanel/wabapanel-express/'
-          exclude: 'node_modules,uploads,wa_sessions,.env.development'
+          exclude: 'node_modules,uploads,wa_sessions,.env*'
 
       - name: Install deps and restart PM2 on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: 52.74.78.80
+          host: 3.26.187.13
           username: ubuntu
           key: ${{ secrets.WABAPANEL_EXPRESS_EC2_SSH_KEY }}
           script: |
