@@ -76,3 +76,39 @@ jobs:
               pm2 start npm --name webpanel-store-renderer -- run preview
             fi
             pm2 save
+
+  # ── Static edge: 3.107.46.222 serves *.crm-360.codiic.com (incl.
+  #    preview.crm-360.codiic.com) straight from nginx root
+  #    /var/www/webpanel-store-renderer — no Node/PM2 on that box, so the
+  #    dist is built here and rsync'd as finished static assets.
+  #    Secret: WEBPANEL_RENDERER_EDGE_EC2_SSH_KEY (may be the same .pem).
+  deploy-preview-edge:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: webpanel/webpanel-store-renderer/package-lock.json
+
+      - name: Build dist
+        working-directory: webpanel/webpanel-store-renderer
+        run: |
+          npm ci
+          npm run build
+
+      - name: Ship dist to preview/storefront edge
+        uses: easingthemes/ssh-deploy@v4
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.WEBPANEL_RENDERER_EDGE_EC2_SSH_KEY }}
+          REMOTE_HOST: 3.107.46.222
+          REMOTE_USER: ubuntu
+          TARGET: /var/www/webpanel-store-renderer
+        with:
+          source: 'webpanel/webpanel-store-renderer/dist/'
