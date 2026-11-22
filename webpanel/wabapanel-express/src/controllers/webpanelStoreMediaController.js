@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
+const sharp = require('sharp');
 const WebpanelStore = require('../models/WebpanelStore');
 const WebpanelStoreMedia = require('../models/WebpanelStoreMedia');
 const s3Service = require('../services/s3Service');
+
+const UPLOAD_MAX_DIMENSION = 2048;
+const UPLOAD_WEBP_QUALITY = 82;
+const RASTER_MIME_RE = /^image\/(png|jpe?g|webp|avif|bmp|tiff?)$/i;
 
 function defaultStoreMediaFolder(storeId) {
   return `webpanel-stores/${storeId}/media`;
@@ -23,7 +28,11 @@ async function assertStoreForUser(req, storeId) {
 }
 
 function serializeMedia(row) {
-  const url = row.url || s3Service.getPublicObjectUrl(row.key) || '';
+  // S3 objects are private — always expose the public proxy URL, not the
+  // raw object URL, so older rows with stored S3 urls keep working.
+  const proxyUrl = row.key
+    ? `/api/stores/${String(row.store)}/media/file/${encodeURIComponent(row.key)}`
+    : '';
   return {
     _id: String(row._id),
     storeId: String(row.store),
@@ -31,7 +40,7 @@ function serializeMedia(row) {
     originalName: row.originalName || '',
     mimeType: row.mimeType || '',
     size: row.size || 0,
-    url,
+    url: proxyUrl || row.url || '',
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -63,6 +72,13 @@ async function resolveStoreMediaKey(storeId, urlOrKey) {
   const expectedPrefix = `${defaultStoreMediaFolder(storeId)}/`;
   if (trimmed.startsWith(expectedPrefix)) return trimmed;
 
+  // Proxy-path form: /api/stores/<storeId>/media/file/<encoded key>
+  const proxyMatch = trimmed.match(/^\/api\/stores\/[^/]+\/media\/file\/(.+)$/);
+  if (proxyMatch) {
+    const fromPath = decodeURIComponent(proxyMatch[1]);
+    if (fromPath.startsWith(expectedPrefix)) return fromPath;
+  }
+
   const row = await WebpanelStoreMedia.findOne({
     store: storeId,
     $or: [{ url: trimmed }, { key: trimmed }],
@@ -81,6 +97,32 @@ async function resolveStoreMediaKey(storeId, urlOrKey) {
 
   return null;
 }
+
+/**
+ * GET /api/stores/:storeId/media/file/*key — PUBLIC media serving. S3 objects
+ * are private, so storefronts and the editor load images through this proxy.
+ * Keys are store-scoped (uuid filenames, cache-friendly).
+ */
+const serveStoreMediaFile = async (req, res) => {
+  try {
+    const { storeId } = req.params;
+    const rawKey = req.params.key;
+    const key = decodeURIComponent(
+      (Array.isArray(rawKey) ? rawKey.join('/') : String(rawKey || req.params[0] || ''))
+        .replace(/^\/+/, '')
+    );
+    const expectedPrefix = `${defaultStoreMediaFolder(storeId)}/`;
+    if (!mongoose.Types.ObjectId.isValid(storeId) || !key.startsWith(expectedPrefix) || key.includes('..')) {
+      return res.status(404).json({ success: false, message: 'Media not found' });
+    }
+    const { buffer, contentType } = await s3Service.getObjectBuffer(key);
+    res.setHeader('Content-Type', String(contentType || '').startsWith('image/') ? contentType : 'application/octet-stream');
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    res.send(buffer);
+  } catch (error) {
+    res.status(error.statusCode || 404).json({ success: false, message: 'Media not found' });
+  }
+};
 
 /** GET /api/stores/:storeId/media/editor-proxy?url=... — same-origin blob for canvas export */
 const proxyStoreMediaForEditor = async (req, res) => {
@@ -187,6 +229,65 @@ const registerStoreMedia = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/stores/:storeId/media/upload — multipart `file` upload proxied
+ * through the server (browser→S3 CORS isn't required). Raster images are
+ * re-encoded as WebP capped at 2048px / ~82% quality; SVG and GIF are stored
+ * as-is to preserve vectors and animation.
+ */
+const uploadStoreMedia = async (req, res) => {
+  try {
+    const { storeId } = req.params;
+    await assertStoreForUser(req, storeId);
+
+    const file = req.file;
+    if (!file || !file.buffer?.length) {
+      return res.status(400).json({ success: false, message: 'file is required (multipart field "file")' });
+    }
+    if (!String(file.mimetype || '').startsWith('image/')) {
+      return res.status(400).json({ success: false, message: 'Only image uploads are allowed' });
+    }
+
+    let body = file.buffer;
+    let mimeType = file.mimetype;
+    let fileName = file.originalname || 'image';
+    if (RASTER_MIME_RE.test(file.mimetype)) {
+      try {
+        body = await sharp(file.buffer)
+          .rotate() // honour EXIF orientation
+          .resize({ width: UPLOAD_MAX_DIMENSION, height: UPLOAD_MAX_DIMENSION, fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: UPLOAD_WEBP_QUALITY })
+          .toBuffer();
+        mimeType = 'image/webp';
+        fileName = `${fileName.replace(/\.[^.]+$/, '') || 'image'}.webp`;
+      } catch { /* undecodable raster — store the original bytes */ }
+    }
+
+    const { key } = await s3Service.uploadBuffer(body, fileName, mimeType, defaultStoreMediaFolder(storeId));
+    const proxyUrl = `/api/stores/${storeId}/media/file/${encodeURIComponent(key)}`;
+    const row = await WebpanelStoreMedia.create({
+      store: storeId,
+      userId: req.user._id,
+      key,
+      originalName: String(file.originalname || fileName),
+      mimeType,
+      size: body.length,
+      url: proxyUrl,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Media uploaded',
+      data: serializeMedia(row.toObject()),
+    });
+  } catch (error) {
+    res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || 'Failed to upload media',
+    });
+  }
+};
+
 /** DELETE /api/stores/:storeId/media/:mediaId */
 const deleteStoreMedia = async (req, res) => {
   try {
@@ -253,6 +354,8 @@ module.exports = {
   defaultStoreMediaFolder,
   listStoreMedia,
   registerStoreMedia,
+  uploadStoreMedia,
+  serveStoreMediaFile,
   proxyStoreMediaForEditor,
   deleteStoreMedia,
   deleteAllStoreMedia,

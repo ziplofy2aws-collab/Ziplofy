@@ -39,7 +39,9 @@ const createStorefrontContactSubmission = async (req, res) => {
 
     const appliedThemeId = store.appliedTheme ? String(store.appliedTheme) : '';
     const runtime = appliedThemeId
-      ? await resolveStoreInformaticThemeRuntime(storeId, appliedThemeId)
+      ? await resolveStoreInformaticThemeRuntime(storeId, appliedThemeId, {
+          origin: `${req.headers['x-forwarded-proto'] || req.protocol || 'http'}://${req.get('host')}`,
+        })
       : null;
     const themeConfig = runtime?.themeConfig || null;
 

@@ -47,9 +47,18 @@ type CreateFromS3Payload = {
 
 type CreateResponse = { success: boolean; data: InformaticThemeRecord; message?: string };
 
+type ImportZipResponse = {
+  success: boolean;
+  data: InformaticThemeRecord;
+  message?: string;
+  warnings?: string[];
+};
+
 type InformaticThemesContextValue = {
   listInformaticThemes: (params?: { page?: number; limit?: number; search?: string }) => Promise<ListResponse>;
   createInformaticThemeFromS3: (payload: CreateFromS3Payload) => Promise<AxiosResponse<CreateResponse>>;
+  importInformaticThemeZip: (formData: FormData) => Promise<AxiosResponse<ImportZipResponse>>;
+  importInformaticThemeFolder: (formData: FormData) => Promise<AxiosResponse<ImportZipResponse>>;
   deactivateInformaticTheme: (id: string) => Promise<AxiosResponse<{ success: boolean }>>;
 };
 
@@ -67,13 +76,21 @@ export const InformaticThemesProvider: React.FC<{ children: React.ReactNode }> =
     return axiosi.post<CreateResponse>('/informatic-themes/from-s3', payload);
   }, []);
 
+  const importInformaticThemeZip = useCallback(async (formData: FormData) => {
+    return axiosi.post<ImportZipResponse>('/informatic-themes/import-zip', formData);
+  }, []);
+
+  const importInformaticThemeFolder = useCallback(async (formData: FormData) => {
+    return axiosi.post<ImportZipResponse>('/informatic-themes/import-folder', formData);
+  }, []);
+
   const deactivateInformaticTheme = useCallback(async (id: string) => {
     return axiosi.delete<{ success: boolean }>(`/informatic-themes/${id}`);
   }, []);
 
   const value = useMemo(
-    () => ({ listInformaticThemes, createInformaticThemeFromS3, deactivateInformaticTheme }),
-    [listInformaticThemes, createInformaticThemeFromS3, deactivateInformaticTheme]
+    () => ({ listInformaticThemes, createInformaticThemeFromS3, importInformaticThemeZip, importInformaticThemeFolder, deactivateInformaticTheme }),
+    [listInformaticThemes, createInformaticThemeFromS3, importInformaticThemeZip, importInformaticThemeFolder, deactivateInformaticTheme]
   );
 
   return <InformaticThemesContext.Provider value={value}>{children}</InformaticThemesContext.Provider>;

@@ -9,7 +9,7 @@ const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
-  const [awaitingOtp, setAwaitingOtp] = useState<{ email: string } | null>(null);
+  const [awaitingOtp, setAwaitingOtp] = useState<{ email: string; devOtp?: string } | null>(null);
   const [resendSeconds, setResendSeconds] = useState<number>(60);
   const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +21,7 @@ const AdminLogin: React.FC = () => {
     try {
       const res = await login(email, password);
       if (res && (res as any).twoFactorRequired) {
-        setAwaitingOtp({ email: (res as any).email || email });
+        setAwaitingOtp({ email: (res as any).email || email, devOtp: (res as any).devOtp });
         setResendSeconds(60);
         const interval = setInterval(() => {
           setResendSeconds((s) => {
@@ -99,6 +99,7 @@ const AdminLogin: React.FC = () => {
           <h2>Enter Verification Code</h2>
           {error && <div className="error">{error}</div>}
           <p>We sent a 6-digit code to <strong>{awaitingOtp.email}</strong>. Enter it below.</p>
+          {awaitingOtp.devOtp && <p className="hint">Dev code: <strong>{awaitingOtp.devOtp}</strong></p>}
           <label>Verification Code</label>
           <input value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter 6-digit code" maxLength={6} required />
           <button className="submit" type="submit" disabled={loading}>{loading ? "Verifying..." : "Verify Code"}</button>

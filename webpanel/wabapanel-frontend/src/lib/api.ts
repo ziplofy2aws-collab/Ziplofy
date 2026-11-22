@@ -104,6 +104,44 @@ export const storesApi = {
   create: (data: { storeName: string; storeDescription: string }) => api.post('/stores', data),
 };
 
+/** Custom domains for a webpanel store (connect / DNS verify / disconnect). */
+export type StoreDnsInstruction = {
+  type: 'CNAME' | 'ALIAS' | 'A' | 'TXT';
+  host: string;
+  value: string;
+  purpose: string;
+};
+export type StoreDomainItem = {
+  id: string;
+  hostname: string;
+  type: 'platform' | 'connected';
+  status: 'pending' | 'verifying' | 'active' | 'failed' | 'connected';
+  isPrimary: boolean;
+  url: string;
+  dnsInstructions: StoreDnsInstruction[];
+  verificationToken: string | null;
+  lastError: string | null;
+  verifiedAt: string | null;
+  sslStatus?: string;
+  sslError?: string | null;
+};
+export const domainsApi = {
+  list: (storeId: string) =>
+    api.get<{ success: boolean; data: StoreDomainItem[] }>(`/domains/store/${storeId}`),
+  connect: (storeId: string, hostname: string) =>
+    api.post<{ success: boolean; data: StoreDomainItem; message?: string }>('/domains/connect', {
+      storeId,
+      hostname,
+    }),
+  verify: (storeId: string, domainId: string) =>
+    api.post<{ success: boolean; data: { domain: StoreDomainItem } & Record<string, unknown>; message?: string }>(
+      '/domains/verify',
+      { storeId, domainId }
+    ),
+  disconnect: (storeId: string, domainId: string) =>
+    api.delete(`/domains/${domainId}`, { params: { storeId } }),
+};
+
 /** Informatic content themes catalog (proxied from Codiic server). */
 export type InformaticThemeCatalogItem = {
   _id: string;
@@ -129,7 +167,7 @@ export type InformaticThemeCatalogItem = {
 };
 
 export const informaticThemesApi = {
-  list: (params?: { search?: string; page?: number; limit?: number }) =>
+  list: (params?: { search?: string; page?: number; limit?: number; industry?: string }) =>
     api.get<{ success: boolean; data: InformaticThemeCatalogItem[]; pagination?: { page: number; limit: number; total: number; pages: number } }>(
       '/informatic-themes',
       { params }

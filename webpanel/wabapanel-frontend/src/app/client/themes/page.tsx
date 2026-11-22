@@ -174,7 +174,10 @@ export default function ThemesPage() {
     setLoadingCatalog(true);
     setLoadError(null);
     try {
-      const res = await informaticThemesApi.list({ limit: 48 });
+      const res = await informaticThemesApi.list({
+        limit: 48,
+        industry: activeStore?.industry || '',
+      });
       if (res.data?.success && Array.isArray(res.data.data)) {
         setCatalogThemes(res.data.data);
       } else {
@@ -187,7 +190,7 @@ export default function ThemesPage() {
     } finally {
       setLoadingCatalog(false);
     }
-  }, []);
+  }, [activeStore?.industry]);
 
   const loadInstalled = useCallback(async () => {
     if (!activeStoreId) {

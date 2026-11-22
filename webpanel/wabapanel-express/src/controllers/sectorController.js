@@ -3,6 +3,7 @@ const SectorRecord = require('../models/SectorRecord');
 const Contact = require('../models/Contact');
 const { entityFor, entitiesForIndustry, INDUSTRIES } = require('../utils/industryConfig');
 const { logAction } = require('../services/auditService');
+const { notifyBookingStatusToCustomer } = require('../utils/travelBookingNotify.util');
 
 const bad = (res, status, message) => res.status(status).json({ success: false, message });
 
@@ -527,6 +528,11 @@ const setStatus = async (req, res) => {
     existing.markModified('data');
     await existing.save();
     logAction(req.workspace._id, req.user._id, 'sector_record.status', `${def.industry}/${def.key}`, String(existing._id), `${target}`);
+    // Notify the traveller on booking confirmation/cancellation (fire-and-forget;
+    // no-ops when theme SMTP is not configured).
+    if (def.industry === 'tour_travel' && def.key === 'bookings' && prevStatus !== target) {
+      notifyBookingStatusToCustomer(existing).catch(() => {});
+    }
     return res.json({ success: true, data: existing });
   } catch (e) {
     return bad(res, 500, e.message);
@@ -626,6 +632,8 @@ const convertEnquiry = async (req, res) => {
     await enquiry.save();
 
     logAction(req.workspace._id, req.user._id, 'sector_record.convert', 'tour_travel/enquiries', String(enquiry._id), String(doc._id));
+    // "Booking request received" email — no-ops without theme SMTP.
+    notifyBookingStatusToCustomer(doc).catch(() => {});
     return res.json({ success: true, data: { enquiry, booking: doc } });
   } catch (e) {
     return bad(res, 500, e.message);

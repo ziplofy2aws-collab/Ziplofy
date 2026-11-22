@@ -3,6 +3,9 @@ const WebpanelStore = require('../models/WebpanelStore');
 const { resolveStoreInformaticThemeRuntime } = require('../utils/webpanelInformaticThemeRuntime.util');
 const { stripThemeConfigSecrets } = require('../utils/informaticThemeConfigSecrets.util');
 
+const originFrom = (req) =>
+  `${req.headers['x-forwarded-proto'] || req.protocol || 'http'}://${req.get('host')}`;
+
 /**
  * Public storefront theme runtime — used by webpanel-store-renderer.
  * GET /api/storefront/:storeId/informatic-theme-runtime
@@ -31,7 +34,9 @@ const getStorefrontInformaticThemeRuntime = async (req, res) => {
       });
     }
 
-    const data = await resolveStoreInformaticThemeRuntime(storeId, appliedThemeId);
+    const data = await resolveStoreInformaticThemeRuntime(storeId, appliedThemeId, {
+      origin: originFrom(req),
+    });
     if (!data) {
       return res.status(200).json({
         success: true,

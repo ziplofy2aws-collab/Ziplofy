@@ -651,7 +651,9 @@ function SectorEntityPageInner({ industry, entity }: { industry: string; entity:
         acts.push({ label: 'Convert to booking', run: () => doConvert(detail._id), cls: primaryBtn, icon: <ArrowRightLeft className="h-4 w-4" /> });
       }
     }
-    acts.push({ label: 'Edit', run: () => openEdit(detail), cls: secondaryBtn });
+    if (!(industry === 'tour_travel' && (entity === 'enquiries' || entity === 'travellers'))) {
+      acts.push({ label: 'Edit', run: () => openEdit(detail), cls: secondaryBtn });
+    }
     acts.push({ label: 'Archive', run: () => archive(detail._id), cls: dangerBtn });
     return acts;
   }, [detail, def, industry, entity, detailLinks, settings]);

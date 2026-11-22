@@ -26,10 +26,20 @@ build/
 # Built theme bundles (theme sources remain tracked)
 **/theme-packs/**/preview/dist/
 
-# Remote theme packages (built/served locally; not versioned in this repo)
-remote-themes/
+# Remote theme packages (built/served locally; not versioned in this repo).
+# Exception: remote-themes/informatic/src is the informatic contract SOURCE —
+# it renders every informatic catalog theme in the editor + storefront, so it
+# must be committed for deploys to carry it (deploy workflows rsync remote-themes/).
+remote-themes/*
+!remote-themes/informatic/
+remote-themes/informatic/*
+!remote-themes/informatic/src/
+!remote-themes/informatic/src/**
 
 # Personal notes / scratch work
 my-work/
 
 covered-elements.txt
+
+# Next.js generated build output
+webpanel/wabapanel-frontend/.next/
