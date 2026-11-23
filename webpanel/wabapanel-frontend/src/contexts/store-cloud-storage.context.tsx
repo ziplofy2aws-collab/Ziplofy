@@ -12,8 +12,16 @@ import {
   resolveStoreMediaUrl,
   type StoreMediaItem,
 } from '@/lib/store-media';
+import {
+  toStoreMediaUploadResult,
+  type StoreMediaUploadResult,
+} from '@/lib/store-media-upload';
 
 export type StoreCloudUpload = StoreMediaItem & { [key: string]: unknown };
+
+export type StoreCloudUploadResult = StoreMediaUploadResult<StoreCloudUpload>;
+
+type UploadFileForStoreOptions = { folder?: string };
 
 /** S3 folder for editor-uploaded content files (codiic parity). */
 export const defaultContentFilesFolder = (storeId: string) =>
@@ -49,16 +57,49 @@ export function useStoreCloudStorage() {
     }
   }, []);
 
-  const uploadFileForStoreQuiet = useCallback(async (storeId: string, file: File) => {
-    setImageUploadLoading(true);
-    try {
-      const item = await uploadStoreMediaFile(storeId, file);
-      setUploads((prev) => [item as StoreCloudUpload, ...prev]);
-      return item as StoreCloudUpload;
-    } finally {
-      setImageUploadLoading(false);
-    }
-  }, []);
+  const uploadFileForStoreQuiet = useCallback(
+    async (
+      storeId: string,
+      file: File,
+      // The server decides the S3 folder (webpanel-stores/<id>/media) — kept
+      // for signature parity with the Codiic cloud-storage contract.
+      options?: UploadFileForStoreOptions
+    ): Promise<StoreCloudUploadResult> => {
+      void options;
+      setImageUploadLoading(true);
+      try {
+        const item = await uploadStoreMediaFile(storeId, file);
+        setUploads((prev) => [item as StoreCloudUpload, ...prev]);
+        return toStoreMediaUploadResult(item as StoreCloudUpload, (u) =>
+          resolveStoreMediaUrl(u)
+        );
+      } finally {
+        setImageUploadLoading(false);
+      }
+    },
+    []
+  );
+
+  const uploadFileForStore = useCallback(
+    (storeId: string, file: File, options?: UploadFileForStoreOptions) =>
+      uploadFileForStoreQuiet(storeId, file, options),
+    [uploadFileForStoreQuiet]
+  );
+
+  const uploadFilesForStore = useCallback(
+    async (
+      storeId: string,
+      files: File[],
+      options?: UploadFileForStoreOptions
+    ): Promise<StoreCloudUploadResult[]> => {
+      const results: StoreCloudUploadResult[] = [];
+      for (const file of files) {
+        results.push(await uploadFileForStoreQuiet(storeId, file, options));
+      }
+      return results;
+    },
+    [uploadFileForStoreQuiet]
+  );
 
   const resolveUploadPreviewUrl = useCallback((upload: StoreCloudUpload) => {
     return resolveStoreMediaUrl(upload) || upload.url || '';
@@ -73,11 +114,13 @@ export function useStoreCloudStorage() {
       imageUploadLoading,
       error,
       fetchUploadsByStoreId,
+      uploadFileForStore,
+      uploadFilesForStore,
       uploadFileForStoreQuiet,
       resolveUploadPreviewUrl,
       clearError,
       clearUploads: () => setUploads([]),
     }),
-    [uploads, loading, imageUploadLoading, error, fetchUploadsByStoreId, uploadFileForStoreQuiet, resolveUploadPreviewUrl, clearError]
+    [uploads, loading, imageUploadLoading, error, fetchUploadsByStoreId, uploadFileForStore, uploadFilesForStore, uploadFileForStoreQuiet, resolveUploadPreviewUrl, clearError]
   );
 }
