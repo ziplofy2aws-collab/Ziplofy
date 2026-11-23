@@ -19,7 +19,7 @@ Reconcile (15 min) removes conf files whose hostname is no longer active.
 
 ```bash
 # ON THE GATEWAY (3.107.46.222):
-cd /home/ubuntu/Ziplofy && git pull origin <feature-branch>
+cd /home/ubuntu/Ziplofy && git pull origin crm-12-nov
 cd webpanel/wabapanel-express && npm ci --omit=dev   # deps incl. node-cron
 sudo bash deploy/ssl-agent/setup-gateway.sh         # nginx backup + acme webroot
 cp deploy/ssl-agent/env.ssl-worker.example /path/to/.env.production  # fill values

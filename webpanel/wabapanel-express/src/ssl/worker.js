@@ -134,6 +134,9 @@ async function expiryScanTick() {
       );
       if (missing) warn(`${doc.hostname}: cert files missing — requeued`);
       else if (expired) warn(`${doc.hostname}: certificate expired — requeued`);
+      else if (sslExpiresAt && sslExpiresAt.getTime() - Date.now() < 14 * DAY_MS) {
+        warn(`${doc.hostname}: certificate expires ${sslExpiresAt.toISOString()} (<14d)`);
+      }
     } catch (e) {
       warn(`expiry scan: ${doc.hostname}:`, e.message);
     }

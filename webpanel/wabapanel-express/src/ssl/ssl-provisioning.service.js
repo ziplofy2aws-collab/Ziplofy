@@ -111,8 +111,18 @@ function computeBackoffMs(attemptCount, { base = cfg.backoffBaseMs, cap = cfg.ba
  * Throws on any step failure — the worker records the error and schedules
  * the next retry.
  */
+/** Platform-owned hosts can never get customer certs — defense in depth
+ *  on top of the connect-API check, in case a bad record reaches the DB. */
+const PLATFORM_HOST_RE = /(^|\.)codiic\.com$|(^|\.)wabapanel\.com$|\.localhost$|^localhost$/i;
+
 async function provisionDomainDoc(doc) {
   const hostname = nginx.assertSafeHostname(doc.hostname);
+  if (PLATFORM_HOST_RE.test(hostname)) {
+    const err = new Error(`Refusing to provision platform hostname ${hostname}`);
+    err.code = 'PLATFORM_HOSTNAME';
+    err.userMessage = 'This hostname cannot be connected as a custom domain.';
+    throw err;
+  }
 
   // 1. Re-verify DNS still points at this gateway (guards against the
   //    customer changing DNS after verification, and against issuance for
