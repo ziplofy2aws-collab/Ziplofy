@@ -36,6 +36,9 @@ const config = {
   /** Directory where per-domain <host>.conf files are written. */
   nginxDomainConfDir: str(process.env.NGINX_DOMAIN_CONF_DIR, '/etc/nginx/conf.d/domains'),
 
+  /** Certbot live dir — override for local tests (default is the real path). */
+  letsencryptLiveDir: str(process.env.LETSENCRYPT_LIVE_DIR, '/etc/letsencrypt/live'),
+
   /** Command used to reload nginx — split on whitespace into argv. */
   nginxReloadCmd: str(process.env.NGINX_RELOAD_CMD, 'systemctl reload nginx'),
 

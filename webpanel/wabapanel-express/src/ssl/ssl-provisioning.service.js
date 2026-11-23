@@ -62,8 +62,8 @@ async function issueCertificate(hostname) {
   await execFileAsync(cfg.certbotBin, args, { timeout: 3 * 60 * 1000 });
 }
 
-const certPathFor = (hostname) => `/etc/letsencrypt/live/${hostname}/fullchain.pem`;
-const keyPathFor = (hostname) => `/etc/letsencrypt/live/${hostname}/privkey.pem`;
+const certPathFor = (hostname) => `${cfg.letsencryptLiveDir}/${hostname}/fullchain.pem`;
+const keyPathFor = (hostname) => `${cfg.letsencryptLiveDir}/${hostname}/privkey.pem`;
 
 /** notAfter Date from a PEM file via openssl; null on failure. */
 async function readCertExpiry(certPath) {
