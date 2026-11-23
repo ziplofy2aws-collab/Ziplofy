@@ -29,18 +29,19 @@ mkdir -p /var/www/letsencrypt/.well-known/acme-challenge
 mkdir -p /etc/nginx/snippets /etc/nginx/conf.d/domains /etc/letsencrypt/renewal-hooks/deploy
 chmod 755 /var/www/letsencrypt /etc/nginx/conf.d/domains
 
-step "3/5 ACME snippet + include in storefront :80 block"
+step "3/5 ACME snippet + include in the :80 catch-all block"
 cp "$DEPLOY_DIR/nginx/codiic-acme.conf" /etc/nginx/snippets/codiic-acme.conf
 
-# Find the file that owns the storefront :80 server block — identified by the
-# renderer root it serves.
-TARGET="$(grep -rlE 'listen\s+(\[::\]:)?80' /etc/nginx/sites-enabled /etc/nginx/conf.d 2>/dev/null | xargs grep -l 'webpanel-store-renderer' 2>/dev/null | head -1 || true)"
+# Custom domains (pre-cert) hit nginx's DEFAULT :80 server — the one with
+# `default_server`/`server_name _`. The ACME include must go there, not the
+# *.codiic.com blocks (customer domains don't match those server_names).
+TARGET="$(grep -rlE 'listen\s+(\[::\]:)?80[^0-9]' /etc/nginx/sites-enabled /etc/nginx/conf.d 2>/dev/null | xargs grep -l 'default_server\|server_name _' 2>/dev/null | head -1 || true)"
 if [ -z "$TARGET" ]; then
-    echo "!! Could not auto-detect the storefront :80 block."
+    echo "!! Could not auto-detect the :80 catch-all block."
     echo "   Manually add inside that server block:"
     echo "       include /etc/nginx/snippets/codiic-acme.conf;"
 else
-    echo "storefront :80 block → $TARGET"
+    echo ":80 catch-all block → $TARGET"
     cp -a "$TARGET" "$TARGET.bak-$TS"
     if grep -q 'snippets/codiic-acme.conf' "$TARGET"; then
         echo "include already present — skipping"
@@ -55,12 +56,18 @@ nginx -t
 systemctl reload nginx
 echo "nginx reloaded — ACME webroot live"
 
-step "4/5 Certbot renewal deploy-hook"
+step "4/5 Certbot renewal deploy-hook + pm2"
+if ! command -v pm2 >/dev/null 2>&1; then
+    echo "pm2 not found — installing globally (npm i -g pm2)"
+    npm i -g pm2
+else
+    echo "pm2: $(pm2 --version 2>/dev/null || echo present)"
+fi
 cp "$DEPLOY_DIR/certbot-deploy-hook.sh" /etc/letsencrypt/renewal-hooks/deploy/codiic-nginx-reload.sh
 chmod 0755 /etc/letsencrypt/renewal-hooks/deploy/codiic-nginx-reload.sh
 echo "deploy-hook installed"
 
-step "5/5 Renewal timer check"
+step "5/5 Renewal timer check (renumbered)"
 if systemctl list-timers --all 2>/dev/null | grep -qiE 'certbot|snap.certbot'; then
     echo "certbot renewal timer: present"
 else

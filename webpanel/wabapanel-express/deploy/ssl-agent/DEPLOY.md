@@ -17,14 +17,24 @@ Reconcile (15 min) removes conf files whose hostname is no longer active.
 
 ## Deploy (first time)
 
+The gateway has no git checkout — ship the express app over rsync (or clone):
+
 ```bash
+# FROM YOUR WORKSTATION (repo root, branch crm-12-nov):
+rsync -az --exclude node_modules --exclude uploads --exclude '.env*' \
+  webpanel/wabapanel-express/ ubuntu@3.107.46.222:/home/ubuntu/webpanel-ssl/wabapanel-express/
+
 # ON THE GATEWAY (3.107.46.222):
-cd /home/ubuntu/Ziplofy && git pull origin crm-12-nov
-cd webpanel/wabapanel-express && npm ci --omit=dev   # deps incl. node-cron
-sudo bash deploy/ssl-agent/setup-gateway.sh         # nginx backup + acme webroot
-cp deploy/ssl-agent/env.ssl-worker.example /path/to/.env.production  # fill values
-pm2 start deploy/ssl-agent/ecosystem.config.js && pm2 save
+cd /home/ubuntu/webpanel-ssl/wabapanel-express
+npm ci --omit=dev                                # deps incl. node-cron
+cp deploy/ssl-agent/env.ssl-worker.example .env.production
+#   → fill MONGODB_URI (wabapanel DB), LETSENCRYPT_EMAIL; CERTBOT_STAGING=true
+sudo bash deploy/ssl-agent/setup-gateway.sh      # nginx backup → acme webroot → nginx -t → reload
+pm2 start deploy/ssl-agent/ecosystem.config.js   # NOTE: update `cwd` to this path first
+pm2 save
 ```
+
+If rsyncing to a different path, update `cwd` in `ecosystem.config.js` to match.
 
 ## Staging verification (before prod certs)
 
