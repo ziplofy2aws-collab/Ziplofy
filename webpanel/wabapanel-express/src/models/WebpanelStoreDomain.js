@@ -49,11 +49,21 @@ const webpanelStoreDomainSchema = new mongoose.Schema(
     cloudflareCustomHostnameId: { type: String, default: null, index: true },
     sslStatus: {
       type: String,
-      enum: ['not_configured', 'pending', 'active', 'error', 'deleted'],
+      enum: ['not_configured', 'pending', 'issuing', 'active', 'failed', 'expired', 'error', 'deleted'],
       default: 'not_configured',
       index: true,
     },
+    sslProvider: { type: String, enum: ['letsencrypt', 'none'], default: 'none' },
     sslError: { type: String, default: null },
+    sslIssuedAt: { type: Date, default: null },
+    sslExpiresAt: { type: Date, default: null },
+    lastSslCheckAt: { type: Date, default: null },
+    sslAttemptCount: { type: Number, default: 0 },
+    sslNextRetryAt: { type: Date, default: null },
+    sslLockedUntil: { type: Date, default: null },
+    sslLockedBy: { type: String, default: null },
+    certificatePath: { type: String, default: null },
+    privateKeyPath: { type: String, default: null },
     verifiedAt: { type: Date, default: null },
     lastError: { type: String, default: null },
   },
@@ -61,5 +71,7 @@ const webpanelStoreDomainSchema = new mongoose.Schema(
 );
 
 webpanelStoreDomainSchema.index({ storeId: 1, status: 1 });
+// Worker poll: verified domains whose SSL job is due and not locked.
+webpanelStoreDomainSchema.index({ status: 1, sslStatus: 1, sslNextRetryAt: 1 });
 
 module.exports = mongoose.model('WebpanelStoreDomain', webpanelStoreDomainSchema);

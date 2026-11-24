@@ -54,7 +54,11 @@ function serializeDomain(d) {
     lastError: doc.lastError ?? null,
     verifiedAt: doc.verifiedAt ?? null,
     sslStatus: doc.sslStatus ?? 'not_configured',
+    sslProvider: doc.sslProvider ?? 'none',
     sslError: doc.sslError ?? null,
+    sslIssuedAt: doc.sslIssuedAt ?? null,
+    sslExpiresAt: doc.sslExpiresAt ?? null,
+    httpsReady: doc.sslStatus === 'active',
     cloudflareCustomHostnameId: doc.cloudflareCustomHostnameId ?? null,
   };
 }
@@ -207,6 +211,15 @@ const verifyDomain = async (req, res) => {
     doc.isPrimary = true;
     doc.verifiedAt = new Date();
     doc.lastError = null;
+    // Enqueue SSL provisioning — the gateway worker picks this up
+    // asynchronously; certificate issuance never blocks the request.
+    doc.sslStatus = 'pending';
+    doc.sslProvider = 'letsencrypt';
+    doc.sslError = null;
+    doc.sslAttemptCount = 0;
+    doc.sslNextRetryAt = new Date();
+    doc.sslLockedUntil = null;
+    doc.sslLockedBy = null;
     await doc.save();
 
     mapping.customDomain = doc.hostname;
@@ -217,9 +230,9 @@ const verifyDomain = async (req, res) => {
       data: {
         domain: serializeDomain(doc),
         dns: result.observed,
-        ssl: { status: doc.sslStatus, error: doc.sslError, httpsReady: doc.sslStatus === 'not_configured', provider: 'none' },
+        ssl: { status: doc.sslStatus, error: doc.sslError, httpsReady: doc.sslStatus === 'active', provider: doc.sslProvider },
       },
-      message: 'Domain verified and connected',
+      message: 'Domain verified and connected. SSL certificate is being provisioned.',
     });
   } catch (error) {
     bad(res, error.status || 500, error.message);
@@ -265,4 +278,37 @@ const disconnectDomain = async (req, res) => {
   }
 };
 
-module.exports = { listStoreDomains, connectDomain, verifyDomain, disconnectDomain };
+/** POST /api/domains/:id/ssl/retry — requeue a failed/stalled SSL job. */
+const retryDomainSsl = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const storeId = String(req.body?.storeId || req.query.storeId || '');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return bad(res, 400, 'Valid domain id is required');
+    }
+    const { mapping } = await getStoreSubdomainOrThrow(req, storeId);
+    const doc = await WebpanelStoreDomain.findOne({ _id: id, storeId: mapping.storeId });
+    if (!doc) return bad(res, 404, 'Domain not found');
+    if (doc.status !== 'active') {
+      return bad(res, 400, 'Domain must be verified before SSL can be provisioned');
+    }
+    if (doc.sslStatus === 'active' || doc.sslStatus === 'issuing') {
+      return bad(res, 409, `SSL is already ${doc.sslStatus}`);
+    }
+
+    doc.sslStatus = 'pending';
+    doc.sslProvider = 'letsencrypt';
+    doc.sslError = null;
+    doc.sslAttemptCount = 0;
+    doc.sslNextRetryAt = new Date();
+    doc.sslLockedUntil = null;
+    doc.sslLockedBy = null;
+    await doc.save();
+
+    res.json({ success: true, data: serializeDomain(doc), message: 'SSL provisioning requeued' });
+  } catch (error) {
+    bad(res, error.status || 500, error.message);
+  }
+};
+
+module.exports = { listStoreDomains, connectDomain, verifyDomain, disconnectDomain, retryDomainSsl };
