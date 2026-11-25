@@ -36,9 +36,9 @@ const main = async () => {
     workspaceIds = [new mongoose.Types.ObjectId(process.env.SEED_WORKSPACE)];
   } else {
     const stores = await WebpanelStore.find({ industry: 'tour_travel' }).select('workspace').lean();
-    workspaceIds = [...new Set(stores.map((s) => String(s.workspace)))].map(
-      (id) => new mongoose.Types.ObjectId(id)
-    );
+    workspaceIds = [...new Set(stores.map((s) => String(s.workspace)).filter(Boolean))]
+      .filter((id) => mongoose.Types.ObjectId.isValid(id))
+      .map((id) => new mongoose.Types.ObjectId(id));
   }
 
   if (!workspaceIds.length) {
