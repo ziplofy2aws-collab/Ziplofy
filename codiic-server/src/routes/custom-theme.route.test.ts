@@ -3,7 +3,7 @@ import express from 'express';
 import request from 'supertest';
 import { customThemeRouter } from './custom-theme.route';
 import { errorMiddleware } from '../middlewares/error.middleware';
-import { SUPER_ADMIN_TOKEN } from '../constants';
+import { getSuperAdminToken } from '../constants';
 
 vi.mock('../models/custom-theme.model', () => ({
   CustomTheme: {
@@ -54,7 +54,7 @@ describe('custom-theme routes', () => {
       const app = createTestApp();
       const res = await request(app)
         .get('/api/custom-themes')
-        .set('Authorization', `Bearer ${SUPER_ADMIN_TOKEN}`);
+        .set('Authorization', `Bearer ${getSuperAdminToken()}`);
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);

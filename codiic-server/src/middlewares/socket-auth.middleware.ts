@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { Socket } from 'socket.io';
-import { SUPER_ADMIN_TOKEN } from '../constants';
+import { getSuperAdminToken } from '../constants';
 import { User } from '../models/user.model';
 
 export interface UserJwtDecode {
@@ -43,7 +43,8 @@ export const socketAuthMiddleware = async (socket: Socket, next: (err?: Error) =
   const token = socket.handshake.headers.token as string;
   if (!token) return next(new Error('Token missing, please login again'));
 
-  if (token === SUPER_ADMIN_TOKEN) {
+  const superAdminToken = getSuperAdminToken();
+  if (superAdminToken && token === superAdminToken) {
     socket.user = {
       id: new mongoose.Types.ObjectId().toString(),
       name: 'Super Admin',
