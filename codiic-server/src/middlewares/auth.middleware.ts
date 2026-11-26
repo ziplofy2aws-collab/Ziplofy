@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { SUPER_ADMIN_TOKEN } from "../constants";
+import { getSuperAdminToken } from "../constants";
 import { User } from "../models/user.model";
 import { asyncErrorHandler, CustomError } from "../utils/error.utils";
 import { UserJwtDecode } from "./socket-auth.middleware";
@@ -35,7 +35,8 @@ export const protect = asyncErrorHandler(async (req: Request, res: Response, nex
     return next(new CustomError("Not authorized to access this route", 401));
   }
 
-  if(token === SUPER_ADMIN_TOKEN) {
+  const superAdminToken = getSuperAdminToken();
+  if(superAdminToken && token === superAdminToken) {
     console.log('🔑 Super Admin token detected');
     const secureUser:SecureUserInfo & {superAdmin?:boolean} = {
       id: new mongoose.Types.ObjectId().toString(),

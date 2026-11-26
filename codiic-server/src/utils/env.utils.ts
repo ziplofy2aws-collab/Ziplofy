@@ -61,6 +61,13 @@ export function validateEnv(): void {
   console.log('✅ All required environment variables are set');
 }
 
+// SUPER_ADMIN_TOKEN is optional: when unset, super-admin token auth is simply
+// disabled (all requests fall through to normal JWT verification). Warn loudly
+// but never crash or print the value.
+if (!process.env.SUPER_ADMIN_TOKEN?.trim()) {
+  console.warn('⚠️  SUPER_ADMIN_TOKEN is not set — super-admin token authentication is disabled.');
+}
+
 const getValidatedEnv = (key: RequiredEnvVar): string => process.env[key] as string;
 
 export const env: BackendEnv = {

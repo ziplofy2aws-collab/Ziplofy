@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Request, Response, NextFunction } from 'express';
 import { protect, authorize } from './auth.middleware';
-import { SUPER_ADMIN_TOKEN } from '../constants';
+import { getSuperAdminToken } from '../constants';
 
 function createUserFindByIdChain(mockResult: any) {
   return {
@@ -60,7 +60,7 @@ describe('protect', () => {
   });
 
   it('sets req.user when SUPER_ADMIN_TOKEN is provided', async () => {
-    mockReq.headers = { authorization: `Bearer ${SUPER_ADMIN_TOKEN}` };
+    mockReq.headers = { authorization: `Bearer ${getSuperAdminToken()}` };
 
     await (protect as any)(mockReq, mockRes, next);
 
