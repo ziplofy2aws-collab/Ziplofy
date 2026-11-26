@@ -1,3 +1,4 @@
+
 name: Deploy Codiic Server
 
 on:
@@ -30,6 +31,20 @@ jobs:
       - name: Build Codiic Server
         working-directory: codiic-server
         run: npm run build
+
+      - name: Get GitHub Actions Runner IP
+        id: runner-ip
+        run: |
+          RUNNER_IP=$(curl -4 -s https://api.ipify.org)
+          if [ -z "$RUNNER_IP" ]; then
+            echo "Could not determine runner public IP"
+            exit 1
+          fi
+          echo "===================================="
+          echo "GitHub Actions Runner Public IP:"
+          echo "$RUNNER_IP"
+          echo "===================================="
+          echo "ip=$RUNNER_IP" >> "$GITHUB_OUTPUT"
 
       - name: Deploy files to EC2
         uses: easingthemes/ssh-deploy@v4
